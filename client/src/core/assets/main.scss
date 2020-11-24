@@ -1,0 +1,343 @@
+/*
+ * Copyright (c) 2020 José Guerreiro. All rights reserved.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+@import '../../../core/assets/reset.css';
+@import '../../../core/assets/animate.min.css';
+
+*:focus {
+	outline: 0;
+	outline: none;
+}
+
+:root {
+	--modal-overlay: rgba(0, 0, 0, 0);
+
+	--main: #0075ff;
+
+	--font: 'Roboto';
+	--fontAlt: 'PT Sans';
+}
+
+body,
+html {
+	height: 100%;
+	width: 100%;
+	-webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+}
+body {
+	font-size: 14px;
+	font-style: normal;
+	font-weight: 400;
+	line-height: 20px;
+	font-family: var(--font);
+}
+::-webkit-scrollbar {
+	width: 6px; /* for vertical scrollbars */
+	height: 6px; /* for horizontal scrollbars */
+}
+::-webkit-scrollbar-track {
+	background: rgba(0, 0, 0, 0);
+	border-radius: 10px;
+}
+::-webkit-scrollbar-thumb {
+	background: rgba(0, 0, 0, 0.25);
+	border-radius: 10px;
+}
+::-webkit-scrollbar-corner {
+	background: rgba(0, 0, 0, 0);
+}
+
+h1 {
+	font-family: var(--fontAlt);
+	font-size: 42px;
+	font-weight: normal;
+	line-height: 50px;
+}
+h2 {
+	font-family: var(--fontAlt);
+	font-size: 32px;
+	line-height: 40px;
+}
+h3 {
+	font-family: var(--fontAlt);
+	font-size: 22px;
+}
+
+em {
+	font-style: italic;
+}
+
+p,
+i,
+u,
+li {
+	font-weight: 400;
+	font-size: 14px;
+	line-height: inherit;
+	margin: 0;
+	font-family: var(--font);
+}
+i {
+	font-style: italic;
+	display: inline;
+}
+u {
+	text-decoration: underline;
+	display: inline;
+}
+b,
+strong {
+	line-height: inherit;
+	font-size: 14px;
+	font-weight: 700;
+}
+bb {
+	line-height: inherit;
+	font-size: 16px;
+	font-weight: 700;
+}
+
+sp {
+	display: block;
+	min-height: 17px;
+	min-width: 17px;
+}
+
+a {
+	font-weight: 400;
+	font-size: inherit;
+	line-height: inherit;
+	margin: 0;
+	color: var(--main);
+	cursor: pointer;
+	text-decoration: none;
+	font-family: var(--font);
+}
+a:focus-visible {
+	outline: 1px dashed var(--main);
+	outline-offset: 3px;
+}
+a:hover {
+	text-decoration: underline;
+}
+a:visited {
+}
+
+ul {
+	padding-top: 5px;
+	list-style: inside;
+	padding-left: 20px;
+}
+li {
+	padding-top: 3px;
+}
+hr {
+	opacity: 0.2;
+	border-width: 1px;
+	border-bottom: none;
+	border-left: none;
+	border-right: none;
+}
+
+tag {
+	padding: 0.2em 0.4em;
+	font-size: 13px;
+	font-weight: 400;
+	border-radius: 6px;
+	background: rgba(127, 127, 127, 0.15);
+}
+blockquote,
+code {
+	padding: 14px;
+	border-radius: 6px;
+	background: rgba(127, 127, 127, 0.15);
+}
+
+input {
+	font-family: var(--font);
+	background-color: transparent;
+	border: none;
+	color: inherit;
+	caret-color: inherit;
+}
+input[type='file'] {
+	opacity: 0;
+	position: absolute;
+	pointer-events: none;
+	/* alternative to pointer-events, compatible with all browsers, just make it impossible to find */
+	width: 1px;
+	height: 1px;
+	font-family: var(--font);
+}
+input[type='number'] {
+	-moz-appearance: textfield;
+}
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+
+button {
+	font-size: inherit;
+	cursor: pointer;
+	letter-spacing: 0.4px;
+	border: none;
+	/* text-transform: uppercase; */
+	padding: 0px;
+	color: inherit;
+	font-weight: inherit;
+	font-size: inherit;
+	font-family: inherit;
+	background: none;
+}
+button:focus-visible {
+	outline: 1px dashed var(--main);
+	outline-offset: 3px;
+}
+button:hover {
+	opacity: 0.75;
+}
+button:active {
+	opacity: 1;
+}
+
+.wrapMargin {
+	max-width: 100%;
+}
+.wrapMargin > * {
+	margin: 5px;
+}
+.wrapMarginBig {
+	max-width: 100%;
+}
+.wrapMarginBig > * {
+	margin: 20px;
+}
+.wrapMarginTopLeft {
+	max-width: 100%;
+}
+.wrapMarginTopLeft > * {
+	margin: 0px 10px 10px 0px;
+}
+.wrapMarginBottomRight {
+	max-width: 100%;
+}
+.wrapMarginBottomRight > * {
+	margin: 10px 0px 0px 10px;
+}
+
+/**/
+
+.react-confirm-alert-blur {
+	filter: url(#gaussian-blur);
+	filter: blur(2px);
+	-webkit-filter: blur(2px);
+}
+.react-confirm-alert-overlay {
+	-webkit-backdrop-filter: blur(2px);
+	backdrop-filter: blur(2px);
+	background: var(--modal-overlay);
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 99;
+	display: -webkit-flex;
+	display: -moz-flex;
+	display: -ms-flex;
+	display: -o-flex;
+	display: flex;
+	justify-content: center;
+	-ms-align-items: center;
+	align-items: center;
+	opacity: 0;
+	-webkit-animation: react-confirm-alert-fadeIn 0.5s 0.2s forwards;
+	-moz-animation: react-confirm-alert-fadeIn 0.5s 0.2s forwards;
+	-o-animation: react-confirm-alert-fadeIn 0.5s 0.2s forwards;
+	animation: react-confirm-alert-fadeIn 0.5s 0.2s forwards;
+}
+.react-confirm-alert-body {
+	font-family: Arial, Helvetica, sans-serif;
+	width: 400px;
+	padding: 30px;
+	text-align: left;
+	background: #fff;
+	border-radius: 10px;
+	box-shadow: 0 20px 75px rgba(0, 0, 0, 0.13);
+	color: #666;
+}
+.react-confirm-alert-svg {
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+.react-confirm-alert-body > h1 {
+	margin-top: 0;
+}
+.react-confirm-alert-body > h3 {
+	margin: 0;
+	font-size: 16px;
+}
+.react-confirm-alert-button-group {
+	display: -webkit-flex;
+	display: -moz-flex;
+	display: -ms-flex;
+	display: -o-flex;
+	display: flex;
+	justify-content: flex-start;
+	margin-top: 20px;
+}
+.react-confirm-alert-button-group > button {
+	outline: none;
+	background: #333;
+	border: none;
+	display: inline-block;
+	padding: 6px 18px;
+	color: #eee;
+	margin-right: 10px;
+	border-radius: 5px;
+	font-size: 12px;
+	cursor: pointer;
+}
+@-webkit-keyframes react-confirm-alert-fadeIn {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
+@-moz-keyframes react-confirm-alert-fadeIn {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
+@-o-keyframes react-confirm-alert-fadeIn {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
+@keyframes react-confirm-alert-fadeIn {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
+
+.ReactCollapse--collapse {
+	transition: height 500ms;
+}

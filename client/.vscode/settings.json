@@ -1,0 +1,13 @@
+// Place your settings in this file to overwrite default and user settings.
+{
+	"files.exclude": {
+		"package-lock.json": true,
+		"yarn-lock.json": true,
+		"**/node_modules": true,
+		"**/build": true
+	},
+	"editor.detectIndentation": false,
+	"editor.formatOnSave": true,
+	"editor.insertSpaces": false,
+	"eslint.run": "onSave"
+}

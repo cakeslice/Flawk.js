@@ -1,0 +1,15 @@
+{
+  "autorun": false,
+  "terminals": [
+    {
+      "name": "Backend",
+      "cwd": "../server/",
+      "commands": ["run"]
+    },
+    {
+      "name": "Cordova",
+      "cwd": "../cordova/",
+      "commands": ["run"]
+    }
+  ]
+}

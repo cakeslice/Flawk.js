@@ -1,0 +1,53 @@
+{
+	"root": true,
+	"env": {
+		"commonjs": true,
+		"es6": true,
+		"node": true,
+		"jest": true
+	},
+	"parser": "babel-eslint",
+	"extends": [
+		"eslint:recommended",
+		"plugin:jsdoc/recommended",
+		"prettier",
+		"plugin:security/recommended",
+		"plugin:security-node/recommended",
+		"plugin:jest/recommended"
+	],
+	"plugins": [
+		"jsdoc",
+		"security",
+		"security-node",
+		"jest",
+		"no-secrets"
+	],
+	"globals": {
+		"Atomics": "readonly",
+		"SharedArrayBuffer": "readonly"
+	},
+	"parserOptions": {
+		"ecmaVersion": 2018
+	},
+	"rules": {
+		"no-secrets/no-secrets": "warn",
+		"jsdoc/require-property-description": 0,
+		"jsdoc/require-param-description": 0,
+		"jsdoc/require-returns-description": 0,
+		"jsdoc/valid-types": 0,
+		//
+		"eqeqeq": "error",
+		"no-eq-null": "error",
+		"no-prototype-builtins": "off",
+		"no-console": "off",
+		"no-unused-vars": "off",
+		"no-inner-declarations": "error",
+		"no-empty": "warn",
+		"no-useless-catch": "warn",
+		"no-unreachable": "warn",
+		"import/no-anonymous-default-export": "off",
+		//
+		"no-redeclare": "error",
+		"no-constant-condition": "warn"
+	}
+}

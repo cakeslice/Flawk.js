@@ -1,0 +1,16 @@
+[
+	{
+		"code": "pt",
+		"name": {
+			"pt": "Portugal",
+			"en": "Portugal"
+		}
+	},
+	{
+		"code": "uk",
+		"name": {
+			"pt": "Reino Unido",
+			"en": "United Kingdom"
+		}
+	}
+]

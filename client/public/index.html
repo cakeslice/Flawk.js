@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8" />
+	<!-- <meta id="viewport" name="viewport" /> -->
+	<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+
+	<meta name="theme-color" content="#1e1e1e" />
+	<!--
+      manifest.json provides metadata used when your web app is added to the
+      homescreen on Android. See https://developers.google.com/web/fundamentals/engage-and-retain/web-app-manifest/
+	 	-->
+
+	<link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+	<!--
+      Notice the use of %PUBLIC_URL% in the tags above.
+      It will be replaced with the URL of the `public` folder during the build.
+      Only files inside the `public` folder can be referenced from the HTML.
+
+      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
+      work correctly both with client-side routing and a non-root public URL.
+      Learn how to configure a non-root public URL by running `npm run build`.
+	 -->
+	<link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico" />
+</head>
+
+<body style="background:rgba(30,30,30)">
+	<noscript>
+		You need to enable JavaScript to run this app.
+	</noscript>
+
+	<script type="text/javascript">
+		function get_browser() {
+			var ua = navigator.userAgent, tem, M = ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
+			if (/trident/i.test(M[1])) {
+				tem = /\brv[ :]+(\d+)/g.exec(ua) || [];
+				return { name: 'IE', version: (tem[1] || '') };
+			}
+			if (M[1] === 'Chrome') {
+				tem = ua.match(/\bOPR\/(\d+)/)
+				if (tem != null) { return { name: 'Opera', version: tem[1] }; }
+			}
+			if (window.navigator.userAgent.indexOf("Edge") > -1) {
+				tem = ua.match(/\Edge\/(\d+)/)
+				if (tem != null) { return { name: 'Edge', version: tem[1] }; }
+			}
+			M = M[2] ? [M[1], M[2]] : [navigator.appName, navigator.appVersion, '-?'];
+			if ((tem = ua.match(/version\/(\d+)/i)) != null) { M.splice(1, 1, tem[1]); }
+			return {
+				name: M[0],
+				version: +M[1]
+			};
+		}
+		var browser = get_browser()
+		var isSupported = isSupported(browser);
+
+		function isSupported(browser) {
+			var supported = true;
+			/* if (browser.name === "Chrome" && browser.version < 48) {
+				supported = false;
+			} else */ if ((browser.name === "MSIE" || browser.name === "IE") && browser.version < 12) {
+				supported = false;
+			} /* else if (browser.name === "Edge") {
+				supported = true;
+			} */
+			return supported;
+		}
+		if (!isSupported) {
+			document.write('<h1>Your browser is not supported anymore, please download a newer one: <a href="https://bestvpn.org/outdatedbrowser/en">Click Here</a></h1>')
+		}
+	</script>
+
+	<div id="root"></div>
+</body>
+
+</html>

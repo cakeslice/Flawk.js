@@ -1,0 +1,8 @@
+coverage/*
+node_modules/*
+*.d.ts
+*.html
+*.md
+*.yml
+*api.json
+*metadata.json

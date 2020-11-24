@@ -1,0 +1,28 @@
+stages:
+  - build
+  - test
+  - deploy
+  - performance
+
+testing:
+  only:
+    - master
+  stage: test
+  image: node:12.16.3
+  before_script:
+    - cd server
+    - npm install --only=prod
+    - npm install --only=dev
+    - cd ../client
+    - npm install --only=prod
+    - npm install --only=dev
+    - cd ..
+  script:
+    - cd server
+    - npm run auditCI
+    - npm run prettierCI
+    - SKIP_PREFLIGHT_CHECK=true npm run testCI
+    - cd ../client
+    - npm run auditCI
+    - npm run prettierCI
+    - SKIP_PREFLIGHT_CHECK=true npm run testCI

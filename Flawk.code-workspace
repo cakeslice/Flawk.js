@@ -1,0 +1,29 @@
+{
+	"folders": [
+		{
+			"name": "Backend",
+			"path": "server"
+		},
+		{
+			"name": "Frontend",
+			"path": "client"
+		},
+		{
+			"name": "Cordova",
+			"path": "cordova"
+		}
+	],
+	"settings": {
+		"workbench.colorCustomizations": {
+			"activityBar.background": "#203222",
+			"titleBar.activeBackground": "#2D462F",
+			"titleBar.activeForeground": "#FAFCFA"
+		},
+		"workbench.editorAssociations": [
+			{
+				"viewType": "vscode.markdown.preview.editor",
+				"filenamePattern": "*.md"
+			}
+		]
+	}
+}

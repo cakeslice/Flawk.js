@@ -1,0 +1,696 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "API"
+  },
+  "paths": {
+    "/api": {
+      "get": {
+        "description": "Get the server's API",
+        "operationId": "get-api",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "public"
+        ]
+      }
+    },
+    "/structures": {
+      "get": {
+        "tags": [
+          "public"
+        ],
+        "description": "Get the application's constant data",
+        "operationId": "get-structures",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/client/login": {
+      "post": {
+        "description": "Login",
+        "requestBody": {
+          "description": "",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password"
+                  }
+                },
+                "required": [
+                  "email",
+                  "password"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "token": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "tags": [
+          "public"
+        ],
+        "operationId": "post-client-login",
+        "parameters": []
+      }
+    },
+    "/client/logout": {
+      "post": {
+        "summary": "",
+        "operationId": "post-client-logout",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          },
+          {
+            "headerAuth": []
+          }
+        ],
+        "description": "",
+        "tags": [
+          "account"
+        ]
+      }
+    },
+    "/client/data": {
+      "get": {
+        "tags": [
+          "account"
+        ],
+        "description": "Get your account's data",
+        "security": [
+          {
+            "cookieAuth": []
+          },
+          {
+            "headerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Client"
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-client-data",
+        "summary": ""
+      }
+    },
+    "/online": {
+      "get": {
+        "summary": "",
+        "tags": [
+          "public"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "operationId": "get-online",
+        "description": "Check if the server is online"
+      }
+    },
+    "/client/register": {
+      "post": {
+        "summary": "",
+        "operationId": "post-client-register",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "409": {
+            "description": "User already exists"
+          }
+        },
+        "description": "Register",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "description": "",
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password"
+                  },
+                  "firstName": {
+                    "type": "string"
+                  },
+                  "lastName": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "email",
+                  "password",
+                  "firstName",
+                  "lastName"
+                ]
+              }
+            }
+          },
+          "description": "Register a new account and send a verification code to user to be verified by /register_verify"
+        },
+        "tags": [
+          "public"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "recaptchaToken",
+            "required": true
+          }
+        ]
+      }
+    },
+    "/client/register_verify": {
+      "post": {
+        "summary": "",
+        "tags": [
+          "public"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Wrong code"
+          }
+        },
+        "operationId": "post-client-register_verify",
+        "description": "Verify the registration using the code sent in /register",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  },
+                  "verificationCode": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "email",
+                  "verificationCode"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/client/forgot_password": {
+      "post": {
+        "summary": "",
+        "tags": [
+          "public"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        },
+        "operationId": "post-client-forgot-password",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  }
+                },
+                "required": [
+                  "email"
+                ]
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "recaptchaToken",
+            "required": true
+          }
+        ],
+        "description": ""
+      },
+      "parameters": []
+    },
+    "/client/reset_password": {
+      "post": {
+        "summary": "",
+        "tags": [
+          "public"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "operationId": "post-client-reset_password",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  },
+                  "newPassword": {
+                    "type": "string",
+                    "format": "password"
+                  },
+                  "verificationCode": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "email",
+                  "newPassword",
+                  "verificationCode"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/search": {
+      "post": {
+        "summary": "",
+        "operationId": "post-admin-search",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "search": {
+                    "type": "string"
+                  },
+                  "schema": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "schema"
+                ]
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "sort"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "order"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "page"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "limit"
+          }
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          },
+          {
+            "headerAuth": []
+          }
+        ],
+        "tags": [
+          "admin"
+        ]
+      },
+      "parameters": []
+    },
+    "/admin/online_users": {
+      "get": {
+        "summary": "",
+        "tags": [
+          "admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "operationId": "get-admin-online_users",
+        "security": [
+          {
+            "cookieAuth": []
+          },
+          {
+            "headerAuth": []
+          }
+        ]
+      }
+    },
+    "/client/change_settings": {
+      "post": {
+        "summary": "",
+        "tags": [
+          "account"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "operationId": "post-client-change_settings",
+        "security": [
+          {
+            "cookieAuth": []
+          },
+          {
+            "headerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "firstName": {
+                    "type": "string"
+                  },
+                  "lastName": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password"
+                  },
+                  "photoURL": {
+                    "type": "string",
+                    "format": "uri"
+                  }
+                },
+                "required": [
+                  "firstName",
+                  "lastName",
+                  "email"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/client/upload_url": {
+      "post": {
+        "summary": "",
+        "operationId": "post-client-upload_url",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          },
+          {
+            "headerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "contentType": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "contentType"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/client/notifications": {
+      "get": {
+        "summary": "",
+        "tags": [
+          "account"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "operationId": "get-client-notifications",
+        "security": [
+          {
+            "cookieAuth": []
+          },
+          {
+            "headerAuth": []
+          }
+        ]
+      }
+    },
+    "/client/read_notifications": {
+      "post": {
+        "summary": "",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "operationId": "post-client-read_notifications",
+        "security": [
+          {
+            "cookieAuth": []
+          },
+          {
+            "headerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "notificationID": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "notificationID"
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Client": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "personal": {
+            "type": "object",
+            "properties": {
+              "firstName": {
+                "type": "string"
+              },
+              "lastName": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "Country": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "code": {
+            "type": "string"
+          }
+        }
+      },
+      "Pagination": {
+        "title": "Pagination",
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "string"
+          },
+          "limit": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "cookieAuth": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "token"
+      },
+      "queryAuth": {
+        "type": "apiKey",
+        "in": "query",
+        "name": "token"
+      },
+      "headerAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "token"
+      }
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8000/backend",
+      "description": "Localhost"
+    },
+    {
+      "url": "https://flawk-backend.cakeslice.dev/backend",
+      "description": "Flawk Production"
+    }
+  ],
+  "tags": [
+    {
+      "name": "public"
+    },
+    {
+      "name": "account"
+    },
+    {
+      "name": "admin"
+    }
+  ]
+}

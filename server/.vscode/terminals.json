@@ -1,0 +1,15 @@
+{
+	"autorun": false,
+	"terminals": [
+		{
+			"name": "Backend",
+			"cwd": "../server/",
+			"commands": ["run"]
+		},
+		{
+			"name": "Frontend",
+			"cwd": "../client/",
+			"commands": ["run"]
+		}
+	]
+}

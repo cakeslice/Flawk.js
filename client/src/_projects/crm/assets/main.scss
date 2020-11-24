@@ -1,0 +1,55 @@
+/*
+ * Copyright (c) 2020 José Guerreiro. All rights reserved.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+@import '../../../core/assets/main.scss';
+
+:root {
+	--main: #0075ff;
+
+	--font: 'Roboto';
+	--fontAlt: 'PT Sans';
+}
+
+body {
+	font-size: 14px;
+	font-style: normal;
+	font-weight: 400;
+	line-height: 20px;
+	font-family: var(--font);
+}
+
+h1 {
+	font-family: var(--fontAlt);
+	font-size: 42px;
+	font-weight: normal;
+	line-height: 50px;
+}
+h2 {
+	font-family: var(--fontAlt);
+	font-size: 32px;
+	line-height: 40px;
+}
+h3 {
+	font-family: var(--fontAlt);
+	font-size: 22px;
+}
+
+p,
+i,
+u,
+li {
+	font-weight: 400;
+	font-size: 14px;
+	line-height: 20px;
+	margin: 0;
+	font-family: var(--font);
+}
+b,
+strong {
+	font-size: 14px;
+	font-weight: 700;
+}

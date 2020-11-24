@@ -1,0 +1,42 @@
+#
+# Copyright (c) 2020 José Guerreiro. All rights reserved.
+#
+# This source code is licensed under the MIT license found in the
+# LICENSE file in the root directory of this source tree.
+#
+
+DigitalOcean:
+	- Create space in DigitalOcean
+	- Create origin certicate in CloudFlare for cloud.yourdomain.com
+	- Enable CDN in space using certificate
+	- Add CNAME with Proxy in CloudFlare (cdn)
+	- Also set CORS in space settings: 
+		https://your_domain, GET, Header: Access-Control-Allow-Origin, 600 seconds
+		https://*.your_domain, GET, Header: Access-Control-Allow-Origin, 600 seconds
+		*, PUT+POST, *, 600 seconds (needs to be in bottom!)
+	- NOTE: Can't use this for a lot of video or audio files since CloudFlare doesn't allow!
+
+----
+
+BACKUP STORAGE:
+
+wget https://downloads.rclone.org/rclone-current-linux-amd64.zip
+unzip rclone-current-linux-amd64.zip
+cd rclone*linux-amd64/
+mv rclone /usr/bin/
+cd /usr/bin/
+
+rclone config 
+# Then create 2 remotes of type s3 (for example scaleway and digitalocean)
+# For most options just choose default
+# Then copy the 2 (scaleway-public and digitalocean-public) and edit the policy (to "public-read")
+
+#### CRON JOB (digitalocean to scaleway)
+# YOU CAN ADD THIS to the mongo cron: backup.sh
+rclone sync --progress digitalocean:your_bucket/your_project/private_uploads scaleway:your_bucket/your_project/private_uploads
+rclone sync --progress digitalocean:your_bucket/your_project/mongo_backups scaleway:your_bucket/your_project/mongo_backups
+
+rclone sync --progress digitalocean-public:your_bucket/your_project/public_uploads scaleway-public:your_bucket/your_project/public_uploads
+
+#### TO RESTORE
+rclone sync --progress scaleway:your_bucket/your_private_folder digitalocean:your_bucket/your_private_folder

@@ -1,0 +1,18 @@
+// Place your settings in this file to overwrite default and user settings.
+{
+	"files.exclude": {
+		"yarn-lock.json": true,
+		"package-lock.json": true,
+		"client": true,
+		"**/node_modules": true
+	},
+	"editor.detectIndentation": false,
+	"editor.formatOnSave": true,
+	"editor.insertSpaces": false,
+	"eslint.run": "onSave",
+	"workbench.colorCustomizations": {
+		"activityBar.background": "#530956",
+		"titleBar.activeBackground": "#740D79",
+		"titleBar.activeForeground": "#FEFBFF"
+	}
+}

@@ -1,0 +1,9 @@
+# Rule 1
+User-agent: Googlebot
+Disallow: /dashboard
+
+# Rule 2
+User-agent: *
+Allow: /
+
+Sitemap: https://flawk.cakeslice.dev/sitemap.xml

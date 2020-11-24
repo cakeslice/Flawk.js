@@ -1,0 +1,24 @@
+{
+  "name": "io.flawk.mobile",
+  "displayName": "Flawk Mobile",
+  "version": "1.0.0",
+  "private": true,
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "cordova-android": "^9.0.0",
+    "cordova-ios": "^6.1.1",
+    "cordova-plugin-whitelist": "^1.3.4"
+  },
+  "cordova": {
+    "plugins": {
+      "cordova-plugin-whitelist": {}
+    },
+    "platforms": [
+      "ios",
+      "android"
+    ]
+  }
+}

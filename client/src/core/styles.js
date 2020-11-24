@@ -1,0 +1,111 @@
+/*
+ * Copyright (c) 2020 José Guerreiro. All rights reserved.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+var config = require('./config_').default
+
+const _font = 'Roboto'
+const _fontAlt = 'PT Sans'
+const _background = 'rgba(254,254,254, 1)'
+const _backgroundNight = 'rgba(30, 30, 30, 1)'
+const _borderColor = 'rgba(0, 0, 0, 0.1)'
+const _borderColorNight = 'rgba(255, 255, 255, 0.15)'
+const _lineColor = 'rgba(0, 0, 0, 0.05)'
+const _lineColorNight = 'rgba(255, 255, 255, 0.05)'
+
+const _black = 'rgba(30, 30, 30, 1)'
+const _white = 'rgba(254,254,254, 1)' // Don't use pure white to avoid flickering
+
+const _main = 'rgba(0,117,255, 1)'
+const _mainLight = 'rgba(0,117,255, .85)'
+const _mainVeryLight = 'rgba(66, 117, 255, .25)'
+
+const _green = 'rgba(40,201,134, 1)'
+const _red = 'rgba(250,61,91,1)'
+const _pink = 'rgba(189, 31, 130, 1)'
+const _orange = 'rgba(255,152,0,1)'
+const _yellow = 'rgba(255,235,59,1)'
+const _blue = 'rgba(66, 124, 255,1)'
+
+export const styles = {
+	/**
+	 * @type {import('react').CSSProperties}
+	 */
+	card: {
+		boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.05), 0 6px 20px 0 rgba(0, 0, 0, 0.05)',
+		borderStyle: 'solid',
+		borderWidth: 1,
+		padding: 20,
+		borderRadius: 10,
+		boxSizing: 'border-box',
+		background: _white,
+		minHeight: 10,
+		minWidth: 10,
+	},
+	/**
+	 * @type {import('react').CSSProperties}
+	 */
+	outlineCard: {
+		borderStyle: 'solid',
+		borderWidth: '1px',
+		boxSizing: 'border-box',
+		padding: 20,
+		borderRadius: 10,
+		minHeight: 10,
+		minWidth: 10,
+	},
+
+	mediumShadow: '0 5px 20px 0 rgba(0, 0, 0, 0.05)',
+	shadowFilter: '2px 6px 8px rgba(0, 0, 0, 0.3)',
+	strongerShadow:
+		'0 20px 32px -8px rgba(0, 0, 0, 0.1), 0 4px 8px 0 rgba(0, 0, 0, 0.05), 0 6px 20px 0 rgba(0, 0, 0, 0.05)',
+
+	font: _font,
+	fontAlt: _fontAlt,
+	defaultBorderRadius: 6,
+	defaultFontSize: 14,
+	defaultFontBold: 700,
+
+	spinnerSmall: { size: 28 * 0.66 },
+	spinnerMedium: { size: 28 * 1.5 },
+	spinnerLarge: { size: 28 * 3 },
+
+	colors: {
+		black: _black,
+		blackDay: _black,
+		blackNight: _white,
+		white: _white,
+		whiteDay: _white,
+		whiteNight: _black,
+		main: _main,
+		mainLight: _mainLight,
+		mainVeryLight: _mainVeryLight,
+		background: _background,
+		backgroundDay: _background,
+		backgroundNight: _backgroundNight,
+		borderColor: _borderColor,
+		borderColorDay: _borderColor,
+		borderColorNight: _borderColorNight,
+		lineColor: _lineColor,
+		lineColorDay: _lineColor,
+		lineColorNight: _lineColorNight,
+		green: _green,
+		blue: _blue,
+		red: _red,
+		pink: _pink,
+		orange: _orange,
+		yellow: _yellow,
+		...config.projectStyles.colorsOverride,
+	},
+	gradients: {
+		fade: 'linear-gradient(90deg, rgba(2, 4, 51, 1), rgba(2, 4, 51, 1), rgba(2, 4, 51, 0))',
+		main: _main,
+	},
+
+	...config.projectStyles,
+}
+
+export default styles

@@ -1,0 +1,24 @@
+Download Gradle and put in D:\Gradle
+
+Add to PATH environment variable: D:\Gradle\gradle-6.7.1\bin
+
+gradle -v in cmd to verify
+
+----
+
+Download Android Command line tools, rename to latest and put in D:\Android\cmdline-tools
+
+Add environment variables ANDROID_SDK_ROOT=
+
+ANDROID_SDK_ROOT="D:\Android"
+ANDROID_TOOLS="D:\Android\cmdline-tools\latest"
+ANDROID_PLATFORM_TOOLS="D:\Android\platform-tools"
+
+Add to PATH environment variables: 
+%ANDROID_TOOLS%\bin
+%ANDROID_PLATFORM_TOOLS%
+%ANDROID_SDK_ROOT%
+
+Then go to the tools and run
+sdkmanager "build-tools;29.0.3" // https://developer.android.com/studio/releases/build-tools
+sdkmanager "platforms;android-28" // https://cordova.apache.org/docs/en/latest/guide/platforms/android/
