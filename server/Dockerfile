@@ -138,4 +138,4 @@ RUN npm run auditCI && npm run testCI && rm -rf /usr/src/app/client/*
 WORKDIR /usr/src/app
 EXPOSE 8080
 ENV NODE_PATH=app/
-CMD [ "node", "--optimize_for_size", "--max_old_space_size=460", "--expose-gc", "./app/server.js" ]
+CMD [ "node", "--optimize_for_size", "--max_old_space_size=1024", "--expose-gc", "./app/server.js" ]
