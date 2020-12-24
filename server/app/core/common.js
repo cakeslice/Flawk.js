@@ -385,8 +385,10 @@ module.exports = {
 		if (postmarkClient) {
 			var response = await postmarkClient.sendEmailBatchWithTemplates(bodies)
 
-			if (response.ErrorCode === 0) console.log('E-mail sent! (202)')
-			else console.log(JSON.stringify(response))
+			response.forEach((r) => {
+				if (r.ErrorCode === 0) {
+				} else console.log(JSON.stringify(r))
+			})
 		} else console.log('Skipped sending e-mails, no postmark client!')
 	},
 	/**
