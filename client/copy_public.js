@@ -35,3 +35,10 @@ fs.copyFile(
 		if (err) throw err
 	}
 )
+fs.copyFile(
+	'./src/_projects/' + config.project + '/_public/index.html',
+	'./public/index.html',
+	(err) => {
+		if (err) throw err
+	}
+)
