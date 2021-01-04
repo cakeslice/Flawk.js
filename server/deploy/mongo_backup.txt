@@ -179,3 +179,16 @@ sudo ./listbackups
 sudo ./backup (for manual backup)
 sudo ./restore (for latest backup)
 sudo ./restore 20170406T155812
+
+
+[Extra] Restore a single collection:
+----
+Duplicate ./restore.sh and add this argument in mongo_restore:
+--nsInclude=db.collection
+
+Example:
+--nsInclude=test.users
+----
+
+chmod +x /restore_collection.sh
+sudo ./restore_collection.sh 20170406T155812
