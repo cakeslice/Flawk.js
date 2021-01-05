@@ -88,6 +88,7 @@ export default class Main extends Component {
 											maxWidth: 500,
 											textAlign: 'center',
 											fontSize: desktop ? 16 : 15,
+											padding: 20,
 										}}
 									>
 										Open-source web app boilerplate using a MERN stack
