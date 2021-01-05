@@ -15,6 +15,7 @@ import { Formik, Form } from 'formik'
 import _ from 'lodash'
 import { Fade } from 'react-reveal'
 import scrollToElement from 'scroll-to-element'
+import { Link } from 'react-router-dom'
 
 var styles = require('core/styles').default
 var config = require('core/config_').default
@@ -86,6 +87,7 @@ export default class Main extends Component {
 											marginTop: 20,
 											maxWidth: 500,
 											textAlign: 'center',
+											fontSize: desktop ? 16 : 15,
 										}}
 									>
 										Open-source web app boilerplate using a MERN stack
@@ -93,7 +95,36 @@ export default class Main extends Component {
 								</div>
 							</div>
 
-							<Fade delay={500} duration={750} bottom>
+							<div
+								className='wrapMargin'
+								style={{
+									display: 'flex',
+									flexWrap: 'wrap',
+									justifyContent: 'center',
+								}}
+							>
+								<CustomButton
+									onClick={() => {
+										global.routerHistory().push('/components')
+									}}
+									appearance={'primary'}
+								>
+									Components
+								</CustomButton>
+								<CustomButton
+									onClick={() => {
+										window.open(
+											'https://github.com/cakeslice/flawk.js',
+											'_blank'
+										)
+									}}
+									appearance={'secondary'}
+								>
+									GitHub
+								</CustomButton>
+							</div>
+
+							{/* <Fade delay={500} duration={750} bottom>
 								<div
 									id='about'
 									style={{
@@ -120,7 +151,7 @@ export default class Main extends Component {
 									</h3>
 									<sp />
 								</div>
-							</Fade>
+							</Fade> */}
 						</div>
 					)}
 				</MediaQuery>

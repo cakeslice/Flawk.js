@@ -19,8 +19,12 @@ import logo from '../../../../core/assets/images/logo.svg'
 var styles = require('core/styles').default
 var config = require('core/config_').default
 
-const leftLinks = [{ name: 'About', id: '/#about' }]
-const rightLinks = [{ name: 'Contact', id: '/#contact' }]
+const leftLinks = [
+	/* { name: 'About', id: '/#about' } */
+]
+const rightLinks = [
+	/* { name: 'Contact', id: '/#contact' } */
+]
 const mobileLinks = [
 	...leftLinks,
 	...rightLinks,
@@ -29,7 +33,7 @@ const mobileLinks = [
 		tab: (props) => <div key={props.key} style={{ minHeight: '30%' }}></div>,
 		mobileTab: true,
 	},
-	{ name: 'Components', id: '/components' },
+	/* { name: 'Components', id: '/components' }, */
 	{ name: 'Login', id: '/login' },
 ]
 
@@ -210,11 +214,11 @@ export default class Header extends Component {
 												minWidth: 175,
 											}}
 										>
-											<Link to={'/components'}>COMPONENTS</Link>
-											<div style={{ minWidth: 10 }} />
+											{/* <Link to={'/components'}>COMPONENTS</Link>
+											<div style={{ minWidth: 10 }} /> */}
 											<Link to={config.noTokenRedirect}>LOGIN</Link>
-											<div style={{ minWidth: 10 }} />
-											<LanguageSwitcher></LanguageSwitcher>
+											{/* <div style={{ minWidth: 10 }} />
+											<LanguageSwitcher></LanguageSwitcher> */}
 										</div>
 									)}
 
