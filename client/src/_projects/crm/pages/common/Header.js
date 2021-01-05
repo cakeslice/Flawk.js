@@ -26,14 +26,14 @@ const rightLinks = [
 	/* { name: 'Contact', id: '/#contact' } */
 ]
 const mobileLinks = [
-	...leftLinks,
+	/* ...leftLinks,
 	...rightLinks,
 	{
 		notRoute: true,
 		tab: (props) => <div key={props.key} style={{ minHeight: '30%' }}></div>,
 		mobileTab: true,
 	},
-	/* { name: 'Components', id: '/components' }, */
+	{ name: 'Components', id: '/components' }, */
 	{ name: 'Login', id: '/login' },
 ]
 
