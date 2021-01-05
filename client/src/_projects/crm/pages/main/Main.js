@@ -83,7 +83,7 @@ export default class Main extends Component {
 									)}
 									<p
 										style={{
-											marginBottom: desktop ? 80 : 20,
+											marginBottom: 80,
 											marginTop: 20,
 											maxWidth: 500,
 											textAlign: 'center',
