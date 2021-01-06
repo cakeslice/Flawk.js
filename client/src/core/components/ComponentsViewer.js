@@ -2102,16 +2102,18 @@ class Register extends Component {
 													transform: !this.props.desktop && 'scale(.85)',
 												}}
 											>
-												<ReCaptcha
-													hl={global.lang.date}
-													//size={'compact'}
-													theme={global.nightMode ? 'dark' : 'light'}
-													sitekey={config.recaptchaSiteKey}
-													onChange={(e) => {
-														setFieldTouched('captcha', true)
-														setFieldValue('captcha', e)
-													}}
-												/>
+												{config.recaptchaSiteKey && (
+													<ReCaptcha
+														hl={global.lang.date}
+														//size={'compact'}
+														theme={global.nightMode ? 'dark' : 'light'}
+														sitekey={config.recaptchaSiteKey}
+														onChange={(e) => {
+															setFieldTouched('captcha', true)
+															setFieldValue('captcha', e)
+														}}
+													/>
+												)}
 											</div>
 										</div>
 									)}
@@ -2396,16 +2398,18 @@ class Forgot extends Component {
 													transform: !this.props.desktop && 'scale(.85)',
 												}}
 											>
-												<ReCaptcha
-													hl={global.lang.date}
-													//size={'compact'}
-													theme={global.nightMode ? 'dark' : 'light'}
-													sitekey={config.recaptchaSiteKey}
-													onChange={(e) => {
-														setFieldTouched('captcha', true)
-														setFieldValue('captcha', e)
-													}}
-												/>
+												{config.recaptchaSiteKey && (
+													<ReCaptcha
+														hl={global.lang.date}
+														//size={'compact'}
+														theme={global.nightMode ? 'dark' : 'light'}
+														sitekey={config.recaptchaSiteKey}
+														onChange={(e) => {
+															setFieldTouched('captcha', true)
+															setFieldValue('captcha', e)
+														}}
+													/>
+												)}
 											</div>
 										</div>
 									)}
