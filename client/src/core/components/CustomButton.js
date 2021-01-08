@@ -91,7 +91,10 @@ export default class CustomButton extends Component {
 
 			loadingColor: styles.colors.main,
 			color: config.replaceAlpha(styles.colors.black, global.nightMode ? '0.25' : '.75'),
-			borderColor: config.replaceAlpha(styles.colors.black, global.nightMode ? '0.15' : '.2'),
+			borderColor: config.replaceAlpha(
+				styles.colors.black,
+				global.nightMode ? styles.inputBorderFactorNight : styles.inputBorderFactorDay
+			),
 
 			':focus-visible': {
 				opacity: 1,

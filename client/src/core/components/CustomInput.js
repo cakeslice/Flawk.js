@@ -82,7 +82,10 @@ export default class CustomInput extends Component {
 
 			color: styles.colors.black,
 
-			borderColor: config.replaceAlpha(styles.colors.black, global.nightMode ? '0.15' : '.2'),
+			borderColor: config.replaceAlpha(
+				styles.colors.black,
+				global.nightMode ? styles.inputBorderFactorNight : styles.inputBorderFactorDay
+			),
 			opacity: 1,
 			'::placeholder': {
 				color: config.replaceAlpha(styles.colors.black, global.nightMode ? '0.25' : '.5'),
@@ -146,7 +149,9 @@ export default class CustomInput extends Component {
 						'0 0 0 2px ' + config.replaceAlpha(styles.colors.red, '.1'),
 					borderColor: config.replaceAlpha(
 						styles.colors.red,
-						global.nightMode ? '0.15' : '.2'
+						global.nightMode
+							? styles.inputBorderFactorNight
+							: styles.inputBorderFactorDay
 					),
 					':focus': {
 						...finalStyle[':focus'],

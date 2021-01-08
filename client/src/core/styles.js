@@ -69,6 +69,9 @@ export const styles = {
 	defaultFontSize: 14,
 	defaultFontBold: 700,
 
+	inputBorderFactorDay: 0.2,
+	inputBorderFactorNight: 0.15,
+
 	spinnerSmall: { size: 28 * 0.66 },
 	spinnerMedium: { size: 28 * 1.5 },
 	spinnerLarge: { size: 28 * 3 },

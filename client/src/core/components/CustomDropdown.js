@@ -63,7 +63,10 @@ export default class CustomDropdown extends Component {
 			borderStyle: 'solid',
 			borderWidth: '1px',
 			boxSizing: 'border-box',
-			borderColor: config.replaceAlpha(styles.colors.black, global.nightMode ? '0.15' : '.2'),
+			borderColor: config.replaceAlpha(
+				styles.colors.black,
+				global.nightMode ? styles.inputBorderFactorNight : styles.inputBorderFactorDay
+			),
 			minHeight: 31,
 			minWidth: 150,
 			width: '100%',
@@ -143,7 +146,9 @@ export default class CustomDropdown extends Component {
 						'0 0 0 2px ' + config.replaceAlpha(styles.colors.red, '.1'),
 					borderColor: config.replaceAlpha(
 						styles.colors.red,
-						global.nightMode ? '0.15' : '.2'
+						global.nightMode
+							? styles.inputBorderFactorNight
+							: styles.inputBorderFactorDay
 					),
 					':hover': { borderColor: styles.colors.red },
 					':focus': { borderColor: styles.colors.red },
