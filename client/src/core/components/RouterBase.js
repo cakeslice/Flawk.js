@@ -40,7 +40,11 @@ export default class RouterBase extends Component {
 				ReactGA.pageview(l)
 			})
 			global.analytics = ReactGA
-		}
+		} else
+			global.analytics = {
+				event: () => {},
+				set: () => {},
+			}
 
 		this.socketNotification = this.socketNotification.bind(this)
 		if (config.websocketSupport && global.socket) {

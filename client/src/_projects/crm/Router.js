@@ -128,7 +128,11 @@ class Router extends Component {
 								onClick={() => props.toggleOpen()}
 							>
 								<Avatar
-									src={props.user && props.user.personal.photoURL}
+									src={
+										props.user &&
+										props.user.personal &&
+										props.user.personal.photoURL
+									}
 									style={{
 										width: 30,
 										height: 30,
@@ -147,7 +151,7 @@ class Router extends Component {
 											whiteSpace: 'nowrap',
 										}}
 									>
-										{props.user.personal.firstName}
+										{props.user.personal && props.user.personal.firstName}
 									</p>
 								)}
 							</button>

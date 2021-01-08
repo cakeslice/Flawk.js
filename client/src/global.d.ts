@@ -18,6 +18,7 @@ declare namespace NodeJS {
 		back: () => void;
 		forward: () => void;
 		replace: (path: string) => void;
+		listen: (callback: function) => void;
 	}
 	interface Lang {
 		text: string;
