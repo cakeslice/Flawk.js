@@ -40,6 +40,7 @@ module.exports = function (app) {
 		/** @type {body} */
 		var body = req.body
 
+		if (!common.checkSchema(body.schema, req, res)) return
 		var schema = body.schema === 'Client' ? database.Client : database.Client
 
 		var search = {}

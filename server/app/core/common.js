@@ -196,6 +196,19 @@ module.exports = {
 		global.logCatch(err)
 	},
 
+	checkSchema: function (schema, req, res) {
+		var schemas = mongoose.connection.modelNames()
+		var valid = false
+		schemas.forEach((s) => {
+			if (s === schema) valid = true
+		})
+
+		if (valid) return false
+		else {
+			return _setResponse(400, req, res, 'Invalid schema')
+		}
+	},
+
 	getRemoteConfig: async function (key, code = 'general', lean = true) {
 		var remoteConfig = await database.RemoteConfig.findOne({ code: code })
 			.select(key)
