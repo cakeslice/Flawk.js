@@ -383,7 +383,7 @@ class Menu extends React.Component {
 					minHeight: '100vh',
 					justifyContent: 'flex-start',
 					color: styles.colors.black,
-					background: styles.colors.white,
+					background: this.props.color,
 					borderRightStyle: 'solid',
 					borderWidth: 1,
 					borderColor: styles.colors.borderColor,
