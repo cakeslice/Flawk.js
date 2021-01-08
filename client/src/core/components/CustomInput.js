@@ -181,7 +181,9 @@ export default class CustomInput extends Component {
 				{this.props.label && (
 					<p
 						style={{
-							opacity: global.nightMode ? 0.66 : 0.75,
+							opacity: global.nightMode
+								? styles.inputLabelOpacityNight
+								: styles.inputLabelOpacityDay,
 							letterSpacing: 0.4,
 							fontSize: styles.defaultFontSize,
 							...this.props.labelStyle,

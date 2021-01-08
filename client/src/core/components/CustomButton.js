@@ -268,7 +268,9 @@ export default class CustomButton extends Component {
 							{this.props.checkbox && (
 								<div
 									style={{
-										opacity: global.nightMode ? 0.66 : 0.75,
+										opacity: global.nightMode
+											? styles.inputLabelOpacityNight
+											: styles.inputLabelOpacityDay,
 										letterSpacing: 0.4,
 										fontSize: styles.defaultFontSize,
 										marginLeft: 7.5,

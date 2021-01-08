@@ -189,7 +189,9 @@ export default class CustomDropdown extends Component {
 				{this.props.label && (
 					<p
 						style={{
-							opacity: global.nightMode ? 0.66 : 0.75,
+							opacity: global.nightMode
+								? styles.inputLabelOpacityNight
+								: styles.inputLabelOpacityDay,
 							letterSpacing: 0.4,
 							//fontWeight: 700,
 							fontSize: styles.defaultFontSize,

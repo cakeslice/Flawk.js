@@ -26,7 +26,7 @@ export default class CustomTable extends Component {
 			paddingTop: cellPaddingY,
 			paddingBottom: cellPaddingY,
 			minWidth: 50,
-			opacity: global.nightMode ? 0.66 : 0.75,
+			opacity: global.nightMode ? styles.inputLabelOpacityNight : styles.inputLabelOpacityDay,
 			//letterSpacing: 0.4,
 			fontSize: styles.defaultFontSize,
 			textOverflow: 'ellipsis',
