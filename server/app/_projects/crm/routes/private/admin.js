@@ -41,48 +41,48 @@ module.exports = function (app) {
 		var body = req.body
 
 		if (!common.checkSchema(body.schema, req, res)) return
-		var schema = body.schema === 'Client' ? database.Client : database.Client
 
-		var search = {}
-		if (req.body.search)
-			search['$and'] = [
-				{
-					$or: [
-						{ email: common.searchRegex(body.search) },
-						{ phone: common.searchRegex(body.search) },
-						{ 'personal.firstName': common.searchRegex(body.search) },
-						{ 'personal.lastName': common.searchRegex(body.search) },
-					],
-				},
-			]
+		if (body.schema === 'Client') {
+			var search = {}
+			if (req.body.search)
+				search['$and'] = [
+					{
+						$or: [
+							{ email: common.searchRegex(body.search) },
+							{ phone: common.searchRegex(body.search) },
+							{ 'personal.firstName': common.searchRegex(body.search) },
+							{ 'personal.lastName': common.searchRegex(body.search) },
+						],
+					},
+				]
 
-		if (!req.body.includeUnverified) {
-			if (!search['$and']) search['$and'] = []
-			search['$and'].push({ flags: 'verified' })
-		}
+			if (!req.body.includeUnverified) {
+				if (!search['$and']) search['$and'] = []
+				search['$and'].push({ flags: 'verified' })
+			}
 
-		var sort = {}
-		sort[req.query.sort || 'timestamps.lastCall'] = req.query.order || 'desc'
-		var [items, itemCount] = await Promise.all([
-			schema
-				.find(search)
-				.lean({ virtuals: true })
-				.sort(sort)
-				.select('email phone _id personal')
-				.limit(req.query.limit)
-				.skip(req.skip),
-			schema.find(search).countDocuments({}),
-		])
-		const pageCount = common.countPages(itemCount, req)
+			var sort = {}
+			sort[req.query.sort || 'timestamps.lastCall'] = req.query.order || 'desc'
+			var [items, itemCount] = await Promise.all([
+				database.Client.find(search)
+					.lean({ virtuals: true })
+					.sort(sort)
+					.select('email phone _id personal')
+					.limit(req.query.limit)
+					.skip(req.skip),
+				database.Client.find(search).countDocuments({}),
+			])
+			const pageCount = common.countPages(itemCount, req)
 
-		console.log('Fetched: ' + items.length)
-		console.log('Total: ' + itemCount)
+			console.log('Fetched: ' + items.length)
+			console.log('Total: ' + itemCount)
 
-		common.setResponse(200, req, res, '', {
-			items: items,
+			common.setResponse(200, req, res, '', {
+				items: items,
 
-			hasNext: paginate.hasNextPages(req)(pageCount),
-			pageCount: pageCount,
-		})
+				hasNext: paginate.hasNextPages(req)(pageCount),
+				pageCount: pageCount,
+			})
+		} else common.setResponse(404, req, res, 'Invalid schema')
 	})
 }
