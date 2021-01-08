@@ -30,7 +30,6 @@ declare namespace NodeJS {
 		structures: Structure[];
 		getStructure: (name: string) => Promise<object[]>;
 
-		clientActivity: (activityType: string, clientID: string, data: object) => Promise<void>;
 		clientNotification: (notificationType: string, clientID: string, data: object) => Promise<void>;
 
 		clientSockets: SocketIO.Namespace;

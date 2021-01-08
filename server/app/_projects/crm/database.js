@@ -36,13 +36,6 @@ async function unshiftToArray(schema, id, arrayName, entry) {
 		o
 	)
 }
-global.clientActivity = async (activityType, clientID, data = {}) => {
-	await unshiftToArray(Client, clientID, 'arrays.activity', {
-		date: Date.now(),
-		activityType: activityType,
-		data: data,
-	})
-}
 global.clientNotification = async (notificationType, clientID, data = {}) => {
 	await unshiftToArray(Client, clientID, 'arrays.notifications', {
 		isRead: false,
@@ -141,15 +134,6 @@ var ClientSchema = new mongoose.Schema({
 					post, (_id)
 				}
 				*/
-			},
-		],
-		activity: [
-			{
-				// ! Can be useful for other schemas too, for example 'lastModified' for an document shared by multiple users
-				_id: { type: mongoose.Schema.Types.ObjectId, auto: true },
-				date: { type: Date, default: Date.now },
-				activityType: { type: String, enum: ['changedPassword'] },
-				data: mongoose.Schema.Types.Mixed, // Any object
 			},
 		],
 
