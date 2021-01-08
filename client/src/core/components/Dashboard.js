@@ -19,9 +19,6 @@ import { css } from 'glamor'
 var styles = require('core/styles').default
 var config = require('core/config_').default
 
-const entryMaxWidthClosed = 60
-const entryMaxWidthOpen = 176
-
 const mobileHeight = 55
 const mobileHeightTop = 65
 const desktopHeight = 55
@@ -49,7 +46,11 @@ export default class Dashboard extends Component {
 	static propTypes = {
 		wrapperComponent: PropTypes.element,
 	}
-	state = { open: false, entryMaxWidth: entryMaxWidthClosed, showHeaderBackground: false }
+	state = {
+		open: false,
+		entryMaxWidth: this.props.closedWidth || 60,
+		showHeaderBackground: false,
+	}
 
 	handleScroll() {
 		const scrollTop = document.body.scrollTop || document.documentElement.scrollTop
@@ -69,7 +70,7 @@ export default class Dashboard extends Component {
 		var o = open !== undefined ? open : !this.state.open
 		this.setState({
 			open: o,
-			entryMaxWidth: o ? entryMaxWidthOpen : entryMaxWidthClosed,
+			entryMaxWidth: o ? this.props.openWidth || 176 : this.props.closedWidth || 60,
 		})
 	}
 
@@ -77,6 +78,8 @@ export default class Dashboard extends Component {
 		return <div>{props.children}</div>
 	}
 	render() {
+		var closedWidth = this.props.closedWidth || 60
+
 		if (this.props.onUpdate) this.props.onUpdate()
 
 		var selectedRoute = global.routerHistory().location.pathname.toString()
@@ -141,10 +144,9 @@ export default class Dashboard extends Component {
 										</Fade>
 										<div
 											style={{
-												marginLeft: entryMaxWidthClosed,
+												marginLeft: closedWidth,
 												width: '100%',
-												maxWidth:
-													'calc(100vw - ' + entryMaxWidthClosed + 'px)',
+												maxWidth: 'calc(100vw - ' + closedWidth + 'px)',
 											}}
 										>
 											<Switch>
