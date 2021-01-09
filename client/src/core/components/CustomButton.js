@@ -210,7 +210,7 @@ export default class CustomButton extends Component {
 		return (
 			<MediaQuery minWidth={config.mobileWidthTrigger}>
 				{(desktop) => (
-					<div>
+					<div style={{ width: finalStyle.width }}>
 						<div style={{ display: 'flex', alignItems: 'flex-start' }}>
 							<button
 								{...css({
