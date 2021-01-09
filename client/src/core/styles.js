@@ -75,6 +75,8 @@ export const styles = {
 	inputLabelOpacityNight: 0.66,
 	inputLabelOpacityDay: 0.75,
 
+	inputHeight: 31,
+
 	spinnerSmall: { size: 28 * 0.66 },
 	spinnerMedium: { size: 28 * 1.5 },
 	spinnerLarge: { size: 28 * 3 },

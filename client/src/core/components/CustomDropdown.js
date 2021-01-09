@@ -67,7 +67,7 @@ export default class CustomDropdown extends Component {
 				styles.colors.black,
 				global.nightMode ? styles.inputBorderFactorNight : styles.inputBorderFactorDay
 			),
-			minHeight: 31,
+			minHeight: styles.inputHeight,
 			minWidth: 150,
 			width: '100%',
 

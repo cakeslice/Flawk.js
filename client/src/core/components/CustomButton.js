@@ -63,7 +63,7 @@ export default class CustomButton extends Component {
 
 			cursor: 'pointer',
 
-			minHeight: !this.props.checkbox ? 31 : 20,
+			minHeight: !this.props.checkbox ? styles.inputHeight : 20,
 			minWidth: !this.props.checkbox ? 100 : 20,
 
 			padding: !this.props.checkbox && 12,

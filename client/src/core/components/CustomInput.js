@@ -68,7 +68,7 @@ export default class CustomInput extends Component {
 			borderWidth: '1px',
 			boxSizing: 'border-box',
 
-			minHeight: 31,
+			minHeight: styles.inputHeight,
 			minWidth: 66,
 			width: '100%',
 
