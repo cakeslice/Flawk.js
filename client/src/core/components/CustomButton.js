@@ -51,6 +51,7 @@ export default class CustomButton extends Component {
 		var mainStyle = {
 			fontSize: styles.defaultFontSize,
 			fontFamily: styles.font,
+			fontWeight: styles.buttonFontWeight || undefined,
 
 			letterSpacing: 0.4,
 
@@ -58,7 +59,6 @@ export default class CustomButton extends Component {
 			borderStyle: 'solid',
 			borderWidth: '1px',
 			boxSizing: 'border-box',
-
 			overflow: 'hidden',
 
 			cursor: 'pointer',

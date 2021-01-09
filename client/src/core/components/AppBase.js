@@ -384,6 +384,7 @@ export default class AppBase extends Component {
 									}}
 									onClick={() => {
 										global.changeLang()
+										global.storage.setItem('lang', JSON.stringify(global.lang))
 										window.location.reload()
 									}}
 								>
