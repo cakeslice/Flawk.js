@@ -24,7 +24,6 @@ module.exports = {
 
 	websocketSupport: _websocketSupport,
 	darkModeAvailable: true,
-	darkModeBulb: true,
 	showCookieNotice: true,
 
 	mobileWidthTrigger: 801,

@@ -263,7 +263,6 @@ export default {
 	recaptchaBypass: _recaptchaBypass,
 
 	darkModeAvailable: false,
-	darkModeBulb: false,
 
 	cordovaBuild: _cordovaBuild,
 	mobileWidthTrigger: 801,

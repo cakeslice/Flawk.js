@@ -91,6 +91,9 @@ module.exports = {
 	sentryID: process.env.sentryID,
 
 	postmarkKey: process.env.postmarkKey,
+	nodemailerHost: process.env.nodemailerHost,
+	nodemailerUser: process.env.nodemailerUser,
+	nodemailerPass: process.env.nodemailerPass,
 
 	pushNotificationsKey: process.env.pushNotificationsKey,
 

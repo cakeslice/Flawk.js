@@ -37,7 +37,7 @@ module.exports = {
 
 	//
 
-	noReply: 'someone@something.com', // ! Don't use "noreply" e-mails, bad for delivery!
+	noReply: 'jose@cakeslice.dev', // ! Don't use "noreply" e-mails, bad for delivery!
 	adminEmails: [
 		{
 			email: 'someone@something.com',

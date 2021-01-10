@@ -536,7 +536,7 @@ function post() {
 	//if (config.cronServer) {
 	// Start cron jobs
 
-	if (process.env.noEmails || process.env.noPushNotifications) {
+	if (process.env.noEmails === 'true' || process.env.noPushNotifications === 'true') {
 		console.log('SKIPPING CRON due to e-mails or notifications being disabled')
 		return
 	}

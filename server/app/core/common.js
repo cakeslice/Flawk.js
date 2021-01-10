@@ -11,6 +11,7 @@ var mongoose = require('mongoose')
 var uuid = require('uuid')
 var AWS = require('aws-sdk')
 const postmark = require('postmark')
+const nodemailer = require('nodemailer')
 const { toRegex } = require('diacritic-regex')
 const Nexmo = require('@vonage/server-sdk')
 const jwt = require('jsonwebtoken')
@@ -55,6 +56,36 @@ const s3 = new AWS.S3({
 if (config.pushNotificationsKey) pushNotificationsClient = new Something({ accessToken: config.pushNotificationsKey }) */
 
 let postmarkClient = config.postmarkKey ? new postmark.ServerClient(config.postmarkKey) : undefined
+let nodemailerClient = undefined
+async function setupNodemailer() {
+	nodemailerClient = nodemailer.createTransport({
+		host: config.nodemailerHost,
+		port: 465,
+		secure: true,
+		auth: {
+			user: config.nodemailerUser,
+			pass: config.nodemailerPass,
+		},
+	})
+	var hbs = require('nodemailer-express-handlebars')
+	var dir = './app/_projects/' + config.project + '/email_templates/'
+	nodemailerClient.use(
+		'compile',
+		hbs({
+			viewEngine: {
+				partialsDir: dir + 'partials',
+				layoutsDir: dir + 'layouts',
+				defaultLayout: 'main',
+				extname: '.hbs',
+			},
+			extName: '.hbs',
+			viewPath: dir,
+		})
+	)
+	var htmlToText = require('nodemailer-html-to-text').htmlToText
+	nodemailerClient.use('compile', htmlToText())
+}
+if (!config.postmarkKey && config.nodemailerHost) setupNodemailer()
 
 var nexmoClient = undefined
 if (config.nexmo.ID)
@@ -275,7 +306,7 @@ module.exports = {
 	///////////////////////////////////// MOBILE PUSH NOTIFICATIONS
 
 	pushNotification: async function (message, clientID, data = {}) {
-		if (process.env.noPushNotifications) {
+		if (process.env.noPushNotifications === 'true') {
 			console.log('Skipped push notification: ' + clientID + ': ' + message)
 			return
 		}
@@ -311,7 +342,7 @@ module.exports = {
 		*/
 	},
 	pushGlobalNotification: async function (message, data) {
-		if (process.env.noPushNotifications) {
+		if (process.env.noPushNotifications === 'true') {
 			console.log('Skipped global push notification: ' + message)
 			return
 		}
@@ -348,7 +379,7 @@ module.exports = {
 	 */
 	sendEmail: async function (email, data, template = undefined, { marketing = false } = {}) {
 		var body = {
-			TemplateAlias: template || 'XXXXXXX',
+			TemplateAlias: template,
 			TemplateModel: {
 				...data.substitutions,
 				subject: !config.prod ? '[TEST] ' + data.subject : data.subject,
@@ -357,7 +388,7 @@ module.exports = {
 			To: email,
 			MessageStream: marketing && 'marketing',
 		}
-		if (process.env.noEmails) {
+		if (process.env.noEmails === 'true') {
 			console.log('Skipped e-mail: ' + JSON.stringify(body))
 			return
 		}
@@ -370,7 +401,22 @@ module.exports = {
 			var response = await postmarkClient.sendEmailWithTemplate(body)
 			if (response.ErrorCode === 0) console.log('E-mail sent! (202)')
 			else console.log(template + ': ' + JSON.stringify(response))
-		} else console.log('Skipped sending e-mail, no postmark client!')
+		} else if (nodemailerClient) {
+			let info = await nodemailerClient.sendMail({
+				from: body.From,
+				to: body.To,
+				subject: body.TemplateModel.subject,
+
+				//text: 'Hello world?',
+				//html: '<b>Hello world?</b>',
+				template: template,
+				context: {
+					...data.substitutions,
+				},
+			})
+
+			console.log('Message sent: %s', info.messageId)
+		} else console.log('Skipped sending e-mail, no e-mail service!')
 	},
 	/**
 	 * @param {{subject: string, email:string,substitutions:object}[]} array
@@ -380,7 +426,7 @@ module.exports = {
 		var bodies = []
 		array.forEach((a) => {
 			bodies.push({
-				TemplateAlias: template || 'XXXXXXX',
+				TemplateAlias: template,
 				TemplateModel: {
 					...a.substitutions,
 					subject: !config.prod ? '[TEST-BULK] ' + a.subject : a.subject,
@@ -390,8 +436,12 @@ module.exports = {
 				MessageStream: 'marketing',
 			})
 		})
-		if (process.env.noEmails) {
+		if (process.env.noEmails === 'true') {
 			console.log('------------ Skipped batch e-mails ------------')
+			return
+		}
+		if (!template) {
+			console.log('No template provided! Skipped batch e-mails')
 			return
 		}
 		console.log('------------ Sending batch e-mails ------------')
@@ -402,7 +452,7 @@ module.exports = {
 				if (r.ErrorCode === 0) {
 				} else console.log(JSON.stringify(r))
 			})
-		} else console.log('Skipped sending e-mails, no postmark client!')
+		} else console.log('Skipped sending e-mails, no e-mail service!')
 	},
 	/**
 	 * @param {{subject: string, substitutions:object}} data
@@ -415,7 +465,7 @@ module.exports = {
 			else adminEmails += config.adminEmails[i] + ', '
 		}
 		var body = {
-			TemplateAlias: template || 'XXXXXXX',
+			TemplateAlias: template,
 			TemplateModel: {
 				...data.substitutions,
 				subject: !config.prod ? '[TESTE-V5] ' + data.subject : data.subject,
@@ -423,21 +473,42 @@ module.exports = {
 			From: config.noReply,
 			To: !config.prod || (developer && config.prod) ? config.developerEmail : adminEmails,
 		}
-		if (process.env.noEmails) {
+		if (process.env.noEmails === 'true') {
 			console.log('Skipped e-mail: ' + JSON.stringify(body))
 			return
 		}
+		if (!template) {
+			console.log('No template provided! Skipped e-mail: ' + JSON.stringify(body))
+			return
+		}
 		console.log('Sending e-mail: ' + JSON.stringify(body))
-		if (postmarkClient) var response = await postmarkClient.sendEmailWithTemplate(body)
-		if (response.ErrorCode === 0) console.log('E-mail sent! (202)')
-		else console.log(JSON.stringify(response))
+		if (postmarkClient) {
+			var response = await postmarkClient.sendEmailWithTemplate(body)
+			if (response.ErrorCode === 0) console.log('E-mail sent! (202)')
+			else console.log(JSON.stringify(response))
+		} else if (nodemailerClient) {
+			let info = await nodemailerClient.sendMail({
+				from: body.From,
+				to: body.To,
+				subject: body.TemplateModel.subject,
+
+				//text: 'Hello world?',
+				//html: '<b>Hello world?</b>',
+				template: template,
+				context: {
+					...data.substitutions,
+				},
+			})
+
+			console.log('Message sent: %s', info.messageId)
+		} else console.log('Skipped sending e-mail, no e-mail service!')
 	},
 
 	///////////////////////////////////// SMS
 
 	sendSMSMessage: async function (phone, msg, res, req) {
 		await nexmoClient.message.sendSms(config.nexmo.phoneNumber, phone, msg)
-		if (process.env.noSMS) {
+		if (process.env.noSMS === 'true') {
 			console.log('Skipped SMS: ' + phone + ': ' + msg)
 			return
 		}
