@@ -182,7 +182,8 @@
                   },
                   "password": {
                     "type": "string",
-                    "format": "password"
+                    "format": "password",
+                    "minLength": 8
                   },
                   "firstName": {
                     "type": "string"
@@ -328,7 +329,8 @@
                   },
                   "newPassword": {
                     "type": "string",
-                    "format": "password"
+                    "format": "password",
+                    "minLength": 8
                   },
                   "verificationCode": {
                     "type": "integer"
@@ -488,7 +490,8 @@
                   },
                   "password": {
                     "type": "string",
-                    "format": "password"
+                    "format": "password",
+                    "minLength": 8
                   },
                   "photoURL": {
                     "type": "string",

@@ -413,7 +413,7 @@ function init() {
 
 	// Multiple language support
 	app.use(config.path + '/*', function (req, res, next) {
-		var lang = req.query.lang || req.body.lang || req.headers['lang']
+		var lang = req.headers['lang']
 		if (!lang) lang = 'en'
 		req.lang = lang
 
