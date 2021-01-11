@@ -15,7 +15,7 @@ import _ from 'lodash'
 import MobileDrawer from 'core/components/MobileDrawer'
 import { Fade } from 'react-reveal'
 import { css } from 'glamor'
-import thunk from 'redux-thunk'
+import Collapsible from 'core/components/Collapsible'
 
 var styles = require('core/styles').default
 var config = require('core/config_').default
@@ -42,6 +42,7 @@ const desktopHeightTop = 65
  * @property {import('react').JSX.Element=} tab
  * @property {boolean=} notExact
  * @property {boolean=} defaultRoute
+ * @property {array=} subRoutes
  */
 export default class Dashboard extends Component {
 	static propTypes = {
@@ -84,8 +85,6 @@ export default class Dashboard extends Component {
 		var closedWidth = this.props.closedWidth || 60
 
 		if (this.props.onUpdate) this.props.onUpdate()
-
-		var selectedRoute = global.routerHistory().location.pathname.toString()
 
 		var maxWidth = config.publicMaxWidth
 
@@ -140,7 +139,6 @@ export default class Dashboard extends Component {
 													toggleOpen={() => this.toggleOpen()}
 													isOpen={this.state.open}
 													entryMaxWidth={this.state.entryMaxWidth}
-													selectedRoute={selectedRoute}
 													headerHeight={headerHeight}
 													routes={this.props.routes.filter(
 														(e) => !e.mobileTab && !e.hidden
@@ -148,61 +146,6 @@ export default class Dashboard extends Component {
 												/>
 											</div>
 										</Fade>
-										<div
-											style={{
-												marginLeft: closedWidth,
-												width: '100%',
-												maxWidth: 'calc(100vw - ' + closedWidth + 'px)',
-											}}
-										>
-											<Switch>
-												{this.props.routes
-													.filter((e) => !e.notRoute)
-													.map((route) => {
-														const Page = route.page
-														return (
-															<Route
-																key={
-																	this.props.path +
-																	route.id +
-																	(route.params || '')
-																}
-																path={
-																	this.props.path +
-																	route.id +
-																	(route.params || '')
-																}
-																exact={
-																	route.notExact ? false : true
-																}
-															>
-																<WrapperComponent
-																	title={route.name}
-																>
-																	{Page ? (
-																		<Page
-																			{...this.props
-																				.pageProps}
-																		></Page>
-																	) : (
-																		<div
-																			{...this.props
-																				.pageProps}
-																		></div>
-																	)}
-																</WrapperComponent>
-															</Route>
-														)
-													})}
-												{defaultRoute && (
-													<Route path='/'>
-														<Redirect
-															to={this.props.path + defaultRoute}
-														/>
-													</Route>
-												)}
-											</Switch>
-										</div>
 									</div>
 								) : (
 									<div>
@@ -329,47 +272,121 @@ export default class Dashboard extends Component {
 												</Fade>
 											</div>
 										</div>
-										<Switch>
-											{this.props.routes
-												.filter((e) => !e.notRoute)
-												.map((route) => {
-													const Page = route.page
-													return (
-														<Route
-															key={
-																this.props.path +
-																route.id +
-																(route.params || '')
-															}
-															path={
-																this.props.path +
-																route.id +
-																(route.params || '')
-															}
-															exact={route.notExact ? false : true}
-														>
-															<WrapperComponent title={route.name}>
-																{Page ? (
-																	<Page
-																		{...this.props.pageProps}
-																	></Page>
-																) : (
-																	<div
-																		{...this.props.pageProps}
-																	></div>
-																)}
-															</WrapperComponent>
-														</Route>
-													)
-												})}
-											{defaultRoute && (
-												<Route path='/'>
-													<Redirect to={this.props.path + defaultRoute} />
-												</Route>
-											)}
-										</Switch>
 									</div>
 								)}
+
+								<div
+									style={
+										desktop
+											? {
+													marginLeft: closedWidth,
+													width: '100%',
+													maxWidth: 'calc(100vw - ' + closedWidth + 'px)',
+											  }
+											: undefined
+									}
+								>
+									<Switch>
+										{this.props.routes
+											.filter((e) => e.subRoutes)
+											.map((route) => {
+												return (
+													<Route
+														key={this.props.path + route.id}
+														path={this.props.path + route.id}
+													>
+														{route.subRoutes.map((sub) => {
+															const Page = sub.page
+															return (
+																<Route
+																	key={
+																		this.props.path +
+																		route.id +
+																		'/' +
+																		sub.id +
+																		(sub.params || '')
+																	}
+																	path={
+																		this.props.path +
+																		route.id +
+																		'/' +
+																		sub.id +
+																		(sub.params || '')
+																	}
+																	exact={
+																		sub.notExact ? false : true
+																	}
+																>
+																	<WrapperComponent
+																		title={sub.name}
+																	>
+																		{Page ? (
+																			<Page
+																				{...this.props
+																					.pageProps}
+																			></Page>
+																		) : (
+																			<div
+																				{...this.props
+																					.pageProps}
+																			></div>
+																		)}
+																	</WrapperComponent>
+																</Route>
+															)
+														})}
+														<Route path='/'>
+															<Redirect
+																to={
+																	this.props.path +
+																	route.id +
+																	'/' +
+																	route.subRoutes[0].id
+																}
+															/>
+														</Route>
+													</Route>
+												)
+											})}
+										{this.props.routes
+											.filter((e) => !e.notRoute && !e.subRoutes)
+											.map((route) => {
+												const Page = route.page
+												return (
+													<Route
+														key={
+															this.props.path +
+															route.id +
+															(route.params || '')
+														}
+														path={
+															this.props.path +
+															route.id +
+															(route.params || '')
+														}
+														exact={route.notExact ? false : true}
+													>
+														<WrapperComponent title={route.name}>
+															{Page ? (
+																<Page
+																	{...this.props.pageProps}
+																></Page>
+															) : (
+																<div
+																	{...this.props.pageProps}
+																></div>
+															)}
+														</WrapperComponent>
+													</Route>
+												)
+											})}
+										{defaultRoute && (
+											<Route path='/'>
+												<Redirect to={this.props.path + defaultRoute} />
+											</Route>
+										)}
+									</Switch>
+								</div>
 							</div>
 						)
 					}}
@@ -392,6 +409,8 @@ class Menu extends React.Component {
 	render() {
 		var iconSize = 25
 		var fontSize = styles.defaultFontSize
+
+		var selectedRoute = global.routerHistory().location.pathname.toString()
 
 		return (
 			<div
@@ -448,17 +467,15 @@ class Menu extends React.Component {
 				{this.props.routes.map((entry, i) => {
 					if (entry.notRoute && entry.tab) return entry.tab({ ...this.props, key: i })
 
-					return (
+					var output = (
 						<div
 							key={i}
 							style={{
 								marginTop: 10,
 								marginBottom: 10,
-								paddingLeft: this.props.selectedRoute.includes('/' + entry.id)
-									? '2px'
-									: '5px',
+								paddingLeft: selectedRoute.includes('/' + entry.id) ? '2px' : '5px',
 								borderLeft:
-									this.props.selectedRoute.includes('/' + entry.id) &&
+									selectedRoute.includes('/' + entry.id) &&
 									'rgba(127,127,127,.5)' + ' solid 3px',
 							}}
 						>
@@ -492,7 +509,13 @@ class Menu extends React.Component {
 									}
 									this.props.toggleOpen(false)
 								}}
-								to={entry.notRoute ? undefined : this.props.path + entry.id}
+								to={
+									entry.notRoute
+										? undefined
+										: this.props.path +
+										  entry.id +
+										  (entry.subRoutes ? '/' + entry.subRoutes[0].id : '')
+								}
 							>
 								{entry.customIcon ? (
 									<div
@@ -502,9 +525,7 @@ class Menu extends React.Component {
 											width: iconSize,
 										}}
 									>
-										{entry.customIcon(
-											this.props.selectedRoute.includes('/' + entry.id)
-										)}
+										{entry.customIcon(selectedRoute.includes('/' + entry.id))}
 									</div>
 								) : (
 									<div
@@ -514,7 +535,7 @@ class Menu extends React.Component {
 											width: iconSize,
 										}}
 									>
-										{this.props.selectedRoute.includes('/' + entry.id) ? (
+										{selectedRoute.includes('/' + entry.id) ? (
 											<img
 												src={entry.iconActive || entry.icon}
 												style={{
@@ -544,7 +565,7 @@ class Menu extends React.Component {
 												fontSize,
 											transition: `opacity 500ms, margin-left 500ms, max-width 500ms`,
 											opacity: this.props.isOpen
-												? this.props.selectedRoute.includes('/' + entry.id)
+												? selectedRoute.includes('/' + entry.id)
 													? 1
 													: 0.5
 												: 0,
@@ -558,6 +579,100 @@ class Menu extends React.Component {
 							</Link>
 						</div>
 					)
+
+					if (entry.subRoutes)
+						return (
+							<Collapsible
+								controlled
+								controlledOpen={selectedRoute.includes('/' + entry.id)}
+								content={
+									<div>
+										{entry.subRoutes.map((sub, i) => (
+											<div key={i}>
+												<Link
+													{...css({
+														':focus-visible': {
+															outline: 'none',
+															backgroundColor:
+																'rgba(127,127,127,.15)',
+														},
+														':hover': {
+															textDecoration: 'none',
+															backgroundColor:
+																'rgba(127,127,127,.15)',
+														},
+														':active': {
+															backgroundColor:
+																'rgba(127,127,127,.25)',
+														},
+														fontSize: fontSize,
+														padding: 0,
+														display: 'flex',
+														height: 30,
+														color: this.props.textColor,
+														alignItems: 'center',
+														width: '100%',
+														paddingLeft: 12,
+														justifyContent: 'flex-start',
+														...this.props.entryStyle,
+													})}
+													onClick={() => {
+														if (entry.onClick) {
+															entry.onClick(this.props)
+														}
+														this.props.toggleOpen(false)
+													}}
+													to={
+														entry.notRoute
+															? undefined
+															: this.props.path +
+															  entry.id +
+															  '/' +
+															  sub.id
+													}
+												>
+													<div>
+														<p
+															style={{
+																fontSize:
+																	(this.props.entryStyle &&
+																		this.props.entryStyle
+																			.fontSize - 2) ||
+																	fontSize - 2,
+																transition: `opacity 500ms, margin-left 500ms, max-width 500ms`,
+																opacity: this.props.isOpen
+																	? selectedRoute.includes(
+																			'/' +
+																				entry.id +
+																				'/' +
+																				sub.id
+																	  )
+																		? 1
+																		: 0.5
+																	: 0,
+																marginLeft: this.props.isOpen
+																	? this.props.entryStyle &&
+																	  this.props.entryStyle
+																			.paddingLeftSubRoute
+																	: 20,
+																maxWidth: this.props.isOpen
+																	? 'auto'
+																	: 0,
+															}}
+														>
+															{config.localize(sub.name)}
+														</p>
+													</div>
+												</Link>
+											</div>
+										))}
+									</div>
+								}
+							>
+								{output}
+							</Collapsible>
+						)
+					else return output
 				})}
 			</div>
 		)
