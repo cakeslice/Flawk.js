@@ -18,6 +18,15 @@ var styles = require('core/styles').default
 var config = require('core/config_').default
 
 export default class MobileDrawer extends Component {
+	static propTypes = {
+		style: PropTypes.object,
+		children: PropTypes.node,
+		textColor: PropTypes.string,
+	}
+	static defaultProps = {
+		textColor: styles.colors.black,
+	}
+
 	state = {}
 
 	componentWillUnmount() {
@@ -122,7 +131,7 @@ export default class MobileDrawer extends Component {
 									style={{
 										fontSize: styles.defaultFontSize,
 										lineHeight: 1.64,
-										color: styles.colors.black,
+										color: this.props.textColor,
 									}}
 								>
 									{config.localize(link.name)}
@@ -164,8 +173,8 @@ export default class MobileDrawer extends Component {
 				>
 					<div style={{ display: 'flex', alignItems: 'center', opacity: 0.5 }}>
 						{this.state.isOpen
-							? this.close(styles.colors.black)
-							: this.burger(styles.colors.black)}
+							? this.close(this.props.textColor)
+							: this.burger(this.props.textColor)}
 					</div>
 				</button>
 

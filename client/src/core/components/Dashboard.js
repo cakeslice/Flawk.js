@@ -15,6 +15,7 @@ import _ from 'lodash'
 import MobileDrawer from 'core/components/MobileDrawer'
 import { Fade } from 'react-reveal'
 import { css } from 'glamor'
+import thunk from 'redux-thunk'
 
 var styles = require('core/styles').default
 var config = require('core/config_').default
@@ -78,6 +79,8 @@ export default class Dashboard extends Component {
 		return <div>{props.children}</div>
 	}
 	render() {
+		if (this.props.alwaysOpen) this.state.open = true
+
 		var closedWidth = this.props.closedWidth || 60
 
 		if (this.props.onUpdate) this.props.onUpdate()
@@ -131,6 +134,9 @@ export default class Dashboard extends Component {
 													{...this.props.pageProps}
 													path={this.props.path}
 													logo={this.props.logo}
+													textColor={this.props.textColor}
+													logoStyle={this.props.logoStyle}
+													entryStyle={this.props.entryStyle}
 													toggleOpen={() => this.toggleOpen()}
 													isOpen={this.state.open}
 													entryMaxWidth={this.state.entryMaxWidth}
@@ -317,6 +323,7 @@ export default class Dashboard extends Component {
 																	? mobileHeight
 																	: mobileHeightTop
 															}
+															textColor={this.props.textColor}
 														></MobileDrawer>
 													</div>
 												</Fade>
@@ -373,6 +380,15 @@ export default class Dashboard extends Component {
 }
 
 class Menu extends React.Component {
+	static propTypes = {
+		style: PropTypes.object,
+		children: PropTypes.node,
+		textColor: PropTypes.string,
+	}
+	static defaultProps = {
+		textColor: styles.colors.black,
+	}
+
 	render() {
 		var iconSize = 25
 		var fontSize = styles.defaultFontSize
@@ -384,7 +400,7 @@ class Menu extends React.Component {
 					flexDirection: 'column',
 					minHeight: '100vh',
 					justifyContent: 'flex-start',
-					color: styles.colors.black,
+					color: this.props.textColor,
 					background: this.props.color,
 					borderRightStyle: 'solid',
 					borderWidth: 1,
@@ -403,7 +419,7 @@ class Menu extends React.Component {
 						<button
 							style={{
 								fontSize: fontSize,
-								color: styles.colors.black,
+								color: this.props.textColor,
 							}}
 							onClick={() => global.routerHistory().push('/')}
 						>
@@ -413,6 +429,7 @@ class Menu extends React.Component {
 									maxHeight: this.props.isOpen ? 50 : 30,
 									minHeight: this.props.isOpen ? 50 : 30,
 									transition: `min-height 500ms, max-height 500ms`,
+									...this.props.logoStyle,
 								}}
 								src={this.props.logo}
 							></img>
@@ -462,11 +479,12 @@ class Menu extends React.Component {
 									padding: 0,
 									display: 'flex',
 									height: 40,
-									color: styles.colors.black,
+									color: this.props.textColor,
 									alignItems: 'center',
 									width: '100%',
 									paddingLeft: 12,
 									justifyContent: 'flex-start',
+									...this.props.entryStyle,
 								})}
 								onClick={() => {
 									if (entry.onClick) {
@@ -520,7 +538,10 @@ class Menu extends React.Component {
 								<div>
 									<p
 										style={{
-											fontSize: fontSize,
+											fontSize:
+												(this.props.entryStyle &&
+													this.props.entryStyle.fontSize) ||
+												fontSize,
 											transition: `opacity 500ms, margin-left 500ms, max-width 500ms`,
 											opacity: this.props.isOpen
 												? this.props.selectedRoute.includes('/' + entry.id)
