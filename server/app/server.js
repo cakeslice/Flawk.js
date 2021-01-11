@@ -299,19 +299,19 @@ function init() {
 	global.rateLimiter = {
 		default: new RateLimiterMongo({
 			storeClient: common.databaseConnection,
-			keyPrefix: 'default',
+			keyPrefix: 'ratelimit_default',
 			points: 5, // X requests
 			duration: 1, // per X second by IP
 		}),
 		limited: new RateLimiterMongo({
 			storeClient: common.databaseConnection,
-			keyPrefix: 'limited',
+			keyPrefix: 'ratelimit_limited',
 			points: config.prod ? 3 : 30, // X requests
 			duration: 10, // per X second by IP
 		}),
 		extremelyLimited: new RateLimiterMongo({
 			storeClient: common.databaseConnection,
-			keyPrefix: 'extreme',
+			keyPrefix: 'ratelimit_extreme',
 			points: config.prod ? 10 : 30, // X requests
 			duration: 60 * 15, // per X second by IP
 		}),
