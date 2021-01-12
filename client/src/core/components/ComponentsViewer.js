@@ -59,6 +59,49 @@ export default class ComponentsViewer extends Component {
 		/** @type {import('core/components/Dashboard.js').route[]} */
 		var routes = [
 			{
+				desktopTab: true,
+				notRoute: true,
+				tab: (props) => (
+					<div>
+						<div
+							style={{
+								display: 'flex',
+								justifyContent: 'center',
+								alignItems: 'center',
+							}}
+						>
+							<div
+								style={{
+									display: 'flex',
+									alignItems: 'center',
+									height: 120,
+								}}
+							>
+								<button onClick={() => global.routerHistory().push('/')}>
+									<img
+										style={{
+											objectFit: 'contain',
+											maxHeight: props.isOpen ? 50 : 30,
+											minHeight: props.isOpen ? 50 : 30,
+											transition: `min-height 500ms, max-height 500ms`,
+										}}
+										src={logo}
+									></img>
+								</button>
+							</div>
+						</div>
+						<div
+							style={{
+								height: 1,
+								background: styles.colors.lineColor,
+								width: '100%',
+							}}
+						></div>
+						<div style={{ minHeight: 20 }}></div>
+					</div>
+				),
+			},
+			{
 				defaultRoute: true,
 				name: 'Style',
 				icon: logo,

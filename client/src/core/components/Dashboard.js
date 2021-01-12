@@ -134,7 +134,6 @@ export default class Dashboard extends Component {
 													path={this.props.path}
 													logo={this.props.logo}
 													textColor={this.props.textColor}
-													logoStyle={this.props.logoStyle}
 													entryStyle={this.props.entryStyle}
 													toggleOpen={() => this.toggleOpen()}
 													isOpen={this.state.open}
@@ -280,7 +279,6 @@ export default class Dashboard extends Component {
 										desktop
 											? {
 													marginLeft: closedWidth,
-													width: '100%',
 													maxWidth: 'calc(100vw - ' + closedWidth + 'px)',
 											  }
 											: undefined
@@ -318,6 +316,7 @@ export default class Dashboard extends Component {
 																	}
 																>
 																	<WrapperComponent
+																		parentTitle={route.name}
 																		title={sub.name}
 																	>
 																		{Page ? (
@@ -427,43 +426,6 @@ class Menu extends React.Component {
 					boxShadow: 'rgba(0, 0, 0, 0.075) 0px 0px 15px 2px',
 				}}
 			>
-				<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-					<div
-						style={{
-							display: 'flex',
-							alignItems: 'center',
-							height: 120,
-						}}
-					>
-						<button
-							style={{
-								fontSize: fontSize,
-								color: this.props.textColor,
-							}}
-							onClick={() => global.routerHistory().push('/')}
-						>
-							<img
-								style={{
-									objectFit: 'contain',
-									maxHeight: this.props.isOpen ? 50 : 30,
-									minHeight: this.props.isOpen ? 50 : 30,
-									transition: `min-height 500ms, max-height 500ms`,
-									...this.props.logoStyle,
-								}}
-								src={this.props.logo}
-							></img>
-						</button>
-					</div>
-				</div>
-				<div
-					style={{
-						height: 1,
-						background: styles.colors.lineColor,
-						width: '100%',
-					}}
-				></div>
-				<div style={{ minHeight: 20 }}></div>
-
 				{this.props.routes.map((entry, i) => {
 					if (entry.notRoute && entry.tab) return entry.tab({ ...this.props, key: i })
 
@@ -471,12 +433,18 @@ class Menu extends React.Component {
 						<div
 							key={i}
 							style={{
-								marginTop: 10,
-								marginBottom: 10,
+								marginTop:
+									(this.props.entryStyle && this.props.entryStyle.marginTop) ||
+									10,
+								marginBottom:
+									(this.props.entryStyle && this.props.entryStyle.marginBottom) ||
+									10,
 								paddingLeft: selectedRoute.includes('/' + entry.id) ? '2px' : '5px',
 								borderLeft:
 									selectedRoute.includes('/' + entry.id) &&
-									'rgba(127,127,127,.5)' + ' solid 3px',
+									((this.props.entryStyle &&
+										this.props.entryStyle.selectedBorder) ||
+										'rgba(127,127,127,.5)' + ' solid 3px'),
 							}}
 						>
 							<Link
@@ -518,13 +486,7 @@ class Menu extends React.Component {
 								}
 							>
 								{entry.customIcon ? (
-									<div
-										style={{
-											display: 'flex',
-											alignItems: 'center',
-											width: iconSize,
-										}}
-									>
+									<div>
 										{entry.customIcon(selectedRoute.includes('/' + entry.id))}
 									</div>
 								) : (
@@ -615,15 +577,21 @@ class Menu extends React.Component {
 														paddingLeft: 12,
 														justifyContent: 'flex-start',
 														...this.props.entryStyle,
+														...(this.props.entryStyle &&
+															this.props.entryStyle
+																.heightSubRoute && {
+																height: this.props.entryStyle
+																	.heightSubRoute,
+															}),
 													})}
 													onClick={() => {
-														if (entry.onClick) {
-															entry.onClick(this.props)
+														if (sub.onClick) {
+															sub.onClick(this.props)
 														}
 														this.props.toggleOpen(false)
 													}}
 													to={
-														entry.notRoute
+														sub.notRoute
 															? undefined
 															: this.props.path +
 															  entry.id +

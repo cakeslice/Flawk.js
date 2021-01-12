@@ -66,6 +66,49 @@ class Router extends Component {
 		/** @type {import('core/components/Dashboard.js').route[]} */
 		var routes = [
 			{
+				desktopTab: true,
+				notRoute: true,
+				tab: (props) => (
+					<div>
+						<div
+							style={{
+								display: 'flex',
+								justifyContent: 'center',
+								alignItems: 'center',
+							}}
+						>
+							<div
+								style={{
+									display: 'flex',
+									alignItems: 'center',
+									height: 120,
+								}}
+							>
+								<button onClick={() => global.routerHistory().push('/')}>
+									<img
+										style={{
+											objectFit: 'contain',
+											maxHeight: props.isOpen ? 50 : 30,
+											minHeight: props.isOpen ? 50 : 30,
+											transition: `min-height 500ms, max-height 500ms`,
+										}}
+										src={logo}
+									></img>
+								</button>
+							</div>
+						</div>
+						<div
+							style={{
+								height: 1,
+								background: styles.colors.lineColor,
+								width: '100%',
+							}}
+						></div>
+						<div style={{ minHeight: 20 }}></div>
+					</div>
+				),
+			},
+			{
 				defaultRoute: true,
 				name: 'Overview',
 				icon: logo,
@@ -170,35 +213,13 @@ class Router extends Component {
 			},
 			{
 				name: 'Settings',
-				customIcon: (active) => (
-					<div
-						style={{
-							display: 'flex',
-							alignItems: 'center',
-							opacity: 0.5,
-							width: iconSize * 0.85,
-						}}
-					>
-						{settings(styles.colors.black)}
-					</div>
-				),
+				customIcon: (active) => iconWrapper(settings),
 				id: 'settings',
 				page: Settings,
 			},
 			{
 				name: 'Logout',
-				customIcon: (active) => (
-					<div
-						style={{
-							display: 'flex',
-							alignItems: 'center',
-							opacity: 0.5,
-							width: iconSize * 0.85,
-						}}
-					>
-						{logout(styles.colors.black)}
-					</div>
-				),
+				customIcon: (active) => iconWrapper(logout),
 				notRoute: true,
 				onClick: async () => {
 					var res = await post('client/logout', {})
@@ -400,3 +421,17 @@ const settings = (color) => {
 		</svg>
 	)
 }
+
+const iconWrapper = (icon, iconSize) => (
+	<div
+		style={{
+			display: 'flex',
+			justifyContent: 'center',
+			alignItems: 'center',
+			opacity: 0.5,
+			width: iconSize * 0.85,
+		}}
+	>
+		{icon(styles.colors.white)}
+	</div>
+)
