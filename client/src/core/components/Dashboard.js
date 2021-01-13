@@ -288,13 +288,19 @@ export default class Dashboard extends Component {
 										{this.props.routes
 											.filter((e) => e.subRoutes)
 											.map((route) => {
+												var defaultSubroute = route.subRoutes.find(
+													(e) => e.defaultRoute
+												).id
+
 												return (
 													<Route
 														key={this.props.path + route.id}
 														path={this.props.path + route.id}
+														exact={route.notExact ? false : true}
 													>
 														{route.subRoutes.map((sub) => {
 															const Page = sub.page
+
 															return (
 																<Route
 																	key={
@@ -317,33 +323,54 @@ export default class Dashboard extends Component {
 																>
 																	<WrapperComponent
 																		parentTitle={route.name}
+																		overrideHeader={
+																			sub.overrideHeader
+																		}
 																		title={sub.name}
 																	>
 																		{Page ? (
 																			<Page
 																				{...this.props
 																					.pageProps}
+																				parentTitle={
+																					route.name
+																				}
+																				overrideHeader={
+																					sub.overrideHeader
+																				}
+																				title={sub.name}
 																			></Page>
 																		) : (
 																			<div
 																				{...this.props
 																					.pageProps}
+																				parentTitle={
+																					route.name
+																				}
+																				overrideHeader={
+																					sub.overrideHeader
+																				}
+																				title={sub.name}
 																			></div>
 																		)}
 																	</WrapperComponent>
 																</Route>
 															)
 														})}
-														<Route path='/'>
-															<Redirect
-																to={
-																	this.props.path +
-																	route.id +
-																	'/' +
-																	route.subRoutes[0].id
-																}
-															/>
-														</Route>
+
+														{/*//! Shouldn't be exact, but doesn't work without it... */}
+														{defaultSubroute && (
+															<Route exact path={'/'}>
+																<Redirect
+																	to={
+																		this.props.path +
+																		route.id +
+																		'/' +
+																		defaultSubroute
+																	}
+																/>
+															</Route>
+														)}
 													</Route>
 												)
 											})}
@@ -365,14 +392,25 @@ export default class Dashboard extends Component {
 														}
 														exact={route.notExact ? false : true}
 													>
-														<WrapperComponent title={route.name}>
+														<WrapperComponent
+															overrideHeader={route.overrideHeader}
+															title={route.name}
+														>
 															{Page ? (
 																<Page
 																	{...this.props.pageProps}
+																	overrideHeader={
+																		route.overrideHeader
+																	}
+																	title={route.name}
 																></Page>
 															) : (
 																<div
 																	{...this.props.pageProps}
+																	overrideHeader={
+																		route.overrideHeader
+																	}
+																	title={route.name}
 																></div>
 															)}
 														</WrapperComponent>
@@ -380,7 +418,7 @@ export default class Dashboard extends Component {
 												)
 											})}
 										{defaultRoute && (
-											<Route path='/'>
+											<Route path={'/'}>
 												<Redirect to={this.props.path + defaultRoute} />
 											</Route>
 										)}
