@@ -38,6 +38,7 @@
 		"rc-slider": "^9.5.4",
 		"react": "^17.0.1",
 		"react-animated-css": "^1.2.1",
+		"react-beforeunload": "^2.4.0",
 		"react-collapse": "^5.0.1",
 		"react-confirm-alert": "^2.6.2",
 		"react-copy-to-clipboard": "^5.0.2",

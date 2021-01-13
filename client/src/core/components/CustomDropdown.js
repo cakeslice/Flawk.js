@@ -49,6 +49,18 @@ function arrow(color) {
 
 export default class CustomDropdown extends Component {
 	render() {
+		var value =
+			this.props.formIK && this.props.formIK.values
+				? this.props.formIK.values[this.props.name]
+				: this.props.value
+		var invalid =
+			this.props.formIK && this.props.formIK.touched && this.props.formIK.errors
+				? this.props.formIK.touched[this.props.name] &&
+				  this.props.formIK.errors[this.props.name]
+				: this.props.invalid
+
+		//
+
 		var defaultStyle = {
 			fontSize: styles.defaultFontSize,
 			fontFamily: styles.font,
@@ -140,10 +152,9 @@ export default class CustomDropdown extends Component {
 
 		var conditionalContainerStyle = {
 			...(!this.props.isDisabled &&
-				this.props.invalid && {
+				invalid && {
 					boxShadow:
-						this.props.invalid &&
-						'0 0 0 2px ' + config.replaceAlpha(styles.colors.red, '.1'),
+						invalid && '0 0 0 2px ' + config.replaceAlpha(styles.colors.red, '.1'),
 					borderColor: config.replaceAlpha(
 						styles.colors.red,
 						global.nightMode
@@ -170,15 +181,15 @@ export default class CustomDropdown extends Component {
 		}
 		var conditionalInputStyle = {
 			...(!this.props.isDisabled &&
-				this.props.invalid && {
+				invalid && {
 					borderColor: styles.colors.red,
 					cursor: 'default',
 				}),
 		}
 
-		var actualInvalidType = this.props.invalidType
-		var invalidType = this.props.invalidType
-		if (this.props.invalid === '*' && this.props.label) invalidType = 'label'
+		var actualInvalidType = invalidType
+		var invalidType = invalidType
+		if (invalid === '*' && this.props.label) invalidType = 'label'
 
 		return (
 			<div
@@ -203,8 +214,8 @@ export default class CustomDropdown extends Component {
 						{invalidType === 'label' &&
 							this.props.name &&
 							!this.props.isDisabled &&
-							this.props.invalid &&
-							this.props.invalid.length > 0 && (
+							invalid &&
+							invalid.length > 0 && (
 								<span
 									style={{
 										marginLeft: 7.5,
@@ -212,7 +223,7 @@ export default class CustomDropdown extends Component {
 										color: styles.colors.red,
 									}}
 								>
-									{this.props.invalid}
+									{invalid}
 								</span>
 							)}
 					</p>
@@ -224,15 +235,25 @@ export default class CustomDropdown extends Component {
 						isDisabled={this.props.isDisabled}
 						onChange={(o) => {
 							this.props.onChange && this.props.onChange(o ? o.value : undefined)
+
+							this.props.formIK &&
+								this.props.formIK.setFieldValue &&
+								this.props.formIK.setFieldValue(
+									this.props.name,
+									o ? o.value : undefined
+								)
 						}}
 						onBlur={(o) => {
 							this.props.onBlur && this.props.onBlur(o ? o.value : undefined)
+
+							this.props.formIK &&
+								this.props.formIK.setFieldTouched &&
+								setTimeout(() => {
+									this.props.formIK.setFieldTouched(this.props.name, true)
+								})
 						}}
 						placeholder={this.props.placeholder}
-						value={
-							this.props.value &&
-							this.props.options.filter((option) => option.value === this.props.value)
-						}
+						value={this.props.options.filter((option) => option.value === value)}
 						defaultValue={
 							this.props.defaultValue &&
 							this.props.options.filter(
@@ -303,7 +324,7 @@ export default class CustomDropdown extends Component {
 									...((isFocused || selectProps.menuIsOpen) && {
 										':hover': {
 											borderColor:
-												!this.props.isDisabled && this.props.invalid
+												!this.props.isDisabled && invalid
 													? styles.colors.red
 													: (this.props.style &&
 															this.props.style.activeBorderColor) ||
@@ -311,11 +332,11 @@ export default class CustomDropdown extends Component {
 										},
 										boxShadow:
 											'0 0 2px ' +
-											(!this.props.isDisabled && this.props.invalid
+											(!this.props.isDisabled && invalid
 												? config.replaceAlpha(styles.colors.red, '.1')
 												: defaultContainerStyle.activeShadowColor),
 										borderColor:
-											!this.props.isDisabled && this.props.invalid
+											!this.props.isDisabled && invalid
 												? styles.colors.red
 												: (this.props.style &&
 														this.props.style.activeBorderColor) ||
@@ -324,7 +345,7 @@ export default class CustomDropdown extends Component {
 									...(selectProps.menuIsOpen && {
 										':hover': {
 											borderColor:
-												!this.props.isDisabled && this.props.invalid
+												!this.props.isDisabled && invalid
 													? styles.colors.red
 													: (this.props.style &&
 															this.props.style.activeBorderColor) ||
@@ -332,11 +353,11 @@ export default class CustomDropdown extends Component {
 										},
 										boxShadow:
 											'0 0 0 2px ' +
-											(!this.props.isDisabled && this.props.invalid
+											(!this.props.isDisabled && invalid
 												? config.replaceAlpha(styles.colors.red, '.1')
 												: defaultContainerStyle.activeShadowColor),
 										borderColor:
-											!this.props.isDisabled && this.props.invalid
+											!this.props.isDisabled && invalid
 												? styles.colors.red
 												: (this.props.style &&
 														this.props.style.activeBorderColor) ||
@@ -410,23 +431,19 @@ export default class CustomDropdown extends Component {
 					></Select>
 					{invalidType === 'right' && this.props.name && (
 						<div style={{ minWidth: 16, display: 'flex' }}>
-							{!this.props.isDisabled &&
-								this.props.invalid &&
-								this.props.invalid.length > 0 && (
-									<div style={{ minWidth: 5 }}></div>
-								)}
-							{!this.props.isDisabled &&
-								this.props.invalid &&
-								this.props.invalid.length > 0 && (
-									<p
-										style={{
-											fontSize: styles.defaultFontSize,
-											color: styles.colors.red,
-										}}
-									>
-										{this.props.invalid}
-									</p>
-								)}
+							{!this.props.isDisabled && invalid && invalid.length > 0 && (
+								<div style={{ minWidth: 5 }}></div>
+							)}
+							{!this.props.isDisabled && invalid && invalid.length > 0 && (
+								<p
+									style={{
+										fontSize: styles.defaultFontSize,
+										color: styles.colors.red,
+									}}
+								>
+									{invalid}
+								</p>
+							)}
 						</div>
 					)}
 				</div>
@@ -434,21 +451,18 @@ export default class CustomDropdown extends Component {
 					<div style={{ minHeight: 26 }}>
 						{!invalidType &&
 							!this.props.isDisabled &&
-							this.props.invalid &&
-							this.props.invalid.length > 0 && <div style={{ minHeight: 5 }}></div>}
-						{!invalidType &&
-							!this.props.isDisabled &&
-							this.props.invalid &&
-							this.props.invalid.length > 0 && (
-								<p
-									style={{
-										fontSize: styles.defaultFontSize,
-										color: styles.colors.red,
-									}}
-								>
-									{this.props.invalid}
-								</p>
-							)}
+							invalid &&
+							invalid.length > 0 && <div style={{ minHeight: 5 }}></div>}
+						{!invalidType && !this.props.isDisabled && invalid && invalid.length > 0 && (
+							<p
+								style={{
+									fontSize: styles.defaultFontSize,
+									color: styles.colors.red,
+								}}
+							>
+								{invalid}
+							</p>
+						)}
 					</div>
 				)}
 			</div>

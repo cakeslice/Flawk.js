@@ -105,88 +105,99 @@ class Login extends Component {
 								isSubmitting,
 								setFieldValue,
 								setFieldTouched,
-							}) => (
-								<Form
-									style={{ ...styles.card, paddingRight: 40, paddingLeft: 40 }}
-									noValidate
-								>
-									<div
+							}) => {
+								var formIK = {
+									values,
+									touched,
+									errors,
+									setFieldTouched,
+									setFieldValue,
+									handleChange,
+									handleBlur,
+								}
+								return (
+									<Form
 										style={{
-											display: 'flex',
-											flexDirection: 'column',
-											alignItems: 'center',
-											justifyContent: 'center',
+											...styles.card,
+											paddingRight: 40,
+											paddingLeft: 40,
 										}}
+										noValidate
 									>
-										<CustomInput
-											autoFocus
-											label={'E-mail'}
-											type={'email'}
-											name='email'
-											value={values.email}
-											invalidType={'label'}
-											invalid={touched.email && errors.email}
-											placeholder={''}
-											onChange={handleChange}
-											onBlur={handleBlur}
-										/>
-										<div style={{ minHeight: 10 }} />
-										<CustomInput
-											label={'Password'}
-											name='password'
-											type={'password'}
-											value={values.password}
-											invalidType={'label'}
-											invalid={touched.password && errors.password}
-											placeholder={''}
-											onChange={handleChange}
-											onBlur={handleBlur}
-										/>
-										<Link style={{ fontSize: 13, marginTop: 5 }} to='/forgot'>
-											{config.text('auth.recoverMessage')}
-										</Link>
-									</div>
-									<sp />
-									<div
-										style={{
-											display: 'flex',
-											flexDirection: 'column',
-											alignItems: 'center',
-										}}
-									>
-										<HeadShake spy={this.state.wrongLogin || 0}>
-											{this.state.wrongLogin && (
-												<div style={{ color: styles.colors.red }}>
-													{this.state.wrongLogin}
-													<sp></sp>
-												</div>
-											)}
-										</HeadShake>
-
-										<CustomButton
-											type='submit'
-											isDisabled={!_.isEmpty(touched) && !_.isEmpty(errors)}
-											isLoading={isSubmitting || this.props.fetchingUser}
-											appearance='primary'
+										<div
+											style={{
+												display: 'flex',
+												flexDirection: 'column',
+												alignItems: 'center',
+												justifyContent: 'center',
+											}}
 										>
-											{'Login'}
-										</CustomButton>
-									</div>
-									<sp />
-									<sp />
-									<div
-										style={{
-											opacity: 0.8,
-											textAlign: 'center',
-										}}
-									>
-										{config.text('auth.registerMessage1') + ' '}
-										<Link to='/signup'>
-											{config.text('auth.registerMessage2')}
-										</Link>
-									</div>
-								</Form>
-							)}
+											<CustomInput
+												autoFocus
+												label={'E-mail'}
+												type={'email'}
+												name='email'
+												formIK={formIK}
+												invalidType={'label'}
+												placeholder={''}
+											/>
+											<div style={{ minHeight: 10 }} />
+											<CustomInput
+												label={'Password'}
+												name='password'
+												type={'password'}
+												formIK={formIK}
+												invalidType={'label'}
+												placeholder={''}
+											/>
+											<Link
+												style={{ fontSize: 13, marginTop: 5 }}
+												to='/forgot'
+											>
+												{config.text('auth.recoverMessage')}
+											</Link>
+										</div>
+										<sp />
+										<div
+											style={{
+												display: 'flex',
+												flexDirection: 'column',
+												alignItems: 'center',
+											}}
+										>
+											<HeadShake spy={this.state.wrongLogin || 0}>
+												{this.state.wrongLogin && (
+													<div style={{ color: styles.colors.red }}>
+														{this.state.wrongLogin}
+														<sp></sp>
+													</div>
+												)}
+											</HeadShake>
+
+											<CustomButton
+												type='submit'
+												isLoading={isSubmitting || this.props.fetchingUser}
+												appearance='primary'
+											>
+												{'Login'}
+											</CustomButton>
+										</div>
+										<sp />
+										<sp />
+										<div
+											style={{
+												opacity: 0.8,
+												textAlign: 'center',
+											}}
+										>
+											{config.text('auth.registerMessage1') + ' '}
+											<Link to='/signup'>
+												{config.text('auth.registerMessage2')}
+											</Link>
+										</div>
+									</Form>
+								)
+							}}
 						</Formik>
 					</div>
 				)}

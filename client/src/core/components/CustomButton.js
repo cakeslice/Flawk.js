@@ -48,6 +48,16 @@ export default class CustomButton extends Component {
 	}
 
 	render() {
+		var checked =
+			this.props.formIK && this.props.formIK.values
+				? this.props.formIK.values[this.props.name]
+				: this.props.checked
+		var invalid =
+			this.props.formIK && this.props.formIK.touched && this.props.formIK.errors
+				? this.props.formIK.touched[this.props.name] &&
+				  this.props.formIK.errors[this.props.name]
+				: this.props.invalid
+
 		var mainStyle = {
 			fontSize: styles.defaultFontSize,
 			fontFamily: styles.font,
@@ -169,7 +179,7 @@ export default class CustomButton extends Component {
 		}
 
 		if (this.props.checkbox) {
-			if (this.props.checked !== undefined) this.state.checked = this.props.checked
+			if (checked !== undefined) this.state.checked = checked
 
 			if (!this.state.checked) finalStyle.background = 'transparent'
 			if (this.state.checked && !this.props.isDisabled) {
@@ -224,18 +234,37 @@ export default class CustomButton extends Component {
 									if (this.props.isLoading || this.props.isDisabled) return
 
 									if (this.props.checkbox) {
-										if (this.props.checked !== undefined) {
-											if (this.props.onChange)
-												this.props.onChange(!this.props.checked)
+										if (checked !== undefined) {
+											this.props.onChange && this.props.onChange(!checked)
+
+											this.props.formIK &&
+												this.props.formIK.setFieldValue &&
+												this.props.formIK.setFieldValue(
+													this.props.name,
+													!checked
+												)
 										} else
 											this.setState({ checked: !this.state.checked }, () => {
-												if (this.props.onChange)
+												this.props.onChange &&
 													this.props.onChange(this.state.checked)
+
+												this.props.formIK &&
+													this.props.formIK.setFieldValue &&
+													this.props.formIK.setFieldValue(
+														this.props.name,
+														this.state.checked
+													)
 											})
 									} else if (this.props.onClick) this.props.onClick(e)
 								}}
 								onBlur={(e) => {
 									this.props.onBlur && this.props.onBlur()
+
+									this.props.formIK &&
+										this.props.formIK.setFieldTouched &&
+										setTimeout(() => {
+											this.props.formIK.setFieldTouched(this.props.name, true)
+										})
 								}}
 								value={this.props.value}
 								name={this.props.name}
@@ -252,7 +281,7 @@ export default class CustomButton extends Component {
 											maxHeight: 10,
 										}}
 									>
-										{checked(finalStyle.color)}
+										{checkedIcon(finalStyle.color)}
 									</div>
 								)}
 								{this.props.isLoading ? (
@@ -283,17 +312,17 @@ export default class CustomButton extends Component {
 						</div>
 						{this.props.name && (
 							<div style={{ minHeight: 26 }}>
-								{!this.props.isDisabled && this.props.invalid && (
+								{!this.props.isDisabled && invalid && (
 									<div style={{ minHeight: 5 }}></div>
 								)}
-								{!this.props.isDisabled && this.props.invalid && (
+								{!this.props.isDisabled && invalid && (
 									<p
 										style={{
 											fontSize: styles.defaultFontSize,
 											color: styles.colors.red,
 										}}
 									>
-										{this.props.invalid}
+										{invalid}
 									</p>
 								)}
 							</div>
@@ -305,7 +334,7 @@ export default class CustomButton extends Component {
 	}
 }
 
-const checked = (color) => (
+const checkedIcon = (color) => (
 	<svg width='17' height='13' viewBox='0 0 17 13' fill='none' xmlns='http://www.w3.org/2000/svg'>
 		<path
 			d='M0.293031 6.08297C0.480558 5.8955 0.734866 5.79018 1.00003 5.79018C1.26519 5.79018 1.5195 5.8955 1.70703 6.08297L5.98203 10.358L15.275 0.600968C15.4578 0.408687 15.7094 0.296871 15.9746 0.290119C16.2398 0.283368 16.4967 0.382234 16.689 0.564968C16.8813 0.747703 16.9931 0.999336 16.9999 1.26451C17.0066 1.52969 16.9078 1.78669 16.725 1.97897L11.725 7.22897L6.72503 12.479C6.63299 12.5758 6.52247 12.6532 6.40001 12.7066C6.27755 12.7601 6.14563 12.7884 6.01203 12.79H6.00003C5.73484 12.7899 5.48052 12.6845 5.29303 12.497L0.293031 7.49697C0.105559 7.30944 0.000244141 7.05513 0.000244141 6.78997C0.000244141 6.5248 0.105559 6.2705 0.293031 6.08297Z'

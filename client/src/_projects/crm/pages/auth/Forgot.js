@@ -107,86 +107,85 @@ class Forgot extends Component {
 									isSubmitting,
 									setFieldValue,
 									setFieldTouched,
-								}) => (
-									<Form
-										style={{
-											...styles.card,
-											paddingRight: 40,
-											paddingLeft: 40,
-										}}
-										noValidate
-									>
-										<div
+								}) => {
+									var formIK = {
+										values,
+										touched,
+										errors,
+										setFieldTouched,
+										setFieldValue,
+										handleChange,
+										handleBlur,
+									}
+									return (
+										<Form
 											style={{
-												display: 'flex',
-												flexDirection: 'column',
-												alignItems: 'center',
-												justifyContent: 'center',
+												...styles.card,
+												paddingRight: 40,
+												paddingLeft: 40,
 											}}
+											noValidate
 										>
-											<div>
+											<div
+												style={{
+													display: 'flex',
+													flexDirection: 'column',
+													alignItems: 'center',
+													justifyContent: 'center',
+												}}
+											>
+												<div>
+													<CustomInput
+														autoFocus
+														label={'New password'}
+														name='newPassword'
+														autoComplete='new-password'
+														type={'password'}
+														formIK={formIK}
+														invalidType={'label'}
+														placeholder={''}
+													/>
+												</div>
+												<div style={{ minHeight: 10 }} />
 												<CustomInput
-													autoFocus
-													label={'New password'}
-													name='newPassword'
-													autoComplete='new-password'
-													type={'password'}
-													value={values.newPassword}
+													label={'Verification code'}
+													type={'number'}
+													name='verificationCode'
+													formIK={formIK}
 													invalidType={'label'}
-													invalid={
-														touched.newPassword && errors.newPassword
-													}
-													placeholder={''}
-													onChange={handleChange}
-													onBlur={handleBlur}
+													placeholder={'Use 55555'}
 												/>
 											</div>
-											<div style={{ minHeight: 10 }} />
-											<CustomInput
-												label={'Verification code'}
-												type={'number'}
-												name='verificationCode'
-												value={values.verificationCode}
-												invalidType={'label'}
-												invalid={
-													touched.verificationCode &&
-													errors.verificationCode
-												}
-												placeholder={'Use 55555'}
-												onChange={handleChange}
-												onBlur={handleBlur}
-											/>
-										</div>
-										<sp />
-										<div
-											style={{
-												display: 'flex',
-												flexDirection: 'column',
-												alignItems: 'center',
-											}}
-										>
-											<HeadShake spy={this.state.wrongLogin || 0}>
-												{this.state.wrongLogin && (
-													<div style={{ color: styles.colors.red }}>
-														{this.state.wrongLogin}
-														<sp></sp>
-													</div>
-												)}
-											</HeadShake>
-
-											<CustomButton
-												type='submit'
-												isDisabled={
-													!_.isEmpty(touched) && !_.isEmpty(errors)
-												}
-												isLoading={isSubmitting || this.props.fetchingUser}
-												appearance='primary'
+											<sp />
+											<div
+												style={{
+													display: 'flex',
+													flexDirection: 'column',
+													alignItems: 'center',
+												}}
 											>
-												{'Change Password'}
-											</CustomButton>
-										</div>
-									</Form>
-								)}
+												<HeadShake spy={this.state.wrongLogin || 0}>
+													{this.state.wrongLogin && (
+														<div style={{ color: styles.colors.red }}>
+															{this.state.wrongLogin}
+															<sp></sp>
+														</div>
+													)}
+												</HeadShake>
+
+												<CustomButton
+													type='submit'
+													isLoading={
+														isSubmitting || this.props.fetchingUser
+													}
+													appearance='primary'
+												>
+													{'Change Password'}
+												</CustomButton>
+											</div>
+										</Form>
+									)
+								}}
 							</Formik>
 						) : (
 							<Formik
@@ -249,110 +248,122 @@ class Forgot extends Component {
 									isSubmitting,
 									setFieldValue,
 									setFieldTouched,
-								}) => (
-									<Form
-										style={{
-											...styles.card,
-											paddingRight: desktop ? 40 : 5,
-											paddingLeft: desktop ? 40 : 5,
-										}}
-										noValidate
-									>
-										<div
+								}) => {
+									var formIK = {
+										values,
+										touched,
+										errors,
+										setFieldTouched,
+										setFieldValue,
+										handleChange,
+										handleBlur,
+									}
+									return (
+										<Form
 											style={{
-												display: 'flex',
-												flexDirection: 'column',
-												alignItems: 'center',
-												justifyContent: 'center',
+												...styles.card,
+												paddingRight: desktop ? 40 : 5,
+												paddingLeft: desktop ? 40 : 5,
 											}}
+											noValidate
 										>
 											<div
-												className='wrapMargin'
 												style={{
 													display: 'flex',
-													justifyContent: 'space-around',
-													flexWrap: 'wrap',
+													flexDirection: 'column',
+													alignItems: 'center',
+													justifyContent: 'center',
 												}}
 											>
-												<CustomInput
-													autoFocus
-													label={'E-mail'}
-													type={'email'}
-													name='email'
-													value={values.email}
-													invalid={touched.email && errors.email}
-													invalidType={'label'}
-													placeholder={''}
-													onChange={handleChange}
-													onBlur={handleBlur}
-												/>
-											</div>
-											{!config.recaptchaBypass && !values.captcha && (
 												<div
+													className='wrapMargin'
 													style={{
 														display: 'flex',
-														alignItems: 'center',
-														flexDirection: 'column',
-														maxWidth: desktop ? 360 : 260,
+														justifyContent: 'space-around',
+														flexWrap: 'wrap',
 													}}
 												>
-													<sp />
+													<CustomInput
+														autoFocus
+														label={'E-mail'}
+														type={'email'}
+														name='email'
+														formIK={formIK}
+														invalidType={'label'}
+														placeholder={''}
+													/>
+												</div>
+												{!config.recaptchaBypass && !values.captcha && (
 													<div
 														style={{
-															transform: !desktop && 'scale(.85)',
+															display: 'flex',
+															alignItems: 'center',
+															flexDirection: 'column',
+															maxWidth: desktop ? 360 : 260,
 														}}
 													>
-														{config.recaptchaSiteKey && (
-															<ReCaptcha
-																hl={global.lang.date}
-																//size={'compact'}
-																theme={
-																	global.nightMode
-																		? 'dark'
-																		: 'light'
-																}
-																sitekey={config.recaptchaSiteKey}
-																onChange={(e) => {
-																	setFieldTouched('captcha', true)
-																	setFieldValue('captcha', e)
-																}}
-															/>
-														)}
-													</div>
-												</div>
-											)}
-										</div>
-										<sp />
-										<div
-											style={{
-												display: 'flex',
-												flexDirection: 'column',
-												alignItems: 'center',
-											}}
-										>
-											<HeadShake spy={this.state.wrongLogin || 0}>
-												{this.state.wrongLogin && (
-													<div style={{ color: styles.colors.red }}>
-														{this.state.wrongLogin}
-														<sp></sp>
+														<sp />
+														<div
+															style={{
+																transform: !desktop && 'scale(.85)',
+															}}
+														>
+															{config.recaptchaSiteKey && (
+																<ReCaptcha
+																	hl={global.lang.date}
+																	//size={'compact'}
+																	theme={
+																		global.nightMode
+																			? 'dark'
+																			: 'light'
+																	}
+																	sitekey={
+																		config.recaptchaSiteKey
+																	}
+																	onChange={(e) => {
+																		setFieldTouched(
+																			'captcha',
+																			true
+																		)
+																		setFieldValue('captcha', e)
+																	}}
+																/>
+															)}
+														</div>
 													</div>
 												)}
-											</HeadShake>
-
-											<CustomButton
-												type='submit'
-												isDisabled={
-													!_.isEmpty(touched) && !_.isEmpty(errors)
-												}
-												isLoading={isSubmitting || this.props.fetchingUser}
-												appearance='primary'
+											</div>
+											<sp />
+											<div
+												style={{
+													display: 'flex',
+													flexDirection: 'column',
+													alignItems: 'center',
+												}}
 											>
-												{'Recover'}
-											</CustomButton>
-											<sp></sp>
-										</div>
-									</Form>
-								)}
+												<HeadShake spy={this.state.wrongLogin || 0}>
+													{this.state.wrongLogin && (
+														<div style={{ color: styles.colors.red }}>
+															{this.state.wrongLogin}
+															<sp></sp>
+														</div>
+													)}
+												</HeadShake>
+
+												<CustomButton
+													type='submit'
+													isLoading={
+														isSubmitting || this.props.fetchingUser
+													}
+													appearance='primary'
+												>
+													{'Recover'}
+												</CustomButton>
+												<sp></sp>
+											</div>
+										</Form>
+									)
+								}}
 							</Formik>
 						)}
 					</div>

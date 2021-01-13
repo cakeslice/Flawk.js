@@ -54,10 +54,25 @@ export default class CustomInput extends Component {
 		}
 	}
 	triggerChange = () => {
-		if (this.props.onChange) this.props.onChange({ target: { value: this.bufferedValue } })
+		this.props.onChange && this.props.onChange({ target: { value: this.bufferedValue } })
+		/* this.props.formIK &&
+			this.props.formIK.setFieldValue &&
+			this.props.formIK.setFieldValue(this.props.name, this.bufferedValue) */
 	}
 
 	render() {
+		var value =
+			this.props.formIK && this.props.formIK.values
+				? this.props.formIK.values[this.props.name]
+				: this.props.value
+		var invalid =
+			this.props.formIK && this.props.formIK.touched && this.props.formIK.errors
+				? this.props.formIK.touched[this.props.name] &&
+				  this.props.formIK.errors[this.props.name]
+				: this.props.invalid
+
+		//
+
 		var mainStyle = {
 			fontSize: styles.defaultFontSize,
 			fontFamily: styles.font,
@@ -94,7 +109,7 @@ export default class CustomInput extends Component {
 			...(!this.props.isDisabled && {
 				':hover': {
 					borderColor:
-						!this.props.isDisabled && this.props.invalid
+						!this.props.isDisabled && invalid
 							? styles.colors.red
 							: !this.props.isDisabled
 							? config.replaceAlpha(
@@ -107,13 +122,13 @@ export default class CustomInput extends Component {
 					outline: 'none',
 					boxShadow:
 						'0 0 0 2px ' +
-						(this.props.invalid
+						(invalid
 							? config.replaceAlpha(styles.colors.red, '.1')
 							: styles.colors.mainVeryLight),
-					/* background: this.props.invalid
+					/* background: invalid
 						? 'rgba(254, 217, 219, 0.5)'
 						: styles.colors.mainVeryLight, */
-					borderColor: this.props.invalid ? styles.colors.red : styles.colors.mainLight,
+					borderColor: invalid ? styles.colors.red : styles.colors.mainLight,
 				},
 			}),
 			background: 'transparent', // styles.colors.white,
@@ -143,10 +158,9 @@ export default class CustomInput extends Component {
 		finalStyle = {
 			...finalStyle,
 			...(!this.props.isDisabled &&
-				this.props.invalid && {
+				invalid && {
 					boxShadow:
-						this.props.invalid &&
-						'0 0 0 2px ' + config.replaceAlpha(styles.colors.red, '.1'),
+						invalid && '0 0 0 2px ' + config.replaceAlpha(styles.colors.red, '.1'),
 					borderColor: config.replaceAlpha(
 						styles.colors.red,
 						global.nightMode
@@ -172,9 +186,9 @@ export default class CustomInput extends Component {
 			}),
 		}
 
-		var actualInvalidType = this.props.invalidType
-		var invalidType = this.props.invalidType
-		if (this.props.invalid === '*' && this.props.label) invalidType = 'label'
+		var actualInvalidType = invalidType
+		var invalidType = invalidType
+		if (invalid === '*' && this.props.label) invalidType = 'label'
 
 		return (
 			<div style={{ maxWidth: '100%', flex: this.props.flex }}>
@@ -193,8 +207,8 @@ export default class CustomInput extends Component {
 						{invalidType === 'label' &&
 							this.props.name &&
 							!this.props.isDisabled &&
-							this.props.invalid &&
-							this.props.invalid.length > 0 && (
+							invalid &&
+							invalid.length > 0 && (
 								<span
 									style={{
 										marginLeft: 7.5,
@@ -202,7 +216,7 @@ export default class CustomInput extends Component {
 										color: styles.colors.red,
 									}}
 								>
-									{this.props.invalid}
+									{invalid}
 								</span>
 							)}
 					</p>
@@ -213,7 +227,7 @@ export default class CustomInput extends Component {
 						defaultValue={this.props.defaultValue}
 						autoFocus={this.props.autoFocus}
 						required={this.props.required}
-						value={this.props.value}
+						value={value}
 						name={this.props.name}
 						autoComplete={this.props.autoComplete}
 						type={this.props.type ? this.props.type : 'text'}
@@ -227,16 +241,26 @@ export default class CustomInput extends Component {
 						onKeyPress={
 							this.props.bufferedInput ? this.handleKeyDown : this.props.onKeyPress
 						}
-						onChange={
-							this.props.bufferedInput
-								? this.handleChangeBuffered
-								: this.props.onChange
-						}
+						onChange={(e, editor, next) => {
+							if (this.props.bufferedInput) {
+								this.handleChangeBuffered(e)
+							} else {
+								this.props.onChange && this.props.onChange(e)
+
+								this.props.formIK &&
+									this.props.formIK.handleChange &&
+									this.props.formIK.handleChange(e)
+							}
+						}}
 						onBlur={(e, editor, next) => {
 							e.target.placeholder = this.props.placeholder
 								? this.props.placeholder
 								: ''
 							this.props.onBlur && this.props.onBlur(e)
+
+							this.props.formIK &&
+								this.props.formIK.handleBlur &&
+								this.props.formIK.handleBlur(e)
 						}}
 						style={isMasked ? finalStyle : {}}
 						{...(!isMasked && css(finalStyle))}
@@ -245,23 +269,19 @@ export default class CustomInput extends Component {
 					</InputComponent>
 					{invalidType === 'right' && this.props.name && (
 						<div style={{ minWidth: 16, display: 'flex' }}>
-							{!this.props.isDisabled &&
-								this.props.invalid &&
-								this.props.invalid.length > 0 && (
-									<div style={{ minWidth: 5 }}></div>
-								)}
-							{!this.props.isDisabled &&
-								this.props.invalid &&
-								this.props.invalid.length > 0 && (
-									<p
-										style={{
-											fontSize: styles.defaultFontSize,
-											color: styles.colors.red,
-										}}
-									>
-										{this.props.invalid}
-									</p>
-								)}
+							{!this.props.isDisabled && invalid && invalid.length > 0 && (
+								<div style={{ minWidth: 5 }}></div>
+							)}
+							{!this.props.isDisabled && invalid && invalid.length > 0 && (
+								<p
+									style={{
+										fontSize: styles.defaultFontSize,
+										color: styles.colors.red,
+									}}
+								>
+									{invalid}
+								</p>
+							)}
 						</div>
 					)}
 				</div>
@@ -269,21 +289,18 @@ export default class CustomInput extends Component {
 					<div style={{ minHeight: 26 }}>
 						{!invalidType &&
 							!this.props.isDisabled &&
-							this.props.invalid &&
-							this.props.invalid.length > 0 && <div style={{ minHeight: 5 }}></div>}
-						{!invalidType &&
-							!this.props.isDisabled &&
-							this.props.invalid &&
-							this.props.invalid.length > 0 && (
-								<p
-									style={{
-										fontSize: styles.defaultFontSize,
-										color: styles.colors.red,
-									}}
-								>
-									{this.props.invalid}
-								</p>
-							)}
+							invalid &&
+							invalid.length > 0 && <div style={{ minHeight: 5 }}></div>}
+						{!invalidType && !this.props.isDisabled && invalid && invalid.length > 0 && (
+							<p
+								style={{
+									fontSize: styles.defaultFontSize,
+									color: styles.colors.red,
+								}}
+							>
+								{invalid}
+							</p>
+						)}
 					</div>
 				)}
 			</div>

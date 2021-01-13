@@ -127,136 +127,144 @@ class Settings extends Component {
 									isSubmitting,
 									setFieldValue,
 									setFieldTouched,
-								}) => (
-									<Form noValidate>
-										<div
-											className='wrapMargin'
-											style={{
-												display: 'flex',
-												justifyContent: 'space-around',
-												flexWrap: 'wrap',
-											}}
-										>
-											<CustomInput
-												label={'First name'}
-												name='firstName'
-												value={values.firstName}
-												invalidType={'label'}
-												invalid={touched.firstName && errors.firstName}
-												placeholder={''}
-												onChange={handleChange}
-												onBlur={handleBlur}
-											/>
-											<CustomInput
-												label={'Last name'}
-												name='lastName'
-												value={values.lastName}
-												invalidType={'label'}
-												invalid={touched.lastName && errors.lastName}
-												placeholder={''}
-												onChange={handleChange}
-												onBlur={handleBlur}
-											/>
-										</div>
-										<div
-											className='wrapMargin'
-											style={{
-												display: 'flex',
-												justifyContent: 'space-around',
-												flexWrap: 'wrap',
-											}}
-										>
-											<CustomInput
-												label={'E-mail'}
-												type={'email'}
-												name='email'
-												autoComplete='new-email'
-												value={values.email}
-												invalidType={'label'}
-												invalid={touched.email && errors.email}
-												placeholder={''}
-												onChange={handleChange}
-												onBlur={handleBlur}
-											/>
-											<div>
-												<CustomInput
-													label={'Password'}
-													name='password'
-													autoComplete='new-password'
-													type={'password'}
-													value={values.password}
-													//invalidType={'label'}
-													invalid={touched.password && errors.password}
-													placeholder={'********'}
-													onChange={handleChange}
-													onBlur={handleBlur}
-												/>
-											</div>
-										</div>
-										<sp />
-										<div style={{ display: 'flex', alignItems: 'center' }}>
-											<label
-												htmlFor={
-													desktop ? 'file_upload' : 'file_upload_mobile'
-												}
+									dirty,
+								}) => {
+									var formIK = {
+										values,
+										touched,
+										errors,
+										setFieldTouched,
+										setFieldValue,
+										handleChange,
+										handleBlur,
+									}
+									return (
+										<Form noValidate>
+											<div
+												className='wrapMargin'
 												style={{
-													alignSelf: 'center',
 													display: 'flex',
-													cursor: 'pointer',
+													justifyContent: 'space-around',
+													flexWrap: 'wrap',
 												}}
 											>
-												{!this.state.uploading && (
-													<input
-														disabled={isSubmitting}
-														style={{ fontSize: 10, width: 150 }}
-														required
-														type='file'
-														id={
-															desktop
-																? 'file_upload'
-																: 'file_upload_mobile'
-														}
-														accept='image/*'
-														onChange={async (e) => {
-															var img = await config.handleImageChange(
-																e
-															)
-															if (img) {
-																setFieldValue('photoURL', img.url)
-																setFieldValue('photoFile', img.file)
-															}
-														}}
-													/>
-												)}
-												<Avatar src={values.photoURL}></Avatar>
-											</label>
-											<div style={{ marginLeft: 10 }}>
-												{config.text(
-													'settings.drawer.account.profileImage'
-												)}
+												<CustomInput
+													label={'First name'}
+													name='firstName'
+													formIK={formIK}
+													invalidType={'label'}
+													placeholder={''}
+												/>
+												<CustomInput
+													label={'Last name'}
+													name='lastName'
+													formIK={formIK}
+													invalidType={'label'}
+													placeholder={''}
+												/>
 											</div>
-										</div>
-										<sp />
-										<div
-											style={{
-												display: 'flex',
-												flexDirection: 'column',
-												alignItems: 'center',
-											}}
-										>
-											<CustomButton
-												type='submit'
-												isDisabled={
-													!_.isEmpty(touched) && !_.isEmpty(errors)
-												}
-												isLoading={isSubmitting || this.props.fetchingUser}
-												appearance='primary'
+											<div
+												className='wrapMargin'
+												style={{
+													display: 'flex',
+													justifyContent: 'space-around',
+													flexWrap: 'wrap',
+												}}
 											>
-												{'Save'}
-											</CustomButton>
-										</div>
-									</Form>
-								)}
+												<CustomInput
+													label={'E-mail'}
+													type={'email'}
+													name='email'
+													formIK={formIK}
+													autoComplete='new-email'
+													invalidType={'label'}
+													placeholder={''}
+												/>
+												<div>
+													<CustomInput
+														label={'Password'}
+														name='password'
+														autoComplete='new-password'
+														type={'password'}
+														formIK={formIK}
+														//invalidType={'label'}
+														placeholder={'********'}
+													/>
+												</div>
+											</div>
+											<sp />
+											<div style={{ display: 'flex', alignItems: 'center' }}>
+												<label
+													htmlFor={
+														desktop
+															? 'file_upload'
+															: 'file_upload_mobile'
+													}
+													style={{
+														alignSelf: 'center',
+														display: 'flex',
+														cursor: 'pointer',
+													}}
+												>
+													{!this.state.uploading && (
+														<input
+															disabled={isSubmitting}
+															style={{ fontSize: 10, width: 150 }}
+															required
+															type='file'
+															id={
+																desktop
+																	? 'file_upload'
+																	: 'file_upload_mobile'
+															}
+															accept='image/*'
+															onChange={async (e) => {
+																var img = await config.handleImageChange(
+																	e
+																)
+																if (img) {
+																	setFieldValue(
+																		'photoURL',
+																		img.url
+																	)
+																	setFieldValue(
+																		'photoFile',
+																		img.file
+																	)
+																}
+															}}
+														/>
+													)}
+													<Avatar src={values.photoURL}></Avatar>
+												</label>
+												<div style={{ marginLeft: 10 }}>
+													{config.text(
+														'settings.drawer.account.profileImage'
+													)}
+												</div>
+											</div>
+											<sp />
+											<div
+												style={{
+													display: 'flex',
+													flexDirection: 'column',
+													alignItems: 'center',
+												}}
+											>
+												<CustomButton
+													type='submit'
+													isDisabled={!dirty}
+													isLoading={
+														isSubmitting || this.props.fetchingUser
+													}
+													appearance='primary'
+												>
+													{'Save'}
+												</CustomButton>
+											</div>
+										</Form>
+									)
+								}}
 							</Formik>
 						</div>
 					</div>

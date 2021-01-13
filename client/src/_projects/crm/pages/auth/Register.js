@@ -100,69 +100,73 @@ class Register extends Component {
 									isSubmitting,
 									setFieldValue,
 									setFieldTouched,
-								}) => (
-									<Form
-										style={{
-											...styles.card,
-											paddingRight: 40,
-											paddingLeft: 40,
-										}}
-										noValidate
-									>
-										<div
+								}) => {
+									var formIK = {
+										values,
+										touched,
+										errors,
+										setFieldTouched,
+										setFieldValue,
+										handleChange,
+										handleBlur,
+									}
+									return (
+										<Form
 											style={{
-												display: 'flex',
-												flexDirection: 'column',
-												alignItems: 'center',
-												justifyContent: 'center',
+												...styles.card,
+												paddingRight: 40,
+												paddingLeft: 40,
 											}}
+											noValidate
 										>
-											<CustomInput
-												autoFocus
-												label={'Verification code'}
-												type={'number'}
-												name='verificationCode'
-												value={values.verificationCode}
-												invalidType={'label'}
-												invalid={
-													touched.verificationCode &&
-													errors.verificationCode
-												}
-												placeholder={'Use 55555'}
-												onChange={handleChange}
-												onBlur={handleBlur}
-											/>
-										</div>
-										<sp />
-										<div
-											style={{
-												display: 'flex',
-												flexDirection: 'column',
-												alignItems: 'center',
-											}}
-										>
-											<HeadShake spy={this.state.wrongLogin || 0}>
-												{this.state.wrongLogin && (
-													<div style={{ color: styles.colors.red }}>
-														{this.state.wrongLogin}
-														<sp></sp>
-													</div>
-												)}
-											</HeadShake>
-
-											<CustomButton
-												type='submit'
-												isDisabled={
-													!_.isEmpty(touched) && !_.isEmpty(errors)
-												}
-												isLoading={isSubmitting || this.props.fetchingUser}
-												appearance='primary'
+											<div
+												style={{
+													display: 'flex',
+													flexDirection: 'column',
+													alignItems: 'center',
+													justifyContent: 'center',
+												}}
 											>
-												{'Verify'}
-											</CustomButton>
-										</div>
-									</Form>
-								)}
+												<CustomInput
+													autoFocus
+													label={'Verification code'}
+													type={'number'}
+													name='verificationCode'
+													formIK={formIK}
+													invalidType={'label'}
+													placeholder={'Use 55555'}
+												/>
+											</div>
+											<sp />
+											<div
+												style={{
+													display: 'flex',
+													flexDirection: 'column',
+													alignItems: 'center',
+												}}
+											>
+												<HeadShake spy={this.state.wrongLogin || 0}>
+													{this.state.wrongLogin && (
+														<div style={{ color: styles.colors.red }}>
+															{this.state.wrongLogin}
+															<sp></sp>
+														</div>
+													)}
+												</HeadShake>
+
+												<CustomButton
+													type='submit'
+													isLoading={
+														isSubmitting || this.props.fetchingUser
+													}
+													appearance='primary'
+												>
+													{'Verify'}
+												</CustomButton>
+											</div>
+										</Form>
+									)
+								}}
 							</Formik>
 						) : (
 							<Formik
@@ -237,177 +241,178 @@ class Register extends Component {
 									isSubmitting,
 									setFieldValue,
 									setFieldTouched,
-								}) => (
-									<Form
-										style={{
-											...styles.card,
-											paddingRight: desktop ? 40 : 5,
-											paddingLeft: desktop ? 40 : 5,
-										}}
-										noValidate
-									>
-										<div
+								}) => {
+									var formIK = {
+										values,
+										touched,
+										errors,
+										setFieldTouched,
+										setFieldValue,
+										handleChange,
+										handleBlur,
+									}
+									return (
+										<Form
 											style={{
-												display: 'flex',
-												flexDirection: 'column',
-												alignItems: 'center',
-												justifyContent: 'center',
+												...styles.card,
+												paddingRight: desktop ? 40 : 5,
+												paddingLeft: desktop ? 40 : 5,
 											}}
+											noValidate
 										>
 											<div
-												className={'wrapMargin'}
-												style={
-													desktop
-														? {
-																display: 'flex',
-																justifyContent: 'space-around',
-																flexWrap: 'wrap',
-														  }
-														: {}
-												}
+												style={{
+													display: 'flex',
+													flexDirection: 'column',
+													alignItems: 'center',
+													justifyContent: 'center',
+												}}
 											>
-												<CustomInput
-													autoFocus
-													label={'First name'}
-													name='firstName'
-													value={values.firstName}
-													invalidType={'label'}
-													invalid={touched.firstName && errors.firstName}
-													placeholder={''}
-													onChange={handleChange}
-													onBlur={handleBlur}
-												/>
-												<CustomInput
-													label={'Last name'}
-													name='lastName'
-													value={values.lastName}
-													invalidType={'label'}
-													invalid={touched.lastName && errors.lastName}
-													placeholder={''}
-													onChange={handleChange}
-													onBlur={handleBlur}
-												/>
-											</div>
-											<div
-												className={'wrapMargin'}
-												style={
-													desktop
-														? {
-																display: 'flex',
-																justifyContent: 'space-around',
-																flexWrap: 'wrap',
-														  }
-														: {}
-												}
-											>
-												<CustomInput
-													autoFocus
-													label={'E-mail'}
-													type={'email'}
-													autoComplete='new-email'
-													name='email'
-													value={values.email}
-													invalid={touched.email && errors.email}
-													invalidType={'label'}
-													placeholder={''}
-													onChange={handleChange}
-													onBlur={handleBlur}
-												/>
-												<div>
+												<div
+													className={'wrapMargin'}
+													style={
+														desktop
+															? {
+																	display: 'flex',
+																	justifyContent: 'space-around',
+																	flexWrap: 'wrap',
+															  }
+															: {}
+													}
+												>
 													<CustomInput
-														label={'Password'}
-														name='password'
-														autoComplete='new-password'
-														type={'password'}
-														value={values.password}
-														//invalidType={'label'}
-														invalid={
-															touched.password && errors.password
-														}
+														autoFocus
+														label={'First name'}
+														name='firstName'
+														formIK={formIK}
+														invalidType={'label'}
 														placeholder={''}
-														onChange={handleChange}
-														onBlur={handleBlur}
+													/>
+													<CustomInput
+														label={'Last name'}
+														name='lastName'
+														formIK={formIK}
+														invalidType={'label'}
+														placeholder={''}
 													/>
 												</div>
-											</div>
-											{!config.recaptchaBypass && !values.captcha && (
 												<div
-													style={{
-														display: 'flex',
-														alignItems: 'center',
-														flexDirection: 'column',
-														maxWidth: desktop ? 360 : 260,
-													}}
+													className={'wrapMargin'}
+													style={
+														desktop
+															? {
+																	display: 'flex',
+																	justifyContent: 'space-around',
+																	flexWrap: 'wrap',
+															  }
+															: {}
+													}
 												>
-													<sp />
-													<div
-														style={{
-															transform: !desktop && 'scale(.85)',
-														}}
-													>
-														{config.recaptchaSiteKey && (
-															<ReCaptcha
-																hl={global.lang.date}
-																//size={'compact'}
-																theme={
-																	global.nightMode
-																		? 'dark'
-																		: 'light'
-																}
-																sitekey={config.recaptchaSiteKey}
-																onChange={(e) => {
-																	setFieldTouched('captcha', true)
-																	setFieldValue('captcha', e)
-																}}
-															/>
-														)}
+													<CustomInput
+														autoFocus
+														label={'E-mail'}
+														type={'email'}
+														autoComplete='new-email'
+														name='email'
+														formIK={formIK}
+														invalidType={'label'}
+														placeholder={''}
+													/>
+													<div>
+														<CustomInput
+															label={'Password'}
+															name='password'
+															autoComplete='new-password'
+															type={'password'}
+															formIK={formIK}
+															//invalidType={'label'}
+															placeholder={''}
+														/>
 													</div>
 												</div>
-											)}
-										</div>
-										<sp />
-										<div
-											style={{
-												display: 'flex',
-												flexDirection: 'column',
-												alignItems: 'center',
-											}}
-										>
-											<HeadShake spy={this.state.wrongLogin || 0}>
-												{this.state.wrongLogin && (
-													<div style={{ color: styles.colors.red }}>
-														{this.state.wrongLogin}
-														<sp></sp>
+												{!config.recaptchaBypass && !values.captcha && (
+													<div
+														style={{
+															display: 'flex',
+															alignItems: 'center',
+															flexDirection: 'column',
+															maxWidth: desktop ? 360 : 260,
+														}}
+													>
+														<sp />
+														<div
+															style={{
+																transform: !desktop && 'scale(.85)',
+															}}
+														>
+															{config.recaptchaSiteKey && (
+																<ReCaptcha
+																	hl={global.lang.date}
+																	//size={'compact'}
+																	theme={
+																		global.nightMode
+																			? 'dark'
+																			: 'light'
+																	}
+																	sitekey={
+																		config.recaptchaSiteKey
+																	}
+																	onChange={(e) => {
+																		setFieldTouched(
+																			'captcha',
+																			true
+																		)
+																		setFieldValue('captcha', e)
+																	}}
+																/>
+															)}
+														</div>
 													</div>
 												)}
-											</HeadShake>
-
-											<CustomButton
-												type='submit'
-												isDisabled={
-													!_.isEmpty(touched) && !_.isEmpty(errors)
-												}
-												isLoading={isSubmitting || this.props.fetchingUser}
-												appearance='primary'
+											</div>
+											<sp />
+											<div
+												style={{
+													display: 'flex',
+													flexDirection: 'column',
+													alignItems: 'center',
+												}}
 											>
-												{'Sign up'}
-											</CustomButton>
-										</div>
-										<sp />
-										<sp />
-										<div
-											style={{
-												opacity: 0.8,
-												textAlign: 'center',
-											}}
-										>
-											{config.text('auth.loginMessage1') + ' '}
-											<Link to='/login'>
-												{config.text('auth.loginMessage2')}
-											</Link>
-										</div>
-									</Form>
-								)}
+												<HeadShake spy={this.state.wrongLogin || 0}>
+													{this.state.wrongLogin && (
+														<div style={{ color: styles.colors.red }}>
+															{this.state.wrongLogin}
+															<sp></sp>
+														</div>
+													)}
+												</HeadShake>
+
+												<CustomButton
+													type='submit'
+													isLoading={
+														isSubmitting || this.props.fetchingUser
+													}
+													appearance='primary'
+												>
+													{'Sign up'}
+												</CustomButton>
+											</div>
+											<sp />
+											<sp />
+											<div
+												style={{
+													opacity: 0.8,
+													textAlign: 'center',
+												}}
+											>
+												{config.text('auth.loginMessage1') + ' '}
+												<Link to='/login'>
+													{config.text('auth.loginMessage2')}
+												</Link>
+											</div>
+										</Form>
+									)
+								}}
 							</Formik>
 						)}
 					</div>
