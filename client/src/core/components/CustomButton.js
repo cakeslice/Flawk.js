@@ -163,18 +163,6 @@ export default class CustomButton extends Component {
 			...(this.props.appearance === 'secondary' && {
 				borderColor: styles.colors.mainLight,
 				color: styles.colors.main,
-				...(!this.props.isDisabled && {
-					':focus-visible': {
-						outline: 'none',
-						borderColor: styles.colors.main,
-					},
-					...(!global.nightMode && {
-						':focus-visible': {
-							outline: 'none',
-							borderColor: styles.colors.main,
-						},
-					}),
-				}),
 			}),
 		}
 
