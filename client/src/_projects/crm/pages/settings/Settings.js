@@ -70,47 +70,39 @@ class Settings extends Component {
 									setSubmitting(true)
 
 									if (values.photoFile) {
-										config.uploadFile(
+										/**
+										 * @type {import('core/config_').FileUpload}
+										 */
+										var fileUpload = await config.uploadFile(
 											values.photoFile,
-											async (success, imageURL) => {
-												if (success) {
-													var res = await post('client/change_settings', {
-														...values,
-														photoURL: imageURL,
-														photoFile: undefined,
-													})
-
-													if (res.ok) {
-														global.analytics.event({
-															category: 'Editing',
-															action: 'Changed settings',
-														})
-
-														if (res.body.token)
-															global.storage.setItem(
-																'token',
-																res.body.token
-															)
-														if (this.props.fetchUser)
-															this.props.fetchUser()
-													}
-												}
-
-												setSubmitting(false)
-											},
 											this,
 											post
 										)
+										if (fileUpload.success) {
+											var res = await post('client/change_settings', {
+												...values,
+												photoURL: fileUpload.imageURL,
+												photoFile: undefined,
+											})
+
+											if (res.ok) {
+												if (res.body.token)
+													global.storage.setItem('token', res.body.token)
+												if (this.props.fetchUser) this.props.fetchUser()
+											}
+										}
+
+										setSubmitting(false)
 									} else {
-										var res = await post('client/change_settings', {
+										var r = await post('client/change_settings', {
 											...values,
 											photoURL: undefined,
 											photoFile: undefined,
 										})
 
-										if (res.ok) {
-											if (res.body.token)
-												global.storage.setItem('token', res.body.token)
+										if (r.ok) {
+											if (r.body.token)
+												global.storage.setItem('token', r.body.token)
 											if (this.props.fetchUser) this.props.fetchUser()
 										}
 
