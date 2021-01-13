@@ -177,7 +177,7 @@ export default class CustomInput extends Component {
 		if (this.props.invalid === '*' && this.props.label) invalidType = 'label'
 
 		return (
-			<div style={{ maxWidth: '100%' }}>
+			<div style={{ maxWidth: '100%', flex: this.props.flex }}>
 				{this.props.label && (
 					<p
 						style={{

@@ -184,6 +184,7 @@ export default class CustomDropdown extends Component {
 			<div
 				style={{
 					maxWidth: '100%',
+					flex: this.props.flex,
 				}}
 			>
 				{this.props.label && (
@@ -239,6 +240,12 @@ export default class CustomDropdown extends Component {
 							)
 						}
 						styles={{
+							container: (styles, { data }) => {
+								return {
+									...styles,
+									flex: 1,
+								}
+							},
 							input: (styles, { data }) => {
 								return {
 									...styles,

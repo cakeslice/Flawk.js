@@ -449,6 +449,9 @@ class Menu extends React.Component {
 						>
 							<Link
 								{...css({
+									backgroundColor:
+										selectedRoute.includes('/' + entry.id) &&
+										'rgba(127,127,127,.15)',
 									':focus-visible': {
 										outline: 'none',
 										backgroundColor: 'rgba(127,127,127,.15)',
