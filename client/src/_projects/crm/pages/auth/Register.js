@@ -50,6 +50,7 @@ class Register extends Component {
 						<sp />
 						{this.state.verifyingSignup ? (
 							<Formik
+								enableReinitialize
 								validate={(values) => {
 									let errors = {}
 
@@ -170,6 +171,7 @@ class Register extends Component {
 							</Formik>
 						) : (
 							<Formik
+								enableReinitialize
 								validate={(values) => {
 									let errors = {}
 

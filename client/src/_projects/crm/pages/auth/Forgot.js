@@ -50,6 +50,7 @@ class Forgot extends Component {
 						<sp />
 						{this.state.verifyingRecover ? (
 							<Formik
+								enableReinitialize
 								key={'reset_password'}
 								validate={(values) => {
 									let errors = {}
@@ -189,6 +190,7 @@ class Forgot extends Component {
 							</Formik>
 						) : (
 							<Formik
+								enableReinitialize
 								key={'forgot_password'}
 								validate={(values) => {
 									let errors = {}

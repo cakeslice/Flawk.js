@@ -48,6 +48,7 @@ class Login extends Component {
 						<sp />
 						<sp />
 						<Formik
+							enableReinitialize
 							validate={(values) => {
 								let errors = {}
 

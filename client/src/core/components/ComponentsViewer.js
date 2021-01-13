@@ -928,6 +928,7 @@ class Inputs extends Component {
 						{header('Form')}
 						<div style={{ ...styles.card, width: desktop && 'fit-content' }}>
 							<Formik
+								enableReinitialize
 								validate={(values) => {
 									let errors = {}
 
@@ -1467,6 +1468,7 @@ class Backend extends Component {
 							}}
 						>
 							<Formik
+								enableReinitialize
 								initialValues={{}}
 								onSubmit={async (values, { setSubmitting }) => {
 									setSubmitting(true)
@@ -1746,6 +1748,7 @@ class Login extends Component {
 				}}
 			>
 				<Formik
+					enableReinitialize
 					validate={(values) => {
 						let errors = {}
 
@@ -1896,6 +1899,7 @@ class Register extends Component {
 			>
 				{this.state.verifyingSignup ? (
 					<Formik
+						enableReinitialize
 						validate={(values) => {
 							let errors = {}
 
@@ -2002,6 +2006,7 @@ class Register extends Component {
 					</Formik>
 				) : (
 					<Formik
+						enableReinitialize
 						validate={(values) => {
 							let errors = {}
 
@@ -2235,6 +2240,7 @@ class Forgot extends Component {
 			>
 				{this.state.verifyingRecover ? (
 					<Formik
+						enableReinitialize
 						key={'reset_password'}
 						validate={(values) => {
 							let errors = {}
@@ -2358,6 +2364,7 @@ class Forgot extends Component {
 					</Formik>
 				) : (
 					<Formik
+						enableReinitialize
 						key={'forgot_password'}
 						validate={(values) => {
 							let errors = {}
@@ -2533,6 +2540,7 @@ class Settings extends Component {
 				}}
 			>
 				<Formik
+					enableReinitialize
 					validate={(values) => {
 						let errors = {}
 

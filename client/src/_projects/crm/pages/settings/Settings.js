@@ -38,6 +38,7 @@ class Settings extends Component {
 							}}
 						>
 							<Formik
+								enableReinitialize
 								validate={(values) => {
 									let errors = {}
 
