@@ -187,8 +187,8 @@ export default class CustomDropdown extends Component {
 				}),
 		}
 
-		var actualInvalidType = invalidType
-		var invalidType = invalidType
+		var actualInvalidType = this.props.invalidType
+		var invalidType = this.props.invalidType
 		if (invalid === '*' && this.props.label) invalidType = 'label'
 
 		return (
