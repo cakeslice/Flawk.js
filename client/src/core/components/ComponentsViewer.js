@@ -293,7 +293,7 @@ class Layout extends Component {
 								{
 									name: 'Name',
 									selector: 'userId',
-									sortable: true,
+									,
 									style: {
 										color: styles.colors.main,
 									},
@@ -301,7 +301,7 @@ class Layout extends Component {
 								{
 									name: 'Type',
 									selector: 'title',
-									sortable: true,
+									,
 								},
 								{
 									name: 'Calories (g)',
@@ -461,7 +461,7 @@ class Layout extends Component {
 									{
 										name: 'Name',
 										selector: 'userId',
-										sortable: true,
+										,
 										style: {
 											color: styles.colors.main,
 										},
@@ -469,7 +469,7 @@ class Layout extends Component {
 									{
 										name: 'Type',
 										selector: 'title',
-										sortable: true,
+										,
 									},
 									{
 										name: 'Calories (g)',
@@ -1679,7 +1679,7 @@ class Backend extends Component {
 												{
 													name: 'Name',
 													selector: 'name',
-													sortable: true,
+													,
 													cell: (c) => (
 														<div>{c && config.localize(c)}</div>
 													),
@@ -2862,7 +2862,7 @@ class Admin extends Component {
 									{
 										name: 'Name',
 										selector: 'personal.fullName',
-										sortable: true,
+										,
 										style: {
 											color: styles.colors.main,
 										},
@@ -2870,7 +2870,7 @@ class Admin extends Component {
 									{
 										name: 'E-mail',
 										selector: 'email',
-										sortable: true,
+										,
 									},
 									{
 										name: 'Calcium (%)',

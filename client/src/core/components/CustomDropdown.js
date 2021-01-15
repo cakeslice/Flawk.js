@@ -101,12 +101,6 @@ export default class CustomDropdown extends Component {
 			background: 'transparent', // styles.colors.white,
 		}
 		var defaultMenuStyle = {
-			...defaultContainerStyle,
-			':hover': {
-				borderColor: 'none',
-			},
-			boxShadow: styles.strongerShadow,
-
 			background: styles.colors.white,
 		}
 		var indicatorStyle = {
@@ -114,7 +108,7 @@ export default class CustomDropdown extends Component {
 			paddingLeft: 4,
 			paddingTop: 0,
 			paddingBottom: 0,
-			color: global.nightMode ? 'rgba(255, 255, 255, 0.25)' : 'rgba(0, 0, 0, 0.25)',
+			color: global.nightMode ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)',
 			':hover': {
 				paddingLeft: 4,
 				paddingRight: 3,
@@ -134,7 +128,7 @@ export default class CustomDropdown extends Component {
 				paddingRight: 3,
 				paddingTop: 0,
 				paddingBottom: 0,
-				color: global.nightMode ? 'rgba(255, 255, 255, 0.25)' : 'rgba(0, 0, 0, 0.25)',
+				color: global.nightMode ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)',
 			},
 		}
 		var defaultInputStyle = {
@@ -443,8 +437,7 @@ export default class CustomDropdown extends Component {
 											: isSelected
 											? styles.colors.mainLight
 											: isFocused
-											? styles.dropdownFocusedOptionColor ||
-											  styles.colors.mainVeryLight
+											? styles.colors.mainVeryLight
 											: null,
 										color: isSelected
 											? styles.colors.whiteDay
@@ -460,9 +453,7 @@ export default class CustomDropdown extends Component {
 										':active': {
 											...styles[':active'],
 											backgroundColor:
-												!data.isDisabled &&
-												(styles.dropdownFocusedOptionColor ||
-													styles.colors.mainVeryLight),
+												!data.isDisabled && styles.colors.mainVeryLight,
 										},
 									},
 									...data.style,
@@ -503,6 +494,7 @@ export default class CustomDropdown extends Component {
 								menu: (styles) => {
 									return {
 										...styles,
+										...defaultMenuStyle,
 										width: 150,
 										left: -137,
 										top: -10,

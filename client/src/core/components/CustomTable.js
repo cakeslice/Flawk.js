@@ -26,7 +26,6 @@ export default class CustomTable extends Component {
 			paddingTop: cellPaddingY,
 			paddingBottom: cellPaddingY,
 			minWidth: 50,
-			opacity: global.nightMode ? styles.inputLabelOpacityNight : styles.inputLabelOpacityDay,
 			//letterSpacing: 0.4,
 			fontSize: styles.defaultFontSize,
 			textOverflow: 'ellipsis',
@@ -146,20 +145,52 @@ export default class CustomTable extends Component {
 											.filter((c) =>
 												desktop ? c : c.hide === 'mobile' ? false : true
 											)
-											.map((c) => (
-												<div
-													key={c.selector}
-													style={{
-														...headerCellStyle,
-														width: 100 * (c.grow || 1) + '%',
-														...(overrideStyle &&
-															overrideStyle.headerCellStyle),
-														...(c.style && c.style),
-													}}
-												>
-													{c.name}
-												</div>
-											))}
+											.map((c) => {
+												var s = {
+													...headerCellStyle,
+													width: 100 * (c.grow || 1) + '%',
+													...(overrideStyle &&
+														overrideStyle.headerCellStyle),
+													...(c.onClick && {
+														cursor: 'pointer',
+														display: 'flex',
+													}),
+													...(c.style && c.style),
+												}
+												if (c.onClick)
+													return (
+														<button
+															onClick={c.onClick}
+															key={c.selector}
+															style={s}
+														>
+															{c.name}
+															<div style={{ minWidth: 8 }} />
+															<div>
+																{sorting(
+																	config.replaceAlpha(
+																		s.color ||
+																			styles.colors.black,
+																		0.25
+																	),
+																	config.replaceAlpha(
+																		s.color ||
+																			styles.colors.black,
+																		0.75
+																	),
+																	c.sorting
+																)}
+																<div style={{ minHeight: 3 }} />
+															</div>
+														</button>
+													)
+												else
+													return (
+														<div key={c.selector} style={s}>
+															{c.name}
+														</div>
+													)
+											})}
 									</div>
 
 									{this.props.isLoading && (
@@ -245,6 +276,8 @@ export default class CustomTable extends Component {
 						</div>
 					)}
 				</MediaQuery>
+
+				{this.props.children}
 			</div>
 		)
 	}
@@ -317,5 +350,18 @@ class Row extends Component {
 const arrow = (color) => (
 	<svg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'>
 		<path d='M21 21H3L12 3L21 21Z' fill={color} />
+	</svg>
+)
+
+const sorting = (color, colorActive, direction) => (
+	<svg width='6' height='8' viewBox='0 0 6 8' fill='none' xmlns='http://www.w3.org/2000/svg'>
+		<path
+			d='M3 0L5.46133 3H0.538664L3 0Z'
+			fill={!direction ? color : direction === 'up' ? colorActive : color}
+		/>
+		<path
+			d='M3.00006 8L0.538723 5L5.46139 5L3.00006 8Z'
+			fill={!direction ? color : direction === 'down' ? colorActive : color}
+		/>
 	</svg>
 )

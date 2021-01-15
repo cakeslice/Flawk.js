@@ -83,6 +83,11 @@ export const styles = {
 	spinnerMedium: { size: 28 * 1.5 },
 	spinnerLarge: { size: 28 * 3 },
 
+	textEllipsis: {
+		textOverflow: 'ellipsis',
+		overflow: 'hidden',
+	},
+
 	colors: {
 		black: _black,
 		blackDay: _black,
