@@ -31,6 +31,7 @@ declare namespace NodeJS {
 		appearance?: string;
 		cancel?: boolean;
 		style?: object;
+		notButton?: boolean;
 		submit?: string;
 		action?: () => void
 	}
@@ -69,7 +70,7 @@ declare namespace NodeJS {
 		//
 
 		genericModal: (data: {
-			title: string, content?: any, buttons?: Button[], color?: string, style?: object
+			title?: string, content?: any, buttons?: Button[], color?: string, style?: object
 		}) => void;
 	};
 

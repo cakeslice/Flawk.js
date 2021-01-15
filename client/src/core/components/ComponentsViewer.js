@@ -293,7 +293,7 @@ class Layout extends Component {
 								{
 									name: 'Name',
 									selector: 'userId',
-									,
+
 									style: {
 										color: styles.colors.main,
 									},
@@ -301,7 +301,6 @@ class Layout extends Component {
 								{
 									name: 'Type',
 									selector: 'title',
-									,
 								},
 								{
 									name: 'Calories (g)',
@@ -334,16 +333,7 @@ class Layout extends Component {
 									hide: 'mobile',
 								},
 								{
-									name: (
-										<div
-											style={{
-												textOverflow: 'ellipsis',
-												overflow: 'hidden',
-											}}
-										>
-											Custom Head
-										</div>
-									),
+									name: <div style={styles.textEllipsis}>Custom Head</div>,
 									selector: 'action',
 									cell: (value) => <div>Custom Cell: {value}</div>,
 									hide: 'mobile',
@@ -461,7 +451,7 @@ class Layout extends Component {
 									{
 										name: 'Name',
 										selector: 'userId',
-										,
+
 										style: {
 											color: styles.colors.main,
 										},
@@ -469,7 +459,6 @@ class Layout extends Component {
 									{
 										name: 'Type',
 										selector: 'title',
-										,
 									},
 									{
 										name: 'Calories (g)',
@@ -502,16 +491,7 @@ class Layout extends Component {
 										hide: 'mobile',
 									},
 									{
-										name: (
-											<div
-												style={{
-													textOverflow: 'ellipsis',
-													overflow: 'hidden',
-												}}
-											>
-												Custom Head
-											</div>
-										),
+										name: <div style={styles.textEllipsis}>Custom Head</div>,
 										selector: 'action',
 										cell: (value) => <div>Custom Cell: {value}</div>,
 										hide: 'mobile',
@@ -1679,7 +1659,7 @@ class Backend extends Component {
 												{
 													name: 'Name',
 													selector: 'name',
-													,
+
 													cell: (c) => (
 														<div>{c && config.localize(c)}</div>
 													),
@@ -2862,7 +2842,7 @@ class Admin extends Component {
 									{
 										name: 'Name',
 										selector: 'personal.fullName',
-										,
+
 										style: {
 											color: styles.colors.main,
 										},
@@ -2870,7 +2850,6 @@ class Admin extends Component {
 									{
 										name: 'E-mail',
 										selector: 'email',
-										,
 									},
 									{
 										name: 'Calcium (%)',
@@ -2878,16 +2857,7 @@ class Admin extends Component {
 										hide: 'mobile',
 									},
 									{
-										name: (
-											<div
-												style={{
-													textOverflow: 'ellipsis',
-													overflow: 'hidden',
-												}}
-											>
-												Custom Head
-											</div>
-										),
+										name: <div style={styles.textEllipsis}>Custom Head</div>,
 										selector: 'action',
 										cell: (value) => <div>Custom Cell: {value}</div>,
 										hide: 'mobile',

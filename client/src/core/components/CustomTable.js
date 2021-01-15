@@ -148,7 +148,9 @@ export default class CustomTable extends Component {
 											.map((c) => {
 												var s = {
 													...headerCellStyle,
-													width: 100 * (c.grow || 1) + '%',
+													width:
+														100 * (c.grow !== undefined ? c.grow : 1) +
+														'%',
 													...(overrideStyle &&
 														overrideStyle.headerCellStyle),
 													...(c.onClick && {
@@ -249,7 +251,15 @@ export default class CustomTable extends Component {
 														key={c.selector}
 														style={{
 															minWidth: this.props.cellWidth || 50,
-															width: 100 * (c.grow || 1) + '%',
+															width:
+																100 *
+																	(c.grow !== undefined
+																		? c.grow
+																		: 1) +
+																'%',
+															padding: cellPadding,
+															paddingTop: cellPaddingY,
+															paddingBottom: cellPaddingY,
 															...(c.style && c.style),
 														}}
 													>
@@ -257,9 +267,6 @@ export default class CustomTable extends Component {
 															style={{
 																textOverflow: !c.cell && 'ellipsis',
 																overflow: !c.cell && 'hidden',
-																padding: cellPadding,
-																paddingTop: cellPaddingY,
-																paddingBottom: cellPaddingY,
 																...(overrideStyle &&
 																	overrideStyle.cellStyle),
 															}}

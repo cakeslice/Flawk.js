@@ -88,6 +88,9 @@ export const styles = {
 		overflow: 'hidden',
 	},
 
+	modalHeader: true,
+	modalButtonWrap: true,
+
 	colors: {
 		black: _black,
 		blackDay: _black,

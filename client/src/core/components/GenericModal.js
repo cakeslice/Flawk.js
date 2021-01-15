@@ -38,7 +38,7 @@ export default class GenericModal extends Component {
 								maxWidth: 'calc(100vw - 10px)',
 								maxHeight: 'calc(100vh - 100px)',
 								minHeight: 20,
-								width: 500,
+								width: styles.modalWidth || 500,
 								display: 'flex',
 								flexDirection: 'column',
 								justifyContent: 'space-between',
@@ -47,49 +47,57 @@ export default class GenericModal extends Component {
 							},
 						}}
 					>
-						<ModalHeader
-							color={this.props.color}
-							title={this.props.title}
-							onClose={this.props.onClose}
-						/>
+						{styles.modalHeader && (
+							<ModalHeader
+								color={this.props.color}
+								title={this.props.title}
+								onClose={this.props.onClose}
+							/>
+						)}
 
-						<div style={{ padding: 20, overflow: 'auto' }}>{this.props.content()}</div>
+						<div style={{ padding: styles.modalPadding || 20 }}>
+							<div style={{ overflow: 'auto' }}>{this.props.content()}</div>
 
-						<div style={{ minHeight: 20 }} />
-						<div
-							className='wrapMarginBottomRight'
-							style={{
-								display: 'flex',
-								justifyContent: 'flex-end',
-								flexWrap: 'wrap',
-								padding: 20,
-							}}
-						>
-							{this.props.buttons &&
-								this.props.buttons.map((b, i) => (
-									<div key={i}>
-										<CustomButton
-											appearance={
-												b.appearance || (!b.cancel ? 'primary' : undefined)
-											}
-											type={b.submit ? 'submit' : undefined}
-											style={b.style}
-											isLoading={false}
-											onClick={
-												b.cancel
-													? () => {
-															this.props.onClose()
-															b.action && b.action()
-													  }
-													: () => {
-															b.action && b.action(this.props.onClose)
-													  }
-											}
-										>
-											{b.cancel ? config.text('common.cancel') : b.title}
-										</CustomButton>
-									</div>
-								))}
+							<div style={{ minHeight: 20 }} />
+							<div
+								className={styles.modalButtonWrap && 'wrapMarginBottomRight'}
+								style={{
+									display: 'flex',
+									justifyContent: styles.modalButtonWrap && 'flex-end',
+									flexWrap: styles.modalButtonWrap && 'wrap',
+								}}
+							>
+								{this.props.buttons &&
+									this.props.buttons.map((b, i) =>
+										b.notButton ? (
+											<div style={b.style}></div>
+										) : (
+											<CustomButton
+												key={i}
+												appearance={
+													b.appearance ||
+													(!b.cancel ? 'primary' : undefined)
+												}
+												type={b.submit ? 'submit' : undefined}
+												style={b.style}
+												isLoading={false}
+												onClick={
+													b.cancel
+														? () => {
+																this.props.onClose()
+																b.action && b.action()
+														  }
+														: () => {
+																b.action &&
+																	b.action(this.props.onClose)
+														  }
+												}
+											>
+												{b.cancel ? config.text('common.cancel') : b.title}
+											</CustomButton>
+										)
+									)}
+							</div>
 						</div>
 					</div>
 				</div>
