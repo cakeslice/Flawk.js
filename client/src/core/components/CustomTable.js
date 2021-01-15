@@ -92,6 +92,14 @@ export default class CustomTable extends Component {
 			boxSizing: 'border-box',
 		}
 
+		var overrideStyle =
+			this.props.style || styles.customTable
+				? {
+						...styles.customTable,
+						...this.props.style,
+				  }
+				: undefined
+
 		return (
 			<div
 				style={{
@@ -101,7 +109,7 @@ export default class CustomTable extends Component {
 					flexDirection: 'column',
 					overflow: 'auto',
 					width: '100%',
-					...(this.props.style && this.props.style.wrapperStyle),
+					...(overrideStyle && overrideStyle.wrapperStyle),
 					minHeight: this.props.height,
 					maxHeight: this.props.height,
 				}}
@@ -118,8 +126,7 @@ export default class CustomTable extends Component {
 								<div
 									style={{
 										...headerRowStyle,
-										...(this.props.style &&
-											this.props.style.headerWrapperStyle),
+										...(overrideStyle && overrideStyle.headerWrapperStyle),
 									}}
 								>
 									<div
@@ -129,7 +136,7 @@ export default class CustomTable extends Component {
 											alignItems: 'center',
 											width: '100%',
 											minHeight: 40,
-											...(this.props.style && this.props.style.headerStyle),
+											...(overrideStyle && overrideStyle.headerStyle),
 										}}
 									>
 										{this.props.expandContent && (
@@ -145,8 +152,8 @@ export default class CustomTable extends Component {
 													style={{
 														...headerCellStyle,
 														width: 100 * (c.grow || 1) + '%',
-														...(this.props.style &&
-															this.props.style.headerCellStyle),
+														...(overrideStyle &&
+															overrideStyle.headerCellStyle),
 														...(c.style && c.style),
 													}}
 												>
@@ -189,12 +196,11 @@ export default class CustomTable extends Component {
 											key={_.get(d, this.props.keySelector)}
 											style={{
 												...rowWrapperStyle,
-												...(this.props.style &&
-													this.props.style.rowWrapperStyle),
+												...(overrideStyle && overrideStyle.rowWrapperStyle),
 											}}
 											rowStyle={{
 												...rowStyle,
-												...(this.props.style && this.props.style.rowStyle),
+												...(overrideStyle && overrideStyle.rowStyle),
 											}}
 											expandContent={
 												this.props.expandContent &&
@@ -223,8 +229,8 @@ export default class CustomTable extends Component {
 																padding: cellPadding,
 																paddingTop: cellPaddingY,
 																paddingBottom: cellPaddingY,
-																...(this.props.style &&
-																	this.props.style.cellStyle),
+																...(overrideStyle &&
+																	overrideStyle.cellStyle),
 															}}
 														>
 															{c.cell

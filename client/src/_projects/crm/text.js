@@ -17,9 +17,17 @@ module.exports = {
 		create: { pt: 'Criar', en: 'Create' },
 		submit: { pt: 'Submeter', en: 'Submit' },
 		subscribe: { pt: 'Subscrever', en: 'Subscribe' },
-		save: { pt: 'Guardar', en: 'Save' },
+		save: { pt: 'Guardar alterações', en: 'Save changes' },
+		saved: { pt: 'Guardado', en: 'Saved' },
+		options: { pt: 'Opções', en: 'Options' },
+		edit: { pt: 'Editar', en: 'Edit' },
 		add: { pt: 'Adicionar', en: 'Add' },
 		success: { pt: 'Sucesso!', en: 'Success!' },
+		areYouSure: {
+			pt: 'Tem a certeza? As alterações serão perdidas!',
+			en: 'Are you sure? All changes will be lost!',
+		},
+		noOptions: { pt: 'Sem opções', en: 'No options' },
 
 		send: { pt: 'Enviar', en: 'Send' },
 		confirm: { pt: 'Confirmar', en: 'Confirm' },

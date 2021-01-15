@@ -10,6 +10,7 @@ import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import 'react-input-range/lib/css/index.css'
 import Select from 'react-select'
+import { css } from 'glamor'
 
 var config = require('core/config_').default
 var styles = require('core/styles').default
@@ -231,6 +232,7 @@ export default class CustomDropdown extends Component {
 				{this.props.label && <div style={{ minHeight: 5 }}></div>}
 				<div style={{ display: 'flex' }}>
 					<Select
+						noOptionsMessage={() => config.text('common.noOptions')}
 						menuPortalTarget={document.body}
 						isClearable={this.props.erasable}
 						isDisabled={this.props.isDisabled}
@@ -265,12 +267,36 @@ export default class CustomDropdown extends Component {
 								(option) => option.value === this.props.defaultValue
 							)
 						}
+						components={
+							(this.props.dropdownIndicator || this.props.customInput) && {
+								DropdownIndicator: (props) => (
+									<div
+										{...css({
+											opacity: props.isFocused ? 0.75 : 0.25,
+											':hover': { opacity: 0.75 },
+										})}
+									>
+										{this.props.dropdownIndicator || dots(styles.colors.black)}
+									</div>
+								),
+							}
+						}
 						styles={{
 							menuPortal: (base) => ({ ...base, zIndex: 9999 }),
 							container: (styles, { data }) => {
 								return {
 									...styles,
 									flex: 1,
+								}
+							},
+							valueContainer: (styles, { data }) => {
+								return {
+									...styles,
+									...(this.props.button && {
+										display: 'flex',
+										justifyContent: 'center',
+										alignItems: 'center',
+									}),
 								}
 							},
 							input: (styles, { data }) => {
@@ -311,12 +337,19 @@ export default class CustomDropdown extends Component {
 								return {
 									...s,
 									background: indicatorStyle.color,
+									...(styles.customDropdown && styles.customDropdown.indicator),
 								}
 							},
-							placeholder: (styles, { isDisabled, isFocused }) => {
+							placeholder: (s, { isDisabled, isFocused }) => {
 								return {
-									...styles,
+									...s,
 									...defaultPlaceholderStyle,
+									...(this.props.button && {
+										color: styles.colors.black,
+										fontWeight: styles.buttonFontWeight,
+										marginLeft: 15,
+										width: 'auto',
+									}),
 								}
 							},
 							control: (
@@ -410,7 +443,8 @@ export default class CustomDropdown extends Component {
 											: isSelected
 											? styles.colors.mainLight
 											: isFocused
-											? styles.colors.mainVeryLight
+											? styles.dropdownFocusedOptionColor ||
+											  styles.colors.mainVeryLight
 											: null,
 										color: isSelected
 											? styles.colors.whiteDay
@@ -426,11 +460,55 @@ export default class CustomDropdown extends Component {
 										':active': {
 											...styles[':active'],
 											backgroundColor:
-												!data.isDisabled && styles.colors.mainVeryLight,
+												!data.isDisabled &&
+												(styles.dropdownFocusedOptionColor ||
+													styles.colors.mainVeryLight),
 										},
 									},
+									...data.style,
 								}
 							},
+
+							...(this.props.customInput && {
+								valueContainer: () => {
+									return { maxWidth: 0, maxHeight: 0 }
+								},
+								singleValue: () => {
+									return { maxWidth: 0, overflow: 'hidden' }
+								},
+								control: (internalStyle, { isFocused }) => {
+									return {
+										cursor: 'pointer',
+									}
+								},
+								input: () => {
+									return {
+										maxWidth: 0,
+									}
+								},
+								indicatorSeparator: () => {
+									return { maxWidth: 0, maxHeight: 0 }
+								},
+								indicatorsContainer: (styles) => {
+									return {
+										padding: 8,
+									}
+								},
+								placeholder: () => {
+									return {
+										maxWidth: 0,
+										overflow: 'hidden',
+									}
+								},
+								menu: (styles) => {
+									return {
+										...styles,
+										width: 150,
+										left: -137,
+										top: -10,
+									}
+								},
+							}),
 						}}
 						{...this.props.config}
 						options={this.props.options}
@@ -475,3 +553,12 @@ export default class CustomDropdown extends Component {
 		)
 	}
 }
+
+const dots = (color) => (
+	<svg width='4' height='16' viewBox='0 0 4 16' fill='none' xmlns='http://www.w3.org/2000/svg'>
+		<path
+			d='M2 4C3.1 4 4 3.1 4 2C4 0.9 3.1 0 2 0C0.9 0 0 0.9 0 2C0 3.1 0.9 4 2 4ZM2 6C0.9 6 0 6.9 0 8C0 9.1 0.9 10 2 10C3.1 10 4 9.1 4 8C4 6.9 3.1 6 2 6ZM2 12C0.9 12 0 12.9 0 14C0 15.1 0.9 16 2 16C3.1 16 4 15.1 4 14C4 12.9 3.1 12 2 12Z'
+			fill={color}
+		/>
+	</svg>
+)

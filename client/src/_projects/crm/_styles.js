@@ -20,6 +20,48 @@ module.exports = {
 	font: _font,
 	fontAlt: _fontAlt,
 
+	/* defaultBorderRadius: 4,
+
+	inputBorderFactorNight: 0.3,
+	inputBorderFactorDay: 0.4,
+
+	inputLabelOpacityNight: 1,
+	inputLabelOpacityDay: 1,
+
+	inputHeight: 40,
+	buttonFontWeight: 700, */
+
+	customDropdown: {
+		indicator: { background: 'none' },
+	},
+	/* customTable: {
+		headerWrapperStyle: {
+			..._card,
+			padding: 0,
+			borderStyle: 'none',
+			borderRadius: 0,
+			borderBottom: '1px solid ' + 'rgba(223,224,235,1)',
+			boxShadow: 'none',
+			fontSize: 14,
+			fontWeight: 700,
+			color: 'rgba(159,162,180,1)',
+		},
+		rowStyle: {
+			boxShadow: 'none',
+			fontSize: 14,
+			fontWeight: 700,
+			padding: 0,
+			paddingLeft: 0,
+			paddingRight: 0,
+			':hover': {},
+		},
+		wrapperStyle: { ..._card, padding: 0 },
+		rowWrapperStyle: {
+			padding: 0,
+			borderBottom: '1px solid ' + 'rgba(223,224,235,1)',
+		},
+	}, */
+
 	colorsOverride: {
 		background: _background,
 		backgroundDay: _background,
