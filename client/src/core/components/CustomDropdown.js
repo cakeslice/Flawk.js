@@ -231,6 +231,7 @@ export default class CustomDropdown extends Component {
 				{this.props.label && <div style={{ minHeight: 5 }}></div>}
 				<div style={{ display: 'flex' }}>
 					<Select
+						menuPortalTarget={document.body}
 						isClearable={this.props.erasable}
 						isDisabled={this.props.isDisabled}
 						onChange={(o) => {
@@ -253,14 +254,19 @@ export default class CustomDropdown extends Component {
 								})
 						}}
 						placeholder={this.props.placeholder}
-						value={this.props.options.filter((option) => option.value === value)}
+						value={
+							this.props.options &&
+							this.props.options.filter((option) => option.value === value)
+						}
 						defaultValue={
 							this.props.defaultValue &&
+							this.props.options &&
 							this.props.options.filter(
 								(option) => option.value === this.props.defaultValue
 							)
 						}
 						styles={{
+							menuPortal: (base) => ({ ...base, zIndex: 9999 }),
 							container: (styles, { data }) => {
 								return {
 									...styles,

@@ -35,6 +35,7 @@ import { Link } from 'react-router-dom'
 import LanguageSwitcher from './LanguageSwitcher'
 import Loading from './Loading'
 import ReCaptcha from 'react-google-recaptcha'
+import QueryString from 'core/utils/queryString'
 var validator = require('validator')
 const Parser = require('html-react-parser')
 
@@ -345,7 +346,6 @@ class Layout extends Component {
 									),
 									selector: 'action',
 									cell: (value) => <div>Custom Cell: {value}</div>,
-									right: true,
 									hide: 'mobile',
 								},
 							]}
@@ -514,7 +514,6 @@ class Layout extends Component {
 										),
 										selector: 'action',
 										cell: (value) => <div>Custom Cell: {value}</div>,
-										right: true,
 										hide: 'mobile',
 									},
 								]}
@@ -590,6 +589,8 @@ class Misc extends Component {
 	state = {}
 
 	render() {
+		var query = QueryString.parse(window.location.search)
+
 		return (
 			<div>
 				{header('Avatar', true)}
@@ -607,6 +608,10 @@ class Misc extends Component {
 					<sp />
 					<Loading /> <sp />
 					<Loading small />
+				</div>
+				{header('Query parameters')}
+				<div>
+					Parameter {'"test"'}: {query.test}
 				</div>
 				{header('Toasts')}
 				<div>
@@ -2885,7 +2890,6 @@ class Admin extends Component {
 										),
 										selector: 'action',
 										cell: (value) => <div>Custom Cell: {value}</div>,
-										right: true,
 										hide: 'mobile',
 									},
 								]}

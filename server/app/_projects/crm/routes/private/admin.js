@@ -40,7 +40,7 @@ module.exports = function (app) {
 		/** @type {body} */
 		var body = req.body
 
-		if (!common.checkSchema(body.schema, req, res)) return
+		if (common.checkSchema(body.schema, req, res)) return
 
 		if (body.schema === 'Client') {
 			var search = {}

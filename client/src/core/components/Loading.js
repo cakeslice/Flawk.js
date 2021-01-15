@@ -22,7 +22,7 @@ export default class Loading extends Component {
 						? styles.spinnerSmall.size
 						: styles.spinnerMedium.size
 				}
-				color={config.replaceAlpha(styles.colors.black, 0.1)}
+				color={config.replaceAlpha(styles.colors.black, 0.2)}
 				loading={true}
 			/>
 		)

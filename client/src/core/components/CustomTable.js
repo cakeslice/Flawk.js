@@ -19,7 +19,7 @@ export default class CustomTable extends Component {
 	render() {
 		var cellPadding = 10
 		var cellPaddingY = 5
-		var paddingX = this.props.hideWrapper ? 2.5 : 5
+		var paddingX = 5
 
 		var headerCellStyle = {
 			padding: cellPadding,
@@ -81,7 +81,6 @@ export default class CustomTable extends Component {
 			...styles.card,
 			padding: 0,
 			margin: 0,
-			...(this.props.hideWrapper && { border: 'none' }),
 			borderRadius: styles.defaultBorderRadius,
 			background: 'transparent',
 			boxShadow: 'none',
@@ -102,9 +101,9 @@ export default class CustomTable extends Component {
 					flexDirection: 'column',
 					overflow: 'auto',
 					width: '100%',
+					...(this.props.style && this.props.style.wrapperStyle),
 					minHeight: this.props.height,
 					maxHeight: this.props.height,
-					...(this.props.style && this.props.style.wrapperStyle),
 				}}
 			>
 				<MediaQuery minWidth={config.mobileWidthTrigger}>
@@ -172,7 +171,10 @@ export default class CustomTable extends Component {
 											>
 												<MetroSpinner
 													size={styles.spinnerMedium.size}
-													color={styles.colors.main}
+													color={config.replaceAlpha(
+														styles.colors.black,
+														0.2
+													)}
 													loading={true}
 												/>
 											</div>
@@ -187,6 +189,8 @@ export default class CustomTable extends Component {
 											key={_.get(d, this.props.keySelector)}
 											style={{
 												...rowWrapperStyle,
+												...(this.props.style &&
+													this.props.style.rowWrapperStyle),
 											}}
 											rowStyle={{
 												...rowStyle,
@@ -209,12 +213,13 @@ export default class CustomTable extends Component {
 														style={{
 															minWidth: this.props.cellWidth || 50,
 															width: 100 * (c.grow || 1) + '%',
+															...(c.style && c.style),
 														}}
 													>
 														<div
 															style={{
-																textOverflow: 'ellipsis',
-																overflow: 'hidden',
+																textOverflow: !c.cell && 'ellipsis',
+																overflow: !c.cell && 'hidden',
 																padding: cellPadding,
 																paddingTop: cellPaddingY,
 																paddingBottom: cellPaddingY,

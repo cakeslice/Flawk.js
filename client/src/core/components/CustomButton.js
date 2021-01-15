@@ -99,7 +99,7 @@ export default class CustomButton extends Component {
 			':hover': {},
 			':active': {},
 
-			loadingColor: styles.colors.main,
+			loadingColor: config.replaceAlpha(styles.colors.black, 0.2),
 			color: config.replaceAlpha(styles.colors.black, global.nightMode ? '0.25' : '.75'),
 			borderColor: config.replaceAlpha(
 				styles.colors.black,
@@ -135,7 +135,7 @@ export default class CustomButton extends Component {
 				background: styles.colors.main,
 				borderColor: styles.colors.main,
 				color: styles.colors.whiteDay,
-				loadingColor: styles.colors.whiteDay,
+				loadingColor: config.replaceAlpha(styles.colors.whiteDay, 0.6),
 				...(!this.props.isDisabled && {
 					':focus-visible': {
 						outline: 'none',

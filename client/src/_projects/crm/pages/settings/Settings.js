@@ -266,12 +266,4 @@ class Settings extends Component {
 		)
 	}
 }
-export default connect(
-	(state) => ({
-		user: state.redux.user,
-		fetchingUser: state.redux.fetchingUser,
-	}),
-	{
-		fetchUser,
-	}
-)(Settings)
+export default Settings

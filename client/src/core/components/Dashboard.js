@@ -90,7 +90,9 @@ export default class Dashboard extends Component {
 
 		var WrapperComponent = this.props.wrapperComponent || this.div
 
-		var defaultRoute = this.props.routes.find((e) => e.defaultRoute).id
+		var defaultRoute = this.props.routes.find((e) => e.defaultRoute)
+		if (defaultRoute) defaultRoute = defaultRoute.id
+		else defaultRoute = this.props.routes.find((e) => e.id).id
 
 		return (
 			<Animated animationIn='fadeIn'>
@@ -266,6 +268,7 @@ export default class Dashboard extends Component {
 																	: mobileHeightTop
 															}
 															textColor={this.props.textColor}
+															{...this.props.pageProps}
 														></MobileDrawer>
 													</div>
 												</Fade>
@@ -290,7 +293,13 @@ export default class Dashboard extends Component {
 											.map((route) => {
 												var defaultSubroute = route.subRoutes.find(
 													(e) => e.defaultRoute
-												).id
+												)
+												if (defaultSubroute)
+													defaultSubroute = defaultSubroute.id
+												else
+													defaultSubroute = route.subRoutes.find(
+														(e) => e.id
+													).id
 
 												return (
 													<Route

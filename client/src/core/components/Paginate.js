@@ -50,6 +50,7 @@ class Paginate extends React.Component {
 			if (data.type === 'PAGE') {
 				return (
 					<li
+						style={{ opacity: 0.75 }}
 						onClick={() => onClick(data.value)}
 						className={`PaginateXPage ${
 							data.isActive ? 'PaginateXCurrent' : 'PaginateXLink'
@@ -61,7 +62,11 @@ class Paginate extends React.Component {
 				)
 			}
 			return (
-				<li className='PaginateXBreak' key={`PaginateX${data.key}`}>
+				<li
+					style={{ opacity: 0.75 }}
+					className='PaginateXBreak'
+					key={`PaginateX${data.key}`}
+				>
 					{breakDelimiter}
 				</li>
 			)
@@ -120,7 +125,7 @@ class Paginate extends React.Component {
 							{/* link(currentPage - 1, previous) */}
 							<div
 								style={{
-									opacity: !isFirst ? 0.8 : 0.5,
+									opacity: !isFirst ? 0.5 : 0.25,
 								}}
 							>
 								{pageArrow(styles.colors.black)}
@@ -141,7 +146,7 @@ class Paginate extends React.Component {
 							<div
 								style={{
 									transform: 'scaleX(-1)',
-									opacity: !isLast ? 0.8 : 0.5,
+									opacity: !isLast ? 0.5 : 0.25,
 								}}
 							>
 								{pageArrow(styles.colors.black)}
