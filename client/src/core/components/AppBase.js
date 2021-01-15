@@ -12,8 +12,6 @@ import { get } from 'core/api'
 import { Fade } from 'react-reveal'
 import { Helmet } from 'react-helmet'
 import CustomButton from '../components/CustomButton'
-import GenericModal from './GenericModal'
-import { confirmAlert } from 'react-confirm-alert'
 import RouterBase from 'core/components/RouterBase'
 
 var styles = require('core/styles').default
@@ -21,28 +19,6 @@ var config = require('core/config_').default
 
 global.sleep = function sleep(ms) {
 	return new Promise((resolve) => setTimeout(resolve, ms))
-}
-
-global.genericModal = function ({ title, content, buttons, color, style }) {
-	confirmAlert({
-		willUnmount: () => {},
-		onClickOutside: () => {},
-		onKeypressEscape: () => {},
-		closeOnEscape: true,
-		closeOnClickOutside: false,
-		customUI: ({ onClose }) => {
-			return (
-				<GenericModal
-					onClose={onClose}
-					title={title}
-					buttons={buttons}
-					color={color}
-					content={content}
-					style={style}
-				></GenericModal>
-			)
-		},
-	})
 }
 
 export default class AppBase extends Component {

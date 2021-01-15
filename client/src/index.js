@@ -12,6 +12,8 @@ import { unregister } from './core/utils/registerServiceWorker'
 import * as Sentry from '@sentry/react'
 import { isSupported, CookieStorage, MemoryStorage } from 'local-storage-fallback'
 
+import 'core/assets/react-toastify.css'
+
 var config = require('core/config_').default
 
 const App = React.lazy(() => import('./_projects/' + config.project + '/App'))

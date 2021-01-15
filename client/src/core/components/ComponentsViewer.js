@@ -36,6 +36,7 @@ import LanguageSwitcher from './LanguageSwitcher'
 import Loading from './Loading'
 import ReCaptcha from 'react-google-recaptcha'
 import QueryString from 'core/utils/queryString'
+import GenericModal from './GenericModal'
 var validator = require('validator')
 const Parser = require('html-react-parser')
 
@@ -273,10 +274,26 @@ class Layout extends Component {
 	}
 
 	exampleModal() {
-		global.genericModal({
-			title: 'Hello!',
-			content: function () {
-				return (
+		return (
+			<GenericModal
+				name='exampleModal'
+				parent={this}
+				title={'Hello!'}
+				//color={color}
+				//title={title}
+				//style={style}
+				buttons={[
+					{
+						cancel: true,
+					},
+					{
+						title: 'OK!',
+						action: (close) => {
+							close()
+						},
+					},
+				]}
+				content={(close) => (
 					<div
 						style={{
 							display: 'flex',
@@ -350,20 +367,9 @@ class Layout extends Component {
 							Fetch
 						</CustomButton>
 					</div>
-				)
-			}.bind(this),
-			buttons: [
-				{
-					cancel: true,
-				},
-				{
-					title: 'OK!',
-					action: (close) => {
-						close()
-					},
-				},
-			],
-		})
+				)}
+			/>
+		)
 	}
 
 	render() {
@@ -379,6 +385,8 @@ class Layout extends Component {
 				{(desktop) => {
 					return (
 						<div>
+							{this.state.exampleModal && this.exampleModal()}
+
 							{header('Flex grid', true)}
 							<div
 								className='wrapMargin'
@@ -511,7 +519,9 @@ class Layout extends Component {
 								></Paginate>
 							)}
 							{header('Modal')}
-							<CustomButton onClick={this.exampleModal.bind(this)}>Open</CustomButton>
+							<CustomButton onClick={() => this.setState({ exampleModal: true })}>
+								Open
+							</CustomButton>
 							{header('Collapse')}
 							<div style={{ ...styles.card }}>
 								<div

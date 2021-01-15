@@ -11,7 +11,6 @@ import MediaQuery, { Context as ResponsiveContext } from 'react-responsive'
 import { Router, HashRouter } from 'react-router-dom'
 import { createBrowserHistory, createHashHistory } from 'history'
 import { ToastContainer, toast, Bounce } from 'react-toastify'
-import 'core/assets/react-toastify.css'
 import ReactGA from 'react-ga'
 import { Fade } from 'react-reveal'
 

@@ -66,12 +66,6 @@ declare namespace NodeJS {
 			title?: string, description?: string, type?: string, options?: { closeAfter?: number; playSound?: boolean, closeButton?: boolean, customComponent?: any }
 		) => void;
 		playNotificationSound: () => void;
-
-		//
-
-		genericModal: (data: {
-			title?: string, content?: any, buttons?: Button[], color?: string, style?: object
-		}) => void;
 	};
 
 	interface Window {

@@ -14,8 +14,6 @@
 }
 
 :root {
-	--modal-overlay: rgba(0, 0, 0, 0);
-
 	--main: #0075ff;
 
 	--font: 'Roboto';
@@ -231,111 +229,25 @@ button:active {
 	margin: 10px 0px 0px 10px;
 }
 
-/**/
-
-.react-confirm-alert-blur {
-	filter: url(#gaussian-blur);
-	filter: blur(2px);
-	-webkit-filter: blur(2px);
+.Toastify__toast--dark {
+	background: #1e1e1e;
+	border-radius: 6px;
+	border-color: rgba(51, 108, 251, 0.5);
+	border-width: 1px;
+	border-style: solid;
+	box-shadow: 0 20px 32px -8px rgba(0, 0, 0, 0.1), 0 4px 8px 0 rgba(0, 0, 0, 0.05),
+		0 6px 20px 0 rgba(0, 0, 0, 0.05);
+	box-sizing: border-box;
 }
-.react-confirm-alert-overlay {
-	-webkit-backdrop-filter: blur(2px);
-	backdrop-filter: blur(2px);
-	background: var(--modal-overlay);
-	position: fixed;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	z-index: 99;
-	display: -webkit-flex;
-	display: -moz-flex;
-	display: -ms-flex;
-	display: -o-flex;
-	display: flex;
-	justify-content: center;
-	-ms-align-items: center;
-	align-items: center;
-	opacity: 0;
-	-webkit-animation: react-confirm-alert-fadeIn 0.5s 0.2s forwards;
-	-moz-animation: react-confirm-alert-fadeIn 0.5s 0.2s forwards;
-	-o-animation: react-confirm-alert-fadeIn 0.5s 0.2s forwards;
-	animation: react-confirm-alert-fadeIn 0.5s 0.2s forwards;
-}
-.react-confirm-alert-body {
-	font-family: Arial, Helvetica, sans-serif;
-	width: 400px;
-	padding: 30px;
-	text-align: left;
+.Toastify__toast--default {
 	background: #fff;
-	border-radius: 10px;
-	box-shadow: 0 20px 75px rgba(0, 0, 0, 0.13);
-	color: #666;
-}
-.react-confirm-alert-svg {
-	position: absolute;
-	top: 0;
-	left: 0;
-}
-.react-confirm-alert-body > h1 {
-	margin-top: 0;
-}
-.react-confirm-alert-body > h3 {
-	margin: 0;
-	font-size: 16px;
-}
-.react-confirm-alert-button-group {
-	display: -webkit-flex;
-	display: -moz-flex;
-	display: -ms-flex;
-	display: -o-flex;
-	display: flex;
-	justify-content: flex-start;
-	margin-top: 20px;
-}
-.react-confirm-alert-button-group > button {
-	outline: none;
-	background: #333;
-	border: none;
-	display: inline-block;
-	padding: 6px 18px;
-	color: #eee;
-	margin-right: 10px;
-	border-radius: 5px;
-	font-size: 12px;
-	cursor: pointer;
-}
-@-webkit-keyframes react-confirm-alert-fadeIn {
-	from {
-		opacity: 0;
-	}
-	to {
-		opacity: 1;
-	}
-}
-@-moz-keyframes react-confirm-alert-fadeIn {
-	from {
-		opacity: 0;
-	}
-	to {
-		opacity: 1;
-	}
-}
-@-o-keyframes react-confirm-alert-fadeIn {
-	from {
-		opacity: 0;
-	}
-	to {
-		opacity: 1;
-	}
-}
-@keyframes react-confirm-alert-fadeIn {
-	from {
-		opacity: 0;
-	}
-	to {
-		opacity: 1;
-	}
+	border-radius: 6px;
+	border-color: rgba(51, 108, 251, 0.5);
+	border-width: 1px;
+	border-style: solid;
+	box-shadow: 0 20px 32px -8px rgba(0, 0, 0, 0.1), 0 4px 8px 0 rgba(0, 0, 0, 0.05),
+		0 6px 20px 0 rgba(0, 0, 0, 0.05);
+	box-sizing: border-box;
 }
 
 .ReactCollapse--collapse {
