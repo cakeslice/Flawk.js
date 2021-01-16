@@ -102,6 +102,12 @@ export default class CustomDropdown extends Component {
 		}
 		var defaultMenuStyle = {
 			background: styles.colors.white,
+			borderStyle: 'solid',
+			borderWidth: '1px',
+			boxSizing: 'border-box',
+			borderColor: styles.colors.borderColor,
+			boxShadow: '0 2px 4px 0 rgba(0, 0, 0, 0.025), 0 2px 4px 0 rgba(0, 0, 0, 0.025)',
+			borderRadius: styles.defaultBorderRadius,
 		}
 		var indicatorStyle = {
 			paddingRight: 3,
@@ -418,6 +424,13 @@ export default class CustomDropdown extends Component {
 								return {
 									...internalStyle,
 									...defaultInputStyle,
+									...(this.props.button && {
+										color: styles.colors.black,
+										fontWeight: styles.buttonFontWeight,
+										marginLeft: 15,
+										width: 'auto',
+									}),
+									fontWeight: styles.dropdownFontWeight,
 									...(this.props.style && this.props.style.input),
 									...conditionalInputStyle,
 								}

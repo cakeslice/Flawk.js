@@ -38,7 +38,11 @@ class TextFileReader extends React.Component {
 				}
 			}
 		}
-		rawFile.send(null)
+		try {
+			rawFile.send(null)
+		} catch (e) {
+			console.log(e.message)
+		}
 	}
 
 	render() {
