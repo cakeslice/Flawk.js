@@ -22,6 +22,7 @@ export default class GenericModal extends Component {
 	}
 
 	onClose() {
+		this.props.onClose && this.props.onClose()
 		var s = {}
 		s[this.props.name] = false
 		this.props.parent.setState(s)

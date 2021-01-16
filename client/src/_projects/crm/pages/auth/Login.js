@@ -55,7 +55,7 @@ class Login extends Component {
 								if (!values.email) {
 									errors.email = '*'
 								} else if (!validator.isEmail(values.email)) {
-									errors.email = 'Invalid e-mail'
+									errors.email = '*'
 								}
 
 								if (!values.password) {

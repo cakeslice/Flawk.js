@@ -558,7 +558,7 @@ module.exports = {
 		else next()
 	},
 	superAdminMiddleware: function (req, res, next) {
-		if (req.permission !== 0) _setResponse(401, req, res, 'Not a super admin!')
+		if (req.permission !== 1) _setResponse(401, req, res, 'Not a super admin!')
 		else next()
 	},
 

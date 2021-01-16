@@ -90,6 +90,7 @@ async function createDevUser() {
 					firstName: 'Dev',
 					lastName: 'User',
 				},
+				permission: 10,
 				flags: ['verified'],
 				access: {
 					hashedPassword: hash,

@@ -90,13 +90,13 @@ module.exports = function (app, io) {
 												}
 											} else unknownUsers++
 										})
-										if (user.permission > 10)
-											global.adminSocketNotification(
-												'Socket connection',
-												'Client ' +
-													(user.email || user.phone) +
-													' just connected!'
-											)
+									if (config.debugSockets)
+										global.adminSocketNotification(
+											'Socket connection',
+											'Client ' +
+												(user.email || user.phone) +
+												' just connected!'
+										)
 										console.log(
 											'[SOCKET.IO] ' +
 												(user.email || user.phone) +
@@ -159,11 +159,11 @@ module.exports = function (app, io) {
 		socket.on('disconnect', () => {
 			if (socket._client) {
 				console.log('[SOCKET.IO] Client ' + socket._client.email + ' just disconnected!')
-				if (socket._client.permission > 10)
-					global.adminSocketNotification(
-						'Socket connection',
-						'Client ' + socket._client.email + ' just disconnected!'
-					)
+			if (config.debugSockets)
+				global.adminSocketNotification(
+					'Socket connection',
+					'Client ' + socket._client.email + ' just disconnected!'
+				)
 				socket._client = undefined
 			} else {
 				//console.log('[SOCKET.IO] Unidentified client just disconnected!')

@@ -1750,7 +1750,7 @@ class Login extends Component {
 						if (!values.email) {
 							errors.email = '*'
 						} else if (!validator.isEmail(values.email)) {
-							errors.email = 'Invalid e-mail'
+							errors.email = '*'
 						}
 
 						if (!values.password) {
@@ -2015,7 +2015,7 @@ class Register extends Component {
 							if (!values.email) {
 								errors.email = '*'
 							} else if (!validator.isEmail(values.email)) {
-								errors.email = 'Invalid e-mail'
+								errors.email = '*'
 							}
 
 							if (!values.password) {
@@ -2367,7 +2367,7 @@ class Forgot extends Component {
 							if (!values.email) {
 								errors.email = '*'
 							} else if (!validator.isEmail(values.email)) {
-								errors.email = 'Invalid e-mail'
+								errors.email = '*'
 							}
 
 							if (config.recaptchaBypass && config.prod && !values.captcha)
@@ -2542,7 +2542,7 @@ class Settings extends Component {
 						if (!values.email) {
 							errors.email = '*'
 						} else if (!validator.isEmail(values.email)) {
-							errors.email = 'Invalid e-mail'
+							errors.email = '*'
 						}
 
 						if (!values.firstName) {

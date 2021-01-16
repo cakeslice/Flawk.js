@@ -29,7 +29,7 @@ export default class CustomButton extends Component {
 		onClick: PropTypes.func,
 		isLoading: PropTypes.bool,
 		// Checkbox props //
-		checkbox: PropTypes.string,
+		checkbox: PropTypes.oneOf([PropTypes.string, PropTypes.bool]),
 		checked: PropTypes.bool,
 		defaultChecked: PropTypes.bool,
 		value: PropTypes.bool,

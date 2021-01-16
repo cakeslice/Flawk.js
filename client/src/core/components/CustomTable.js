@@ -272,7 +272,7 @@ export default class CustomTable extends Component {
 															}}
 														>
 															{c.cell
-																? c.cell(_.get(d, c.selector))
+																? c.cell(_.get(d, c.selector), d)
 																: _.get(d, c.selector)}
 														</div>
 													</div>

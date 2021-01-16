@@ -59,6 +59,21 @@ export default class Avatar extends Component {
 					src={src}
 					key={src}
 				></Img>
+				{this.props.isOnline && (
+					<div style={{ maxWidth: 0, maxHeight: 0 }}>
+						<div
+							style={{
+								position: 'relative',
+								top: 1,
+								left: -1,
+								borderRadius: '50%',
+								background: styles.colors.green,
+								minWidth: 5,
+								minHeight: 5,
+							}}
+						></div>
+					</div>
+				)}
 			</div>
 		)
 	}
