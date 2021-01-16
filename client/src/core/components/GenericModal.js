@@ -9,6 +9,7 @@ import React, { Component } from 'react'
 import CustomButton from './CustomButton'
 import { Animated } from 'react-animated-css'
 import { disableBodyScroll, enableBodyScroll, clearAllBodyScrollLocks } from 'body-scroll-lock'
+import { Portal } from 'react-portal'
 
 var styles = require('core/styles').default
 var config = require('core/config_').default
@@ -28,114 +29,124 @@ export default class GenericModal extends Component {
 
 	render() {
 		return (
-			<div
-				style={{
-					backdropFilter: 'blur(2px)',
-					background: styles.modalBackground,
-					position: 'fixed',
-					top: 0,
-					left: 0,
-					right: 0,
-					bottom: 0,
-					zIndex: 99,
-					display: 'flex',
-					justifyContent: 'center',
-					alignItems: 'center',
-				}}
-			>
-				{!this.props.noAutoFocus && (
-					<input autoFocus={true} style={{ maxWidth: 0, maxHeight: 0 }}></input>
-				)}
-				<Animated animationIn='fadeInRight' animationInDuration={500}>
-					<div style={{ margin: 10 }}>
-						<div
-							className='scrollTarget'
-							style={{
-								...styles.card,
-								...{
-									boxShadow: styles.strongerShadow,
-									overflowY: 'auto',
-									margin: 0,
-									borderRadius: 5,
-									maxWidth: 'calc(100vw - 10px)',
-									maxHeight: 'calc(100vh - 100px)',
-									minHeight: 20,
-									width: styles.modalWidth || 500,
-									display: 'flex',
-									flexDirection: 'column',
-									justifyContent: 'space-between',
-									padding: 0,
-									...this.props.style,
-								},
-							}}
-						>
-							{styles.modalHeader && (
-								<ModalHeader
-									color={this.props.color}
-									title={this.props.title}
-									onClose={this.onClose}
-								/>
-							)}
-
-							<div style={{ padding: styles.modalPadding || 20 }}>
-								<div style={{ overflow: 'auto' }}>
-									{this.props.content(this.onClose.bind(this))}
-								</div>
-
-								{this.props.buttons && this.props.buttons.length > 0 && (
-									<div style={{ minHeight: 20 }} />
+			<Portal>
+				<div
+					style={{
+						backdropFilter: 'blur(2px)',
+						background:
+							styles.modalBackground ||
+							config.replaceAlpha(
+								global.nightMode ? styles.colors.white : 'rgba(127,127,127,1)',
+								'.25'
+							),
+						position: 'fixed',
+						top: 0,
+						left: 0,
+						right: 0,
+						bottom: 0,
+						zIndex: 99,
+						display: 'flex',
+						justifyContent: 'center',
+						alignItems: 'center',
+					}}
+				>
+					{!this.props.noAutoFocus && (
+						<input autoFocus={true} style={{ maxWidth: 0, maxHeight: 0 }}></input>
+					)}
+					<Animated animationIn='fadeIn' animationInDuration={500}>
+						<div style={{ margin: 10 }}>
+							<div
+								className='scrollTarget'
+								style={{
+									...styles.card,
+									...{
+										boxShadow: styles.strongerShadow,
+										overflowY: 'auto',
+										margin: 0,
+										borderRadius: 5,
+										maxWidth: 'calc(100vw - 10px)',
+										maxHeight: 'calc(100vh - 100px)',
+										minHeight: 20,
+										width: styles.modalWidth || 500,
+										display: 'flex',
+										flexDirection: 'column',
+										justifyContent: 'space-between',
+										padding: 0,
+										...this.props.style,
+									},
+								}}
+							>
+								{styles.modalHeader && (
+									<ModalHeader
+										color={this.props.color}
+										title={this.props.title}
+										onClose={this.onClose}
+									/>
 								)}
-								{this.props.buttons && this.props.buttons.length > 0 && (
-									<div
-										className={
-											styles.modalButtonWrap && 'wrapMarginBottomRight'
-										}
-										style={{
-											display: 'flex',
-											justifyContent: styles.modalButtonWrap && 'flex-end',
-											flexWrap: styles.modalButtonWrap && 'wrap',
-										}}
-									>
-										{this.props.buttons.map((b, i) =>
-											b.notButton ? (
-												<div style={b.style}></div>
-											) : (
-												<CustomButton
-													key={i}
-													appearance={
-														b.appearance ||
-														(!b.cancel ? 'primary' : undefined)
-													}
-													type={b.submit ? 'submit' : undefined}
-													style={b.style}
-													isLoading={false}
-													onClick={
-														b.cancel
-															? () => {
-																	this.onClose()
-																	b.action && b.action()
-															  }
-															: () => {
-																	b.action &&
-																		b.action(
-																			this.onClose.bind(this)
-																		)
-															  }
-													}
-												>
-													{b.cancel
-														? config.text('common.cancel')
-														: b.title}
-												</CustomButton>
-											)
-										)}
+
+								<div style={{ padding: styles.modalPadding || 20 }}>
+									<div style={{ overflow: 'auto' }}>
+										{this.props.content(this.onClose.bind(this))}
 									</div>
-								)}
+
+									{this.props.buttons && this.props.buttons.length > 0 && (
+										<div style={{ minHeight: 20 }} />
+									)}
+									{this.props.buttons && this.props.buttons.length > 0 && (
+										<div
+											className={
+												styles.modalButtonWrap && 'wrapMarginBottomRight'
+											}
+											style={{
+												display: 'flex',
+												justifyContent:
+													styles.modalButtonWrap && 'flex-end',
+												flexWrap: styles.modalButtonWrap && 'wrap',
+											}}
+										>
+											{this.props.buttons.map((b, i) =>
+												b.notButton ? (
+													<div style={b.style}></div>
+												) : (
+													<CustomButton
+														key={i}
+														appearance={
+															b.appearance ||
+															(!b.cancel ? 'primary' : undefined)
+														}
+														type={b.submit ? 'submit' : undefined}
+														style={b.style}
+														isLoading={false}
+														onClick={
+															b.cancel
+																? () => {
+																		this.onClose()
+																		b.action && b.action()
+																  }
+																: () => {
+																		b.action &&
+																			b.action(
+																				this.onClose.bind(
+																					this
+																				)
+																			)
+																  }
+														}
+													>
+														{b.cancel
+															? config.text('common.cancel')
+															: b.title}
+													</CustomButton>
+												)
+											)}
+										</div>
+									)}
+								</div>
 							</div>
 						</div>
-					</div>
-				</Animated>
-			</div>
+					</Animated>
+				</div>
+			</Portal>
 		)
 	}
 }
