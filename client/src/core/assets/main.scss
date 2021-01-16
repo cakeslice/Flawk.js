@@ -74,7 +74,6 @@ i,
 u,
 li {
 	font-weight: 400;
-	font-size: 14px;
 	line-height: inherit;
 	margin: 0;
 	font-family: var(--font);
@@ -90,7 +89,6 @@ u {
 b,
 strong {
 	line-height: inherit;
-	font-size: 14px;
 	font-weight: 700;
 }
 bb {
@@ -252,4 +250,8 @@ button:active {
 
 .ReactCollapse--collapse {
 	transition: height 500ms;
+}
+
+.tooltip-container {
+	z-index: 99999 !important;
 }

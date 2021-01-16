@@ -9,7 +9,7 @@ var config = require('./config_').default
 
 const _font = 'Roboto'
 const _fontAlt = 'PT Sans'
-const _background = 'rgba(254,254,254, 1)'
+const _background = 'rgba(255,255,255, 1)'
 const _backgroundNight = 'rgba(30, 30, 30, 1)'
 const _borderColor = 'rgba(0, 0, 0, 0.1)'
 const _borderColorNight = 'rgba(255, 255, 255, 0.15)'
@@ -17,7 +17,7 @@ const _lineColor = 'rgba(0, 0, 0, 0.05)'
 const _lineColorNight = 'rgba(255, 255, 255, 0.05)'
 
 const _black = 'rgba(30, 30, 30, 1)'
-const _white = 'rgba(254,254,254, 1)' // Don't use pure white to avoid flickering
+const _white = 'rgba(255,255,255, 1)'
 
 const _main = 'rgba(0,117,255, 1)'
 const _mainLight = 'rgba(0,117,255, .85)'

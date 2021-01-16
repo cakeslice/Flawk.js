@@ -202,6 +202,7 @@ export default class CustomDropdown extends Component {
 							letterSpacing: 0.4,
 							//fontWeight: 700,
 							fontSize: styles.defaultFontSize,
+							textAlign: this.props.label.length === 1 && 'end',
 							...this.props.labelStyle,
 						}}
 					>

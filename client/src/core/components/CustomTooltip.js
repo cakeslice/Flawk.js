@@ -22,6 +22,7 @@ const CustomTooltip = ({ children, content, ...props }) => (
 				},
 			},
 		]}
+		trigger={['hover', 'click']}
 		{...props}
 		tooltip={({ arrowRef, tooltipRef, getArrowProps, getTooltipProps, placement }) => (
 			<div
@@ -44,6 +45,7 @@ const CustomTooltip = ({ children, content, ...props }) => (
 						...styles.card,
 						padding: 7.5,
 						fontSize: 13,
+						...styles.customTooltip,
 						...props.contentStyle,
 					}}
 				>
