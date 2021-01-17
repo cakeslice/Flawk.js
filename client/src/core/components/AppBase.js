@@ -45,7 +45,7 @@ export default class AppBase extends Component {
 				this.applyNightMode(global.storage.getItem('nightMode') == 'true', true)
 			/*eslint-enable */
 			// ! Don't change to ===
-			else this.applyNightMode(isDark && isDark.matches, true)
+			else this.applyNightMode(isDark && isDark.matches && !config.darkModeOptIn, true)
 		} else this.applyNightMode(false, true)
 
 		if (config.websocketSupport) {

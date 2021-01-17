@@ -77,6 +77,7 @@ export default class CustomInput extends Component {
 			fontSize: styles.defaultFontSize,
 			fontFamily: styles.font,
 			textAlign: this.props.center ? 'center' : 'left',
+			fontWeight: styles.inputFontWeight || undefined,
 
 			borderRadius: styles.defaultBorderRadius,
 			borderStyle: 'solid',
@@ -103,6 +104,7 @@ export default class CustomInput extends Component {
 			),
 			opacity: 1,
 			'::placeholder': {
+				fontWeight: 400,
 				color: config.replaceAlpha(styles.colors.black, global.nightMode ? '0.25' : '.5'),
 				opacity: 1,
 			},

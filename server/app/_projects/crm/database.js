@@ -17,7 +17,7 @@ cachegoose(mongoose, {
 })
 
 var emailValidator = {
-	validator: (v) => validator.isEmail(v),
+	validator: (v) => (v ? validator.isEmail(v) : true),
 	message: (v) => `${v.value} is not a valid e-mail!`,
 }
 
@@ -53,7 +53,7 @@ var ClientSchema = new mongoose.Schema({
 		index: true,
 		unique: true,
 		required: true,
-		set: (v) => v.toLowerCase(),
+		set: (v) => (v ? v.toLowerCase() : undefined),
 		validate: emailValidator,
 	},
 	phone: {

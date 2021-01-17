@@ -261,21 +261,26 @@ class Router extends Component {
 											/>
 										</Helmet>
 
-										<Dashboard
-											onUpdate={() => {
-												if (!this.props.fetchingUser && !this.props.user)
-													global
-														.routerHistory()
-														.push(config.noTokenRedirect)
-											}}
-											wrapperComponent={DashboardWrapper}
-											path={'/dashboard/'}
-											color={styles.colors.white}
-											logo={logo}
-											routes={routes}
-											// Redux props
-											pageProps={this.props}
-										></Dashboard>
+										{this.props.user && (
+											<Dashboard
+												onUpdate={() => {
+													if (
+														!this.props.fetchingUser &&
+														!this.props.user
+													)
+														global
+															.routerHistory()
+															.push(config.noTokenRedirect)
+												}}
+												wrapperComponent={DashboardWrapper}
+												path={'/dashboard/'}
+												color={styles.colors.white}
+												logo={logo}
+												routes={routes}
+												// Redux props
+												pageProps={this.props}
+											></Dashboard>
+										)}
 									</div>
 								</Route>
 
