@@ -35,6 +35,7 @@ import { Link } from 'react-router-dom'
 import LanguageSwitcher from './LanguageSwitcher'
 import Loading from './Loading'
 import ReCaptcha from 'react-google-recaptcha'
+import ReactQueryParams from 'react-query-params'
 import QueryString from 'core/utils/queryString'
 import GenericModal from './GenericModal'
 var validator = require('validator')
@@ -196,24 +197,7 @@ class Wrapper extends Component {
 	}
 }
 
-class Layout extends Component {
-	/**
-	 * @typedef {object} query
-	 * @property {string} search
-	 * @property {number} page
-	 * @property {number} limit
-	 * @property {string} sort
-	 * @property {string} sortOrder
-	 */
-	/** @type {query} */
-	query = {
-		search: '',
-		page: 1,
-		limit: 20,
-		sort: 'title',
-		sortOrder: 'asc',
-	}
-
+class Layout extends ReactQueryParams {
 	state = {
 		/**
 		 * @typedef {object} item
@@ -241,12 +225,20 @@ class Layout extends Component {
 	}
 	fetchData() {
 		this.lockFetch(async () => {
-			var q = this.query
+			var q = {
+				search: '',
+				page: 1,
+				limit: 5,
+				sort: 'title',
+				order: 'asc',
+				...this.queryParams,
+			}
+
 			var res = await get(
 				'https://jsonplaceholder.typicode.com/todos?_sort=' +
 					q.sort +
 					'&_order=' +
-					q.sortOrder +
+					q.order +
 					'&_page=' +
 					q.page +
 					'&_limit=' +
@@ -424,9 +416,9 @@ class Layout extends Component {
 									style={{
 										width: 250,
 									}}
-									defaultValue={this.query.search}
+									defaultValue={this.queryParams.search}
 									onChange={(e) => {
-										this.query.search = e.target.value
+										this.queryParams.search = e.target.value
 									}}
 									onKeyPress={(e) => {
 										if (e.key === 'Enter') this.fetchData()
@@ -440,10 +432,10 @@ class Layout extends Component {
 									style={{
 										width: 250,
 									}}
-									defaultValue={this.query.search}
+									defaultValue={this.queryParams.search}
 									bufferedInput
 									onChange={(e) => {
-										this.query.search = e.target.value
+										this.queryParams.search = e.target.value
 										this.fetchData()
 									}}
 									placeholder={'Buffered Search'}
@@ -511,11 +503,11 @@ class Layout extends Component {
 							{desktop && (
 								<Paginate
 									onClick={(e) => {
-										this.query = { ...this.query, page: e }
+										this.queryParams = { ...this.queryParams, page: e }
 										this.fetchData()
 									}}
 									totalPages={this.state.data && this.state.data.totalPages}
-									currentPage={this.query.page}
+									currentPage={this.queryParams.page}
 								></Paginate>
 							)}
 							{header('Modal')}
@@ -575,12 +567,10 @@ class Layout extends Component {
 	}
 }
 
-class Misc extends Component {
+class Misc extends ReactQueryParams {
 	state = {}
 
 	render() {
-		var query = QueryString.parse(window.location.search)
-
 		return (
 			<div>
 				{header('Avatar', true)}
@@ -601,7 +591,14 @@ class Misc extends Component {
 				</div>
 				{header('Query parameters')}
 				<div>
-					Parameter {'"test"'}: {query.test}
+					Parameter {'"test"'}: {this.queryParams.test}
+					<CustomButton
+						onClick={() => {
+							this.setQueryParams({
+								test: 'Hello!',
+							})
+						}}
+					></CustomButton>
 				</div>
 				{header('Toasts')}
 				<div>
@@ -1177,11 +1174,7 @@ class Style extends Component {
 					<sp />
 					<i>
 						My appearance is{' '}
-						<CustomTooltip
-							placement='top'
-							background={styles.colors.white}
-							content={<div>Hello World!</div>}
-						>
+						<CustomTooltip placement='top' content={<div>Hello World!</div>}>
 							<u>tooltip</u>
 						</CustomTooltip>{' '}
 						to be familiar and to <span style={{ color: styles.colors.red }}>put</span>{' '}
@@ -2744,24 +2737,7 @@ class Settings extends Component {
 	}
 }
 
-class Admin extends Component {
-	/**
-	 * @typedef {object} query
-	 * @property {string} search
-	 * @property {number} page
-	 * @property {number} limit
-	 * @property {string} sort
-	 * @property {string} sortOrder
-	 */
-	/** @type {query} */
-	query = {
-		search: '',
-		page: 1,
-		limit: 5,
-		sort: 'title',
-		sortOrder: 'asc',
-	}
-
+class Admin extends ReactQueryParams {
 	state = {
 		/**
 		 * @typedef {object} item
@@ -2789,16 +2765,17 @@ class Admin extends Component {
 	}
 	fetchData() {
 		this.lockFetch(async () => {
-			var q = this.query
+			var q = {
+				search: undefined,
+				page: 1,
+				limit: 5,
+				sort: 'title',
+				order: 'asc',
+				...this.queryParams,
+			}
+
 			var res = await post(
-				'admin/search_users?sort=' +
-					q.sort +
-					'&order=' +
-					q.sortOrder +
-					'&page=' +
-					q.page +
-					'&limit=' +
-					q.limit,
+				'admin/search_users?' + QueryString.stringify(q),
 				{
 					search: q.search,
 				},
@@ -2837,10 +2814,10 @@ class Admin extends Component {
 								style={{
 									width: 250,
 								}}
-								defaultValue={this.query.search}
+								defaultValue={this.queryParams.search}
 								bufferedInput
 								onChange={(e) => {
-									this.query.search = e.target.value
+									this.queryParams.search = e.target.value
 									this.fetchData()
 								}}
 								placeholder={'Search'}
@@ -2882,11 +2859,11 @@ class Admin extends Component {
 							{desktop && (
 								<Paginate
 									onClick={(e) => {
-										this.query = { ...this.query, page: e }
+										this.queryParams = { ...this.queryParams, page: e }
 										this.fetchData()
 									}}
 									totalPages={this.state.data && this.state.data.totalPages}
-									currentPage={this.query.page}
+									currentPage={this.queryParams.page}
 								></Paginate>
 							)}
 						</div>

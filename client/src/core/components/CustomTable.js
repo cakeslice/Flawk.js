@@ -364,11 +364,11 @@ const sorting = (color, colorActive, direction) => (
 	<svg width='6' height='8' viewBox='0 0 6 8' fill='none' xmlns='http://www.w3.org/2000/svg'>
 		<path
 			d='M3 0L5.46133 3H0.538664L3 0Z'
-			fill={!direction ? color : direction === 'up' ? colorActive : color}
+			fill={!direction ? color : direction === 'asc' ? colorActive : color}
 		/>
 		<path
 			d='M3.00006 8L0.538723 5L5.46139 5L3.00006 8Z'
-			fill={!direction ? color : direction === 'down' ? colorActive : color}
+			fill={!direction ? color : direction === 'desc' ? colorActive : color}
 		/>
 	</svg>
 )
