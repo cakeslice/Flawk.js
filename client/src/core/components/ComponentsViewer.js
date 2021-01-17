@@ -2809,7 +2809,11 @@ class Admin extends Component {
 
 			if (res.ok)
 				this.setState({
-					data: { items: res.body.items, totalPages: res.body.pageCount },
+					data: {
+						items: res.body.items,
+						totalPages: res.body.pageCount,
+						totalItems: res.body.itemCount,
+					},
 				})
 		})
 	}

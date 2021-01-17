@@ -83,6 +83,7 @@ module.exports = function (app) {
 
 				hasNext: paginate.hasNextPages(req)(pageCount),
 				pageCount: pageCount,
+				itemCount: itemCount,
 			})
 		} else common.setResponse(404, req, res, 'Invalid schema')
 	})
