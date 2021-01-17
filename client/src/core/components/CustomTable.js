@@ -229,7 +229,7 @@ export default class CustomTable extends ReactQueryParams {
 													justifyContent: 'center',
 													alignItems: 'center',
 													height: this.props.height
-														? this.props.height / 2
+														? 'calc(' + this.props.height + '/ 2)'
 														: '50%',
 												}}
 											>

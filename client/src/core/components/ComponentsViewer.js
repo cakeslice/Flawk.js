@@ -296,7 +296,7 @@ class Layout extends ReactQueryParams {
 						{/*@ts-ignore*/}
 						<CustomTable
 							isLoading={this.state.fetching}
-							height={500}
+							height={'500px'}
 							expandContent={(data) => <div>Expanded: {data.name}</div>}
 							keySelector={'id'}
 							columns={[
@@ -444,7 +444,7 @@ class Layout extends ReactQueryParams {
 							{/*@ts-ignore*/}
 							<CustomTable
 								isLoading={this.state.fetching}
-								height={500}
+								height={'500px'}
 								expandContent={(data) => <div>Expanded: {data.name}</div>}
 								keySelector={'id'}
 								columns={[
@@ -1643,7 +1643,7 @@ class Backend extends Component {
 										<div style={{ minHeight: 10 }} />
 										{/*@ts-ignore*/}
 										<CustomTable
-											height={250}
+											height={'250px'}
 											hideHeader
 											hideWrapper
 											keySelector={'id'}
@@ -2827,7 +2827,7 @@ class Admin extends ReactQueryParams {
 							{/*@ts-ignore*/}
 							<CustomTable
 								isLoading={this.state.fetching}
-								height={500}
+								height={'500px'}
 								expandContent={(data) => <div>Expanded: {data.name}</div>}
 								keySelector={'id'}
 								columns={[
