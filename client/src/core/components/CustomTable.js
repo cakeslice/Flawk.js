@@ -11,11 +11,12 @@ import { UnmountClosed } from 'react-collapse'
 import MediaQuery from 'react-responsive'
 import { css } from 'glamor'
 import { MetroSpinner } from 'react-spinners-kit'
+import ReactQueryParams from 'react-query-params'
 
 var config = require('core/config_').default
 var styles = require('core/styles').default
 
-export default class CustomTable extends Component {
+export default class CustomTable extends ReactQueryParams {
 	render() {
 		var cellPadding = 10
 		var cellPaddingY = 5
@@ -162,7 +163,28 @@ export default class CustomTable extends Component {
 												if (c.onClick)
 													return (
 														<button
-															onClick={c.onClick}
+															onClick={() => {
+																var key = c.selector
+																this.setQueryParams({
+																	sort:
+																		this.queryParams.sort ===
+																		key
+																			? this.queryParams
+																					.order === 'asc'
+																				? key
+																				: undefined
+																			: key,
+																	order:
+																		this.queryParams.sort ===
+																		key
+																			? this.queryParams
+																					.order === 'asc'
+																				? 'desc'
+																				: 'asc'
+																			: 'asc',
+																})
+																c.onClick && c.onClick()
+															}}
 															key={c.selector}
 															style={s}
 														>
@@ -180,7 +202,9 @@ export default class CustomTable extends Component {
 																			styles.colors.black,
 																		0.75
 																	),
-																	c.sorting
+																	this.queryParams.sort ===
+																		c.selector &&
+																		this.queryParams.order
 																)}
 																<div style={{ minHeight: 3 }} />
 															</div>

@@ -293,6 +293,7 @@ class Layout extends ReactQueryParams {
 							justifyContent: 'flex-start',
 						}}
 					>
+						{/*@ts-ignore*/}
 						<CustomTable
 							isLoading={this.state.fetching}
 							height={500}
@@ -378,7 +379,6 @@ class Layout extends ReactQueryParams {
 					return (
 						<div>
 							{this.state.exampleModal && this.exampleModal()}
-
 							{header('Flex grid', true)}
 							<div
 								className='wrapMargin'
@@ -401,7 +401,6 @@ class Layout extends ReactQueryParams {
 								<div style={wrapExample}></div>
 								<div style={wrapExample}></div>
 							</div>
-
 							<div id='anchor' />
 							{header('Table')}
 							<div
@@ -442,6 +441,7 @@ class Layout extends ReactQueryParams {
 								></CustomInput>
 							</div>
 							<div style={{ minHeight: 10 }}></div>
+							{/*@ts-ignore*/}
 							<CustomTable
 								isLoading={this.state.fetching}
 								height={500}
@@ -1641,6 +1641,7 @@ class Backend extends Component {
 									<div key={result}>
 										<b>{result}</b>
 										<div style={{ minHeight: 10 }} />
+										{/*@ts-ignore*/}
 										<CustomTable
 											height={250}
 											hideHeader
@@ -2766,18 +2767,18 @@ class Admin extends ReactQueryParams {
 	fetchData() {
 		this.lockFetch(async () => {
 			var q = {
-				search: undefined,
 				page: 1,
 				limit: 5,
 				sort: 'title',
 				order: 'asc',
 				...this.queryParams,
+				search: undefined,
 			}
 
 			var res = await post(
 				'admin/search_users?' + QueryString.stringify(q),
 				{
-					search: q.search,
+					search: this.queryParams.search,
 				},
 				{
 					signal: this.abortController.signal,
@@ -2823,6 +2824,7 @@ class Admin extends ReactQueryParams {
 								placeholder={'Search'}
 							></CustomInput>
 							<div style={{ minHeight: 10 }}></div>
+							{/*@ts-ignore*/}
 							<CustomTable
 								isLoading={this.state.fetching}
 								height={500}
