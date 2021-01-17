@@ -9,7 +9,7 @@ import React, { Component } from 'react'
 import { Img } from 'react-image'
 import avatar from '../assets/images/avatar.svg'
 import { MetroSpinner } from 'react-spinners-kit'
-import stc from 'string-to-color'
+import uniqolor from 'uniqolor'
 
 var styles = require('core/styles').default
 var config = require('core/config_').default
@@ -28,6 +28,8 @@ export default class Avatar extends Component {
 
 		var name = this.props.name && this.props.name.split(' ')[0][0]
 		if (name && this.props.name.split(' ').length > 1) name += this.props.name.split(' ')[1][0]
+
+		var nameColor = this.props.name && uniqolor(this.props.name)
 
 		return (
 			<div style={{ display: 'flex' }}>
@@ -59,9 +61,10 @@ export default class Avatar extends Component {
 									alignItems: 'center',
 									paddingLeft: 3,
 									letterSpacing: 3,
-									filter: 'saturate(4)',
-									color: styles.colors.blackDay,
-									background: stc(this.props.name),
+									color: nameColor.isLight
+										? styles.colors.blackDay
+										: styles.colors.whiteDay,
+									background: nameColor.color,
 								}}
 							>
 								{name}

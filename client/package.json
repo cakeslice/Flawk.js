@@ -67,9 +67,9 @@
 		"redux-thunk": "^2.3.0",
 		"scroll-to-element": "^2.0.3",
 		"socket.io-client": "^2.3.1",
-		"string-to-color": "^2.2.2",
 		"typescript": "^4.0.3",
 		"ultimate-pagination": "^1.0.0",
+		"uniqolor": "^1.0.1",
 		"universal-cookie": "^4.0.4",
 		"validator": "^13.1.17",
 		"video-react": "^0.14.1"
