@@ -84,8 +84,16 @@ module.exports = function (app) {
 	})
 
 	app.postAsync(config.path + '/client/read_notifications', async (req, res) => {
+		/**
+		 * @typedef {object} body
+		 * @property {string} notificationID
+		 * @property {string} playerID
+		 */
+		/** @type {body} */
+		var body = req.body
+
 		await database.Client.updateOne(
-			{ _id: req.user._id, 'arrays.notifications._id': req.body.notificationID },
+			{ _id: req.user._id, 'arrays.notifications._id': body.notificationID },
 			{ $set: { 'arrays.notifications.$.isRead': true } }
 		)
 
@@ -95,7 +103,7 @@ module.exports = function (app) {
 	app.postAsync(config.path + '/client/update_mobile_notification_id', async (req, res) => {
 		var selection = '_id appState.mobileNotificationDevices'
 		var user = await database.Client.findOne({ _id: req.user._id }).select(selection)
-		user.appState.mobileNotificationDevices.push(req.body.playerID)
+		user.appState.mobileNotificationDevices.push(body.playerID)
 		while (user.appState.mobileNotificationDevices.length > config.maxTokens) {
 			user.appState.mobileNotificationDevices.splice(0, 1)
 		}

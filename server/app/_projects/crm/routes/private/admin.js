@@ -31,10 +31,11 @@ module.exports = function (app) {
 		common.setResponse(200, req, res, '', websockets)
 	})
 
-	app.postAsync(config.path + '/admin/search', async (req, res) => {
+	app.postAsync(config.path + '/admin/search_users', async (req, res) => {
 		/**
 		 * @typedef {object} body
 		 * @property {string=} search
+		 * @property {boolean=} includeUnverified
 		 * @property {string} schema
 		 */
 		/** @type {body} */
@@ -44,7 +45,7 @@ module.exports = function (app) {
 
 		if (body.schema === 'Client') {
 			var search = {}
-			if (req.body.search)
+			if (body.search)
 				search['$and'] = [
 					{
 						$or: [
@@ -56,7 +57,7 @@ module.exports = function (app) {
 					},
 				]
 
-			if (!req.body.includeUnverified) {
+			if (!body.includeUnverified) {
 				if (!search['$and']) search['$and'] = []
 				search['$and'].push({ flags: 'verified' })
 			}

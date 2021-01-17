@@ -50,7 +50,7 @@ class Paginate extends React.Component {
 			if (data.type === 'PAGE') {
 				return (
 					<li
-						style={{ opacity: 0.75 }}
+						style={{ opacity: data.isActive ? 0.75 : 0.5, color: styles.colors.black }}
 						onClick={() => onClick(data.value)}
 						className={`PaginateXPage ${
 							data.isActive ? 'PaginateXCurrent' : 'PaginateXLink'
@@ -63,7 +63,7 @@ class Paginate extends React.Component {
 			}
 			return (
 				<li
-					style={{ opacity: 0.75 }}
+					style={{ opacity: 0.75, color: styles.colors.black }}
 					className='PaginateXBreak'
 					key={`PaginateX${data.key}`}
 				>

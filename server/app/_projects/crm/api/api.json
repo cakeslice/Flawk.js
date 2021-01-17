@@ -347,7 +347,7 @@
         }
       }
     },
-    "/admin/search": {
+    "/admin/search_users": {
       "post": {
         "summary": "",
         "operationId": "post-admin-search",
@@ -364,14 +364,8 @@
                 "properties": {
                   "search": {
                     "type": "string"
-                  },
-                  "schema": {
-                    "type": "string"
                   }
-                },
-                "required": [
-                  "schema"
-                ]
+                }
               }
             },
             "application/xml": {

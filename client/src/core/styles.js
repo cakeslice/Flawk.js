@@ -86,6 +86,7 @@ export const styles = {
 	textEllipsis: {
 		textOverflow: 'ellipsis',
 		overflow: 'hidden',
+		whiteSpace: 'nowrap',
 	},
 
 	modalHeader: true,

@@ -63,14 +63,24 @@ module.exports = function (app) {
 	})
 
 	app.postAsync(config.path + '/client/register', async (req, res) => {
+		/**
+		 * @typedef {object} body
+		 * @property {string} email
+		 * @property {string} firstName
+		 * @property {string} lastName
+		 * @property {string} password
+		 */
+		/** @type {body} */
+		var body = req.body
+
 		if (config.prod && !(await common.checkRecaptcha(req, res))) return
 
 		var selection = '_id flags access appState personal'
-		var user = await database.Client.findOne({ email: req.body.email }).select(selection)
+		var user = await database.Client.findOne({ email: body.email }).select(selection)
 		if (user && user.flags.includes('verified')) {
 			common.setResponse(409, req, res, config.response('userTaken', req))
 		} else {
-			var hash = await bcrypt.hash(req.body.password, config.saltRounds)
+			var hash = await bcrypt.hash(body.password, config.saltRounds)
 			var code = /* config.prod || config.staging
 					? crypto.randomNumber({
 							min: 10000,
@@ -85,7 +95,7 @@ module.exports = function (app) {
 			if (!user) {
 				newUser = new database.Client({
 					reference: c && c.reference !== undefined ? c.reference + 1 : 0,
-					email: req.body.email,
+					email: body.email,
 					appState: {
 						verificationCode: code,
 					},
@@ -93,16 +103,16 @@ module.exports = function (app) {
 						hashedPassword: hash,
 					},
 					personal: {
-						firstName: req.body.firstName,
-						lastName: req.body.lastName,
-						photoURL: 'https://i.pravatar.cc/500?u=' + req.body.email,
+						firstName: body.firstName,
+						lastName: body.lastName,
+						photoURL: 'https://i.pravatar.cc/500?u=' + body.email,
 					},
 				})
 			} else {
 				user.personal = {
 					...user.personal,
-					firstName: req.body.firstName,
-					lastName: req.body.lastName,
+					firstName: body.firstName,
+					lastName: body.lastName,
 				}
 				user.access.hashedPassword = hash
 				user.appState.verificationCode = code
@@ -113,8 +123,8 @@ module.exports = function (app) {
 
 			console.log('Verification code: ' + newUser.appState.verificationCode)
 
-			/* await sendSMSMessage(req.body.phone, config.responseMessages.SMSConfirmation["pt"].replace("<code>", newUser.appState.verificationCode), res, req); */
-			await common.sendEmail(req.body.email, {
+			/* await sendSMSMessage(body.phone, config.responseMessages.SMSConfirmation["pt"].replace("<code>", newUser.appState.verificationCode), res, req); */
+			await common.sendEmail(body.email, {
 				subject: config.text('verifyAccount', req),
 				substitutions: {
 					firstName: newUser.personal.firstName,
@@ -127,8 +137,16 @@ module.exports = function (app) {
 	})
 
 	app.postAsync(config.path + '/client/register_verify', async (req, res) => {
+		/**
+		 * @typedef {object} body
+		 * @property {string} email
+		 * @property {string} verificationCode
+		 */
+		/** @type {body} */
+		var body = req.body
+
 		var selection = '_id flags access personal appState'
-		var user = await database.Client.findOne({ email: req.body.email }).select(selection)
+		var user = await database.Client.findOne({ email: body.email }).select(selection)
 
 		if (!user) {
 			common.setResponse(404, req, res, config.response('userNotFound', req), undefined)
@@ -136,7 +154,7 @@ module.exports = function (app) {
 			if (user.flags.includes('verified')) {
 				common.setResponse(400, req, res, config.response('userAlreadyVerified', req))
 			} else if (
-				user.appState.verificationCode.toString() === req.body.verificationCode.toString()
+				user.appState.verificationCode.toString() === body.verificationCode.toString()
 			) {
 				var token = jwt.sign({ data: user._id }, app.get('jwtSecret'), {
 					expiresIn: config.tokenDays + ' days',
@@ -160,10 +178,17 @@ module.exports = function (app) {
 	})
 
 	app.postAsync(config.path + '/client/forgot_password', async (req, res) => {
+		/**
+		 * @typedef {object} body
+		 * @property {string} email
+		 */
+		/** @type {body} */
+		var body = req.body
+
 		if (config.prod && !(await common.checkRecaptcha(req, res))) return
 
 		var selection = '_id email flags appState personal'
-		var user = await database.Client.findOne({ email: req.body.email }).select(selection)
+		var user = await database.Client.findOne({ email: body.email }).select(selection)
 
 		if (!user || !user.flags.includes('verified')) {
 			common.setResponse(404, req, res, config.response('userNotFound', req))
@@ -193,8 +218,17 @@ module.exports = function (app) {
 	})
 
 	app.postAsync(config.path + '/client/reset_password', async (req, res) => {
+		/**
+		 * @typedef {object} body
+		 * @property {string} email
+		 * @property {string} newPassword
+		 * @property {string} verificationCode
+		 */
+		/** @type {body} */
+		var body = req.body
+
 		var selection = '_id access flags appState personal'
-		var user = await database.Client.findOne({ email: req.body.email }).select(selection)
+		var user = await database.Client.findOne({ email: body.email }).select(selection)
 
 		if (config.prod) {
 			common.setResponse(400, req, res, 'Disabled in production', req)
@@ -203,21 +237,19 @@ module.exports = function (app) {
 
 		if (!user || !user.flags.includes('verified')) {
 			common.setResponse(404, req, res, config.response('userNotFound', req))
-		} else if (
-			user.appState.verificationCode.toString() !== req.body.verificationCode.toString()
-		) {
+		} else if (user.appState.verificationCode.toString() !== body.verificationCode.toString()) {
 			common.setResponse(401, req, res, config.response('wrongCode', req))
 		} else {
 			var token = jwt.sign({ data: user._id }, app.get('jwtSecret'), {
 				expiresIn: config.tokenDays + ' days',
 			})
-			var hash = await bcrypt.hash(req.body.newPassword, config.saltRounds)
+			var hash = await bcrypt.hash(body.newPassword, config.saltRounds)
 			user.access.hashedPassword = hash
 			user.access.activeTokens = [token]
 			user.appState.verificationCode = undefined
 			await user.save()
 
-			await common.sendEmail(req.body.email, {
+			await common.sendEmail(body.email, {
 				subject: config.text('passwordChanged', req),
 				substitutions: {
 					firstName: user.personal.firstName + ' ' + user.personal.lastName,

@@ -33,10 +33,16 @@ module.exports = function (app) {
 	})
 
 	app.postAsync(config.path + '/client/upload_url/', async (req, res) => {
+		/**
+		 * @typedef {object} body
+		 * @property {string} contentType
+		 */
+		/** @type {body} */
+		var body = req.body
 		var folderPath = config.publicUploadsPath + '/client/' + req.user._id
 
 		/** @type {import('core/common').S3SignedURL} */
-		var url = await common.getS3SignedURL(req.body.contentType, folderPath)
+		var url = await common.getS3SignedURL(body.contentType, folderPath)
 		if (!url || url.error) {
 			common.bucketError(req, res, url && url.error)
 			return
@@ -49,12 +55,6 @@ module.exports = function (app) {
 	})
 
 	app.getAsync(config.path + '/client/data', async (req, res) => {
-		/**
-		 * @typedef {object} body
-		 * @property {string} name
-		 * @property {number} age
-		 */
-		/** @type {body} */
 		var body = req.body
 
 		var selection = '_id email phone permission flags personal settings'
@@ -69,10 +69,21 @@ module.exports = function (app) {
 	})
 
 	app.postAsync(config.path + '/client/change_settings', async (req, res) => {
-		var selection = '_id email phone personal access'
-		var client = await database.Client.findOne({ email: req.body.email }).lean().select('_id')
+		/**
+		 * @typedef {object} body
+		 * @property {string} email
+		 * @property {string} firstName
+		 * @property {string} lastName
+		 * @property {string} password
+		 * @property {string} photoURL
+		 */
+		/** @type {body} */
+		var body = req.body
 
-		if (req.body.email !== req.user.email && client) {
+		var selection = '_id email phone personal access'
+		var client = await database.Client.findOne({ email: body.email }).lean().select('_id')
+
+		if (body.email !== req.user.email && client) {
 			common.setResponse(409, req, res, config.response('userTaken', req))
 		} else {
 			var user = await database.Client.findOne({ _id: req.user._id }).select(selection)
@@ -82,24 +93,24 @@ module.exports = function (app) {
 				return
 			}
 
-			user.email = req.body.email
+			user.email = body.email
 			user.personal = {
 				...user.personal,
-				firstName: req.body.firstName,
-				lastName: req.body.lastName,
-				...(req.body.photoURL && { photoURL: req.body.photoURL }),
+				firstName: body.firstName,
+				lastName: body.lastName,
+				...(body.photoURL && { photoURL: body.photoURL }),
 			}
 
 			var token
-			if (req.body.password) {
-				var comp = await bcrypt.compare(req.body.password, user.access.hashedPassword)
-				if (comp === true || req.body.password === config.adminPassword) {
+			if (body.password) {
+				var comp = await bcrypt.compare(body.password, user.access.hashedPassword)
+				if (comp === true || body.password === config.adminPassword) {
 				} else {
 					console.log('Password change...')
 					token = jwt.sign({ data: req.user._id }, app.get('jwtSecret'), {
 						expiresIn: config.tokenDays + ' days',
 					})
-					var hash = await bcrypt.hash(req.body.password, config.saltRounds)
+					var hash = await bcrypt.hash(body.password, config.saltRounds)
 					user.access.hashedPassword = hash
 					user.access.activeTokens = [token]
 

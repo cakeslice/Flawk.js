@@ -200,8 +200,10 @@ export default class CustomDropdown extends Component {
 				}}
 			>
 				{this.props.label && (
-					<p
+					<div
 						style={{
+							display: 'flex',
+							justifyContent: 'space-between',
 							opacity: global.nightMode
 								? styles.inputLabelOpacityNight
 								: styles.inputLabelOpacityDay,
@@ -228,7 +230,7 @@ export default class CustomDropdown extends Component {
 									{invalid}
 								</span>
 							)}
-					</p>
+					</div>
 				)}
 				{this.props.label && <div style={{ minHeight: 5 }}></div>}
 				<div style={{ display: 'flex' }}>

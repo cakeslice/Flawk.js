@@ -2791,7 +2791,7 @@ class Admin extends Component {
 		this.lockFetch(async () => {
 			var q = this.query
 			var res = await post(
-				'admin/search?sort=' +
+				'admin/search_users?sort=' +
 					q.sort +
 					'&order=' +
 					q.sortOrder +
@@ -2801,7 +2801,6 @@ class Admin extends Component {
 					q.limit,
 				{
 					search: q.search,
-					schema: 'Client',
 				},
 				{
 					signal: this.abortController.signal,

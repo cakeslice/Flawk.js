@@ -9,6 +9,7 @@ import React, { Component } from 'react'
 import { Img } from 'react-image'
 import avatar from '../assets/images/avatar.svg'
 import { MetroSpinner } from 'react-spinners-kit'
+import stc from 'string-to-color'
 
 var styles = require('core/styles').default
 var config = require('core/config_').default
@@ -24,6 +25,9 @@ export default class Avatar extends Component {
 			height: 60,
 			...this.props.style,
 		}
+
+		var name = this.props.name && this.props.name.split(' ')[0][0]
+		if (name && this.props.name.split(' ').length > 1) name += this.props.name.split(' ')[1][0]
 
 		return (
 			<div style={{ display: 'flex' }}>
@@ -46,14 +50,32 @@ export default class Avatar extends Component {
 						</div>
 					}
 					unloader={
-						<img
-							src={avatar}
-							style={{
-								...style,
-								opacity: 0.75,
-								borderRadius: '',
-							}}
-						></img>
+						name ? (
+							<div
+								style={{
+									...style,
+									display: 'flex',
+									justifyContent: 'center',
+									alignItems: 'center',
+									paddingLeft: 3,
+									letterSpacing: 3,
+									filter: 'saturate(4)',
+									color: styles.colors.blackDay,
+									background: stc(this.props.name),
+								}}
+							>
+								{name}
+							</div>
+						) : (
+							<img
+								src={avatar}
+								style={{
+									...style,
+									opacity: 0.75,
+									borderRadius: '',
+								}}
+							></img>
+						)
 					}
 					style={{ ...style }}
 					src={src}

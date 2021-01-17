@@ -193,12 +193,15 @@ export default class CustomInput extends Component {
 		return (
 			<div style={{ maxWidth: '100%', flex: this.props.flex }}>
 				{this.props.label && (
-					<p
+					<div
 						style={{
+							display: 'flex',
+							justifyContent: 'space-between',
 							opacity: global.nightMode
 								? styles.inputLabelOpacityNight
 								: styles.inputLabelOpacityDay,
 							letterSpacing: 0.4,
+							textAlign: this.props.label.length === 1 && 'end',
 							fontSize: styles.defaultFontSize,
 							...this.props.labelStyle,
 						}}
@@ -219,7 +222,7 @@ export default class CustomInput extends Component {
 									{invalid}
 								</span>
 							)}
-					</p>
+					</div>
 				)}
 				{this.props.label && <div style={{ minHeight: 5 }}></div>}
 				<div style={{ display: 'flex' }}>
