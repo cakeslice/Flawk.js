@@ -298,7 +298,7 @@ class Layout extends ReactQueryParams {
 							isLoading={this.state.fetching}
 							height={'500px'}
 							expandContent={(data) => <div>Expanded: {data.name}</div>}
-							keySelector={'id'}
+							keySelector={'_id'}
 							columns={[
 								{
 									name: 'Name',
@@ -446,7 +446,7 @@ class Layout extends ReactQueryParams {
 								isLoading={this.state.fetching}
 								height={'500px'}
 								expandContent={(data) => <div>Expanded: {data.name}</div>}
-								keySelector={'id'}
+								keySelector={'_id'}
 								columns={[
 									{
 										name: 'Name',
@@ -1646,7 +1646,7 @@ class Backend extends Component {
 											height={'250px'}
 											hideHeader
 											hideWrapper
-											keySelector={'id'}
+											keySelector={'_id'}
 											expandContent={(data) => (
 												<ReactJson
 													name={false}
@@ -2018,7 +2018,12 @@ class Register extends Component {
 								errors.password = 'Password needs to have at least 6 characters'
 							}
 
-							if (!config.recaptchaBypass && config.prod && !values.captcha)
+							if (
+								!config.recaptchaBypass &&
+								config.recaptchaSiteKey &&
+								config.prod &&
+								!values.captcha
+							)
 								errors.captcha = '*'
 
 							return errors
@@ -2829,7 +2834,7 @@ class Admin extends ReactQueryParams {
 								isLoading={this.state.fetching}
 								height={'500px'}
 								expandContent={(data) => <div>Expanded: {data.name}</div>}
-								keySelector={'id'}
+								keySelector={'_id'}
 								columns={[
 									{
 										name: 'Name',

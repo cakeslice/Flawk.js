@@ -89,7 +89,7 @@ export default class MobileDrawer extends Component {
 					var last = arr.length - 1 === i
 
 					var output = (
-						<div key={i}>
+						<div key={link.notRoute ? i : link.id + link.params}>
 							<Link
 								{...css({
 									':focus-visible': {
@@ -162,12 +162,13 @@ export default class MobileDrawer extends Component {
 					if (link.subRoutes)
 						return (
 							<Collapsible
+								key={link.notRoute ? i : link.id + link.params}
 								controlled
 								controlledOpen={selectedRoute.includes('/' + link.id)}
 								content={
 									<div>
 										{link.subRoutes.map((sub, i) => (
-											<div key={i}>
+											<div key={link.id + '/' + sub.id}>
 												<Link
 													{...css({
 														':focus-visible': {

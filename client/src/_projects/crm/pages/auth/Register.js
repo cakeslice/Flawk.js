@@ -194,7 +194,12 @@ class Register extends Component {
 										errors.password = 'Minimum 6 characters'
 									}
 
-									if (config.prod && !config.recaptchaBypass && !values.captcha)
+									if (
+										config.prod &&
+										config.recaptchaSiteKey &&
+										!config.recaptchaBypass &&
+										!values.captcha
+									)
 										errors.captcha = '*'
 
 									return errors

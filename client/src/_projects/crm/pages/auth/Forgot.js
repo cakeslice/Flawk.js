@@ -201,7 +201,12 @@ class Forgot extends Component {
 										errors.email = '*'
 									}
 
-									if (!config.recaptchaBypass && config.prod && !values.captcha)
+									if (
+										!config.recaptchaBypass &&
+										config.recaptchaSiteKey &&
+										config.prod &&
+										!values.captcha
+									)
 										errors.captcha = '*'
 
 									return errors

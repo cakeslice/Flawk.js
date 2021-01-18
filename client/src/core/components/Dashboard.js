@@ -337,6 +337,9 @@ export default class Dashboard extends Component {
 																	>
 																		{Page ? (
 																			<Page
+																				path={
+																					this.props.path
+																				}
 																				{...this.props
 																					.pageProps}
 																				parentTitle={
@@ -349,6 +352,9 @@ export default class Dashboard extends Component {
 																			></Page>
 																		) : (
 																			<div
+																				path={
+																					this.props.path
+																				}
 																				{...this.props
 																					.pageProps}
 																				parentTitle={
@@ -405,6 +411,7 @@ export default class Dashboard extends Component {
 														>
 															{Page ? (
 																<Page
+																	path={this.props.path}
 																	{...this.props.pageProps}
 																	overrideHeader={
 																		route.overrideHeader
@@ -413,6 +420,7 @@ export default class Dashboard extends Component {
 																></Page>
 															) : (
 																<div
+																	path={this.props.path}
 																	{...this.props.pageProps}
 																	overrideHeader={
 																		route.overrideHeader
@@ -476,7 +484,7 @@ class Menu extends React.Component {
 
 					var output = (
 						<div
-							key={i}
+							key={entry.notRoute ? i : entry.id + entry.params}
 							style={{
 								marginTop:
 									(this.props.entryStyle && this.props.entryStyle.marginTop) ||
@@ -593,12 +601,13 @@ class Menu extends React.Component {
 					if (entry.subRoutes)
 						return (
 							<Collapsible
+								key={entry.notRoute ? i : entry.id + entry.params}
 								controlled
 								controlledOpen={selectedRoute.includes('/' + entry.id)}
 								content={
 									<div>
 										{entry.subRoutes.map((sub, i) => (
-											<div key={i}>
+											<div key={entry.id + '/' + sub.id}>
 												<Link
 													{...css({
 														':focus-visible': {

@@ -275,7 +275,11 @@ export default class CustomDropdown extends Component {
 								DropdownIndicator: (props) => (
 									<div
 										{...css({
-											opacity: props.isFocused ? 0.75 : 0.25,
+											opacity: this.props.isDisabled
+												? 0.15
+												: props.isFocused
+												? 0.75
+												: 0.25,
 											':hover': { opacity: 0.75 },
 										})}
 									>
