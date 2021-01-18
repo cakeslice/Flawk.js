@@ -24,8 +24,6 @@ class Settings extends Component {
 	state = {}
 
 	render() {
-		if (!this.props.user) return <div></div>
-
 		return (
 			<MediaQuery minWidth={config.mobileWidthTrigger}>
 				{(desktop) => (

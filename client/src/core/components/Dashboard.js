@@ -327,47 +327,56 @@ export default class Dashboard extends Component {
 																	exact={
 																		sub.notExact ? false : true
 																	}
-																>
-																	<WrapperComponent
-																		parentTitle={route.name}
-																		overrideHeader={
-																			sub.overrideHeader
-																		}
-																		title={sub.name}
-																	>
-																		{Page ? (
-																			<Page
-																				path={
-																					this.props.path
-																				}
-																				{...this.props
-																					.pageProps}
-																				parentTitle={
-																					route.name
-																				}
-																				overrideHeader={
-																					sub.overrideHeader
-																				}
-																				title={sub.name}
-																			></Page>
-																		) : (
-																			<div
-																				path={
-																					this.props.path
-																				}
-																				{...this.props
-																					.pageProps}
-																				parentTitle={
-																					route.name
-																				}
-																				overrideHeader={
-																					sub.overrideHeader
-																				}
-																				title={sub.name}
-																			></div>
-																		)}
-																	</WrapperComponent>
-																</Route>
+																	render={({ match }) => (
+																		<WrapperComponent
+																			parentTitle={route.name}
+																			overrideHeader={
+																				sub.overrideHeader
+																			}
+																			title={sub.name}
+																		>
+																			{Page ? (
+																				<Page
+																					params={
+																						match.params
+																					}
+																					path={
+																						this.props
+																							.path
+																					}
+																					{...this.props
+																						.pageProps}
+																					parentTitle={
+																						route.name
+																					}
+																					overrideHeader={
+																						sub.overrideHeader
+																					}
+																					title={sub.name}
+																				></Page>
+																			) : (
+																				<div
+																					params={
+																						match.params
+																					}
+																					path={
+																						this.props
+																							.path
+																					}
+																					{...this.props
+																						.pageProps}
+																					parentTitle={
+																						route.name
+																					}
+																					overrideHeader={
+																						sub.overrideHeader
+																					}
+																					title={sub.name}
+																				></div>
+																			)}
+																		</WrapperComponent>
+																	)}
+																></Route>
 															)
 														})}
 
@@ -404,32 +413,37 @@ export default class Dashboard extends Component {
 															(route.params || '')
 														}
 														exact={route.notExact ? false : true}
-													>
-														<WrapperComponent
-															overrideHeader={route.overrideHeader}
-															title={route.name}
-														>
-															{Page ? (
-																<Page
-																	path={this.props.path}
-																	{...this.props.pageProps}
-																	overrideHeader={
-																		route.overrideHeader
-																	}
-																	title={route.name}
-																></Page>
-															) : (
-																<div
-																	path={this.props.path}
-																	{...this.props.pageProps}
-																	overrideHeader={
-																		route.overrideHeader
-																	}
-																	title={route.name}
-																></div>
-															)}
-														</WrapperComponent>
-													</Route>
+														render={({ match }) => (
+															<WrapperComponent
+																overrideHeader={
+																	route.overrideHeader
+																}
+																title={route.name}
+															>
+																{Page ? (
+																	<Page
+																		params={match.params}
+																		path={this.props.path}
+																		{...this.props.pageProps}
+																		overrideHeader={
+																			route.overrideHeader
+																		}
+																		title={route.name}
+																	></Page>
+																) : (
+																	<div
+																		params={match.params}
+																		path={this.props.path}
+																		{...this.props.pageProps}
+																		overrideHeader={
+																			route.overrideHeader
+																		}
+																		title={route.name}
+																	></div>
+																)}
+															</WrapperComponent>
+														)}
+													></Route>
 												)
 											})}
 										{defaultRoute && (

@@ -33,7 +33,7 @@ export default class GenericModal extends Component {
 			<Portal>
 				<div
 					style={{
-						backdropFilter: 'blur(2px)',
+						//backdropFilter: 'blur(2px)', // ! Bad for performance
 						background:
 							styles.modalBackground ||
 							config.replaceAlpha(

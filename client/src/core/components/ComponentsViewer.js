@@ -213,7 +213,6 @@ class Layout extends ReactQueryParams {
 		data: undefined,
 	}
 	abortController = new AbortController()
-
 	/**
 	 * @param {() => Promise<void>} method
 	 */
@@ -257,7 +256,6 @@ class Layout extends ReactQueryParams {
 				})
 		})
 	}
-
 	componentDidMount() {
 		this.fetchData()
 	}
@@ -298,7 +296,7 @@ class Layout extends ReactQueryParams {
 							isLoading={this.state.fetching}
 							height={'500px'}
 							expandContent={(data) => <div>Expanded: {data.name}</div>}
-							keySelector={'_id'}
+							keySelector={'id'}
 							columns={[
 								{
 									name: 'Name',
@@ -2747,8 +2745,8 @@ class Admin extends ReactQueryParams {
 	state = {
 		/**
 		 * @typedef {object} item
-		 * @property {string} id
-		 * @property {string} title
+		 * @property {string} email
+		 * @property {string} firstName
 		 */
 		/**
 		 * @typedef {object} data
@@ -2759,7 +2757,6 @@ class Admin extends ReactQueryParams {
 		data: undefined,
 	}
 	abortController = new AbortController()
-
 	/**
 	 * @param {() => Promise<void>} method
 	 */
@@ -2774,7 +2771,7 @@ class Admin extends ReactQueryParams {
 			var q = {
 				page: 1,
 				limit: 5,
-				sort: 'title',
+				sort: 'email',
 				order: 'asc',
 				...this.queryParams,
 				search: undefined,
@@ -2800,7 +2797,6 @@ class Admin extends ReactQueryParams {
 				})
 		})
 	}
-
 	componentDidMount() {
 		this.fetchData()
 	}

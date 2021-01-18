@@ -269,9 +269,26 @@ export default class CustomInput extends Component {
 						}}
 						style={isMasked ? finalStyle : {}}
 						{...(!isMasked && css(finalStyle))}
-					>
-						{this.props.children}
-					</InputComponent>
+					></InputComponent>
+					{this.props.icon && (
+						<div style={{ maxWidth: 0, maxHeight: 0 }}>
+							<div
+								style={{
+									userSelect: 'none',
+									pointerEvents: 'none',
+									position: 'relative',
+									display: 'flex',
+									justifyContent: 'center',
+									alignItems: 'center',
+									width: 30,
+									right: 35,
+									height: styles.inputHeight,
+								}}
+							>
+								{this.props.icon}
+							</div>
+						</div>
+					)}
 					{invalidType === 'right' && this.props.name && (
 						<div style={{ minWidth: 16, display: 'flex' }}>
 							{!this.props.isDisabled && invalid && invalid.length > 0 && (
