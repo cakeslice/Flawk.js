@@ -94,6 +94,8 @@ export default class Dashboard extends Component {
 		if (defaultRoute) defaultRoute = defaultRoute.id
 		else defaultRoute = this.props.routes.find((e) => e.id).id
 
+		if (!this.props.user) return <div></div>
+
 		return (
 			<Animated animationIn='fadeIn'>
 				<MediaQuery minWidth={config.mobileWidthTrigger}>

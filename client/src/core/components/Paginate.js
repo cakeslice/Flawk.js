@@ -88,7 +88,7 @@ class Paginate extends React.Component {
 		const isLast = currentPage === totalPages
 
 		if (totalPages === undefined || currentPage === undefined || totalPages === 0)
-			return <div></div>
+			return <div style={{ minHeight: 44 }}></div>
 
 		return (
 			<div
