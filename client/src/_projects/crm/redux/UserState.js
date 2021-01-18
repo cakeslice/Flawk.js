@@ -17,6 +17,7 @@ const initialState = {
 
 	user: undefined,
 	fetchingUser: true,
+	authError: false,
 }
 
 export default (state = initialState, action) => {
@@ -41,6 +42,7 @@ export default (state = initialState, action) => {
 			return {
 				...state,
 				user: action.data,
+				authError: action.authError,
 				fetchingUser: false,
 			}
 
@@ -96,6 +98,7 @@ export const fetchUser = (callback) => {
 			dispatch({
 				type: USER_FETCHED,
 				data: undefined,
+				authError: res.status < 500,
 			})
 		}
 

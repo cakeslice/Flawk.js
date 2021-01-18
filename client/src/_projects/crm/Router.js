@@ -55,6 +55,16 @@ class Router extends Component {
 		this.props.fetchUser()
 	}
 
+	componentDidUpdate() {
+		var selectedRoute = global.routerHistory().location.pathname.toString()
+		if (
+			selectedRoute.includes('/dashboard') &&
+			!this.props.fetchingUser &&
+			!this.props.user &&
+			this.props.authError
+		)
+			global.routerHistory().push(config.noTokenRedirect)
+	}
 	render() {
 		var permission = 1000
 		if (this.props.user) {
@@ -261,21 +271,17 @@ class Router extends Component {
 											/>
 										</Helmet>
 
-										<Dashboard
-											onUpdate={() => {
-												if (!this.props.fetchingUser && !this.props.user)
-													global
-														.routerHistory()
-														.push(config.noTokenRedirect)
-											}}
-											wrapperComponent={DashboardWrapper}
-											path={'/dashboard/'}
-											color={styles.colors.white}
-											logo={logo}
-											routes={routes}
-											// Redux props
-											pageProps={this.props}
-										></Dashboard>
+										{this.props.user && (
+											<Dashboard
+												wrapperComponent={DashboardWrapper}
+												path={'/dashboard/'}
+												color={styles.colors.white}
+												logo={logo}
+												routes={routes}
+												// Redux props
+												pageProps={this.props}
+											></Dashboard>
+										)}
 									</div>
 								</Route>
 
@@ -331,6 +337,7 @@ export default connect(
 		structures: state.redux.structures,
 		user: state.redux.user,
 		fetchingUser: state.redux.fetchingUser,
+		authError: state.redux.authError,
 	}),
 	{ fetchUser, fetchStructures }
 )(Router)

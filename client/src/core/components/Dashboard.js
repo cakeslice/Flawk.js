@@ -84,8 +84,6 @@ export default class Dashboard extends Component {
 
 		var closedWidth = this.props.closedWidth || 60
 
-		if (this.props.onUpdate) this.props.onUpdate()
-
 		var maxWidth = config.publicMaxWidth
 
 		var WrapperComponent = this.props.wrapperComponent || this.div
@@ -93,8 +91,6 @@ export default class Dashboard extends Component {
 		var defaultRoute = this.props.routes.find((e) => e.defaultRoute)
 		if (defaultRoute) defaultRoute = defaultRoute.id
 		else defaultRoute = this.props.routes.find((e) => e.id).id
-
-		if (!this.props.user) return <div></div>
 
 		return (
 			<Animated animationIn='fadeIn'>
