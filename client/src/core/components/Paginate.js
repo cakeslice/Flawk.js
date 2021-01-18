@@ -27,7 +27,6 @@ class Paginate extends React.Component {
 
 	createPagination() {
 		const {
-			currentPage,
 			totalPages,
 			boundaryPagesRange,
 			siblingPagesRange,
@@ -35,6 +34,9 @@ class Paginate extends React.Component {
 			onClick,
 			link,
 		} = this.props
+
+		var currentPage = this.props.currentPage
+		if (currentPage > totalPages) currentPage = totalPages
 
 		const paginationModel = getPaginationModel({
 			currentPage,
@@ -77,21 +79,16 @@ class Paginate extends React.Component {
 		})
 	}
 	render() {
-		const {
-			currentPage,
-			totalPages,
-			previous,
-			next,
-			first,
-			last,
-			onClick,
-			link,
-			hideInactive,
-		} = this.props
+		const { totalPages, previous, next, first, last, onClick, link, hideInactive } = this.props
+
+		var currentPage = this.props.currentPage
+		if (currentPage > totalPages) currentPage = totalPages
+
 		const isFirst = currentPage === 1
 		const isLast = currentPage === totalPages
 
-		if (totalPages === undefined || currentPage === undefined) return <div></div>
+		if (totalPages === undefined || currentPage === undefined || totalPages === 0)
+			return <div></div>
 
 		return (
 			<div

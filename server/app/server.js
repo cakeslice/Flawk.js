@@ -515,7 +515,7 @@ function init() {
 				setNoCache(res)
 				return
 			}
-			if (path.match(/\.(txt|js|otf|woff|mp3|mp4|webm|scss|css|png|jpg|jpeg|gif|svg|ico|json)$/)) {
+			if (path.match(/\.(txt|js|otf|mp3|woff|mp4|webm|scss|css|map|png|jpg|jpeg|gif|svg|ico|json)$/)) {
 				setLongTermCache(res)
 			}
 		},

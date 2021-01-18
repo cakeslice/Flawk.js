@@ -46,6 +46,7 @@
 # Now access using captain.mydomain.com
 # In CloudFlare turn on the proxy for both entries and delete the "*" entry
 # Also in CloudFlare enable DNSSEC
+# Make sure Auto Minify is disabled for everything
 # ---------------------------------------
 
 # ------------ WEB APP DEPLOY ------------
