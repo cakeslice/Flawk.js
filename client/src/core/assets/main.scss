@@ -269,8 +269,10 @@ button:active {
 }
 .DayPicker-wrapper {
 	position: relative;
+
+	width: 210px;
 	flex-direction: row;
-	padding-bottom: 10px;
+	padding-bottom: 5px;
 	-webkit-user-select: none;
 	-moz-user-select: none;
 	-ms-user-select: none;

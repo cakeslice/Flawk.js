@@ -195,7 +195,7 @@ export default class CustomDropdown extends Component {
 		return (
 			<div
 				style={{
-					maxWidth: '100%',
+					width: '100%',
 					flex: this.props.flex,
 				}}
 			>

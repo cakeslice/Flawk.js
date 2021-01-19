@@ -86,7 +86,7 @@ export default class GenericModal extends Component {
 								)}
 
 								<div style={{ padding: styles.modalPadding || 20 }}>
-									<div style={{ overflow: 'auto' }}>
+									<div style={{ overflow: !this.props.noOverflow && 'auto' }}>
 										{this.props.content(this.onClose.bind(this))}
 									</div>
 
