@@ -32,7 +32,7 @@ const _recaptchaBypass = process.env.REACT_APP_RECAPTCHA_BYPASS
 const _sentryID = process.env.REACT_APP_SENTRY_KEY
 const _cordovaBuild = process.env.REACT_APP_CORDOVA_BUILD
 
-const moment = require('moment/min/moment-with-locales')
+const moment = require('moment')
 var browserLanguage = ''
 try {
 	const detectBrowserLanguage = () =>

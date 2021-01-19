@@ -13,6 +13,7 @@ import * as Sentry from '@sentry/react'
 import { isSupported, CookieStorage, MemoryStorage } from 'local-storage-fallback'
 
 import 'core/assets/react-toastify.css'
+import 'react-day-picker/lib/style.css'
 
 var config = require('core/config_').default
 

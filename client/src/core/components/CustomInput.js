@@ -8,6 +8,8 @@
 import React, { Component } from 'react'
 import InputMask from 'react-input-mask'
 import { css, style } from 'glamor'
+import DayPickerInput from 'react-day-picker/DayPickerInput'
+import MomentLocaleUtils, { formatDate, parseDate } from 'react-day-picker/moment'
 
 var config = require('core/config_').default
 var styles = require('core/styles').default
@@ -35,6 +37,20 @@ const MaskedInput = (props) => (
 )
 const TextArea = (props) => <textarea {...props}></textarea>
 const Input = (props) => <input {...props}></input>
+const DatePicker = (props) => (
+	<DayPickerInput
+		formatDate={formatDate}
+		parseDate={parseDate}
+		dayPickerProps={{
+			locale: global.lang.moment,
+			localeUtils: MomentLocaleUtils,
+		}}
+		value={props.value}
+		inputProps={{ ...props, selectedDay: props.value }}
+		onDayChange={props.onChange}
+		placeholder={`${formatDate(new Date())}`}
+	/>
+)
 
 export default class CustomInput extends Component {
 	timer = null
@@ -147,6 +163,9 @@ export default class CustomInput extends Component {
 			isMasked = false
 			InputComponent = TextArea
 		}
+		if (this.props.datePicker) {
+			InputComponent = DatePicker
+		}
 
 		var finalStyle = {
 			...mainStyle,
@@ -205,6 +224,7 @@ export default class CustomInput extends Component {
 							letterSpacing: 0.4,
 							textAlign: this.props.label.length === 1 && 'end',
 							fontSize: styles.defaultFontSize,
+							whiteSpace: 'nowrap',
 							...this.props.labelStyle,
 						}}
 					>
@@ -252,9 +272,14 @@ export default class CustomInput extends Component {
 							} else {
 								this.props.onChange && this.props.onChange(e)
 
-								this.props.formIK &&
-									this.props.formIK.handleChange &&
-									this.props.formIK.handleChange(e)
+								if (this.props.datePicker)
+									this.props.formIK &&
+										this.props.formIK.setFieldValue &&
+										this.props.formIK.setFieldValue(this.props.name, e)
+								else
+									this.props.formIK &&
+										this.props.formIK.handleChange &&
+										this.props.formIK.handleChange(e)
 							}
 						}}
 						onBlur={(e, editor, next) => {
@@ -286,6 +311,25 @@ export default class CustomInput extends Component {
 								}}
 							>
 								{this.props.icon}
+							</div>
+						</div>
+					)}
+					{this.props.button && (
+						<div style={{ maxWidth: 0, maxHeight: 0 }}>
+							<div
+								style={{
+									userSelect: 'none',
+									position: 'relative',
+									display: 'flex',
+									justifyContent: 'center',
+									alignItems: 'center',
+									width: 30,
+									right: 35,
+									top: 2,
+									height: styles.inputHeight,
+								}}
+							>
+								{this.props.button}
 							</div>
 						</div>
 					)}

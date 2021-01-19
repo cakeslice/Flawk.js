@@ -13,6 +13,9 @@ const _loginRedirect = '/dashboard'
 const _restrictedRoutes = ['/dashboard'] // Make sure to update robots.txt if changed
 const _websocketSupport = true
 
+require('moment/locale/pt')
+require('moment/locale/fr')
+
 module.exports = {
 	backendURL: _backendURL + '/backend',
 	websocketURL: _backendURL + '/backend/sockets',

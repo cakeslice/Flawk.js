@@ -211,6 +211,7 @@ export default class CustomDropdown extends Component {
 							//fontWeight: 700,
 							fontSize: styles.defaultFontSize,
 							textAlign: this.props.label.length === 1 && 'end',
+							whiteSpace: 'nowrap',
 							...this.props.labelStyle,
 						}}
 					>
