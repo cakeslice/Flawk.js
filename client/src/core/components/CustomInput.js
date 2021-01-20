@@ -19,7 +19,7 @@ const MaskedInput = (props) => (
 		maskChar={' '}
 		mask={props.mask}
 		placeholder={props.placeholder}
-		value={props.value}
+		value={props.value || (props.isControlled ? '' : undefined)}
 		onChange={props.onChange}
 		autoFocus={props.autoFocus}
 		disabled={props.disabled}
@@ -35,8 +35,12 @@ const MaskedInput = (props) => (
 		)}
 	</InputMask>
 )
-const TextArea = (props) => <textarea {...props}></textarea>
-const Input = (props) => <input {...props}></input>
+const TextArea = (props) => (
+	<textarea {...props} value={props.value || (props.isControlled ? '' : undefined)}></textarea>
+)
+const Input = (props) => (
+	<input {...props} value={props.value || (props.isControlled ? '' : undefined)}></input>
+)
 const DatePicker = (props) => (
 	<DayPickerInput
 		formatDate={formatDate}
@@ -45,7 +49,7 @@ const DatePicker = (props) => (
 			locale: global.lang.moment,
 			localeUtils: MomentLocaleUtils,
 		}}
-		value={props.value}
+		value={props.value || (props.isControlled ? '' : undefined)}
 		inputProps={{ ...props, selectedDay: props.value }}
 		onDayChange={props.onChange}
 		placeholder={`${formatDate(new Date())}`}
@@ -249,6 +253,7 @@ export default class CustomInput extends Component {
 				{this.props.label && <div style={{ minHeight: 5 }}></div>}
 				<div style={{ display: 'flex' }}>
 					<InputComponent
+						isControlled={this.props.formIK ? true : false}
 						defaultValue={this.props.defaultValue}
 						autoFocus={this.props.autoFocus}
 						required={this.props.required}

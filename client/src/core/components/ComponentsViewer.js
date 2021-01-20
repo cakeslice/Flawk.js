@@ -222,14 +222,16 @@ class Layout extends ReactQueryParams {
 			this.setState({ fetching: false })
 		})
 	}
+	defaultQueryParams = {
+		page: 1,
+		limit: 5,
+		/* 
+		sort: 'title',
+		order: 'asc', */
+	}
 	fetchData() {
 		this.lockFetch(async () => {
 			var q = {
-				search: '',
-				page: 1,
-				limit: 5,
-				sort: 'title',
-				order: 'asc',
 				...this.queryParams,
 			}
 
@@ -415,7 +417,7 @@ class Layout extends ReactQueryParams {
 									}}
 									defaultValue={this.queryParams.search}
 									onChange={(e) => {
-										this.queryParams.search = e.target.value
+										this.setQueryParams({ search: e.target.value })
 									}}
 									onKeyPress={(e) => {
 										if (e.key === 'Enter') this.fetchData()
@@ -432,7 +434,7 @@ class Layout extends ReactQueryParams {
 									defaultValue={this.queryParams.search}
 									bufferedInput
 									onChange={(e) => {
-										this.queryParams.search = e.target.value
+										this.setQueryParams({ search: e.target.value })
 										this.fetchData()
 									}}
 									placeholder={'Buffered Search'}
@@ -501,7 +503,7 @@ class Layout extends ReactQueryParams {
 							{desktop && (
 								<Paginate
 									onClick={(e) => {
-										this.queryParams = { ...this.queryParams, page: e }
+										this.setQueryParams({ ...this.queryParams, page: e })
 										this.fetchData()
 									}}
 									totalPages={this.state.data && this.state.data.totalPages}
@@ -2766,13 +2768,16 @@ class Admin extends ReactQueryParams {
 			this.setState({ fetching: false })
 		})
 	}
+	defaultQueryParams = {
+		page: 1,
+		limit: 5,
+		email: 'email',
+		/* sort: 'title',
+		order: 'asc', */
+	}
 	fetchData() {
 		this.lockFetch(async () => {
 			var q = {
-				page: 1,
-				limit: 5,
-				sort: 'email',
-				order: 'asc',
 				...this.queryParams,
 				search: undefined,
 			}
@@ -2819,7 +2824,7 @@ class Admin extends ReactQueryParams {
 								defaultValue={this.queryParams.search}
 								bufferedInput
 								onChange={(e) => {
-									this.queryParams.search = e.target.value
+									this.setQueryParams({ search: e.target.value })
 									this.fetchData()
 								}}
 								placeholder={'Search'}
@@ -2862,7 +2867,7 @@ class Admin extends ReactQueryParams {
 							{desktop && (
 								<Paginate
 									onClick={(e) => {
-										this.queryParams = { ...this.queryParams, page: e }
+										this.setQueryParams({ ...this.queryParams, page: e })
 										this.fetchData()
 									}}
 									totalPages={this.state.data && this.state.data.totalPages}
