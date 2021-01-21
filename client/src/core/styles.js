@@ -92,6 +92,43 @@ export const styles = {
 	modalHeader: true,
 	modalButtonWrap: true,
 
+	//
+
+	dropZone: {
+		/* flex: 1,
+		display: 'flex',
+		flexDirection: 'column',
+		alignItems: 'center',
+		padding: '20px',
+		borderWidth: 2,
+		borderRadius: 2,
+		borderColor: '#eeeeee',
+		borderStyle: 'dashed',
+		backgroundColor: '#fafafa',
+		color: '#bdbdbd',
+		outline: 'none', */
+		transition: 'border .24s ease-in-out',
+
+		display: 'flex',
+		flexDirection: 'column',
+		justifyContent: 'center',
+		alignItems: 'center',
+		height: 137,
+		width: '100%',
+		borderRadius: 4,
+		border: '1px dashed ' + _black,
+	},
+	dropZoneActive: {
+		borderColor: _main,
+		background: config.replaceAlpha(_main, '.1'),
+	},
+	dropZoneReject: {
+		borderColor: _red,
+		background: config.replaceAlpha(_red, '.1'),
+	},
+
+	//
+
 	colors: {
 		black: _black,
 		blackDay: _black,

@@ -15,6 +15,7 @@ const nodemailer = require('nodemailer')
 const { toRegex } = require('diacritic-regex')
 const Nexmo = require('@vonage/server-sdk')
 const jwt = require('jsonwebtoken')
+var multer = require('multer')
 //
 var config = require('core/config_')
 const { nextTick } = require('process')
@@ -278,6 +279,8 @@ module.exports = {
 	},
 
 	///////////////////////////////////// STORAGE
+
+	multerUpload: multer({}),
 
 	/**
 	 * @param {string} contentType

@@ -307,14 +307,14 @@ export default {
 	 * @param {*=} options
 	 * @returns {Promise<{file:string,url:string|ArrayBuffer}>}
 	 */
-	handleImageChange: async (
+	handleFileChange: async (
 		e,
-		{ nonImage = false, maxSize = 10000000, minWidth = 100, minHeight = 100 } = {}
+		{ nonImage = false, maxSize = 10 * 1024 * 1024, minWidth = 100, minHeight = 100 } = {}
 	) => {
 		return new Promise((resolve) => {
-			e.preventDefault()
+			if (e.preventDefault) e.preventDefault()
 
-			var file = e.target.files[0]
+			var file = e.target ? e.target.files[0] : e[0]
 
 			if (file) {
 				var isImage =

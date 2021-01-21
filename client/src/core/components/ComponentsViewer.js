@@ -2690,27 +2690,23 @@ class Settings extends Component {
 											cursor: 'pointer',
 										}}
 									>
-										{!this.state.uploading && (
-											<input
-												disabled={isSubmitting}
-												style={{ fontSize: 10, width: 150 }}
-												required
-												type='file'
-												id={
-													this.props.desktop
-														? 'file_upload'
-														: 'file_upload_mobile'
+										<input
+											disabled={isSubmitting}
+											type='file'
+											id={
+												this.props.desktop
+													? 'file_upload'
+													: 'file_upload_mobile'
+											}
+											accept='image/*'
+											onChange={async (e) => {
+												var img = await config.handleFileChange(e)
+												if (img) {
+													setFieldValue('photoURL', img.url)
+													setFieldValue('photoFile', img.file)
 												}
-												accept='image/*'
-												onChange={async (e) => {
-													var img = await config.handleImageChange(e)
-													if (img) {
-														setFieldValue('photoURL', img.url)
-														setFieldValue('photoFile', img.file)
-													}
-												}}
-											/>
-										)}
+											}}
+										/>
 										<Avatar src={values.photoURL}></Avatar>
 									</label>
 									<div style={{ marginLeft: 10 }}>

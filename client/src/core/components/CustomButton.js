@@ -28,12 +28,13 @@ export default class CustomButton extends Component {
 		type: PropTypes.string,
 		onClick: PropTypes.func,
 		isLoading: PropTypes.bool,
+		invalid: PropTypes.string,
+		noInvalidLabel: PropTypes.bool,
 		// Checkbox props //
 		checkbox: PropTypes.oneOf([PropTypes.string, PropTypes.bool]),
 		checked: PropTypes.bool,
 		defaultChecked: PropTypes.bool,
 		value: PropTypes.bool,
-		invalid: PropTypes.string,
 		onChange: PropTypes.func,
 		onBlur: PropTypes.func,
 	}
@@ -203,6 +204,20 @@ export default class CustomButton extends Component {
 				opacity: 0.75,
 				cursor: 'default',
 			}),
+			...(!this.props.isDisabled &&
+				invalid && {
+					boxShadow: '0 0 0 2px ' + config.replaceAlpha(styles.colors.red, '.1'),
+					borderColor: config.replaceAlpha(
+						styles.colors.red,
+						global.nightMode
+							? styles.inputBorderFactorNight
+							: styles.inputBorderFactorDay
+					),
+					':focus': {
+						...finalStyle[':focus'],
+						borderColor: styles.colors.red,
+					},
+				}),
 		}
 
 		return (
@@ -298,7 +313,7 @@ export default class CustomButton extends Component {
 								</div>
 							)}
 						</div>
-						{this.props.name && (
+						{this.props.name && !this.props.noInvalidLabel && (
 							<div style={{ minHeight: 26 }}>
 								{!this.props.isDisabled && invalid && (
 									<div style={{ minHeight: 5 }}></div>

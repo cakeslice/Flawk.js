@@ -77,6 +77,8 @@ module.exports = {
 
 	//
 
+	uploadFileLimit: 10 * 1024 * 1024, // 10 MB
+
 	bucketAccessID: process.env.bucketAccessID,
 	bucketAccessSecret: process.env.bucketAccessSecret,
 	bucketEndpoint: process.env.bucketEndpoint,

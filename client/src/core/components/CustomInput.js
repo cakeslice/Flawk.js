@@ -184,8 +184,7 @@ export default class CustomInput extends Component {
 			...finalStyle,
 			...(!this.props.isDisabled &&
 				invalid && {
-					boxShadow:
-						invalid && '0 0 0 2px ' + config.replaceAlpha(styles.colors.red, '.1'),
+					boxShadow: '0 0 0 2px ' + config.replaceAlpha(styles.colors.red, '.1'),
 					borderColor: config.replaceAlpha(
 						styles.colors.red,
 						global.nightMode
@@ -216,7 +215,7 @@ export default class CustomInput extends Component {
 		if (invalid === '*' && this.props.label) invalidType = 'label'
 
 		return (
-			<div style={{ width: '100%', flex: this.props.flex }}>
+			<div style={{ width: finalStyle.width || '100%', flex: this.props.flex }}>
 				{this.props.label && (
 					<div
 						style={{
