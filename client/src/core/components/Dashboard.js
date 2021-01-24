@@ -42,7 +42,7 @@ const desktopHeightTop = 65
  * @property {import('react').JSX.Element=} tab
  * @property {boolean=} notExact
  * @property {boolean=} defaultRoute
- * @property {array=} subRoutes
+ * @property {object[]} subRoutes
  */
 export default class Dashboard extends Component {
 	static propTypes = {

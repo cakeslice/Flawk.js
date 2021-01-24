@@ -1,5 +1,5 @@
 declare namespace NodeJS {
 	interface Global {
-		projectSpecificGlobal: () => object;
+		clientNotification: (notificationType: string, clientID: string, data: object) => Promise<void>;
 	};
 }

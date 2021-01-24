@@ -23,11 +23,12 @@ var emailValidator = {
 
 ///////////////////////
 
-async function unshiftToArray(schema, id, arrayName, entry) {
+async function unshiftToArray(schema, id, arrayName, sortObject, objectsArray = []) {
 	var o = { $push: {} }
 	o['$push'][arrayName] = {
-		$each: [entry],
+		$each: objectsArray,
 		$position: 0,
+		$sort: sortObject,
 	}
 	await schema.updateOne(
 		{
@@ -36,13 +37,31 @@ async function unshiftToArray(schema, id, arrayName, entry) {
 		o
 	)
 }
+async function removeFromArray(schema, id, arrayName, key, keysArray = []) {
+	var o = { $pull: {} }
+	o['$pull'][arrayName] = {}
+	o['$pull'][arrayName][key] = {
+		$in: keysArray,
+	}
+	await schema.updateOne(
+		{
+			_id: id,
+		},
+		o
+	)
+}
+global.unshiftToArray = unshiftToArray
+global.removeFromArray = removeFromArray
+
 global.clientNotification = async (notificationType, clientID, data = {}) => {
-	await unshiftToArray(Client, clientID, 'arrays.notifications', {
-		isRead: false,
-		date: Date.now(),
-		notificationType: notificationType,
-		data: data,
-	})
+	await unshiftToArray(Client, clientID, 'arrays.notifications', { date: -1 }, [
+		{
+			isRead: false,
+			date: Date.now(),
+			notificationType: notificationType,
+			data: data,
+		},
+	])
 }
 var ClientSchema = new mongoose.Schema({
 	// _id

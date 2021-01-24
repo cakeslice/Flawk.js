@@ -30,7 +30,8 @@ declare namespace NodeJS {
 		structures: Structure[];
 		getStructure: (name: string) => Promise<object[]>;
 
-		clientNotification: (notificationType: string, clientID: string, data: object) => Promise<void>;
+		unshiftToArray: (schema: object, id: string, arrayName: string, sortObject: object, objectsArray: array) => Promise<void>;
+		removeFromArray: (schema: object, id: string, arrayName: string, key: string, keysArray: array) => Promise<void>;
 
 		clientSockets: SocketIO.Namespace;
 		isOnline: (clientID: string) => boolean;
