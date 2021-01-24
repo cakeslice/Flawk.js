@@ -331,6 +331,7 @@ export default class CustomInput extends Component {
 									right: 35,
 									top: 2,
 									height: styles.inputHeight,
+									...this.props.buttonStyle,
 								}}
 							>
 								{this.props.button}

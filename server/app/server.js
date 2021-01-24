@@ -301,7 +301,7 @@ function init() {
 		default: new RateLimiterMongo({
 			storeClient: common.databaseConnection,
 			keyPrefix: 'ratelimit_default',
-			points: 5, // X requests
+			points: 6, // X requests
 			duration: 1, // per X second by IP
 		}),
 		limited: new RateLimiterMongo({
