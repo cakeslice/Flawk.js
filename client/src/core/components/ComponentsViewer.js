@@ -417,7 +417,7 @@ class Layout extends ReactQueryParams {
 									}}
 									defaultValue={this.queryParams.search}
 									onChange={(e) => {
-										this.setQueryParams({ search: e.target.value })
+										this.setQueryParams({ search: e })
 									}}
 									onKeyPress={(e) => {
 										if (e.key === 'Enter') this.fetchData()
@@ -434,7 +434,7 @@ class Layout extends ReactQueryParams {
 									defaultValue={this.queryParams.search}
 									bufferedInput
 									onChange={(e) => {
-										this.setQueryParams({ search: e.target.value })
+										this.setQueryParams({ search: e })
 										this.fetchData()
 									}}
 									placeholder={'Buffered Search'}
@@ -2820,7 +2820,7 @@ class Admin extends ReactQueryParams {
 								defaultValue={this.queryParams.search}
 								bufferedInput
 								onChange={(e) => {
-									this.setQueryParams({ search: e.target.value })
+									this.setQueryParams({ search: e })
 									this.fetchData()
 								}}
 								placeholder={'Search'}

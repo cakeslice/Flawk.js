@@ -74,10 +74,10 @@ export default class CustomInput extends Component {
 		}
 	}
 	triggerChange = () => {
-		this.props.onChange && this.props.onChange({ target: { value: this.bufferedValue } })
+		this.props.onChange && this.props.onChange(this.bufferedValue || undefined)
 		/* this.props.formIK &&
 			this.props.formIK.setFieldValue &&
-			this.props.formIK.setFieldValue(this.props.name, this.bufferedValue) */
+			this.props.formIK.setFieldValue(this.props.name, this.bufferedValue || undefined) */
 	}
 
 	render() {
@@ -274,16 +274,23 @@ export default class CustomInput extends Component {
 							if (this.props.bufferedInput) {
 								this.handleChangeBuffered(e)
 							} else {
-								this.props.onChange && this.props.onChange(e)
+								this.props.onChange &&
+									this.props.onChange(e.target.value || undefined)
 
 								if (this.props.datePicker)
 									this.props.formIK &&
 										this.props.formIK.setFieldValue &&
-										this.props.formIK.setFieldValue(this.props.name, e)
+										this.props.formIK.setFieldValue(
+											this.props.name,
+											e || undefined
+										)
 								else
 									this.props.formIK &&
-										this.props.formIK.handleChange &&
-										this.props.formIK.handleChange(e)
+										this.props.formIK.setFieldValue &&
+										this.props.formIK.setFieldValue(
+											this.props.name,
+											e.target.value || undefined
+										)
 							}
 						}}
 						onBlur={(e, editor, next) => {
