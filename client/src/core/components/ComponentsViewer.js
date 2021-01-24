@@ -2820,7 +2820,7 @@ class Admin extends ReactQueryParams {
 								defaultValue={this.queryParams.search}
 								bufferedInput
 								onChange={(e) => {
-									this.setQueryParams({ search: e })
+									this.setQueryParams({ search: e, page: 1 })
 									this.fetchData()
 								}}
 								placeholder={'Search'}
