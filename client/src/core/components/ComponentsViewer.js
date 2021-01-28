@@ -35,7 +35,7 @@ import { Link } from 'react-router-dom'
 import LanguageSwitcher from './LanguageSwitcher'
 import Loading from './Loading'
 import ReCaptcha from 'react-google-recaptcha'
-import ReactQueryParams from 'react-query-params'
+import ReactQueryParams from 'core/utils/ReactQueryParams'
 import QueryString from 'core/utils/queryString'
 import GenericModal from './GenericModal'
 var validator = require('validator')
