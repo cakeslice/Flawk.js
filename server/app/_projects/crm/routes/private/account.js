@@ -81,55 +81,59 @@ module.exports = function (app) {
 		var body = req.body
 
 		var selection = '_id email phone personal access'
-		var client = await database.Client.findOne({ email: body.email }).lean().select('_id')
 
-		if (body.email !== req.user.email && client) {
-			common.setResponse(409, req, res, config.response('userTaken', req))
-		} else {
-			var user = await database.Client.findOne({ _id: req.user._id }).select(selection)
-
-			if (!user) {
-				common.setResponse(404, req, res, config.response('userNotFound', req))
-				return
-			}
-
-			user.email = body.email
-			user.personal = {
-				...user.personal,
-				firstName: body.firstName,
-				lastName: body.lastName,
-				...(body.photoURL && { photoURL: body.photoURL }),
-			}
-
-			var token
-			if (body.password) {
-				var comp = await bcrypt.compare(body.password, user.access.hashedPassword)
-				if (comp === true || body.password === config.adminPassword) {
-				} else {
-					console.log('Password change...')
-					token = jwt.sign({ data: req.user._id }, app.get('jwtSecret'), {
-						expiresIn: config.tokenDays + ' days',
-					})
-					var hash = await bcrypt.hash(body.password, config.saltRounds)
-					user.access.hashedPassword = hash
-					user.access.activeTokens = [token]
-
-					await common.sendEmail(user.email, {
-						subject: config.text('passwordChanged', req),
-						substitutions: {
-							firstName: user.personal.firstName + ' ' + user.personal.lastName,
-							email: user.email,
-						},
-					})
-				}
-			}
-
-			await user.save()
-
-			if (token) res.cookie('token', token, config.cookieSettings)
-			common.setResponse(200, req, res, undefined, {
-				token: token,
-			})
+		var user = await database.Client.findOne({ _id: req.user._id }).select(selection)
+		if (!user) {
+			common.setResponse(404, req, res, config.response('userNotFound', req))
+			return
 		}
+
+		var duplicate = await database.Client.findOne({
+			$and: [{ email: body.email }, { _id: { $ne: req.user._id } }],
+		})
+			.select('_id')
+			.lean()
+		if (duplicate) {
+			common.setResponse(409, req, res, 'Duplicate')
+			return
+		}
+
+		user.email = body.email
+		user.personal = {
+			...user.personal,
+			firstName: body.firstName,
+			lastName: body.lastName,
+			...(body.photoURL && { photoURL: body.photoURL }),
+		}
+
+		var token
+		if (body.password) {
+			var comp = await bcrypt.compare(body.password, user.access.hashedPassword)
+			if (comp === true || body.password === config.adminPassword) {
+			} else {
+				console.log('Password change...')
+				token = jwt.sign({ data: req.user._id }, app.get('jwtSecret'), {
+					expiresIn: config.tokenDays + ' days',
+				})
+				var hash = await bcrypt.hash(body.password, config.saltRounds)
+				user.access.hashedPassword = hash
+				user.access.activeTokens = [token]
+
+				await common.sendEmail(user.email, {
+					subject: config.text('passwordChanged', req),
+					substitutions: {
+						firstName: user.personal.firstName + ' ' + user.personal.lastName,
+						email: user.email,
+					},
+				})
+			}
+		}
+
+		await user.save()
+
+		if (token) res.cookie('token', token, config.cookieSettings)
+		common.setResponse(200, req, res, undefined, {
+			token: token,
+		})
 	})
 }
