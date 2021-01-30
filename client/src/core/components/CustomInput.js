@@ -16,7 +16,8 @@ var styles = require('core/styles').default
 
 const MaskedInput = (props) => (
 	<InputMask
-		maskChar={' '}
+		maskChar={'_'}
+		formatChars={props.formatChars}
 		mask={props.mask}
 		placeholder={props.placeholder}
 		value={props.value || (props.isControlled ? '' : undefined)}
@@ -262,6 +263,7 @@ export default class CustomInput extends Component {
 						type={this.props.type ? this.props.type : 'text'}
 						disabled={this.props.isDisabled}
 						mask={this.props.mask}
+						formatChars={this.props.formatChars}
 						placeholder={this.props.placeholder ? this.props.placeholder : ''}
 						onFocus={(e) => {
 							e.target.placeholder = ''
