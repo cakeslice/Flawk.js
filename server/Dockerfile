@@ -28,7 +28,7 @@
 # UPDATE CAPROVER FIRST!
 # SSH and then follow deploy/add_swap.txt
 # DON'T use caprover serversetup
-# Change CapRover password in control panel
+# Change CapRover password in control panel (very strong!)
 
 # ---------------------------
 # ---------------------------

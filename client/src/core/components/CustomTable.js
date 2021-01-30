@@ -11,7 +11,7 @@ import { UnmountClosed } from 'react-collapse'
 import MediaQuery from 'react-responsive'
 import { css } from 'glamor'
 import { MetroSpinner } from 'react-spinners-kit'
-import ReactQueryParams from 'react-query-params'
+import ReactQueryParams from 'core/utils/ReactQueryParams'
 
 var config = require('core/config_').default
 var styles = require('core/styles').default
