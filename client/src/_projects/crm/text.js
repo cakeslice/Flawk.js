@@ -7,6 +7,7 @@
 
 module.exports = {
 	common: {
+		searching: { pt: 'A procurar...', en: 'Searching...' },
 		cancel: { pt: 'Cancelar', en: 'Cancel' },
 		delete: { pt: 'Apagar', en: 'Delete' },
 		remove: { pt: 'Remover', en: 'Remove' },

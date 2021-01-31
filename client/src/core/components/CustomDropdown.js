@@ -9,7 +9,8 @@ import _ from 'lodash'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import 'react-input-range/lib/css/index.css'
-import Select from 'react-select'
+import AsyncSelect from 'react-select/async'
+import Select from 'react-select/'
 import { css } from 'glamor'
 
 var config = require('core/config_').default
@@ -158,6 +159,8 @@ export default class CustomDropdown extends Component {
 		var invalidType = this.props.invalidType
 		if (invalid === '*' && this.props.label) invalidType = 'label'
 
+		var SelectComponent = this.props.loadOptions ? AsyncSelect : Select
+
 		return (
 			<div
 				style={{
@@ -201,8 +204,9 @@ export default class CustomDropdown extends Component {
 				)}
 				{this.props.label && <div style={{ minHeight: 5 }}></div>}
 				<div style={{ display: 'flex' }}>
-					<Select
+					<SelectComponent
 						noOptionsMessage={() => config.text('common.noOptions')}
+						loadingMessage={() => config.text('common.searching')}
 						menuPortalTarget={document.body}
 						isClearable={this.props.erasable}
 						isDisabled={this.props.isDisabled}
@@ -490,8 +494,11 @@ export default class CustomDropdown extends Component {
 							}),
 						}}
 						{...this.props.config}
+						cacheOptions={this.props.loadOptions ? true : false}
+						loadOptions={this.props.loadOptions}
+						defaultOptions={true}
 						options={this.props.options}
-					></Select>
+					></SelectComponent>
 					{invalidType === 'right' && this.props.name && (
 						<div style={{ minWidth: 16, display: 'flex' }}>
 							{!this.props.isDisabled && invalid && invalid.length > 0 && (
