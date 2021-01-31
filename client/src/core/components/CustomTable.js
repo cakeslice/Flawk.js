@@ -142,81 +142,87 @@ export default class CustomTable extends ReactQueryParams {
 										{this.props.expandContent && (
 											<div style={{ minWidth: expandButtonWidth }} />
 										)}
-										{this.props.columns
-											.filter((c) =>
-												desktop ? c : c.hide === 'mobile' ? false : true
-											)
-											.map((c) => {
-												var s = {
-													...headerCellStyle,
-													width:
-														100 * (c.grow !== undefined ? c.grow : 1) +
-														'%',
-													...(overrideStyle &&
-														overrideStyle.headerCellStyle),
-													...(c.onClick && {
-														cursor: 'pointer',
-														display: 'flex',
-													}),
-													...(c.style && c.style),
-												}
-												if (c.onClick)
-													return (
-														<button
-															onClick={() => {
-																var key = c.selector
-																this.setQueryParams({
-																	sort:
+										{this.props.columns &&
+											this.props.columns
+												.filter((c) =>
+													desktop ? c : c.hide === 'mobile' ? false : true
+												)
+												.map((c) => {
+													var s = {
+														...headerCellStyle,
+														width:
+															100 *
+																(c.grow !== undefined
+																	? c.grow
+																	: 1) +
+															'%',
+														...(overrideStyle &&
+															overrideStyle.headerCellStyle),
+														...(c.onClick && {
+															cursor: 'pointer',
+															display: 'flex',
+														}),
+														...(c.style && c.style),
+													}
+													if (c.onClick)
+														return (
+															<button
+																onClick={() => {
+																	var key = c.selector
+																	this.setQueryParams({
+																		sort:
+																			this.queryParams
+																				.sort === key
+																				? this.queryParams
+																						.order ===
+																				  'asc'
+																					? key
+																					: undefined
+																				: key,
+																		order:
+																			this.queryParams
+																				.sort === key
+																				? this.queryParams
+																						.order ===
+																				  'asc'
+																					? 'desc'
+																					: 'asc'
+																				: 'asc',
+																	})
+																	c.onClick && c.onClick()
+																}}
+																key={c.selector}
+																style={s}
+															>
+																{c.name}
+																<div style={{ minWidth: 8 }} />
+																<div>
+																	{sorting(
+																		config.replaceAlpha(
+																			s.color ||
+																				styles.colors.black,
+																			0.25
+																		),
+																		config.replaceAlpha(
+																			s.color ||
+																				styles.colors.black,
+																			0.75
+																		),
 																		this.queryParams.sort ===
-																		key
-																			? this.queryParams
-																					.order === 'asc'
-																				? key
-																				: undefined
-																			: key,
-																	order:
-																		this.queryParams.sort ===
-																		key
-																			? this.queryParams
-																					.order === 'asc'
-																				? 'desc'
-																				: 'asc'
-																			: 'asc',
-																})
-																c.onClick && c.onClick()
-															}}
-															key={c.selector}
-															style={s}
-														>
-															{c.name}
-															<div style={{ minWidth: 8 }} />
-															<div>
-																{sorting(
-																	config.replaceAlpha(
-																		s.color ||
-																			styles.colors.black,
-																		0.25
-																	),
-																	config.replaceAlpha(
-																		s.color ||
-																			styles.colors.black,
-																		0.75
-																	),
-																	this.queryParams.sort ===
-																		c.selector &&
-																		this.queryParams.order
-																)}
-																<div style={{ minHeight: 3 }} />
+																			c.selector &&
+																			this.queryParams.order
+																	)}
+																	<div style={{ minHeight: 3 }} />
+																</div>
+															</button>
+														)
+													else
+														return (
+															<div key={c.selector} style={s}>
+																{c.name}
 															</div>
-														</button>
-													)
-												else
-													return (
-														<div key={c.selector} style={s}>
-															{c.name}
-														</div>
-													)
-											})}
+														)
+												})}
 									</div>
 
 									{this.props.isLoading && (
@@ -266,41 +272,51 @@ export default class CustomTable extends ReactQueryParams {
 											cellPadding={cellPadding}
 											cellPaddingY={cellPaddingY}
 										>
-											{this.props.columns
-												.filter((c) =>
-													desktop ? c : c.hide === 'mobile' ? false : true
-												)
-												.map((c) => (
-													<div
-														key={c.selector}
-														style={{
-															minWidth: this.props.cellWidth || 50,
-															width:
-																100 *
-																	(c.grow !== undefined
-																		? c.grow
-																		: 1) +
-																'%',
-															padding: cellPadding,
-															paddingTop: cellPaddingY,
-															paddingBottom: cellPaddingY,
-															...(c.style && c.style),
-														}}
-													>
+											{this.props.columns &&
+												this.props.columns
+													.filter((c) =>
+														desktop
+															? c
+															: c.hide === 'mobile'
+															? false
+															: true
+													)
+													.map((c) => (
 														<div
+															key={c.selector}
 															style={{
-																textOverflow: !c.cell && 'ellipsis',
-																overflow: !c.cell && 'hidden',
-																...(overrideStyle &&
-																	overrideStyle.cellStyle),
+																minWidth:
+																	this.props.cellWidth || 50,
+																width:
+																	100 *
+																		(c.grow !== undefined
+																			? c.grow
+																			: 1) +
+																	'%',
+																padding: cellPadding,
+																paddingTop: cellPaddingY,
+																paddingBottom: cellPaddingY,
+																...(c.style && c.style),
 															}}
 														>
-															{c.cell
-																? c.cell(_.get(d, c.selector), d)
-																: _.get(d, c.selector)}
+															<div
+																style={{
+																	textOverflow:
+																		!c.cell && 'ellipsis',
+																	overflow: !c.cell && 'hidden',
+																	...(overrideStyle &&
+																		overrideStyle.cellStyle),
+																}}
+															>
+																{c.cell
+																	? c.cell(
+																			_.get(d, c.selector),
+																			d
+																	  )
+																	: _.get(d, c.selector)}
+															</div>
 														</div>
-													</div>
-												))}
+													))}
 										</Row>
 									))}
 							</div>

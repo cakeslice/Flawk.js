@@ -421,6 +421,7 @@ export default class CustomDropdown extends Component {
 									fontWeight: styles.dropdownFontWeight,
 									...(this.props.style && this.props.style.input),
 									...conditionalInputStyle,
+									...(data && data.style),
 								}
 							},
 							option: (
