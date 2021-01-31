@@ -9,13 +9,22 @@ import _ from 'lodash'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import 'react-input-range/lib/css/index.css'
-import AsyncSelect from 'react-select/async'
 import Select from 'react-select/'
 import { css } from 'glamor'
 
 var config = require('core/config_').default
 var styles = require('core/styles').default
 export default class CustomDropdown extends Component {
+	state = {}
+
+	componentDidMount() {
+		if (this.props.loadOptions) {
+			this.props.loadOptions(undefined, (options) => {
+				this.setState({ loadedOptions: options })
+			})
+		}
+	}
+
 	render() {
 		var value =
 			this.props.formIK && this.props.formIK.values
@@ -159,8 +168,6 @@ export default class CustomDropdown extends Component {
 		var invalidType = this.props.invalidType
 		if (invalid === '*' && this.props.label) invalidType = 'label'
 
-		var SelectComponent = this.props.loadOptions ? AsyncSelect : Select
-
 		return (
 			<div
 				style={{
@@ -204,7 +211,7 @@ export default class CustomDropdown extends Component {
 				)}
 				{this.props.label && <div style={{ minHeight: 5 }}></div>}
 				<div style={{ display: 'flex' }}>
-					<SelectComponent
+					<Select
 						noOptionsMessage={() => config.text('common.noOptions')}
 						loadingMessage={() => config.text('common.searching')}
 						menuPortalTarget={document.body}
@@ -231,8 +238,12 @@ export default class CustomDropdown extends Component {
 						}}
 						placeholder={this.props.placeholder}
 						value={
-							this.props.options &&
-							this.props.options.filter((option) => option.value === value)
+							this.state.loadedOptions
+								? this.state.loadedOptions.filter(
+										(option) => option.value === value
+								  )
+								: this.props.options &&
+								  this.props.options.filter((option) => option.value === value)
 						}
 						defaultValue={
 							this.props.defaultValue &&
@@ -494,11 +505,15 @@ export default class CustomDropdown extends Component {
 							}),
 						}}
 						{...this.props.config}
-						cacheOptions={this.props.loadOptions ? true : false}
-						loadOptions={this.props.loadOptions}
-						defaultOptions={true}
-						options={this.props.options}
-					></SelectComponent>
+						onInputChange={(value) => {
+							if (this.props.loadOptions) {
+								this.props.loadOptions(value, (options) => {
+									this.setState({ loadedOptions: options })
+								})
+							}
+						}}
+						options={this.state.loadedOptions || this.props.options}
+					></Select>
 					{invalidType === 'right' && this.props.name && (
 						<div style={{ minWidth: 16, display: 'flex' }}>
 							{!this.props.isDisabled && invalid && invalid.length > 0 && (
