@@ -500,7 +500,7 @@ class Layout extends ReactQueryParams {
 								data={this.state.data && this.state.data.items}
 							></CustomTable>
 							<div style={{ minHeight: 10 }}></div>
-							{desktop && (
+							{this.state.data && desktop && (
 								<Paginate
 									onClick={(e) => {
 										this.setQueryParams({ ...this.queryParams, page: e })
@@ -2860,7 +2860,7 @@ class Admin extends ReactQueryParams {
 								data={this.state.data && this.state.data.items}
 							></CustomTable>
 							<div style={{ minHeight: 10 }}></div>
-							{desktop && (
+							{this.state.data && desktop && (
 								<Paginate
 									onClick={(e) => {
 										this.setQueryParams({ ...this.queryParams, page: e })
