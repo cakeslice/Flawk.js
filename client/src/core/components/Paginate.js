@@ -26,16 +26,10 @@ class Paginate extends React.Component {
 	static defaultProps = {}
 
 	createPagination() {
-		const {
-			totalPages,
-			boundaryPagesRange,
-			siblingPagesRange,
-			breakDelimiter,
-			onClick,
-			link,
-		} = this.props
+		const { boundaryPagesRange, siblingPagesRange, breakDelimiter, onClick, link } = this.props
 
-		var currentPage = this.props.currentPage
+		var totalPages = this.props.totalPages && Number(this.props.totalPages)
+		var currentPage = this.props.currentPage && Number(this.props.currentPage)
 		if (currentPage > totalPages) currentPage = totalPages
 
 		const paginationModel = getPaginationModel({
@@ -79,9 +73,10 @@ class Paginate extends React.Component {
 		})
 	}
 	render() {
-		const { totalPages, previous, next, first, last, onClick, link, hideInactive } = this.props
+		const { previous, next, first, last, onClick, link, hideInactive } = this.props
 
-		var currentPage = this.props.currentPage
+		var totalPages = this.props.totalPages && Number(this.props.totalPages)
+		var currentPage = this.props.currentPage && Number(this.props.currentPage)
 		if (currentPage > totalPages) currentPage = totalPages
 
 		const isFirst = currentPage === 1
