@@ -22,7 +22,7 @@ const CustomTooltip = ({ children, content, ...props }) => (
 				},
 			},
 		]}
-		trigger={['hover', 'click']}
+		trigger={['hover']}
 		{...props}
 		tooltip={({ arrowRef, tooltipRef, getArrowProps, getTooltipProps, placement }) => (
 			<div

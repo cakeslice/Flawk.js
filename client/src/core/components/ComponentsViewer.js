@@ -2707,7 +2707,9 @@ class Settings extends Component {
 												}
 											}}
 										/>
-										<Avatar src={values.photoURL}></Avatar>
+										<div /* tabIndex={0} */ {...css(styles.fakeButton)}>
+											<Avatar src={values.photoURL}></Avatar>
+										</div>
 									</label>
 									<div style={{ marginLeft: 10 }}>
 										{config.text('settings.drawer.account.profileImage')}

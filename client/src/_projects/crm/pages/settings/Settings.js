@@ -14,6 +14,7 @@ import _ from 'lodash'
 import CustomButton from 'core/components/CustomButton'
 import CustomInput from 'core/components/CustomInput'
 import { get, post } from 'core/api'
+import { css } from 'glamor'
 import Avatar from 'core/components/Avatar'
 var validator = require('validator')
 
@@ -216,7 +217,13 @@ class Settings extends Component {
 															}
 														}}
 													/>
-													<Avatar src={values.photoURL}></Avatar>
+													<div
+														/* tabIndex={0} */ {...css(
+															styles.fakeButton
+														)}
+													>
+														<Avatar src={values.photoURL}></Avatar>
+													</div>
 												</label>
 												<div style={{ marginLeft: 10 }}>
 													{config.text(

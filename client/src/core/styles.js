@@ -58,6 +58,16 @@ export const styles = {
 		minWidth: 10,
 	},
 
+	fakeButton: {
+		cursor: 'pointer',
+		':focus-visible': {
+			opacity: 0.75,
+		},
+		':hover': {
+			opacity: 0.75,
+		},
+	},
+
 	mediumShadow: '0 5px 20px 0 rgba(0, 0, 0, 0.05)',
 	shadowFilter: '2px 6px 8px rgba(0, 0, 0, 0.3)',
 	strongerShadow:
