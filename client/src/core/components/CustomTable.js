@@ -101,177 +101,54 @@ export default class CustomTable extends ReactQueryParams {
 				: undefined
 
 		return (
-			<div
-				style={{
-					...wrapperStyle,
-					//
-					display: 'flex',
-					flexDirection: 'column',
-					overflow: 'auto',
-					width: '100%',
-					...(overrideStyle && overrideStyle.wrapperStyle),
-					minHeight: this.props.height,
-					maxHeight: this.props.height,
-				}}
-			>
-				<MediaQuery minWidth={config.mobileWidthTrigger}>
-					{(desktop) => (
-						<div
-							style={{
-								width: 'fit-content',
-								minWidth: '100%',
-							}}
-						>
-							{!this.props.hideHeader && (
-								<div
-									style={{
-										...headerRowStyle,
-										...(overrideStyle && overrideStyle.headerWrapperStyle),
-									}}
-								>
+			<div style={{ height: this.props.height }}>
+				<div
+					style={{
+						...wrapperStyle,
+						//
+						display: 'flex',
+						flexDirection: 'column',
+						overflow: 'auto',
+						width: '100%',
+						...(overrideStyle && overrideStyle.wrapperStyle),
+						minHeight: this.props.height,
+						maxHeight: this.props.height,
+
+						...(this.props.children && {
+							borderBottom: 'none',
+							borderBottomLeftRadius: 0,
+							borderBottomRightRadius: 0,
+						}),
+					}}
+				>
+					<MediaQuery minWidth={config.mobileWidthTrigger}>
+						{(desktop) => (
+							<div
+								style={{
+									width: 'fit-content',
+									minWidth: '100%',
+								}}
+							>
+								{!this.props.hideHeader && (
 									<div
 										style={{
-											display: 'flex',
-											justifyContent: 'space-between',
-											alignItems: 'center',
-											width: '100%',
-											minHeight: 40,
-											...(overrideStyle && overrideStyle.headerStyle),
+											...headerRowStyle,
+											...(overrideStyle && overrideStyle.headerWrapperStyle),
 										}}
 									>
-										{this.props.expandContent && (
-											<div style={{ minWidth: expandButtonWidth }} />
-										)}
-										{this.props.columns &&
-											this.props.columns
-												.filter((c) =>
-													desktop ? c : c.hide === 'mobile' ? false : true
-												)
-												.map((c) => {
-													var s = {
-														...headerCellStyle,
-														width:
-															100 *
-																(c.grow !== undefined
-																	? c.grow
-																	: 1) +
-															'%',
-														...(overrideStyle &&
-															overrideStyle.headerCellStyle),
-														...(c.onClick && {
-															cursor: 'pointer',
-															display: 'flex',
-														}),
-														...(c.style && c.style),
-													}
-													if (c.onClick)
-														return (
-															<button
-																onClick={() => {
-																	var key = c.selector
-																	this.setQueryParams({
-																		sort:
-																			this.queryParams
-																				.sort === key
-																				? this.queryParams
-																						.order ===
-																				  'asc'
-																					? key
-																					: undefined
-																				: key,
-																		order:
-																			this.queryParams
-																				.sort === key
-																				? this.queryParams
-																						.order ===
-																				  'asc'
-																					? 'desc'
-																					: 'asc'
-																				: 'asc',
-																	})
-																	c.onClick && c.onClick()
-																}}
-																key={c.selector}
-																style={s}
-															>
-																{c.name}
-																<div style={{ minWidth: 8 }} />
-																<div>
-																	{sorting(
-																		config.replaceAlpha(
-																			s.color ||
-																				styles.colors.black,
-																			0.25
-																		),
-																		config.replaceAlpha(
-																			s.color ||
-																				styles.colors.black,
-																			0.75
-																		),
-																		this.queryParams.sort ===
-																			c.selector &&
-																			this.queryParams.order
-																	)}
-																	<div style={{ minHeight: 3 }} />
-																</div>
-															</button>
-														)
-													else
-														return (
-															<div key={c.selector} style={s}>
-																{c.name}
-															</div>
-														)
-												})}
-									</div>
-
-									{this.props.isLoading && (
-										<div style={{ position: 'relative', zIndex: 1 }}>
-											<div
-												style={{
-													position: 'absolute',
-													width: '100%',
-													display: 'flex',
-													justifyContent: 'center',
-													alignItems: 'center',
-													height: this.props.height
-														? 'calc(' + this.props.height + '/ 2)'
-														: '50%',
-												}}
-											>
-												<MetroSpinner
-													size={styles.spinnerMedium.size}
-													color={config.replaceAlpha(
-														styles.colors.black,
-														0.2
-													)}
-													loading={true}
-												/>
-											</div>
-										</div>
-									)}
-								</div>
-							)}
-							<div style={{ opacity: this.props.isLoading && 0.5 }}>
-								{this.props.data &&
-									this.props.data.map((d) => (
-										<Row
-											key={_.get(d, this.props.keySelector)}
+										<div
 											style={{
-												...rowWrapperStyle,
-												...(overrideStyle && overrideStyle.rowWrapperStyle),
+												display: 'flex',
+												justifyContent: 'space-between',
+												alignItems: 'center',
+												width: '100%',
+												minHeight: 40,
+												...(overrideStyle && overrideStyle.headerStyle),
 											}}
-											rowStyle={{
-												...rowStyle,
-												...(overrideStyle && overrideStyle.rowStyle),
-											}}
-											expandContent={
-												this.props.expandContent &&
-												this.props.expandContent(d)
-											}
-											cellPadding={cellPadding}
-											cellPaddingY={cellPaddingY}
 										>
+											{this.props.expandContent && (
+												<div style={{ minWidth: expandButtonWidth }} />
+											)}
 											{this.props.columns &&
 												this.props.columns
 													.filter((c) =>
@@ -281,50 +158,211 @@ export default class CustomTable extends ReactQueryParams {
 															? false
 															: true
 													)
-													.map((c) => (
-														<div
-															key={c.selector}
-															style={{
-																minWidth:
-																	this.props.cellWidth || 50,
-																width:
-																	100 *
-																		(c.grow !== undefined
-																			? c.grow
-																			: 1) +
-																	'%',
-																padding: cellPadding,
-																paddingTop: cellPaddingY,
-																paddingBottom: cellPaddingY,
-																...(c.style && c.style),
-															}}
-														>
+													.map((c) => {
+														var s = {
+															...headerCellStyle,
+															width:
+																100 *
+																	(c.grow !== undefined
+																		? c.grow
+																		: 1) +
+																'%',
+															...(overrideStyle &&
+																overrideStyle.headerCellStyle),
+															...(c.onClick && {
+																cursor: 'pointer',
+																display: 'flex',
+															}),
+															...(c.style && c.style),
+														}
+														if (c.onClick)
+															return (
+																<button
+																	onClick={() => {
+																		var key = c.selector
+																		this.setQueryParams({
+																			sort:
+																				this.queryParams
+																					.sort === key
+																					? this
+																							.queryParams
+																							.order ===
+																					  'asc'
+																						? key
+																						: undefined
+																					: key,
+																			order:
+																				this.queryParams
+																					.sort === key
+																					? this
+																							.queryParams
+																							.order ===
+																					  'asc'
+																						? 'desc'
+																						: 'asc'
+																					: 'asc',
+																		})
+																		c.onClick && c.onClick()
+																	}}
+																	key={c.selector}
+																	style={s}
+																>
+																	{c.name}
+																	<div style={{ minWidth: 8 }} />
+																	<div>
+																		{sorting(
+																			config.replaceAlpha(
+																				s.color ||
+																					styles.colors
+																						.black,
+																				0.25
+																			),
+																			config.replaceAlpha(
+																				s.color ||
+																					styles.colors
+																						.black,
+																				0.75
+																			),
+																			this.queryParams
+																				.sort ===
+																				c.selector &&
+																				this.queryParams
+																					.order
+																		)}
+																		<div
+																			style={{ minHeight: 3 }}
+																		/>
+																	</div>
+																</button>
+															)
+														else
+															return (
+																<div key={c.selector} style={s}>
+																	{c.name}
+																</div>
+															)
+													})}
+										</div>
+
+										{this.props.isLoading && (
+											<div style={{ position: 'relative', zIndex: 1 }}>
+												<div
+													style={{
+														position: 'absolute',
+														width: '100%',
+														display: 'flex',
+														justifyContent: 'center',
+														alignItems: 'center',
+														height: this.props.height
+															? 'calc(' + this.props.height + '/ 2)'
+															: '50%',
+													}}
+												>
+													<MetroSpinner
+														size={styles.spinnerMedium.size}
+														color={config.replaceAlpha(
+															styles.colors.black,
+															0.2
+														)}
+														loading={true}
+													/>
+												</div>
+											</div>
+										)}
+									</div>
+								)}
+								<div style={{ opacity: this.props.isLoading && 0.5 }}>
+									{this.props.data &&
+										this.props.data.map((d) => (
+											<Row
+												key={_.get(d, this.props.keySelector)}
+												style={{
+													...rowWrapperStyle,
+													...(overrideStyle &&
+														overrideStyle.rowWrapperStyle),
+												}}
+												rowStyle={{
+													...rowStyle,
+													...(overrideStyle && overrideStyle.rowStyle),
+												}}
+												expandContent={
+													this.props.expandContent &&
+													this.props.expandContent(d)
+												}
+												cellPadding={cellPadding}
+												cellPaddingY={cellPaddingY}
+											>
+												{this.props.columns &&
+													this.props.columns
+														.filter((c) =>
+															desktop
+																? c
+																: c.hide === 'mobile'
+																? false
+																: true
+														)
+														.map((c) => (
 															<div
+																key={c.selector}
 																style={{
-																	textOverflow:
-																		!c.cell && 'ellipsis',
-																	overflow: !c.cell && 'hidden',
-																	...(overrideStyle &&
-																		overrideStyle.cellStyle),
+																	minWidth:
+																		this.props.cellWidth || 50,
+																	width:
+																		100 *
+																			(c.grow !== undefined
+																				? c.grow
+																				: 1) +
+																		'%',
+																	padding: cellPadding,
+																	paddingTop: cellPaddingY,
+																	paddingBottom: cellPaddingY,
+																	...(c.style && c.style),
 																}}
 															>
-																{c.cell
-																	? c.cell(
-																			_.get(d, c.selector),
-																			d
-																	  )
-																	: _.get(d, c.selector)}
+																<div
+																	style={{
+																		textOverflow:
+																			!c.cell && 'ellipsis',
+																		overflow:
+																			!c.cell && 'hidden',
+																		...(overrideStyle &&
+																			overrideStyle.cellStyle),
+																	}}
+																>
+																	{c.cell
+																		? c.cell(
+																				_.get(
+																					d,
+																					c.selector
+																				),
+																				d
+																		  )
+																		: _.get(d, c.selector)}
+																</div>
 															</div>
-														</div>
-													))}
-										</Row>
-									))}
+														))}
+											</Row>
+										))}
+								</div>
 							</div>
-						</div>
-					)}
-				</MediaQuery>
+						)}
+					</MediaQuery>
+				</div>
 
-				{this.props.children}
+				{this.props.children && (
+					<div
+						style={{
+							...wrapperStyle,
+							...(overrideStyle && overrideStyle.wrapperStyle),
+
+							//borderTop: 'none',
+							borderTopLeftRadius: 0,
+							borderTopRightRadius: 0,
+						}}
+					>
+						{this.props.children}
+					</div>
+				)}
 			</div>
 		)
 	}
