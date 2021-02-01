@@ -101,7 +101,7 @@ export default class CustomTable extends ReactQueryParams {
 				: undefined
 
 		return (
-			<div style={{ height: this.props.height }}>
+			<div style={{ height: this.props.height, width: '100%' }}>
 				<div
 					style={{
 						...wrapperStyle,
