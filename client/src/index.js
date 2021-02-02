@@ -14,6 +14,7 @@ import { isSupported, CookieStorage, MemoryStorage } from 'local-storage-fallbac
 
 import 'core/assets/react-toastify.css'
 import 'react-day-picker/lib/style.css'
+import 'react-awesome-lightbox/build/style.css'
 
 var config = require('core/config_').default
 
