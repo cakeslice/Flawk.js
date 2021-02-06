@@ -506,6 +506,13 @@ export default class CustomDropdown extends Component {
 							}),
 						}}
 						{...this.props.config}
+						filterOption={
+							this.props.loadOptions
+								? (candidate, input) => {
+										return true
+								  }
+								: undefined
+						}
 						onInputChange={(value) => {
 							if (this.props.loadOptions) {
 								this.props.loadOptions(value, (options) => {
