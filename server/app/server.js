@@ -425,7 +425,7 @@ function init() {
 	app.use(config.path + '/*', paginate.middleware(10, 50))
 	app.all(config.path + '/*', function (req, res, next) {
 		// Minimum results to fetch (0 is all of them)
-		if (req.query.limit <= 4) req.query.limit = 4
+		if (req.query.limit <= 1) req.query.limit = 1
 		if (req.query.limit > 100) req.query.limit = 100
 		next()
 	})

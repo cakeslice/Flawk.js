@@ -199,7 +199,7 @@ export default class CustomTable extends ReactQueryParams {
 																							.order ===
 																					  'asc'
 																						? 'desc'
-																						: 'asc'
+																						: undefined
 																					: 'asc',
 																		})
 																		c.onClick && c.onClick()

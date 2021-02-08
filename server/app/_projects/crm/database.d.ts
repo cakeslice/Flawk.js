@@ -61,14 +61,6 @@ interface client extends Document {
 				data: mongoose.Schema.Types.Mixed;
 			},
 		],
-		activity: [
-			{
-				_id: mongoose.Schema.Types.ObjectId;
-				date: string | number;
-				activityType: string;
-				data: object;
-			},
-		],
 
 		friends: [
 			{
