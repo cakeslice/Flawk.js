@@ -325,6 +325,7 @@ export default class CustomTable extends ReactQueryParams {
 																			!c.cell && 'ellipsis',
 																		overflow:
 																			!c.cell && 'hidden',
+																		display: 'inline-grid',
 																		...(overrideStyle &&
 																			overrideStyle.cellStyle),
 																	}}
