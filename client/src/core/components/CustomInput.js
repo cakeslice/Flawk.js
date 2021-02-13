@@ -88,8 +88,7 @@ export default class CustomInput extends Component {
 				: this.props.value
 		var invalid =
 			this.props.formIK && this.props.formIK.touched && this.props.formIK.errors
-				? this.props.formIK.touched[this.props.name] &&
-				  this.props.formIK.errors[this.props.name]
+				? this.props.formIK.errors[this.props.name]
 				: this.props.invalid
 
 		//
