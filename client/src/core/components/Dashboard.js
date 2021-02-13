@@ -280,6 +280,8 @@ export default class Dashboard extends Component {
 										desktop
 											? {
 													marginLeft: closedWidth,
+													minHeight: '100vh',
+													height: 1,
 													maxWidth: 'calc(100vw - ' + closedWidth + 'px)',
 											  }
 											: undefined

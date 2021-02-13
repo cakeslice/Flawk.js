@@ -16,11 +16,23 @@ const _main = 'rgba(51,108,251,1)'
 const _mainLight = 'rgba(51,108,251, .85)'
 const _mainVeryLight = 'rgba(51,108,251, .25)'
 
+const _card = {
+	borderStyle: 'solid',
+	borderWidth: 1,
+	padding: 35,
+	borderRadius: 8,
+	boxSizing: 'border-box',
+	background: 'rgba(255,255,255, 1)',
+}
+
 module.exports = {
 	font: _font,
 	fontAlt: _fontAlt,
 
-	/* defaultBorderRadius: 4,
+	/*
+	card: _card,
+	
+   defaultBorderRadius: 4,
 
 	inputBorderFactorNight: 0.3,
 	inputBorderFactorDay: 0.4,
@@ -29,14 +41,50 @@ module.exports = {
 	inputLabelOpacityDay: 1,
 
 	inputHeight: 40,
-	buttonFontWeight: 700, */
+	buttonFontWeight: 700,
+	inputFontWeight: 700,
+	dropdownFontWeight: 700,
 
+	modalPadding: 35,
+	modalHeader: false,
+	modalButtonWrap: false,
+	modalWidth: 466,
+
+	dropZoneActive: {
+		borderColor: _main,
+	},
+	dropZoneReject: {
+		borderColor: _red,
+	},
+	*/
+
+	/* 
+	customTooltip: {
+		background: 'rgba(54,55,64,0.95)',
+		maxWidth: 200,
+		fontSize: 10,
+		padding: 15,
+		color: 'rgba(255,255,255,1)',
+	}, 
+	*/
 	customDropdown: {
 		indicator: { background: 'none' },
 	},
-	/* customTable: {
+	/* 
+	dashboardHeader: { marginBottom: 55, minHeight: 40 },
+	tableSelectedWrapper: {
+		minHeight: 55,
+		paddingTop: 10,
+		display: 'flex',
+		alignItems: 'center',
+		justifyContent: 'space-between',
+	},
+	customTable: {
 		headerWrapperStyle: {
-			..._card,
+			// ! Can't use _card here, causes error...
+			borderWidth: 1,
+			boxSizing: 'border-box',
+			//
 			padding: 0,
 			borderStyle: 'none',
 			borderRadius: 0,
@@ -44,7 +92,9 @@ module.exports = {
 			boxShadow: 'none',
 			fontSize: 14,
 			fontWeight: 700,
-			color: 'rgba(159,162,180,1)',
+			color: _faded,
+			height: 54,
+			paddingTop: 15,
 		},
 		rowStyle: {
 			boxShadow: 'none',
@@ -55,7 +105,16 @@ module.exports = {
 			paddingRight: 0,
 			':hover': {},
 		},
-		wrapperStyle: { ..._card, padding: 0 },
+		wrapperStyle: {
+			// ! Can't use _card here, causes error...
+			borderStyle: 'solid',
+			borderWidth: 1,
+			borderRadius: 8,
+			boxSizing: 'border-box',
+			background: 'rgba(255,255,255, 1)',
+			//
+			padding: 0,
+		},
 		rowWrapperStyle: {
 			padding: 0,
 			borderBottom: '1px solid ' + 'rgba(223,224,235,1)',

@@ -13,6 +13,7 @@ import { createBrowserHistory, createHashHistory } from 'history'
 import { ToastContainer, toast, Bounce } from 'react-toastify'
 import ReactGA from 'react-ga'
 import { Fade } from 'react-reveal'
+import CustomButton from './CustomButton'
 
 var styles = require('core/styles').default
 var config = require('core/config_').default
@@ -190,6 +191,7 @@ class MobileSimulator extends Component {
 	state = {}
 
 	render() {
+		var enabled = global.storage.getItem('mobile_viewer') === 'true'
 		return (
 			<MediaQuery minWidth={config.mobileWidthTrigger}>
 				{(desktop) => (
@@ -198,41 +200,90 @@ class MobileSimulator extends Component {
 							<div
 								onMouseEnter={() => this.setState({ hover: true })}
 								onMouseLeave={() => this.setState({ hover: false })}
-								style={{
-									position: 'fixed',
-									bottom: 75,
-									right: 25,
-									overflow: 'hidden',
-									height: 568,
-									width: 320,
-									maxHeight: 568,
-									maxWidth: 320,
-									zIndex: 100,
-									boxShadow: this.state.hover && styles.strongerShadow,
-									background: styles.colors.background,
-									opacity: this.state.hover ? 1 : 0.75,
-									transition: 'transform 200ms',
-									transformOrigin: '100% 100%',
-									transform: this.state.hover ? 'scale(1)' : 'scale(.5)',
+								style={
+									enabled
+										? {
+												position: 'fixed',
+												bottom: 75,
+												right: 25,
+												overflow: 'hidden',
+												height: 568,
+												width: 320,
+												maxHeight: 568,
+												maxWidth: 320,
+												zIndex: 100,
+												boxShadow:
+													this.state.hover && styles.strongerShadow,
+												background: styles.colors.background,
+												opacity: this.state.hover ? 1 : 0.75,
+												transition: 'transform 200ms',
+												transformOrigin: '100% 100%',
+												transform: this.state.hover
+													? 'scale(1)'
+													: 'scale(.5)',
 
-									borderColor: global.nightMode
-										? 'rgba(255, 255, 255, 0.1)'
-										: 'rgba(0, 0, 0, 0.1)',
-									borderWidth: 1,
-									borderStyle: 'solid',
-								}}
+												borderColor: global.nightMode
+													? 'rgba(255, 255, 255, 0.1)'
+													: 'rgba(0, 0, 0, 0.1)',
+												borderWidth: 1,
+												borderStyle: 'solid',
+										  }
+										: {
+												opacity: this.state.hover ? 1 : 0.75,
+												position: 'fixed',
+												bottom: 37,
+												right: 35,
+										  }
+								}
 							>
-								<ResponsiveContext.Provider value={{ width: 300, height: 620 }}>
-									<div
-										style={{
-											width: '100%',
-											height: '100%',
-											overflow: 'scroll',
+								{enabled ? (
+									<ResponsiveContext.Provider value={{ width: 300, height: 620 }}>
+										<div
+											style={{
+												width: '100%',
+												height: '100%',
+												overflow: 'scroll',
+											}}
+										>
+											{this.props.children}
+											<div style={{ maxHeight: 0 }}>
+												<div
+													style={{
+														position: 'absolute',
+														transformOrigin: '100% 100%',
+														transform: 'scale(.5)',
+														bottom: 7.5,
+														right: 7.5,
+														opacity: 0.5,
+														zIndex: 99999,
+													}}
+												>
+													<CustomButton
+														appearance='primary'
+														onClick={() => {
+															global.storage.setItem(
+																'mobile_viewer',
+																'false'
+															)
+															this.forceUpdate()
+														}}
+													>
+														Close
+													</CustomButton>
+												</div>
+											</div>
+										</div>
+									</ResponsiveContext.Provider>
+								) : (
+									<CustomButton
+										onClick={() => {
+											global.storage.setItem('mobile_viewer', 'true')
+											this.forceUpdate()
 										}}
 									>
-										{this.props.children}
-									</div>
-								</ResponsiveContext.Provider>
+										Mobile
+									</CustomButton>
+								)}
 							</div>
 						)}
 						{this.props.children}

@@ -35,7 +35,6 @@ export default class CustomTable extends ReactQueryParams {
 		}
 
 		var headerRowStyle = {
-			background: styles.colors.background,
 			padding: paddingX * 2,
 			paddingTop: 0,
 			paddingBottom: 0,
@@ -101,24 +100,31 @@ export default class CustomTable extends ReactQueryParams {
 				: undefined
 
 		return (
-			<div style={{ height: this.props.height, width: '100%' }}>
+			<div
+				style={{
+					width: '100%',
+					height: '100%',
+					display: 'flex',
+					flexDirection: 'column',
+				}}
+			>
 				<div
 					style={{
 						...wrapperStyle,
 						//
 						display: 'flex',
 						flexDirection: 'column',
-						overflow: 'auto',
 						width: '100%',
+						minHeight: 250,
 						...(overrideStyle && overrideStyle.wrapperStyle),
-						minHeight: this.props.height,
-						maxHeight: this.props.height,
 
 						...(this.props.children && {
 							borderBottom: 'none',
 							borderBottomLeftRadius: 0,
 							borderBottomRightRadius: 0,
 						}),
+						maxHeight: '100%',
+						flexGrow: 1,
 					}}
 				>
 					<MediaQuery minWidth={config.mobileWidthTrigger}>
@@ -127,6 +133,9 @@ export default class CustomTable extends ReactQueryParams {
 								style={{
 									width: 'fit-content',
 									minWidth: '100%',
+									height: '100%',
+									display: 'flex',
+									flexDirection: 'column',
 								}}
 							>
 								{!this.props.hideHeader && (
@@ -243,35 +252,44 @@ export default class CustomTable extends ReactQueryParams {
 															)
 													})}
 										</div>
-
-										{this.props.isLoading && (
-											<div style={{ position: 'relative', zIndex: 1 }}>
-												<div
-													style={{
-														position: 'absolute',
-														width: '100%',
-														display: 'flex',
-														justifyContent: 'center',
-														alignItems: 'center',
-														height: this.props.height
-															? 'calc(' + this.props.height + '/ 2)'
-															: '50%',
-													}}
-												>
-													<MetroSpinner
-														size={styles.spinnerMedium.size}
-														color={config.replaceAlpha(
-															styles.colors.black,
-															0.2
-														)}
-														loading={true}
-													/>
-												</div>
-											</div>
-										)}
 									</div>
 								)}
-								<div style={{ opacity: this.props.isLoading && 0.5 }}>
+
+								{this.props.isLoading && (
+									<div
+										style={{
+											position: 'relative',
+											zIndex: 1,
+											top: 50,
+										}}
+									>
+										<div
+											style={{
+												position: 'absolute',
+												width: '100%',
+												display: 'flex',
+												justifyContent: 'center',
+												alignItems: 'center',
+											}}
+										>
+											<MetroSpinner
+												size={styles.spinnerMedium.size}
+												color={config.replaceAlpha(
+													styles.colors.black,
+													0.2
+												)}
+												loading={true}
+											/>
+										</div>
+									</div>
+								)}
+								<div
+									style={{
+										opacity: this.props.isLoading && 0.5,
+										overflow: 'auto',
+										flexGrow: 1,
+									}}
+								>
 									{this.props.data &&
 										this.props.data.map((d) => (
 											<Row

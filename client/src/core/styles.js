@@ -42,8 +42,6 @@ export const styles = {
 		borderRadius: 10,
 		boxSizing: 'border-box',
 		background: _white,
-		minHeight: 10,
-		minWidth: 10,
 	},
 	/**
 	 * @type {import('react').CSSProperties}
@@ -54,8 +52,6 @@ export const styles = {
 		boxSizing: 'border-box',
 		padding: 20,
 		borderRadius: 10,
-		minHeight: 10,
-		minWidth: 10,
 	},
 
 	fakeButton: {
