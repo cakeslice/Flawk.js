@@ -1,0 +1,18 @@
+#
+# Copyright (c) 2020 José Guerreiro. All rights reserved.
+#
+# This source code is licensed under the MIT license found in the
+# LICENSE file in the root directory of this source tree.
+#
+
+# ---------------------------
+
+# NGINX SERVER
+
+FROM nginx:1.13.9-alpine
+
+RUN rm -rf /etc/nginx/conf.d && mkdir -p /etc/nginx/conf.d
+COPY ./default.conf /etc/nginx/conf.d/
+COPY ./build /etc/nginx/html
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]

@@ -9,7 +9,7 @@ const { appendWebpackPlugin } = require('@rescripts/utilities')
 const { DefinePlugin } = require('webpack')
 
 // Running locally...
-loadEnv('crm', 'dev') // ! If changed, also change in config_.js
+loadEnv('crm', 'dev') // ! If project changed, also change in config_.js
 //, 'dev'
 //, 'prod'
 //, 'cordova_dev' // ! Need to uncomment "homepage" property in Frontend's package.json
