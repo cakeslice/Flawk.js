@@ -50,7 +50,7 @@
 # ---------------------------------------
 
 # ------------ WEB APP DEPLOY ------------
-# Copy .env and change app port to 8080 (and the container in CapRover settings)
+# Copy .env and change app port to 8080 if backend
 # Add websocket support if needed
 # Then add domain in CloudFlare (no proxy)
 # Then enable HTTPS for your app
