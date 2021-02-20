@@ -37,12 +37,13 @@ const desktopHeightTop = 65
  * @property {boolean=} mobileTab
  * @property {boolean=} desktopTab
  * @property {boolean=} notRoute
+ * @property {boolean=} overrideHeader
  * @property {Function=} page
  * @property {Function=} onClick
  * @property {import('react').JSX.Element=} tab
  * @property {boolean=} notExact
  * @property {boolean=} defaultRoute
- * @property {object[]} subRoutes
+ * @property {object[]=} subRoutes
  */
 export default class Dashboard extends Component {
 	static propTypes = {
