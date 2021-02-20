@@ -6,7 +6,7 @@
  */
 
 import PropTypes from 'prop-types'
-import React, { Component } from 'react'
+import React, { Suspense, Component } from 'react'
 import { Route, Switch, Redirect } from 'react-router-dom'
 import { Animated } from 'react-animated-css'
 import { Link } from 'react-router-dom'
@@ -331,53 +331,67 @@ export default class Dashboard extends Component {
 																		sub.notExact ? false : true
 																	}
 																	render={({ match }) => (
-																		<WrapperComponent
-																			parentTitle={route.name}
-																			overrideHeader={
-																				sub.overrideHeader
-																			}
-																			title={sub.name}
+																		<Suspense
+																			fallback={<div></div>}
 																		>
-																			{Page ? (
-																				<Page
-																					params={
-																						match.params
-																					}
-																					path={
-																						this.props
-																							.path
-																					}
-																					{...this.props
-																						.pageProps}
-																					parentTitle={
-																						route.name
-																					}
-																					overrideHeader={
-																						sub.overrideHeader
-																					}
-																					title={sub.name}
-																				></Page>
-																			) : (
-																				<div
-																					params={
-																						match.params
-																					}
-																					path={
-																						this.props
-																							.path
-																					}
-																					{...this.props
-																						.pageProps}
-																					parentTitle={
-																						route.name
-																					}
-																					overrideHeader={
-																						sub.overrideHeader
-																					}
-																					title={sub.name}
-																				></div>
-																			)}
-																		</WrapperComponent>
+																			<WrapperComponent
+																				parentTitle={
+																					route.name
+																				}
+																				overrideHeader={
+																					sub.overrideHeader
+																				}
+																				title={sub.name}
+																			>
+																				{Page ? (
+																					<Page
+																						params={
+																							match.params
+																						}
+																						path={
+																							this
+																								.props
+																								.path
+																						}
+																						{...this
+																							.props
+																							.pageProps}
+																						parentTitle={
+																							route.name
+																						}
+																						overrideHeader={
+																							sub.overrideHeader
+																						}
+																						title={
+																							sub.name
+																						}
+																					></Page>
+																				) : (
+																					<div
+																						params={
+																							match.params
+																						}
+																						path={
+																							this
+																								.props
+																								.path
+																						}
+																						{...this
+																							.props
+																							.pageProps}
+																						parentTitle={
+																							route.name
+																						}
+																						overrideHeader={
+																							sub.overrideHeader
+																						}
+																						title={
+																							sub.name
+																						}
+																					></div>
+																				)}
+																			</WrapperComponent>
+																		</Suspense>
 																	)}
 																></Route>
 															)
@@ -417,34 +431,38 @@ export default class Dashboard extends Component {
 														}
 														exact={route.notExact ? false : true}
 														render={({ match }) => (
-															<WrapperComponent
-																overrideHeader={
-																	route.overrideHeader
-																}
-																title={route.name}
-															>
-																{Page ? (
-																	<Page
-																		params={match.params}
-																		path={this.props.path}
-																		{...this.props.pageProps}
-																		overrideHeader={
-																			route.overrideHeader
-																		}
-																		title={route.name}
-																	></Page>
-																) : (
-																	<div
-																		params={match.params}
-																		path={this.props.path}
-																		{...this.props.pageProps}
-																		overrideHeader={
-																			route.overrideHeader
-																		}
-																		title={route.name}
-																	></div>
-																)}
-															</WrapperComponent>
+															<Suspense fallback={<div></div>}>
+																<WrapperComponent
+																	overrideHeader={
+																		route.overrideHeader
+																	}
+																	title={route.name}
+																>
+																	{Page ? (
+																		<Page
+																			params={match.params}
+																			path={this.props.path}
+																			{...this.props
+																				.pageProps}
+																			overrideHeader={
+																				route.overrideHeader
+																			}
+																			title={route.name}
+																		></Page>
+																	) : (
+																		<div
+																			params={match.params}
+																			path={this.props.path}
+																			{...this.props
+																				.pageProps}
+																			overrideHeader={
+																				route.overrideHeader
+																			}
+																			title={route.name}
+																		></div>
+																	)}
+																</WrapperComponent>
+															</Suspense>
 														)}
 													></Route>
 												)
