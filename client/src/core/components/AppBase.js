@@ -219,6 +219,7 @@ export default class AppBase extends Component {
 							</div>
 						)}
 						{inRestrictedRoute &&
+							config.websocketSupport &&
 							!global.socket.connected &&
 							this.state.socketConnectionDelay &&
 							!this.state.hideWarnings && (
