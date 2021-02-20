@@ -235,6 +235,7 @@ export default class Dashboard extends Component {
 																	maxWidth: desktop ? 48 : 30,
 																	minWidth: desktop ? 48 : 30,
 																	objectFit: 'contain',
+																	...this.props.logoStyle,
 																}}
 																src={this.props.logo}
 															></img>
