@@ -112,7 +112,6 @@ export default class CustomInput extends Component {
 			margin: 0,
 			paddingLeft: this.props.center ? 0 : 10,
 
-			userSelect: 'none',
 			whiteSpace: this.props.textArea ? '' : 'nowrap',
 			textOverflow: this.props.textArea ? '' : 'ellipsis',
 
@@ -311,7 +310,6 @@ export default class CustomInput extends Component {
 						<div style={{ maxWidth: 0, maxHeight: 0 }}>
 							<div
 								style={{
-									userSelect: 'none',
 									pointerEvents: 'none',
 									position: 'relative',
 									display: 'flex',
@@ -330,7 +328,6 @@ export default class CustomInput extends Component {
 						<div style={{ maxWidth: 0, maxHeight: 0 }}>
 							<div
 								style={{
-									userSelect: 'none',
 									position: 'relative',
 									display: 'flex',
 									justifyContent: 'center',
