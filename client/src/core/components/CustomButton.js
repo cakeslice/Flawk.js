@@ -54,7 +54,9 @@ export default class CustomButton extends Component {
 				? this.props.formIK.values[this.props.name]
 				: this.props.checked
 		var invalid =
-			this.props.formIK && this.props.formIK.touched && this.props.formIK.errors
+			this.props.formIK &&
+			this.props.formIK.touched[this.props.name] &&
+			this.props.formIK.errors
 				? this.props.formIK.errors[this.props.name]
 				: this.props.invalid
 
