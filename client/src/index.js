@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import 'abortcontroller-polyfill'
 import React, { Suspense } from 'react'
 import ReactDOM from 'react-dom'
 //import registerServiceWorker from './utils/registerServiceWorker'

@@ -22,6 +22,7 @@
 	},
 	"dependencies": {
 		"@sentry/react": "^5.27.1",
+		"abortcontroller-polyfill": "^1.7.1",
 		"body-scroll-lock": "^3.1.5",
 		"browserslist": "^4.14.5",
 		"canvas-to-blob": "^1.0.0",
