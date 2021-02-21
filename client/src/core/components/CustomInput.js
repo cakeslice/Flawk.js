@@ -8,8 +8,7 @@
 import React, { Component } from 'react'
 import InputMask from 'react-input-mask'
 import { css, style } from 'glamor'
-import DayPickerInput from 'react-day-picker/DayPickerInput'
-import MomentLocaleUtils, { formatDate, parseDate } from 'react-day-picker/moment'
+import Datetime from 'react-datetime'
 
 var config = require('core/config_').default
 var styles = require('core/styles').default
@@ -43,17 +42,21 @@ const Input = (props) => (
 	<input {...props} value={props.value || (props.isControlled ? '' : undefined)}></input>
 )
 const DatePicker = (props) => (
-	<DayPickerInput
-		formatDate={formatDate}
-		parseDate={parseDate}
-		dayPickerProps={{
-			locale: global.lang.moment,
-			localeUtils: MomentLocaleUtils,
-		}}
+	<Datetime
+		timeFormat={false}
 		value={props.value || (props.isControlled ? '' : undefined)}
-		inputProps={{ ...props, selectedDay: props.value }}
-		onDayChange={props.onChange}
-		placeholder={`${formatDate(new Date())}`}
+		onChange={props.onChange}
+		inputProps={{
+			...css(props.finalStyle),
+			disabled: props.isDisabled,
+			name: props.name,
+			isControlled: props.isControlled,
+			required: props.required,
+			onBlur: props.onBlur,
+			onKeyPress: props.onKeyPress,
+			onFocus: props.onFocus,
+			placeholder: new Date().toLocaleDateString(global.lang.date),
+		}}
 	/>
 )
 
@@ -303,8 +306,9 @@ export default class CustomInput extends Component {
 								this.props.formIK.handleBlur &&
 								this.props.formIK.handleBlur(e)
 						}}
-						style={isMasked ? finalStyle : {}}
-						{...(!isMasked && css(finalStyle))}
+						finalStyle={this.props.datePicker && finalStyle}
+						style={!this.props.datePicker && isMasked ? finalStyle : {}}
+						{...(!this.props.datePicker && !isMasked && css(finalStyle))}
 					></InputComponent>
 					{this.props.icon && (
 						<div style={{ maxWidth: 0, maxHeight: 0 }}>
