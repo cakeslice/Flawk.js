@@ -272,9 +272,15 @@ export default class CustomInput extends Component {
 							e.target.placeholder = ''
 							this.props.onFocus && this.props.onFocus(e)
 						}}
-						onKeyPress={
-							this.props.bufferedInput ? this.handleKeyDown : this.props.onKeyPress
-						}
+						onKeyPress={(e) => {
+							this.props.bufferedInput
+								? this.handleKeyDown(e)
+								: this.props.onKeyPress && this.props.onKeyPress(e)
+
+							if (!this.props.textArea && e.key === 'Enter') {
+								e.target.blur()
+							}
+						}}
 						onChange={(e, editor, next) => {
 							if (this.props.bufferedInput) {
 								this.handleChangeBuffered(e)
