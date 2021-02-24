@@ -213,6 +213,7 @@ export default class CustomDropdown extends Component {
 				{this.props.label && <div style={{ minHeight: 5 }}></div>}
 				<div style={{ display: 'flex' }}>
 					<Select
+						menuPortalTarget={!this.props.noPortal && document.body}
 						noOptionsMessage={() => config.text('common.noOptions')}
 						loadingMessage={() => config.text('common.searching')}
 						menuPortalTarget={document.body}
