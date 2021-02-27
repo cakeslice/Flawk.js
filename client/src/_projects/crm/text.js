@@ -119,5 +119,13 @@ module.exports = {
 				en: 'Terms of Service',
 			},
 		},
+		somethingWrong: {
+			pt: 'Ocorreu um erro',
+			en: 'Something went wrong',
+		},
+		noConnection: {
+			pt: 'Sem ligação',
+			en: 'No connection',
+		},
 	},
 }

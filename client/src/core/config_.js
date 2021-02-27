@@ -239,7 +239,11 @@ const _uploadFileHelper = async function (file, onProgress, ref, post) {
 				}
 			}.bind(ref)
 			xhr.onerror = function () {
-				global.addFlag(_somethingWrong.title, "Couldn't upload file (CORS)", 'error')
+				global.addFlag(
+					_text('extras.somethingWrong'),
+					"Couldn't upload file (CORS)",
+					'error'
+				)
 				resolve({ success: false })
 			}.bind(ref)
 			xhr.send(file)
@@ -247,9 +251,20 @@ const _uploadFileHelper = async function (file, onProgress, ref, post) {
 	} else return { success: false }
 }
 
-var _somethingWrong = {
-	title: global.lang.text === 'pt' ? 'Ocorreu um erro' : 'Something went wrong',
-	text: global.lang.text === 'pt' ? '' : '',
+function _text(key, lang, replaces, text) {
+	var o
+
+	if (lang) o = _.get(text || _projectText, key + '.' + lang)
+	else o = _.get(text || _projectText, key + '.' + global.lang.text)
+
+	if (replaces) {
+		replaces.forEach((r) => {
+			if (o) o = o.replaceAll(r.key, r.value)
+		})
+	}
+
+	if (o !== undefined) return Parser(o)
+	else return 'STRING NOT FOUND! (' + key + ')'
 }
 
 export default {
@@ -276,23 +291,7 @@ export default {
 	formatDecimal: _formatDecimal,
 	formatDecimalTwo: _formatDecimalTwo,
 
-	somethingWrong: _somethingWrong,
-
-	text: (key, lang, replaces, text) => {
-		var o
-
-		if (lang) o = _.get(text || _projectText, key + '.' + lang)
-		else o = _.get(text || _projectText, key + '.' + global.lang.text)
-
-		if (replaces) {
-			replaces.forEach((r) => {
-				if (o) o = o.replaceAll(r.key, r.value)
-			})
-		}
-
-		if (o !== undefined) return Parser(o)
-		else return 'STRING NOT FOUND! (' + key + ')'
-	},
+	text: _text,
 	localize: (obj, lang) => {
 		if (lang) return Parser(obj[lang] || obj)
 		else return Parser(obj[global.lang.text] || obj)

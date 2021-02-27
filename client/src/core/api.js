@@ -152,7 +152,7 @@ async function bodyOf(requestPromise, noErrorFlag) {
 							})))))
 		) {
 			global.addFlag(
-				config.somethingWrong.title + ' (' + response.status + ')',
+				config.text('extras.somethingWrong') + ' (' + response.status + ')',
 				response.message ||
 					(response.body && JSON.stringify(response.body)) ||
 					response.status,
@@ -162,7 +162,11 @@ async function bodyOf(requestPromise, noErrorFlag) {
 		return response
 	} catch (e) {
 		if (e.name === 'AbortError') return { ok: false }
-		global.addFlag(config.somethingWrong.title, e.message, 'error')
+		global.addFlag(
+			config.text('extras.somethingWrong'),
+			e.message === 'Failed to fetch' ? config.text('extras.noConnection') : e.message,
+			'error'
+		)
 		return { ok: false }
 	}
 }
