@@ -56,16 +56,19 @@ export const fetchStructures = (callback) => {
 		dispatch({
 			type: STRUCTURES_FETCHING,
 		})
-		var res = await get('structures')
+		var res = await get('structures', { noErrorFlag: 'all' })
 		if (res.ok) {
+			await global.storage.setItem('structures', JSON.stringify(res.body.structures))
 			dispatch({
 				type: STRUCTURES_FETCHED,
 				data: res.body.structures,
 			})
 		} else {
+			var offlineStructures = await global.storage.getItem('structures')
+			if (offlineStructures) offlineStructures = JSON.parse(offlineStructures)
 			dispatch({
 				type: STRUCTURES_FETCHED,
-				data: undefined,
+				data: offlineStructures,
 			})
 		}
 
@@ -90,15 +93,20 @@ export const fetchUser = (callback) => {
 
 			if (global.socket && !global.socket.connected) global.socket.connect()
 
+			await global.storage.setItem('user', JSON.stringify(res.body))
+
 			dispatch({
 				type: USER_FETCHED,
 				data: res.body,
 			})
 		} else {
+			var offlineUser = await global.storage.getItem('user')
+			if (offlineUser) offlineUser = JSON.parse(offlineUser)
+			var authError = res.status && res.status < 500
 			dispatch({
 				type: USER_FETCHED,
-				data: undefined,
-				authError: res.status < 500,
+				data: authError ? undefined : offlineUser,
+				authError: authError,
 			})
 		}
 

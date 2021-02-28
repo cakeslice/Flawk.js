@@ -81,7 +81,7 @@ class Register extends Component {
 											action: 'Verified account',
 										})
 
-										global.storage.setItem('token', res.body.token)
+										await global.storage.setItem('token', res.body.token)
 										if (this.props.fetchUser)
 											this.props.fetchUser(() => {
 												global.routerHistory().replace(config.loginRedirect)

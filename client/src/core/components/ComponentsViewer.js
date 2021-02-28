@@ -1579,8 +1579,8 @@ class Backend extends Component {
 								<Notifications></Notifications>
 								<sp />
 								<CustomButton
-									onClick={() => {
-										var token = global.storage.getItem('token')
+									onClick={async () => {
+										var token = await global.storage.getItem('token')
 										if (config.websocketSupport)
 											global.socket.emit('notification_test', {
 												token: token,
@@ -1693,8 +1693,8 @@ class Backend extends Component {
 								}}
 							>
 								<CustomButton
-									onClick={() => {
-										var token = global.storage.getItem('token')
+									onClick={async () => {
+										var token = await global.storage.getItem('token')
 										if (config.websocketSupport)
 											global.socket.emit('test', { token: token })
 									}}
@@ -1770,7 +1770,7 @@ class Login extends Component {
 						)
 
 						if (res.ok) {
-							global.storage.setItem('token', res.body.token)
+							await global.storage.setItem('token', res.body.token)
 							if (this.props.fetchUser) this.props.fetchUser()
 						} else if (res.status === 401) {
 							this.setState({ wrongLogin: 'Authentication Failed' })
@@ -1917,7 +1917,7 @@ class Register extends Component {
 								this.setState({
 									verifyingSignup: false,
 								})
-								global.storage.setItem('token', res.body.token)
+								await global.storage.setItem('token', res.body.token)
 								if (this.props.fetchUser) this.props.fetchUser()
 							} else if (res.status === 401)
 								this.setState({ wrongLogin: 'Wrong code' })
@@ -2268,7 +2268,7 @@ class Forgot extends Component {
 
 							if (res.ok) {
 								this.setState({ verifyingRecover: false })
-								global.storage.setItem('token', res.body.token)
+								await global.storage.setItem('token', res.body.token)
 								if (this.props.fetchUser) this.props.fetchUser()
 							} else if (res.status === 401)
 								this.setState({ wrongLogin: 'Wrong code' })
@@ -2580,7 +2580,7 @@ class Settings extends Component {
 
 								if (res.ok) {
 									if (res.body.token)
-										global.storage.setItem('token', res.body.token)
+										await global.storage.setItem('token', res.body.token)
 									if (this.props.fetchUser) this.props.fetchUser()
 								}
 							}
@@ -2594,7 +2594,8 @@ class Settings extends Component {
 							})
 
 							if (r.ok) {
-								if (r.body.token) global.storage.setItem('token', r.body.token)
+								if (r.body.token)
+									await global.storage.setItem('token', r.body.token)
 								if (this.props.fetchUser) this.props.fetchUser()
 							}
 

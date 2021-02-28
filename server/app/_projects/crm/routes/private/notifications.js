@@ -101,6 +101,13 @@ module.exports = function (app) {
 	})
 
 	app.postAsync(config.path + '/client/update_mobile_notification_id', async (req, res) => {
+		/**
+		 * @typedef {object} body
+		 * @property {string} playerID
+		 */
+		/** @type {body} */
+		var body = req.body
+
 		var selection = '_id appState.mobileNotificationDevices'
 		var user = await database.Client.findOne({ _id: req.user._id }).select(selection)
 		user.appState.mobileNotificationDevices.push(body.playerID)

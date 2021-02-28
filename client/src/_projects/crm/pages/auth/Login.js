@@ -86,7 +86,7 @@ class Login extends Component {
 										action: 'Logged in',
 									})
 
-									global.storage.setItem('token', res.body.token)
+									await global.storage.setItem('token', res.body.token)
 									this.props.fetchUser(() => {
 										global.routerHistory().replace(config.loginRedirect)
 									})

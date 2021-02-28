@@ -87,7 +87,10 @@ class Settings extends Component {
 
 											if (res.ok) {
 												if (res.body.token)
-													global.storage.setItem('token', res.body.token)
+													await global.storage.setItem(
+														'token',
+														res.body.token
+													)
 												if (this.props.fetchUser) this.props.fetchUser()
 											}
 										}
@@ -102,7 +105,7 @@ class Settings extends Component {
 
 										if (r.ok) {
 											if (r.body.token)
-												global.storage.setItem('token', r.body.token)
+												await global.storage.setItem('token', r.body.token)
 											if (this.props.fetchUser) this.props.fetchUser()
 										}
 
@@ -206,7 +209,7 @@ class Settings extends Component {
 																? 'file_upload'
 																: 'file_upload_mobile'
 														}
-														accept='image/*'
+														accept='image/*;capture=camera'
 														onChange={async (e) => {
 															var img = await config.handleFileChange(
 																e

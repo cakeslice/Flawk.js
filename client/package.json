@@ -5,14 +5,11 @@
 	"engines": {
 		"node": "14.15.0"
 	},
-	"_____homepage": "./",
 	"scripts": {
-		"copyCordova": "babel-node copy_cordova.js",
 		"copyPublic": "babel-node copy_public.js",
 		"start": "npm run copyPublic && rescripts start",
 		"build": "CI=false SKIP_PREFLIGHT_CHECK=true GENERATE_SOURCEMAP=true react-scripts --max_old_space_size=4096 build",
 		"buildLocal": "npm run copyPublic && npm run auditCI & npm run test & rescripts build",
-		"buildCordova": "npm run copyPublic && npm run auditCI & npm run test & rescripts build && npm run copyCordova",
 		"test": "set CI=true && react-scripts test --coverage",
 		"testCI": "CI=true react-scripts test",
 		"eject": "react-scripts eject",
@@ -21,6 +18,10 @@
 		"auditCI": "npm audit --audit-level=moderate"
 	},
 	"dependencies": {
+		"@capacitor/android": "^2.4.6",
+		"@capacitor/cli": "^2.4.6",
+		"@capacitor/core": "^2.4.6",
+		"@capacitor/ios": "^2.4.6",
 		"@sentry/react": "^5.27.1",
 		"abortcontroller-polyfill": "^1.7.1",
 		"body-scroll-lock": "^3.1.5",

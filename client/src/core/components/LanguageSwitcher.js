@@ -15,9 +15,9 @@ export default class LanguageSwitcher extends React.Component {
 		let res = lang && lang.toUpperCase()
 		return (
 			<button
-				onClick={() => {
+				onClick={async () => {
 					global.changeLang()
-					global.storage.setItem('lang', JSON.stringify(global.lang))
+					await global.storage.setItem('lang', JSON.stringify(global.lang))
 					window.location.reload()
 				}}
 			>

@@ -264,12 +264,7 @@ function init() {
 				if (o === origin) allowed = true
 			})
 
-			if (
-				!config.prod &&
-				!config.staging &&
-				(!origin || origin.includes('localhost') || origin.includes('file://'))
-			)
-				allowed = true
+			if (!config.prod && !config.staging) allowed = true
 
 			if (origin && origin.includes('uptimerobot.com')) allowed = true
 

@@ -12,8 +12,6 @@ const { DefinePlugin } = require('webpack')
 loadEnv('crm', 'dev') // ! If project changed, also change in config_.js
 //, 'dev'
 //, 'prod'
-//, 'cordova_dev' // ! Need to uncomment "homepage" property in Frontend's package.json
-//, 'cordova_prod' // ! Need to uncomment "homepage" property in Frontend's package.json
 
 module.exports = (config) =>
 	appendWebpackPlugin(

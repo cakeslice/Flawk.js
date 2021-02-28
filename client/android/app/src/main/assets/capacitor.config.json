@@ -1,0 +1,14 @@
+{
+	"appId": "io.flawk.mobile",
+	"appName": "flawk-frontend",
+	"bundledWebRuntime": false,
+	"npmClient": "npm",
+	"webDir": "build",
+	"plugins": {
+		"SplashScreen": {
+			"launchShowDuration": 0
+		}
+	},
+	"cordova": {},
+	"backgroundColor": "#1e1e1e"
+}

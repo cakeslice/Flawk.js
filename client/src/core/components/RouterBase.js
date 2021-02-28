@@ -24,9 +24,7 @@ export default class RouterBase extends Component {
 	constructor() {
 		super()
 
-		this.state.history = config.cordovaBuild
-			? createHashHistory({ basename: '/' })
-			: createBrowserHistory()
+		this.state.history = createBrowserHistory()
 		global.routerHistory = function () {
 			return this.state.history
 		}.bind(this)
@@ -53,6 +51,12 @@ export default class RouterBase extends Component {
 		}
 
 		global.addFlag = this.addFlag.bind(this)
+
+		var asyncSetup = async function () {
+			var mobileViewer = await global.storage.getItem('mobile_viewer')
+			if (mobileViewer) this.setState({ mobileViewer: mobileViewer })
+		}.bind(this)
+		asyncSetup()
 	}
 
 	state = {}
@@ -191,7 +195,7 @@ class MobileSimulator extends Component {
 	state = {}
 
 	render() {
-		var enabled = global.storage.getItem('mobile_viewer') === 'true'
+		var enabled = this.state.mobileViewer === 'true'
 		return (
 			<MediaQuery minWidth={config.mobileWidthTrigger}>
 				{(desktop) => (
@@ -260,12 +264,12 @@ class MobileSimulator extends Component {
 												>
 													<CustomButton
 														appearance='primary'
-														onClick={() => {
-															global.storage.setItem(
+														onClick={async () => {
+															await global.storage.setItem(
 																'mobile_viewer',
 																'false'
 															)
-															this.forceUpdate()
+															this.setState({ mobileViewer: 'false' })
 														}}
 													>
 														Close
@@ -276,9 +280,9 @@ class MobileSimulator extends Component {
 									</ResponsiveContext.Provider>
 								) : (
 									<CustomButton
-										onClick={() => {
-											global.storage.setItem('mobile_viewer', 'true')
-											this.forceUpdate()
+										onClick={async () => {
+											await global.storage.setItem('mobile_viewer', 'true')
+											this.setState({ mobileViewer: 'true' })
 										}}
 									>
 										Mobile

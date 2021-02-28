@@ -12,6 +12,7 @@ import ReactDOM from 'react-dom'
 import { unregister } from './core/utils/registerServiceWorker'
 import * as Sentry from '@sentry/react'
 import { isSupported, CookieStorage, MemoryStorage } from 'local-storage-fallback'
+import { Plugins, Capacitor } from '@capacitor/core'
 
 import 'core/assets/react-toastify.css'
 import 'react-datetime/css/react-datetime.css'
@@ -21,8 +22,29 @@ var config = require('core/config_').default
 
 const App = React.lazy(() => import('./_projects/' + config.project + '/App'))
 
+var capacitorStorage = {
+	getItem: async (key) => {
+		const { value } = await Plugins.Storage.get({ key: key })
+		return value
+	},
+	setItem: async (key, value) => {
+		return await Plugins.Storage.set({
+			key: key,
+			value: value,
+		})
+	},
+	removeItem: async (key) => {
+		return await Plugins.Storage.remove({ key: key })
+	},
+	clear: async () => {
+		return await Plugins.Storage.clear()
+	},
+}
+
 var storage
-if (isSupported('localStorage')) {
+if (Capacitor.isNative) {
+	storage = capacitorStorage
+} else if (isSupported('localStorage')) {
 	// use localStorage
 	storage = window.localStorage
 } else if (isSupported('cookieStorage')) {
@@ -37,15 +59,19 @@ if (isSupported('localStorage')) {
 }
 global.storage = storage
 
-if (config.sentryID) {
-	var buildNumber = global.storage.getItem('build_number') || 'unknown'
-	Sentry.init({
-		release: config.project + '@' + buildNumber,
-		environment: config.prod ? 'production' : config.staging ? 'staging' : 'development',
-		dsn: config.sentryID,
-	})
-	global.Sentry = Sentry
+async function setupSentry() {
+	if (config.sentryID) {
+		var buildNumber = await global.storage.getItem('build_number')
+		if (!buildNumber) buildNumber = 'unknown'
+		Sentry.init({
+			release: config.project + '@' + buildNumber,
+			environment: config.prod ? 'production' : config.staging ? 'staging' : 'development',
+			dsn: config.sentryID,
+		})
+		global.Sentry = Sentry
+	}
 }
+setupSentry()
 
 ReactDOM.render(
 	<Suspense fallback={<div></div>}>

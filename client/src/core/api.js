@@ -94,7 +94,7 @@ async function sendRequest(method, path, body, internal, signal) {
 		: { Accept: 'application/json' }
 
 	if (internal) {
-		var token = global.storage.getItem('token')
+		var token = await global.storage.getItem('token')
 		if (token) headers = { ...headers, lang: global.lang.text, token: token }
 	}
 	const options = body

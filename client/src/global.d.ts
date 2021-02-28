@@ -6,7 +6,6 @@
  */
 
 import('socket.io-client')
-import('local-storage-fallback')
 
 declare namespace NodeJS {
 	interface History {
@@ -50,7 +49,12 @@ declare namespace NodeJS {
 			event: (event: { category: string; action: string, label?: string, value?: number; nonInteraction?: boolean }) => void;
 		}
 		sleep: (ms: number) => Promise<void>;
-		storage: StorageFallback;
+		storage: {
+			setItem: (key: string, value: string) => Promise<void>;
+			getItem: (key: string) => Promise<string>;
+			removeItem: (key: string) => Promise<void>;
+			clear: () => Promise<void>;
+		}
 		socket: SocketIOClient.Socket;
 		nightMode: boolean;
 		noFlags: boolean;
@@ -60,7 +64,7 @@ declare namespace NodeJS {
 		}) => void;
 		hideWarnings: () => void;
 		changeBackground: (color: string) => void;
-		toggleNightMode: (night: boolean) => void;
+		toggleNightMode: (night: boolean) => Promise<void>;
 		//
 		addFlag: (
 			title?: string, description?: string, type?: string, options?: { closeAfter?: number; playSound?: boolean, closeButton?: boolean, customComponent?: any }

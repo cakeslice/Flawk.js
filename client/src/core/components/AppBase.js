@@ -38,16 +38,6 @@ export default class AppBase extends Component {
 
 		global.changeBackground = this.changeBackground.bind(this)
 
-		if (config.darkModeAvailable) {
-			var isDark = window.matchMedia('(prefers-color-scheme: dark)')
-			if (global.storage.getItem('nightMode') !== null)
-				/*eslint-disable */
-				this.applyNightMode(global.storage.getItem('nightMode') == 'true', true)
-			/*eslint-enable */
-			// ! Don't change to ===
-			else this.applyNightMode(isDark && isDark.matches && !config.darkModeOptIn, true)
-		} else this.applyNightMode(false, true)
-
 		if (config.websocketSupport) {
 			if (global.socket) {
 				global.socket.removeAllListeners()
@@ -56,23 +46,23 @@ export default class AppBase extends Component {
 			global.socket = io(config.websocketURL, { autoConnect: false })
 			global.socket.on(
 				'connect',
-				function () {
+				async function () {
 					console.log('Socket connected: ' + global.socket.id)
 					this.forceUpdate()
 
-					var token = global.storage.getItem('token')
-					global.socket.emit('init', { token: token }, (res) => {
+					var token = await global.storage.getItem('token')
+					global.socket.emit('init', { token: token }, async (res) => {
 						if (res.success) {
 							console.log('Connected to websocket! Build number: ' + res.buildNumber)
 
-							var buildNumber = global.storage.getItem('build_number')
-							global.storage.setItem('build_number', res.buildNumber)
+							var buildNumber = await global.storage.getItem('build_number')
+							await global.storage.setItem('build_number', res.buildNumber)
 							if (
 								this.state.isReconnect &&
 								buildNumber &&
 								res.buildNumber !== buildNumber
 							) {
-								this.setState({ oldBuild: true })
+								this.setState({ oldBuild: true, buildNumber: buildNumber })
 							}
 
 							if (!this.state.isReconnect) this.setState({ isReconnect: true })
@@ -95,19 +85,35 @@ export default class AppBase extends Component {
 			)
 		}
 
-		var lang = global.storage.getItem('lang')
-		if (lang) {
-			global.setLang(JSON.parse(lang))
-		}
+		var asyncSetup = async function () {
+			if (config.darkModeAvailable) {
+				var isDark = window.matchMedia('(prefers-color-scheme: dark)')
+				if ((await global.storage.getItem('nightMode')) !== null)
+					/*eslint-disable */
+					this.applyNightMode((await global.storage.getItem('nightMode')) == 'true', true)
+				/*eslint-enable */
+				// ! Don't change to ===
+				else this.applyNightMode(isDark && isDark.matches && !config.darkModeOptIn, true)
+			} else this.applyNightMode(false, true)
+
+			var lang = await global.storage.getItem('lang')
+			if (lang) {
+				global.setLang(JSON.parse(lang))
+			}
+
+			var cookieNotice = await global.storage.getItem('cookie_notice')
+			if (cookieNotice) this.setState({ cookieNotice: cookieNotice })
+		}.bind(this)
+		asyncSetup()
 	}
 
 	hideWarnings = function () {
 		this.setState({ hideWarnings: true })
 	}
-	toggleNightMode = function (night) {
+	toggleNightMode = async function (night) {
 		if (night === undefined) night = !this.state.nightMode
 
-		global.storage.setItem('nightMode', night)
+		await global.storage.setItem('nightMode', night)
 		this.applyNightMode(night)
 	}
 	applyNightMode = function (night, skipPageRefresh = false) {
@@ -147,7 +153,7 @@ export default class AppBase extends Component {
 	}
 
 	render() {
-		var cookieNotice = global.storage.getItem('cookie_notice') || this.state.hideWarnings
+		var cookieNotice = this.state.cookieNotice || this.state.hideWarnings
 
 		var inRestrictedRoute = false
 		config.restrictedRoutes.forEach((r) => {
@@ -287,8 +293,11 @@ export default class AppBase extends Component {
 												fontSize: 12,
 												minWidth: 0,
 											}}
-											onClick={() => {
-												global.storage.setItem('cookie_notice', 'true')
+											onClick={async () => {
+												await global.storage.setItem(
+													'cookie_notice',
+													'true'
+												)
 												this.setState({
 													hideCookieNotice: true,
 												})
@@ -329,9 +338,8 @@ export default class AppBase extends Component {
 									}}
 								>
 									{(!config.staging ? 'DEV' : 'STAG') +
-										(config.cordovaBuild ? '_CORD' : '') +
 										'-' +
-										global.storage.getItem('build_number')}
+										this.state.buildNumber}
 								</b>
 
 								{config.darkModeAvailable && (
@@ -343,8 +351,8 @@ export default class AppBase extends Component {
 											textShadow: '1px 1px 2px rgba(0,0,0,.5)',
 											color: styles.colors.black,
 										}}
-										onClick={() => {
-											global.toggleNightMode()
+										onClick={async () => {
+											await global.toggleNightMode()
 										}}
 									>
 										DARK
@@ -359,9 +367,12 @@ export default class AppBase extends Component {
 										color: styles.colors.black,
 										textShadow: '1px 1px 2px rgba(0,0,0,.5)',
 									}}
-									onClick={() => {
+									onClick={async () => {
 										global.changeLang()
-										global.storage.setItem('lang', JSON.stringify(global.lang))
+										await global.storage.setItem(
+											'lang',
+											JSON.stringify(global.lang)
+										)
 										window.location.reload()
 									}}
 								>
@@ -370,10 +381,7 @@ export default class AppBase extends Component {
 
 								<b
 									onClick={() => {
-										window.open(
-											(config.cordovaBuild ? '#' : '') + '/components',
-											'_blank'
-										)
+										window.open('/components', '_blank')
 									}}
 									style={{
 										fontSize: 13,

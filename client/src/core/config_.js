@@ -23,14 +23,16 @@ const _projectConfig = require('../_projects/crm/_config.js')
 const _projectStyles = require('../_projects/crm/_styles.js')
 const _projectText = require('../_projects/crm/text.js') // {}
 
-const _prod = process.env.NODE_ENV === 'production' && process.env.REACT_APP_STAGING !== 'true'
+const _prod =
+	process.env.NODE_ENV === 'production' &&
+	process.env.REACT_APP_STAGING !== 'true' &&
+	process.env.REACT_APP_DEV !== 'true'
 const _staging = !_prod && process.env.REACT_APP_STAGING === 'true'
 const _domain = process.env.REACT_APP_DOMAIN
 const _googleAnalyticsID = process.env.REACT_APP_GA_KEY
 const _recaptchaSiteKey = process.env.REACT_APP_RECAPTCHA_KEY
 const _recaptchaBypass = process.env.REACT_APP_RECAPTCHA_BYPASS
 const _sentryID = process.env.REACT_APP_SENTRY_KEY
-const _cordovaBuild = process.env.REACT_APP_CORDOVA_BUILD
 
 const moment = require('moment')
 var browserLanguage = ''
@@ -280,7 +282,6 @@ export default {
 	darkModeAvailable: false,
 	darkModeOptIn: false,
 
-	cordovaBuild: _cordovaBuild,
 	mobileWidthTrigger: 801,
 
 	minWidth: 768,
