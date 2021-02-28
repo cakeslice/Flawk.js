@@ -7,10 +7,6 @@
 		{
 			"name": "Frontend",
 			"path": "client"
-		},
-		{
-			"name": "Cordova",
-			"path": "cordova"
 		}
 	],
 	"settings": {
