@@ -302,6 +302,19 @@ export default {
 		return color.replace(/[^,]+(?=\))/, amount)
 	},
 
+	getBase64: function (file) {
+		return new Promise((resolve, reject) => {
+			const reader = new FileReader()
+			reader.readAsDataURL(file)
+			reader.onload = () => resolve(reader.result)
+			reader.onerror = (error) => reject(error)
+		})
+	},
+	base64ToFile: async function (base64, name, lastModified, type) {
+		const res = await fetch(base64)
+		const blob = await res.blob()
+		return new File([blob], name, { lastModified: lastModified, type: type })
+	},
 	/**
 	 * @param {*} e
 	 * @param {*=} options

@@ -12,6 +12,7 @@ const _ = require('lodash')
  * @typedef {object} response
  * @property {boolean} ok
  * @property {number} status
+ * @property {number} noConnection
  * @property {object} body
  * @property {object} headers
  */
@@ -177,6 +178,6 @@ async function bodyOf(requestPromise, noErrorFlag) {
 				e.message === 'Failed to fetch' ? config.text('extras.noConnection') : e.message,
 				'error'
 			)
-		return { ok: false }
+		return { ok: false, noConnection: e.message === 'Failed to fetch' }
 	}
 }

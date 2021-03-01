@@ -51,8 +51,8 @@ export default class GenericModal extends Component {
 						alignItems: 'center',
 					}}
 				>
-					{this.props.autoFocus && (
-						<input autoFocus={true} style={{ maxWidth: 0, maxHeight: 0 }}></input>
+					{!this.props.noAutoFocus && (
+						<button autoFocus={true} style={{ maxWidth: 0, maxHeight: 0 }}></button>
 					)}
 					<Animated animationIn='fadeIn' animationInDuration={500}>
 						<div style={{ margin: 10 }}>
