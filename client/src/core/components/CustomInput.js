@@ -43,9 +43,13 @@ const Input = (props) => (
 )
 const DatePicker = (props) => (
 	<Datetime
+		locale={global.lang.moment}
 		timeFormat={false}
 		value={props.value || (props.isControlled ? '' : undefined)}
 		onChange={props.onChange}
+		renderInput={(p) => {
+			return <input {...p} value={props.value ? p.value : ''} />
+		}}
 		inputProps={{
 			...css(props.finalStyle),
 			disabled: props.isDisabled,
