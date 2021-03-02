@@ -82,6 +82,8 @@ export const fetchUser = (callback) => {
 		})
 		var res = await get('client/data', { noErrorFlag: 'all' })
 		if (res.ok) {
+			if (res.body.token) await global.storage.setItem('token', res.body.token)
+
 			if (global.Sentry)
 				global.Sentry.configureScope(
 					function (scope) {

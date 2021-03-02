@@ -622,6 +622,7 @@ module.exports = {
 						await user.save()
 						req.user = user
 						req.token = token
+						req.tokenExpiration = decoded.exp * 1000
 						req.permission = user.permission
 						if (user.settings.language) req.lang = user.settings.language
 
@@ -690,6 +691,7 @@ module.exports = {
 						await user.save()
 						req.user = user
 						req.token = token
+						req.tokenExpiration = decoded.exp * 1000
 						req.permission = user.permission
 						if (user.settings.language) req.lang = user.settings.language
 

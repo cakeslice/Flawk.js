@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+const _ = require('lodash')
 const moment = require('moment')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
@@ -55,16 +56,35 @@ module.exports = function (app) {
 	})
 
 	app.getAsync(config.path + '/client/data', async (req, res) => {
-		var body = req.body
-
 		var selection = '_id email phone permission flags personal settings'
 		var user = await database.Client.findOne({ _id: req.user._id })
 			.lean({ virtuals: true })
 			.select(selection)
 
+		var userToken = await database.Client.findOne({ _id: req.user._id }).select(
+			'access.activeTokens'
+		)
+
+		var token = undefined
+		// Refresh token if getting old...
+		if (moment(req.tokenExpiration).diff(moment(), 'days') < config.tokenDays / 2) {
+			token = jwt.sign({ data: user._id }, app.get('jwtSecret'), {
+				expiresIn: config.tokenDays + ' days',
+			})
+			userToken.access.activeTokens = _.filter(
+				userToken.access.activeTokens,
+				(e) => e !== req.token
+			)
+			userToken.access.activeTokens.push(token)
+			await userToken.save()
+
+			res.cookie('token', token, config.cookieSettings)
+		}
+
 		common.setResponse(200, req, res, '', {
 			...user,
 			arrays: undefined,
+			token: token,
 		})
 	})
 

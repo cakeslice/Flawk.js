@@ -60,6 +60,7 @@ declare namespace Express {
 	interface Request {
 		user: User;
 		token: string;
+		tokenExpiration: number;
 		permission: number;
 		lang: string;
 	}
