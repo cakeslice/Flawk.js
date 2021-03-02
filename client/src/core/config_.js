@@ -213,10 +213,10 @@ const _resizeImage = async function (file, maxRes) {
  * @param {function} post
  * @returns {Promise<FileUpload>}
  */
-const _uploadFileHelper = async function (file, onProgress, ref, post) {
+const _uploadFileHelper = async function (file, onProgress, ref, post, options = {}) {
 	var fileObject = { file: { type: file.type, size: file.size } }
 
-	var res = await post('client/upload_url', { contentType: fileObject.file.type })
+	var res = await post('client/upload_url', { contentType: fileObject.file.type }, options)
 	if (res.ok) {
 		return new Promise((resolve) => {
 			var xhr = new XMLHttpRequest()
@@ -403,6 +403,7 @@ export default {
 	},
 	/**
 	 * @typedef UploadFileOptions
+	 * @property {object=} postOptions
 	 * @property {function=} onProgress
 	 * @property {number=} maxResolution
 	 * @property {boolean=} nonImage
@@ -420,6 +421,7 @@ export default {
 		ref,
 		post,
 		{
+			postOptions = undefined,
 			onProgress = undefined,
 			maxResolution = undefined,
 			thumbnail = false,
@@ -435,10 +437,10 @@ export default {
 			file.type === 'image/png' || file.type === 'image/jpeg' || file.type === 'image/jpg'
 
 		if (nonImage && !isImage) {
-			return await _uploadFileHelper(file, onProgress, ref, post)
+			return await _uploadFileHelper(file, onProgress, ref, post, postOptions)
 		} else {
 			var img = await _resizeImage(file, maxResolution)
-			if (img) return await _uploadFileHelper(img, onProgress, ref, post)
+			if (img) return await _uploadFileHelper(img, onProgress, ref, post, postOptions)
 			else return { success: false }
 		}
 	},
