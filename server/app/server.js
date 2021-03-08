@@ -266,6 +266,13 @@ function init() {
 
 			if (!config.prod && !config.staging) allowed = true
 
+			if (
+				config.mobileAppOrigins &&
+				origin &&
+				(origin.includes('http://localhost') || origin.includes('capacitor://localhost'))
+			)
+				allowed = true
+
 			if (origin && origin.includes('uptimerobot.com')) allowed = true
 
 			if (!allowed) console.log('CORS: ' + origin && origin.toString() + ' is not allowed!')

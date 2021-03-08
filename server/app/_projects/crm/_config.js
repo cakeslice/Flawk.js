@@ -33,6 +33,7 @@ const _allowedOrigins = [
 ]
 
 module.exports = {
+	mobileAppOrigins: true,
 	websocketSupport: true,
 
 	//
