@@ -45,8 +45,6 @@ export default class CustomTable extends ReactQueryParams {
 			borderLeft: 'none',
 			borderRight: 'none',
 			boxShadow: 'rgba(0, 0, 0, 0.1) 0px 1px 5px 0px',
-			position: 'sticky',
-			top: '0',
 			zIndex: 1,
 		}
 		var rowStyle = {
