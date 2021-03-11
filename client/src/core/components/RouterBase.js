@@ -14,6 +14,7 @@ import { ToastContainer, toast, Bounce } from 'react-toastify'
 import ReactGA from 'react-ga'
 import { Fade } from 'react-reveal'
 import CustomButton from './CustomButton'
+import { Plugins } from '@capacitor/core'
 
 var styles = require('core/styles').default
 var config = require('core/config_').default
@@ -159,6 +160,10 @@ export default class RouterBase extends Component {
 				},
 			}
 		)
+	}
+
+	componentDidMount() {
+		Plugins.SplashScreen.hide()
 	}
 
 	render() {

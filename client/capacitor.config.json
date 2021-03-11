@@ -1,12 +1,20 @@
 {
+	"_COMMENT": "Add android:usesCleartextTraffic='true' to <application> in AndroidManifest to test with a local server",
+	"_APP_ICON_FIX": "After cordova-res, copy all icons in android/app/src/main/res/mipmap* to replace ic_launcher_foreground.png",
 	"appId": "io.flawk.mobile",
-	"appName": "flawk-frontend",
+	"appName": "Flawk",
 	"bundledWebRuntime": false,
 	"npmClient": "npm",
 	"webDir": "build",
 	"plugins": {
 		"SplashScreen": {
-			"launchShowDuration": 0
+			"launchAutoHide": false,
+			"androidScaleType": "CENTER_CROP",
+			"showSpinner": false,
+			"splashFullScreen": false,
+			"splashImmersive": false,
+			"_COMMENT:": "See styles.xml for background color",
+			"_DOUBLE_SPLASH_FIX": "<style name='AppTheme.NoActionBarLaunch' parent='AppTheme.NoActionBar'><item name='android:background'>#FFF</item></style>"
 		}
 	},
 	"cordova": {},
