@@ -59,7 +59,7 @@ const DatePicker = (props) => (
 			onBlur: props.onBlur,
 			onKeyPress: props.onKeyPress,
 			onFocus: props.onFocus,
-			placeholder: new Date().toLocaleDateString(global.lang.date),
+			placeholder: props.placeholder || new Date().toLocaleDateString(global.lang.date),
 		}}
 	/>
 )
