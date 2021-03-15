@@ -36,10 +36,13 @@ const MaskedInput = (props) => (
 	</InputMask>
 )
 const TextArea = (props) => (
-	<textarea {...props} value={props.value || (props.isControlled ? '' : undefined)}></textarea>
+	<textarea {...props} value={props.value === 0 ? 0 : props.value || (props.isControlled ? '' : undefined)}></textarea>
 )
 const Input = (props) => (
-	<input {...props} value={props.value || (props.isControlled ? '' : undefined)}></input>
+	<input
+		{...props}
+		value={props.value === 0 ? 0 : props.value || (props.isControlled ? '' : undefined)}
+	></input>
 )
 const DatePicker = (props) => (
 	<Datetime
