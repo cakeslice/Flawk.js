@@ -281,6 +281,7 @@ export default {
 
 	darkModeAvailable: false,
 	darkModeOptIn: false,
+	darkModeForce: false,
 
 	mobileWidthTrigger: 801,
 

@@ -86,7 +86,8 @@ export default class AppBase extends Component {
 		}
 
 		var asyncSetup = async function () {
-			if (config.darkModeAvailable) {
+			if (config.darkModeForce) this.applyNightMode(true, true)
+			else if (config.darkModeAvailable) {
 				var isDark = window.matchMedia('(prefers-color-scheme: dark)')
 				if ((await global.storage.getItem('nightMode')) !== null)
 					/*eslint-disable */
