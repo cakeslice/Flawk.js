@@ -131,9 +131,12 @@ export default class AppBase extends Component {
 				styles.colors.black = styles.colors.blackNight
 				styles.colors.borderColor = styles.colors.borderColorNight
 				styles.colors.lineColor = styles.colors.lineColorNight
-				styles.card.background = styles.colors.whiteNight
-				styles.card.borderColor = styles.colors.borderColorNight
-				styles.outlineCard.borderColor = styles.colors.borderColorNight
+				if (!styles.card.noDarkMode) {
+					styles.card.background = styles.colors.whiteNight
+					styles.card.borderColor = styles.colors.borderColorNight
+				}
+				if (!styles.outlineCard.noDarkMode)
+					styles.outlineCard.borderColor = styles.colors.borderColorNight
 			} else {
 				this.changeBackground(styles.colors.backgroundDay)
 				document.body.style.color = styles.colors.blackDay
@@ -143,9 +146,12 @@ export default class AppBase extends Component {
 				styles.colors.black = styles.colors.whiteNight
 				styles.colors.borderColor = styles.colors.borderColorDay
 				styles.colors.lineColor = styles.colors.lineColorDay
-				styles.card.background = styles.colors.whiteDay
-				styles.card.borderColor = styles.colors.borderColorDay
-				styles.outlineCard.borderColor = styles.colors.borderColorDay
+				if (!styles.card.noDarkMode) {
+					styles.card.background = styles.colors.whiteDay
+					styles.card.borderColor = styles.colors.borderColorDay
+				}
+				if (!styles.outlineCard.noDarkMode)
+					styles.outlineCard.borderColor = styles.colors.borderColorDay
 			}
 		}
 	}

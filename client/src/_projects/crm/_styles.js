@@ -23,11 +23,39 @@ const _card = {
 	borderRadius: 8,
 	boxSizing: 'border-box',
 	background: 'rgba(255,255,255, 1)',
+	noDarkMode: false,
 }
 
 module.exports = {
 	font: _font,
 	fontAlt: _fontAlt,
+
+	extraButtons: [
+		{
+			appearance: 'action',
+
+			color: 'black',
+			minWidth: 128,
+			borderStyle: 'none',
+
+			transition: 'background 200ms, border-color 200ms, -webkit-filter 200ms',
+			':focus-visible': {
+				outline: 'none',
+				filter: 'drop-shadow(0px 0px 20px rgba(250, 40, 116, 0.71))',
+				background: 'linear-gradient(90deg, #FB28B0 0%, #FC263C 100%)',
+			},
+			':hover': {
+				opacity: 1,
+				filter: 'drop-shadow(0px 0px 20px rgba(250, 40, 116, 0.71))',
+				background: 'linear-gradient(90deg, #FB28B0 0%, #FC263C 100%)',
+			},
+			':active': {
+				filter: 'drop-shadow(0px 0px 20px rgba(250, 40, 116, 0.71))',
+				background: 'linear-gradient(90deg, #FB28B0 0%, #FC263C 100%)',
+			},
+			background: 'linear-gradient(90deg, #FB28B0 0%, #FC263C 100%)',
+		},
+	],
 
 	/*
 	card: _card,

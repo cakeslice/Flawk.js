@@ -168,6 +168,11 @@ export default class CustomButton extends Component {
 			}),
 		}
 
+		styles.extraButtons &&
+			styles.extraButtons.forEach((b) => {
+				if (this.props.appearance === b.appearance) finalStyle = { ...finalStyle, ...b }
+			})
+
 		if (this.props.checkbox) {
 			if (checked !== undefined) this.state.checked = checked
 
