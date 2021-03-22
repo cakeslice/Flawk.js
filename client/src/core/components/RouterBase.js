@@ -52,12 +52,6 @@ export default class RouterBase extends Component {
 		}
 
 		global.addFlag = this.addFlag.bind(this)
-
-		var asyncSetup = async function () {
-			var mobileViewer = await global.storage.getItem('mobile_viewer')
-			if (mobileViewer) this.setState({ mobileViewer: mobileViewer })
-		}.bind(this)
-		asyncSetup()
 	}
 
 	state = {}
@@ -198,6 +192,14 @@ export default class RouterBase extends Component {
 
 class MobileSimulator extends Component {
 	state = {}
+
+	componentDidMount() {
+		var asyncSetup = async function () {
+			var mobileViewer = await global.storage.getItem('mobile_viewer')
+			if (mobileViewer) this.setState({ mobileViewer: mobileViewer })
+		}.bind(this)
+		asyncSetup()
+	}
 
 	render() {
 		var enabled = this.state.mobileViewer === 'true'
