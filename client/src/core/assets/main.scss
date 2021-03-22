@@ -230,6 +230,11 @@ button:active {
 
 //
 
+.blur-background {
+	-webkit-backdrop-filter: blur(5px);
+	backdrop-filter: blur(5px);
+}
+
 .Toastify__toast--dark {
 	background: #1e1e1e;
 	border-radius: 6px;
