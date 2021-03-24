@@ -174,7 +174,10 @@ export default class AppBase extends Component {
 				{(desktop) => (
 					<div>
 						<Helmet>
-							<title>{config.title() + config.separator + config.phrase()}</title>
+							<title>
+								{config.title() +
+									(config.phrase() ? config.separator + config.phrase() : '')}
+							</title>
 							<meta name='description' content={config.description()} />
 							<link rel='canonical' href={config.domain} />
 							<meta property='og:url' content={config.domain} />
