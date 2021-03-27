@@ -75,12 +75,8 @@ export default class Header extends Component {
 
 							minHeight: this.props.fillSpace
 								? desktop
-									? this.state.showHeaderBackground
-										? desktopHeight
-										: desktopHeightTop
-									: this.state.showHeaderBackground
-									? mobileHeight
-									: mobileHeightTop
+									? desktopHeight
+									: mobileHeight
 								: 0,
 						}}
 					>
