@@ -53,7 +53,7 @@ class TextFileReader extends React.Component {
 						return (
 							<span key={key}>
 								{item.replace(/\t/g, '\u00a0\u00a0\u00a0').replace(/\s/g, '\u00a0')}
-								<sp />
+								<br />
 							</span>
 						)
 					})}
