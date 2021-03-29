@@ -81,7 +81,7 @@ export default class GenericModal extends Component {
 									<ModalHeader
 										color={this.props.color}
 										title={this.props.title}
-										onClose={this.onClose}
+										onClose={this.onClose.bind(this)}
 									/>
 								)}
 
@@ -211,7 +211,7 @@ class ModalHeader extends Component {
 							opacity: 0.5,
 							background: 'transparent',
 						}}
-						onClick={this.onClose}
+						onClick={this.props.onClose}
 					>
 						{this.close(styles.colors.black)}
 					</button>
