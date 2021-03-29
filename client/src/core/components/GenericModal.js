@@ -79,7 +79,7 @@ export default class GenericModal extends Component {
 							>
 								{styles.modalHeader && (
 									<ModalHeader
-										lineColor={this.props.lineColor}
+										lineColor={this.props.style && this.props.style.lineColor}
 										title={this.props.title}
 										onClose={this.onClose.bind(this)}
 									/>
