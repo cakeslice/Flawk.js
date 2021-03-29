@@ -403,6 +403,7 @@ export default class CustomDropdown extends Component {
 								return {
 									...internalStyle,
 									...defaultMenuStyle,
+									...(styles.customDropdown && styles.customDropdown.menu),
 									...(this.props.style && this.props.style.menu),
 								}
 							},
