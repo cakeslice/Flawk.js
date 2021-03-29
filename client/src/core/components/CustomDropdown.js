@@ -292,6 +292,7 @@ export default class CustomDropdown extends Component {
 							input: (styles, { data }) => {
 								return {
 									...styles,
+									...(this.props.style && this.props.style.input),
 									padding: 0,
 									margin: 0,
 								}
@@ -509,7 +510,9 @@ export default class CustomDropdown extends Component {
 						}}
 						{...this.props.config}
 						filterOption={
-							this.props.loadOptions
+							this.props.searchFunction
+								? this.props.searchFunction
+								: this.props.loadOptions
 								? (candidate, input) => {
 										return true
 								  }

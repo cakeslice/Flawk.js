@@ -65,6 +65,8 @@ numeral.register('locale', 'us', {
 	},
 })
 
+var { countries } = require('countries-list')
+
 /**
  * @param {Error} err
  * @param {boolean} useSentry
@@ -297,6 +299,14 @@ export default {
 	localize: (obj, lang) => {
 		if (lang) return Parser(obj[lang] || obj)
 		else return Parser(obj[global.lang.text] || obj)
+	},
+
+	countriesSearch: (candidate, input) => {
+		return (
+			countries[candidate.value].name.toLowerCase().includes(input.toLowerCase()) ||
+			candidate.value.toLowerCase().includes(input.toLowerCase()) ||
+			('+' + countries[candidate.value].phone).includes(input)
+		)
 	},
 
 	replaceAlpha(color, amount) {
