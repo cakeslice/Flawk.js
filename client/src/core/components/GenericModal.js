@@ -79,7 +79,7 @@ export default class GenericModal extends Component {
 							>
 								{styles.modalHeader && (
 									<ModalHeader
-										color={this.props.color}
+										lineColor={this.props.lineColor}
 										title={this.props.title}
 										onClose={this.onClose.bind(this)}
 									/>
@@ -188,9 +188,10 @@ class ModalHeader extends Component {
 						paddingBottom: 0,
 						flexDirection: 'row',
 						justifyContent: 'space-between',
+						...styles.modalHeaderStyle,
 					}}
 				>
-					<p
+					<div
 						style={{
 							...{
 								textAlign: 'center',
@@ -200,7 +201,7 @@ class ModalHeader extends Component {
 						}}
 					>
 						{this.props.title}
-					</p>
+					</div>
 
 					<button
 						style={{
@@ -219,8 +220,8 @@ class ModalHeader extends Component {
 				<div
 					style={{
 						height: 1,
-						background: styles.colors.black,
-						opacity: 0.1,
+						background: this.props.lineColor || styles.colors.black,
+						opacity: this.props.lineColor ? 1 : 0.1,
 						width: '100%',
 					}}
 				></div>
