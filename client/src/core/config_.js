@@ -90,35 +90,63 @@ global.lang = {
 }
 global.setLang = (lang) => {
 	global.lang =
-		lang.text !== 'pt'
+		lang.text === 'pt'
 			? {
-					text: 'en',
-					moment: 'en',
-					numeral: 'us',
-					date: 'en-US',
-			  }
-			: {
 					text: 'pt',
 					moment: 'pt',
 					numeral: 'us',
 					date: 'pt-PT',
+			  }
+			: lang.text === 'es'
+			? {
+					text: 'es',
+					moment: 'es',
+					numeral: 'us',
+					date: 'es-ES',
+			  }
+			: lang.text === 'fr'
+			? {
+					text: 'fr',
+					moment: 'fr',
+					numeral: 'us',
+					date: 'fr-FR',
+			  }
+			: {
+					text: 'en',
+					moment: 'en',
+					numeral: 'us',
+					date: 'en-US',
 			  }
 	global.updateLang()
 }
 global.changeLang = () => {
 	global.lang =
-		global.lang.text === 'pt'
+		global.lang.text === 'en'
 			? {
-					text: 'en',
-					moment: 'en',
-					numeral: 'us',
-					date: 'en-US',
-			  }
-			: {
 					text: 'pt',
 					moment: 'pt',
 					numeral: 'us',
 					date: 'pt-PT',
+			  }
+			: global.lang.text === 'pt'
+			? {
+					text: 'es',
+					moment: 'es',
+					numeral: 'us',
+					date: 'es-ES',
+			  }
+			: global.lang.text === 'es'
+			? {
+					text: 'fr',
+					moment: 'fr',
+					numeral: 'us',
+					date: 'fr-FR',
+			  }
+			: {
+					text: 'en',
+					moment: 'en',
+					numeral: 'us',
+					date: 'en-US',
 			  }
 	global.updateLang()
 }
