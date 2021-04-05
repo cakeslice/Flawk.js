@@ -36,6 +36,7 @@ declare namespace NodeJS {
 	}
 	interface Global {
 		lang: Lang;
+		supportedLanguages: Array<string>;
 		setLang: (lang: Lang) => void;
 		updateLang: () => void;
 		changeLang: () => void;

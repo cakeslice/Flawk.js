@@ -16,6 +16,8 @@ const _websocketSupport = true
 require('moment/locale/pt')
 require('moment/locale/fr')
 
+global.supportedLanguages = ['en']
+
 module.exports = {
 	backendURL: _backendURL + '/backend',
 	websocketURL: _backendURL + '/backend/sockets',

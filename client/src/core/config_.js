@@ -35,14 +35,6 @@ const _recaptchaBypass = process.env.REACT_APP_RECAPTCHA_BYPASS
 const _sentryID = process.env.REACT_APP_SENTRY_KEY
 
 const moment = require('moment')
-var browserLanguage = ''
-try {
-	const detectBrowserLanguage = () =>
-		(navigator.languages && navigator.languages[0]) ||
-		navigator.language ||
-		navigator.userLanguage
-	browserLanguage = detectBrowserLanguage().toLowerCase()
-} catch {}
 
 var numeral = require('numeral')
 require('numeral/locales')
@@ -82,11 +74,12 @@ var logCatch = function (err, useSentry, identifier = '') {
 }
 global.logCatch = logCatch
 
+global.supportedLanguages = ['pt', 'en']
 global.lang = {
-	text: browserLanguage.includes('pt') ? 'pt' : 'en',
-	moment: browserLanguage.includes('pt') ? 'pt' : 'en',
+	text: 'en',
+	moment: 'en',
 	numeral: 'us',
-	date: browserLanguage.includes('pt') ? 'pt-PT' : 'en-US',
+	date: 'en-US',
 }
 global.setLang = (lang) => {
 	global.lang =

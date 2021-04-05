@@ -100,6 +100,21 @@ export default class AppBase extends Component {
 			var lang = await global.storage.getItem('lang')
 			if (lang) {
 				global.setLang(JSON.parse(lang))
+			} else {
+				var browserLanguage = ''
+				try {
+					const detectBrowserLanguage = () =>
+						(navigator.languages && navigator.languages[0]) ||
+						navigator.language ||
+						navigator.userLanguage
+					browserLanguage = detectBrowserLanguage().toLowerCase()
+				} catch {}
+				for (var l = 0; l < global.supportedLanguages.length; l++) {
+					if (browserLanguage.includes(global.supportedLanguages[l])) {
+						global.setLang({ text: global.supportedLanguages[l] })
+						break
+					}
+				}
 			}
 
 			var cookieNotice = await global.storage.getItem('cookie_notice')
