@@ -71,7 +71,7 @@ export default class Avatar extends Component {
 							</div>
 						) : (
 							<img
-								src={avatar}
+								src={this.props.emptyOverride || avatar}
 								style={{
 									...style,
 									opacity: 0.75,
