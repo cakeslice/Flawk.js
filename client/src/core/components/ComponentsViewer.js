@@ -644,7 +644,7 @@ class Misc extends ReactQueryParams {
 					}}
 					// A lot more options here: https://www.npmjs.com/package/react-quill
 					theme='snow'
-					//value={values.someText}
+					//value={values.someText || ''}
 					onBlur={() => {
 						this.setState({ quill: this.state.quill })
 					}}

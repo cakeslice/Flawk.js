@@ -66,7 +66,10 @@ class Settings extends Component {
 									photoFile: undefined,
 									password: undefined,
 								}}
-								onSubmit={async (values, { setSubmitting }) => {
+								onSubmit={async (
+									values,
+									{ setSubmitting, setFieldValue, resetForm }
+								) => {
 									setSubmitting(true)
 
 									if (values.photoFile) {
@@ -92,6 +95,10 @@ class Settings extends Component {
 														res.body.token
 													)
 												if (this.props.fetchUser) this.props.fetchUser()
+
+												// Fix for password change not resetting form
+												setFieldValue('password', undefined)
+												resetForm()
 											}
 										}
 
@@ -107,6 +114,10 @@ class Settings extends Component {
 											if (r.body.token)
 												await global.storage.setItem('token', r.body.token)
 											if (this.props.fetchUser) this.props.fetchUser()
+
+											// Fix for password change not resetting form
+											setFieldValue('password', undefined)
+											resetForm()
 										}
 
 										setSubmitting(false)

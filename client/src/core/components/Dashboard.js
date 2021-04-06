@@ -613,6 +613,7 @@ class Menu extends React.Component {
 								<div>
 									<p
 										style={{
+											whiteSpace:'nowrap',
 											fontSize:
 												(this.props.entryStyle &&
 													this.props.entryStyle.fontSize) ||
@@ -695,6 +696,7 @@ class Menu extends React.Component {
 													<div>
 														<p
 															style={{
+																whiteSpace: 'nowrap',
 																fontSize:
 																	(this.props.entryStyle &&
 																		this.props.entryStyle
