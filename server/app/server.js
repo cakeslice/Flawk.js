@@ -373,6 +373,7 @@ function init() {
 			unknownFormats: ['objectid', 'uuid', 'email'], // defaults: date-time, date, password, binary, byte
 
 			validateRequests: {
+				coerceTypes: true,
 				allowUnknownQueryParameters: false,
 			},
 			validateResponses: false,
