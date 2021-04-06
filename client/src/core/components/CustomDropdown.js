@@ -497,10 +497,12 @@ export default class CustomDropdown extends Component {
 										overflow: 'hidden',
 									}
 								},
-								menu: (styles) => {
+								menu: (internalStyles) => {
 									return {
-										...styles,
+										...internalStyles,
 										...defaultMenuStyle,
+										...(styles.customDropdown && styles.customDropdown.menu),
+										...(this.props.style && this.props.style.menu),
 										width: 150,
 										left: -137,
 										top: -10,
