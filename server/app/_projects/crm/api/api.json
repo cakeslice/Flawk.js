@@ -8,7 +8,7 @@
     "/api": {
       "get": {
         "description": "Get the server's API",
-        "operationId": "get-api",
+        "operationId": "none",
         "responses": {
           "200": {
             "description": "OK"
@@ -25,7 +25,7 @@
           "public"
         ],
         "description": "Get the application's constant data",
-        "operationId": "get-structures",
+        "operationId": "none",
         "responses": {
           "200": {
             "description": "OK"
@@ -84,14 +84,14 @@
         "tags": [
           "public"
         ],
-        "operationId": "post-client-login",
+        "operationId": "none",
         "parameters": []
       }
     },
     "/client/logout": {
       "post": {
         "summary": "",
-        "operationId": "post-client-logout",
+       "operationId": "none",
         "responses": {
           "200": {
             "description": "OK"
@@ -137,7 +137,7 @@
             }
           }
         },
-        "operationId": "get-client-data",
+        "operationId": "none",
         "summary": ""
       }
     },
@@ -152,14 +152,14 @@
             "description": "OK"
           }
         },
-        "operationId": "get-online",
+        "operationId": "none",
         "description": "Check if the server is online"
       }
     },
     "/client/register": {
       "post": {
         "summary": "",
-        "operationId": "post-client-register",
+        "operationId": "none",
         "responses": {
           "200": {
             "description": "OK"
@@ -232,7 +232,7 @@
             "description": "Wrong code"
           }
         },
-        "operationId": "post-client-register_verify",
+        "operationId": "none",
         "description": "Verify the registration using the code sent in /register",
         "requestBody": {
           "content": {
@@ -272,7 +272,7 @@
             "description": "User not found"
           }
         },
-        "operationId": "post-client-forgot-password",
+        "operationId": "none",
         "requestBody": {
           "content": {
             "application/json": {
@@ -316,7 +316,7 @@
             "description": "OK"
           }
         },
-        "operationId": "post-client-reset_password",
+        "operationId": "none",
         "requestBody": {
           "content": {
             "application/json": {
@@ -350,7 +350,7 @@
     "/admin/search_users": {
       "post": {
         "summary": "",
-        "operationId": "post-admin-search",
+        "operationId": "none",
         "responses": {
           "200": {
             "description": "OK"
@@ -435,7 +435,7 @@
             "description": "OK"
           }
         },
-        "operationId": "get-admin-online_users",
+        "operationId": "none",
         "security": [
           {
             "cookieAuth": []
@@ -457,7 +457,7 @@
             "description": "OK"
           }
         },
-        "operationId": "post-client-change_settings",
+        "operationId": "none",
         "security": [
           {
             "cookieAuth": []
@@ -506,7 +506,7 @@
     "/client/upload_url": {
       "post": {
         "summary": "",
-        "operationId": "post-client-upload_url",
+        "operationId": "none",
         "responses": {
           "200": {
             "description": "OK"
@@ -550,7 +550,7 @@
             "description": "OK"
           }
         },
-        "operationId": "get-client-notifications",
+        "operationId": "none",
         "security": [
           {
             "cookieAuth": []
@@ -570,7 +570,7 @@
             "description": "OK"
           }
         },
-        "operationId": "post-client-read_notifications",
+        "operationId": "none",
         "security": [
           {
             "cookieAuth": []
