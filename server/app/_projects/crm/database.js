@@ -76,7 +76,7 @@ var ClientSchema = new mongoose.Schema({
 		validate: emailValidator,
 	},
 	phone: {
-		type: String,
+		type: Number,
 		trim: true,
 		index: true,
 		//unique: true,
@@ -103,6 +103,8 @@ var ClientSchema = new mongoose.Schema({
 		firstName: String,
 		lastName: String,
 		photoURL: String,
+		country: String,
+		countryPhoneCode: String,
 	},
 
 	access: {
@@ -246,18 +248,6 @@ var Chat = mongoose.model(
 
 //
 
-var CountrySchema = new mongoose.Schema({
-	// _id
-	name: {
-		pt: { required: true, type: String },
-		en: { required: true, type: String },
-	},
-	code: { required: true, unique: true, type: String },
-})
-	.plugin(mongooseLeanId)
-	.plugin(mongooseLeanVirtuals)
-var Country = mongoose.model('Country', CountrySchema)
-
 var City = mongoose.model(
 	'City',
 	new mongoose.Schema({
@@ -290,13 +280,6 @@ var RemoteConfig = mongoose.model(
 		.plugin(mongooseLeanVirtuals)
 )
 global.structures = [
-	{
-		sendToFrontend: true,
-		cache: true,
-		sortKey: 'name',
-		schema: Country,
-		path: '/structures/countries.json',
-	},
 	{
 		sendToFrontend: true,
 		cache: false,

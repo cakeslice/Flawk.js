@@ -510,22 +510,34 @@ module.exports = {
 	///////////////////////////////////// SMS
 
 	sendSMSMessage: async function (phone, msg, res, req) {
-		await nexmoClient.message.sendSms(config.nexmo.phoneNumber, phone, msg)
 		if (process.env.noSMS === 'true') {
 			console.log('Skipped SMS: ' + phone + ': ' + msg)
 			return
-		}
+		} else console.log('Sending SMS to ' + phone + ': ' + msg)
 
-		// TODO:
-		/* function(err, message) {
-			if (err) {
-				console.error(err.message)
-				if (res) _setResponse(400, req, res, config.response('SMSError', req))
+		var result = await new Promise((resolve, reject) => {
+			nexmoClient.message.sendSms(config.nexmo.phoneNumber, phone, msg, (error, response) => {
+				if (error) {
+					return reject({ success: false, error: error })
+				} else {
+					return resolve({ success: true, response: response })
+				}
+			})
+		})
+
+		if (!result || !result.success) {
+			console.error(result.error)
+			_setResponse(400, req, res, config.response('SMSError', req))
+		} else {
+			if (result.response.messages[0]['status'] === '0') {
+				_setResponse(200, req, res, config.response('SMSSuccess', req))
 			} else {
-				console.log(message)
-				if (res) _setResponse(200, req, res, config.response('SMSSuccess', req))
+				console.log(
+					`Message failed with error: ${result.response.messages[0]['error-text']}`
+				)
+				_setResponse(400, req, res, config.response('SMSError', req))
 			}
-		} */
+		}
 	},
 
 	///////////////////////////////////// Recaptcha

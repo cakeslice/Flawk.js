@@ -1039,7 +1039,7 @@ class Inputs extends Component {
 													label={'E-mail'}
 												/>
 												<CustomInput
-													type={'tel'}
+													type={'number'}
 													name='phone'
 													formIK={formIK}
 													label={config.text(
