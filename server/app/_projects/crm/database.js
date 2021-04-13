@@ -266,7 +266,7 @@ var RemoteConfig = mongoose.model(
 	'RemoteConfig',
 	new mongoose.Schema({
 		// _id
-		code: { required: true, unique: true, type: String },
+		code: { required: true, unique: true, type: String, default: 'general' },
 
 		maintenanceMode: { type: Boolean, default: false },
 
