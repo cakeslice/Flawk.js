@@ -126,12 +126,15 @@ module.exports = function (app) {
 
 		console.log('Verification code: ' + newUser.appState.verificationCode)
 
-		/* await common.sendSMSMessage(
+		/* var r = await common.sendSMSMessage(
 			body.countryPhoneCode + body.phone,
 			config.response('SMSConfirmation', req).replace("<code>", newUser.appState.verificationCode),
 			res,
 			req
-		) */
+		) 
+		if(!r.success)
+			return
+		*/
 		await common.sendEmail(body.email, {
 			subject: config.text('verifyAccount', req),
 			substitutions: {

@@ -471,7 +471,7 @@ module.exports = {
 			TemplateAlias: template,
 			TemplateModel: {
 				...data.substitutions,
-				subject: !config.prod ? '[TESTE-V5] ' + data.subject : data.subject,
+				subject: !config.prod ? '[TEST-ADMIN] ' + data.subject : data.subject,
 			},
 			From: config.noReply,
 			To: !config.prod || (developer && config.prod) ? config.developerEmail : adminEmails,
@@ -512,7 +512,10 @@ module.exports = {
 	sendSMSMessage: async function (phone, msg, res, req) {
 		if (process.env.noSMS === 'true') {
 			console.log('Skipped SMS: ' + phone + ': ' + msg)
-			return
+			return { success: true }
+		} else if (!nexmoClient) {
+			_setResponse(500, req, res, 'No SMS client!')
+			return { success: false }
 		} else console.log('Sending SMS to ' + phone + ': ' + msg)
 
 		var result = await new Promise((resolve, reject) => {
@@ -528,14 +531,17 @@ module.exports = {
 		if (!result || !result.success) {
 			console.error(result.error)
 			_setResponse(400, req, res, config.response('SMSError', req))
+			return { success: false }
 		} else {
 			if (result.response.messages[0]['status'] === '0') {
 				_setResponse(200, req, res, config.response('SMSSuccess', req))
+				return { success: true }
 			} else {
 				console.log(
 					`Message failed with error: ${result.response.messages[0]['error-text']}`
 				)
 				_setResponse(400, req, res, config.response('SMSError', req))
+				return { success: false }
 			}
 		}
 	},
