@@ -924,25 +924,25 @@ class Inputs extends Component {
 								validate={(values) => {
 									let errors = {}
 
-									if (!values.firstName) {
-										errors.firstName = '*'
-									}
-									if (!values.lastName) errors.lastName = '*'
-									if (!values.dropdown) errors.dropdown = '*'
+									var validate = [
+										'firstName',
+										'lastName',
+										'phone',
+										'email',
+										'password',
+										'dropdown',
+									]
+									validate.forEach((v) => {
+										if (values[v] === undefined) errors[v] = '*'
+									})
+
 									if (!values.checkbox)
 										errors.checkbox = 'Please accept the terms'
 
-									if (!values.phone) errors.phone = '*'
-
-									if (!values.email) {
-										errors.email = '*'
-									} else if (validator.isEmail(values.email)) {
+									if (values.email && validator.isEmail(values.email)) {
 										errors.email = 'Invalid e-mail address'
 									}
-
-									if (!values.password) {
-										errors.password = '*'
-									} else if (values.password.length < 6) {
+									if (values.password && values.password.length < 6) {
 										errors.password = 'Minimum 6 characters'
 									}
 
@@ -1741,14 +1741,13 @@ class Login extends Component {
 					validate={(values) => {
 						let errors = {}
 
-						if (!values.email) {
-							errors.email = '*'
-						} else if (!validator.isEmail(values.email)) {
-							errors.email = '*'
-						}
+						var validate = ['email', 'password']
+						validate.forEach((v) => {
+							if (values[v] === undefined) errors[v] = '*'
+						})
 
-						if (!values.password) {
-							errors.password = '*'
+						if (values.email && !validator.isEmail(values.email)) {
+							errors.email = '*'
 						}
 
 						return errors
@@ -1999,22 +1998,15 @@ class Register extends Component {
 						validate={(values) => {
 							let errors = {}
 
-							if (!values.firstName) {
-								errors.firstName = '*'
-							}
-							if (!values.lastName) {
-								errors.lastName = '*'
-							}
+							var validate = ['firstName', 'lastName', 'email', 'password']
+							validate.forEach((v) => {
+								if (values[v] === undefined) errors[v] = '*'
+							})
 
-							if (!values.email) {
-								errors.email = '*'
-							} else if (!validator.isEmail(values.email)) {
+							if (values.email && !validator.isEmail(values.email)) {
 								errors.email = '*'
 							}
-
-							if (!values.password) {
-								errors.password = '*'
-							} else if (values.password.length < 6) {
+							if (values.password && values.password.length < 6) {
 								errors.password = 'Password needs to have at least 6 characters'
 							}
 
@@ -2145,8 +2137,6 @@ class Register extends Component {
 											<div
 												style={{
 													display: 'flex',
-													alignItems: 'center',
-													flexDirection: 'column',
 													maxWidth: this.props.desktop ? 360 : 260,
 												}}
 											>
@@ -2171,6 +2161,18 @@ class Register extends Component {
 															}}
 														/>
 													)}
+													{!config.recaptchaBypass &&
+														touched.captcha &&
+														errors.captcha && (
+															<p
+																style={{
+																	marginLeft: 5,
+																	color: styles.colors.red,
+																}}
+															>
+																*
+															</p>
+														)}
 												</div>
 											</div>
 										)}
@@ -2194,6 +2196,7 @@ class Register extends Component {
 
 										<CustomButton
 											type='submit'
+											onClick={() => setFieldTouched('captcha', true)}
 											isLoading={isSubmitting || this.props.fetchingUser}
 											appearance='primary'
 										>
@@ -2455,8 +2458,6 @@ class Forgot extends Component {
 											<div
 												style={{
 													display: 'flex',
-													alignItems: 'center',
-													flexDirection: 'column',
 													maxWidth: this.props.desktop ? 360 : 260,
 												}}
 											>
@@ -2481,6 +2482,18 @@ class Forgot extends Component {
 															}}
 														/>
 													)}
+													{!config.recaptchaBypass &&
+														touched.captcha &&
+														errors.captcha && (
+															<p
+																style={{
+																	marginLeft: 5,
+																	color: styles.colors.red,
+																}}
+															>
+																*
+															</p>
+														)}
 												</div>
 											</div>
 										)}
@@ -2504,6 +2517,7 @@ class Forgot extends Component {
 
 										<CustomButton
 											type='submit'
+											onClick={() => setFieldTouched('captcha', true)}
 											isLoading={isSubmitting || this.props.fetchingUser}
 											appearance='primary'
 										>
@@ -2538,17 +2552,14 @@ class Settings extends Component {
 					validate={(values) => {
 						let errors = {}
 
-						if (!values.email) {
-							errors.email = '*'
-						} else if (!validator.isEmail(values.email)) {
+						var validate = ['firstName', 'lastName', 'email', 'password']
+						validate.forEach((v) => {
+							if (values[v] === undefined) errors[v] = '*'
+						})
+
+						if (values.email && !validator.isEmail(values.email)) {
 							errors.email = '*'
 						}
-
-						if (!values.firstName) {
-							errors.firstName = '*'
-						}
-						if (!values.lastName) errors.lastName = '*'
-
 						if (values.password && values.password.length < 6) {
 							errors.password = 'Minimum 6 characters'
 						}
