@@ -118,7 +118,9 @@ export default class AppBase extends Component {
 			}
 
 			var cookieNotice = await global.storage.getItem('cookie_notice')
-			if (cookieNotice) this.setState({ cookieNotice: cookieNotice })
+			if (cookieNotice) this.state.cookieNotice = cookieNotice
+
+			this.forceUpdate()
 		}.bind(this)
 		asyncSetup()
 	}
@@ -401,7 +403,7 @@ export default class AppBase extends Component {
 										window.location.reload()
 									}}
 								>
-									LANG
+									LANG {'(' + global.lang.text + ')'}
 								</b>
 
 								<b

@@ -318,8 +318,15 @@ export default {
 
 	text: _text,
 	localize: (obj, lang) => {
-		if (lang) return Parser(obj[lang] || obj)
-		else return Parser(obj[global.lang.text] || obj)
+		var s
+		if (lang) {
+			s = obj[lang] || obj
+			if (typeof s !== 'string') s = 'NOT A STRING'
+		} else {
+			s = obj[global.lang.text] || obj
+			if (typeof s !== 'string') s = 'NOT A STRING'
+		}
+		return Parser(s)
 	},
 
 	countriesSearch: (candidate, input) => {
