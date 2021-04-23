@@ -98,8 +98,16 @@ export default class AppBase extends Component {
 			} else this.applyNightMode(false, true)
 
 			var lang = await global.storage.getItem('lang')
+			var langSet = false
 			if (lang) {
-				global.setLang(JSON.parse(lang))
+				var savedLang = JSON.parse(lang)
+				for (var i = 0; l < global.supportedLanguages.length; i++) {
+					if (global.supportedLanguages[i] === savedLang.text) {
+						langSet = true
+						global.setLang(savedLang)
+						break
+					}
+				}
 			} else {
 				var browserLanguage = ''
 				try {
@@ -111,10 +119,14 @@ export default class AppBase extends Component {
 				} catch {}
 				for (var l = 0; l < global.supportedLanguages.length; l++) {
 					if (browserLanguage.includes(global.supportedLanguages[l])) {
+						langSet = true
 						global.setLang({ text: global.supportedLanguages[l] })
 						break
 					}
 				}
+			}
+			if (!langSet) {
+				global.setLang({ text: global.supportedLanguages[0] })
 			}
 
 			var cookieNotice = await global.storage.getItem('cookie_notice')
