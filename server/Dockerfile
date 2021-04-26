@@ -50,7 +50,7 @@
 # ---------------------------------------
 
 # ------------ WEB APP DEPLOY ------------
-# Copy .env and change app port to 8080 if backend
+# Copy .env and change app port to 8080 (or the one in .env) if backend and 80 if website
 # Add websocket support if needed
 # Then add domain in CloudFlare (no proxy)
 # Then enable HTTPS for your app
@@ -58,6 +58,7 @@
 
 # To take advantage of multiple cores in Node.js you can to use clusters and consider websocket support: https://socket.io/docs/using-multiple-nodes/
 # HOWEVER, 4 CORES SEEMS TO BE VERY GOOD FOR MONGO + NODE
+#     For websites with low/no MONGO usage, you should go with CPU-Optimized
 # Make sure it stops build if tests FAIL!
 # You can delete old builds to free space using captain dashboard if too many created
 
@@ -68,8 +69,14 @@
 # - Create space in DigitalOcean
 # - Create certicate in CloudFlare for cloud.yourdomain.com
 # - Enable CDN in space using certificate
+#     - Make sure you use bucketCDNOriginal and bucketCDNTarget in the app
 # - Add CNAME with Proxy in CloudFlare (cdn)
+# - Also set CORS in space settings: 
+#     https://your_domain, GET+PUT, Header: *, 600 seconds
+#     https://*.your_domain, GET+PUT, Header: *, 600 seconds
+#     *, PUT+POST, *, 600 seconds (needs to be in bottom!)
 # - NOTE: Can't use this for a lot of video or audio files since CloudFlare doesn't allow!
+# - Follow deploy/S3_backup.txt
 
 # ------- MONGO SETUP -------
 # Create the MongoDB app in CAPROVER
@@ -82,6 +89,10 @@
 #    External: mongodb://dbuser:dbpassword@SERVER_IP_ADDRESS:1337/dbname?authSource=admin&w=1
 
 # Follow deploy/mongo_backup.txt
+
+# To connect your own Docker registry go to cluster and use:
+# username: nologin
+# Disable Default Push Registry
 # ---------------------------
 
 # ---------------------------

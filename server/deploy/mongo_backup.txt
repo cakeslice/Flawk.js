@@ -13,7 +13,7 @@ export MONGODB_HOST=localhost
 export MONGODB_PORT=1337
 export MONGODB_USER=
 export MONGODB_PASS=
-export BACKUP_FOLDER=your_folder/mongo_backups/
+export BACKUP_FOLDER=remote_folder/mongo_backups/
 
 export CRON_TIME="0 3 * * *"
 export TZ=Europe/Lisbon
@@ -146,7 +146,7 @@ nano lifecycle.json
 		{
 			"ID": "mongo_backups",
 			"Filter": {
-				"Prefix": "your_folder/mongo_backups/"
+				"Prefix": "remote_folder/mongo_backups/"
 			}, 
 			"Status": "Enabled", 
 			"Expiration": {
@@ -161,7 +161,7 @@ nano set_lifecycle.sh
 #!/bin/bash
 export AWS_ACCESS_KEY_ID=XXXX
 export AWS_SECRET_ACCESS_KEY=XXXX
-aws s3api put-bucket-lifecycle-configuration --endpoint=https://XXXX --bucket your_bucket --lifecycle-configuration file://lifec$
+aws s3api put-bucket-lifecycle-configuration --endpoint=https://XXXX --bucket your_bucket --lifecycle-configuration file://lifecycle.json
 aws s3api get-bucket-lifecycle-configuration --endpoint=https://XXXX --bucket your_bucket
 
 ----

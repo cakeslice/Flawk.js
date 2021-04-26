@@ -83,6 +83,8 @@ module.exports = {
 	bucketAccessSecret: process.env.bucketAccessSecret,
 	bucketEndpoint: process.env.bucketEndpoint,
 	bucketName: process.env.bucketName,
+	bucketCDNTarget: process.env.bucketCDNTarget,
+	bucketCDNOriginal: process.env.bucketCDNOriginal,
 	imageThumbnailWidth: 200,
 
 	publicUploadsPath: process.env.bucketFolder + '/public_uploads' + (_prod ? '_prod' : '_dev'),

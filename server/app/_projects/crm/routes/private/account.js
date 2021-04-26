@@ -51,7 +51,9 @@ module.exports = function (app) {
 
 		common.setResponse(200, req, res, '', {
 			putURL: url.putURL,
-			getURL: url.getURL,
+			getURL: config.bucketCDNOriginal
+				? url.getURL.replace(config.bucketCDNOriginal, config.bucketCDNTarget)
+				: url.getURL,
 		})
 	})
 
