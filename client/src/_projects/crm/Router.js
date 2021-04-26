@@ -15,17 +15,10 @@ import { connect } from 'react-redux'
 import MediaQuery from 'react-responsive'
 import ScrollToTop from 'core/components/ScrollToTop'
 import RouterBase from 'core/components/RouterBase'
-import Dashboard from 'core/components/Dashboard'
 import { Fade } from 'react-reveal'
-import ComponentsViewer from 'core/components/ComponentsViewer'
 import { Helmet } from 'react-helmet'
 import Avatar from 'core/components/Avatar'
 import { get, post } from 'core/api'
-import Login from './pages/auth/Login'
-import Forgot from './pages/auth/Forgot'
-import Register from './pages/auth/Register'
-import Settings from './pages/settings/Settings'
-import Main from './pages/main/Main'
 import Header from './pages/common/Header'
 import Footer from './pages/common/Footer'
 import logo from 'core/assets/images/logo.svg'
@@ -33,6 +26,16 @@ import notificationSound from './assets/sounds/notification.mp3'
 
 var styles = require('core/styles').default
 var config = require('core/config_').default
+
+const ComponentsViewer = React.lazy(() => import('core/components/ComponentsViewer'))
+const Dashboard = React.lazy(() => import('core/components/Dashboard'))
+const Settings = React.lazy(() => import('./pages/settings/Settings'))
+//
+const Login = React.lazy(() => import('./pages/auth/Login'))
+const Forgot = React.lazy(() => import('./pages/auth/Forgot'))
+const Register = React.lazy(() => import('./pages/auth/Register'))
+//
+const Main = React.lazy(() => import('./pages/main/Main'))
 
 class Router extends Component {
 	constructor() {
