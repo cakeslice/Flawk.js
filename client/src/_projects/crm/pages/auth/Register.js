@@ -337,45 +337,54 @@ class Register extends Component {
 														/>
 													</div>
 												</div>
-												{!config.recaptchaBypass && !values.captcha && (
-													<div
-														style={{
-															display: 'flex',
-															alignItems: 'center',
-															flexDirection: 'column',
-															maxWidth: desktop ? 360 : 260,
-														}}
-													>
-														<sp />
+												{values.firstName &&
+													values.lastName &&
+													values.password &&
+													values.email /* Only show after filling to avoid loading it when page load */ &&
+													!config.recaptchaBypass &&
+													!values.captcha && (
 														<div
 															style={{
-																transform: !desktop && 'scale(.85)',
+																display: 'flex',
+																alignItems: 'center',
+																flexDirection: 'column',
+																maxWidth: desktop ? 360 : 260,
 															}}
 														>
-															{config.recaptchaSiteKey && (
-																<ReCaptcha
-																	hl={global.lang.date}
-																	//size={'compact'}
-																	theme={
-																		global.nightMode
-																			? 'dark'
-																			: 'light'
-																	}
-																	sitekey={
-																		config.recaptchaSiteKey
-																	}
-																	onChange={(e) => {
-																		setFieldTouched(
-																			'captcha',
-																			true
-																		)
-																		setFieldValue('captcha', e)
-																	}}
-																/>
-															)}
+															<sp />
+															<div
+																style={{
+																	transform:
+																		!desktop && 'scale(.85)',
+																}}
+															>
+																{config.recaptchaSiteKey && (
+																	<ReCaptcha
+																		hl={global.lang.date}
+																		//size={'compact'}
+																		theme={
+																			global.nightMode
+																				? 'dark'
+																				: 'light'
+																		}
+																		sitekey={
+																			config.recaptchaSiteKey
+																		}
+																		onChange={(e) => {
+																			setFieldTouched(
+																				'captcha',
+																				true
+																			)
+																			setFieldValue(
+																				'captcha',
+																				e
+																			)
+																		}}
+																	/>
+																)}
+															</div>
 														</div>
-													</div>
-												)}
+													)}
 											</div>
 											<sp />
 											<div

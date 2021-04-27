@@ -2133,49 +2133,56 @@ class Register extends Component {
 												/>
 											</div>
 										</div>
-										{!config.recaptchaBypass && !values.captcha && (
-											<div
-												style={{
-													display: 'flex',
-													maxWidth: this.props.desktop ? 360 : 260,
-												}}
-											>
-												<sp />
+										{values.firstName &&
+											values.lastName &&
+											values.password &&
+											values.email /* Only show after filling to avoid loading it when page load */ &&
+											!config.recaptchaBypass &&
+											!values.captcha && (
 												<div
 													style={{
-														transform:
-															!this.props.desktop && 'scale(.85)',
+														display: 'flex',
+														maxWidth: this.props.desktop ? 360 : 260,
 													}}
 												>
-													{config.recaptchaSiteKey && (
-														<ReCaptcha
-															hl={global.lang.date}
-															//size={'compact'}
-															theme={
-																global.nightMode ? 'dark' : 'light'
-															}
-															sitekey={config.recaptchaSiteKey}
-															onChange={(e) => {
-																setFieldTouched('captcha', true)
-																setFieldValue('captcha', e)
-															}}
-														/>
-													)}
-													{!config.recaptchaBypass &&
-														touched.captcha &&
-														errors.captcha && (
-															<p
-																style={{
-																	marginLeft: 5,
-																	color: styles.colors.red,
+													<sp />
+													<div
+														style={{
+															transform:
+																!this.props.desktop && 'scale(.85)',
+														}}
+													>
+														{config.recaptchaSiteKey && (
+															<ReCaptcha
+																hl={global.lang.date}
+																//size={'compact'}
+																theme={
+																	global.nightMode
+																		? 'dark'
+																		: 'light'
+																}
+																sitekey={config.recaptchaSiteKey}
+																onChange={(e) => {
+																	setFieldTouched('captcha', true)
+																	setFieldValue('captcha', e)
 																}}
-															>
-																*
-															</p>
+															/>
 														)}
+														{!config.recaptchaBypass &&
+															touched.captcha &&
+															errors.captcha && (
+																<p
+																	style={{
+																		marginLeft: 5,
+																		color: styles.colors.red,
+																	}}
+																>
+																	*
+																</p>
+															)}
+													</div>
 												</div>
-											</div>
-										)}
+											)}
 									</div>
 									<sp />
 									<div
@@ -2454,49 +2461,53 @@ class Forgot extends Component {
 												placeholder={''}
 											/>
 										</div>
-										{!config.recaptchaBypass && !values.captcha && (
-											<div
-												style={{
-													display: 'flex',
-													maxWidth: this.props.desktop ? 360 : 260,
-												}}
-											>
-												<sp />
+										{values.email /* Only show after filling to avoid loading it when page load */ &&
+											!config.recaptchaBypass &&
+											!values.captcha && (
 												<div
 													style={{
-														transform:
-															!this.props.desktop && 'scale(.85)',
+														display: 'flex',
+														maxWidth: this.props.desktop ? 360 : 260,
 													}}
 												>
-													{config.recaptchaSiteKey && (
-														<ReCaptcha
-															hl={global.lang.date}
-															//size={'compact'}
-															theme={
-																global.nightMode ? 'dark' : 'light'
-															}
-															sitekey={config.recaptchaSiteKey}
-															onChange={(e) => {
-																setFieldTouched('captcha', true)
-																setFieldValue('captcha', e)
-															}}
-														/>
-													)}
-													{!config.recaptchaBypass &&
-														touched.captcha &&
-														errors.captcha && (
-															<p
-																style={{
-																	marginLeft: 5,
-																	color: styles.colors.red,
+													<sp />
+													<div
+														style={{
+															transform:
+																!this.props.desktop && 'scale(.85)',
+														}}
+													>
+														{config.recaptchaSiteKey && (
+															<ReCaptcha
+																hl={global.lang.date}
+																//size={'compact'}
+																theme={
+																	global.nightMode
+																		? 'dark'
+																		: 'light'
+																}
+																sitekey={config.recaptchaSiteKey}
+																onChange={(e) => {
+																	setFieldTouched('captcha', true)
+																	setFieldValue('captcha', e)
 																}}
-															>
-																*
-															</p>
+															/>
 														)}
+														{!config.recaptchaBypass &&
+															touched.captcha &&
+															errors.captcha && (
+																<p
+																	style={{
+																		marginLeft: 5,
+																		color: styles.colors.red,
+																	}}
+																>
+																	*
+																</p>
+															)}
+													</div>
 												</div>
-											</div>
-										)}
+											)}
 									</div>
 									<sp />
 									<div
