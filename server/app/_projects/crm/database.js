@@ -297,7 +297,6 @@ module.exports = {
 
 	//
 
-	Country,
 	City,
 
 	//

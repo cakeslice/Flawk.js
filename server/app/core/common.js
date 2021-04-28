@@ -253,7 +253,7 @@ module.exports = {
 		var remoteConfig = await database.RemoteConfig.findOne({ code: code }).select(key)
 
 		if (!remoteConfig) {
-			return
+			remoteConfig = new database.RemoteConfig({})
 		}
 
 		remoteConfig[key] = value
