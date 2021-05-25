@@ -22,6 +22,7 @@ const _ = require('lodash')
  * @property {string|array[number]=} noErrorFlag
  * @property {boolean=} internal
  * @property {Window.AbortController.signal=} signal
+ * @property {boolean=} formData
  */
 /**
  * @param {string} path
@@ -44,10 +45,10 @@ export async function get(
 export async function post(
 	path,
 	body,
-	{ noErrorFlag = undefined, internal = true, signal = undefined } = {}
+	{ noErrorFlag = undefined, internal = true, signal = undefined, formData = undefined } = {}
 ) {
 	console.log('POST ' + path + '\n' + JSON.stringify(body))
-	return bodyOf(request('post', path, body, internal, signal), noErrorFlag)
+	return bodyOf(request('post', path, body, internal, signal, formData), noErrorFlag)
 }
 /**
  * @param {string} path
@@ -78,12 +79,12 @@ export async function del(
 
 //
 
-async function request(method, path, body, internal, signal) {
-	const response = await sendRequest(method, path, body, internal, signal)
+async function request(method, path, body, internal, signal, formData) {
+	const response = await sendRequest(method, path, body, internal, signal, formData)
 	return handleResponse(path, response)
 }
 
-async function sendRequest(method, path, body, internal, signal) {
+async function sendRequest(method, path, body, internal, signal, formData) {
 	const apiRoot = config.backendURL
 	const endpoint = !internal
 		? path
@@ -91,19 +92,35 @@ async function sendRequest(method, path, body, internal, signal) {
 		? apiRoot + path
 		: apiRoot + '/' + path
 	var headers = body
-		? { Accept: 'application/json', 'Content-Type': 'application/json' }
+		? formData
+			? {
+					Accept: 'application/json',
+			  }
+			: {
+					Accept: 'application/json',
+					'Content-Type': 'application/json',
+			  }
 		: { Accept: 'application/json' }
 
 	if (internal) {
 		var token = await global.storage.getItem('token')
 		if (token) headers = { ...headers, lang: global.lang.text, token: token }
 	}
+
+	var fD
+	if (formData) {
+		fD = new FormData()
+
+		for (var key in body) {
+			if (body[key] !== undefined) fD.append(key, body[key])
+		}
+	}
 	const options = body
 		? {
 				method,
 				headers,
 				credentials: internal ? 'include' : undefined,
-				body: JSON.stringify(body),
+				body: formData ? fD : JSON.stringify(body),
 				signal: signal,
 		  }
 		: {
