@@ -264,16 +264,20 @@ module.exports = {
 	toObjectID: _toObjectID,
 
 	searchRegex: function (input) {
+		var RegexParser = require('regex-parser')
+
 		if (input && input !== '') {
 			var i = input.trim().split(/(?:,| |\+)+/)
 			var s = ''
-			i.forEach((t) => {
-				s += _.escapeRegExp(t) + ' '
+			i.map((t, index) => {
+				var r = _.escapeRegExp(t)
+				r = toRegex()(r).toString()
+				r = '(?=' + r.substring(1, r.length - 2) + ')'
+				s += (index !== 0 ? '.*' : '') + r
 			})
-			s = s.substring(0, s.length - 1)
-			console.log('Search: ' + s)
-			s = toRegex()(s)
-			return s
+			var regex = RegexParser('/' + s + '/i')
+			console.log('Search: ' + regex)
+			return regex
 		} else return undefined
 	},
 
