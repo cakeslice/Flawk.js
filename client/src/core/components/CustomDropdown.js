@@ -15,6 +15,23 @@ import { css } from 'glamor'
 var config = require('core/config_').default
 var styles = require('core/styles').default
 export default class CustomDropdown extends Component {
+	timer = null
+	bufferedValue = null
+	handleChangeBuffered = (value) => {
+		clearTimeout(this.timer)
+
+		this.bufferedValue = value
+
+		this.timer = setTimeout(this.triggerChange, this.props.bufferInterval || 250)
+	}
+	triggerChange = () => {
+		if (this.props.loadOptions) {
+			this.props.loadOptions(this.bufferedValue, (options) => {
+				this.setState({ loadedOptions: options })
+			})
+		}
+	}
+
 	state = {}
 
 	componentDidMount() {
@@ -521,11 +538,7 @@ export default class CustomDropdown extends Component {
 								: undefined
 						}
 						onInputChange={(value) => {
-							if (this.props.loadOptions) {
-								this.props.loadOptions(value, (options) => {
-									this.setState({ loadedOptions: options })
-								})
-							}
+							this.handleChangeBuffered(value)
 						}}
 						options={this.state.loadedOptions || this.props.options}
 					></Select>
