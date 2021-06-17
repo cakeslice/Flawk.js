@@ -265,10 +265,10 @@ module.exports = {
 
 	searchRegex: function (input) {
 		if (input && input !== '') {
-			var i = input.trim().split(/(?:,| )+/)
+			var i = input.trim().split(/(?:,| |\+)+/)
 			var s = ''
 			i.forEach((t) => {
-				s += _.escapeRegExp(t) + '|'
+				s += _.escapeRegExp(t) + ' '
 			})
 			s = s.substring(0, s.length - 1)
 			console.log('Search: ' + s)
