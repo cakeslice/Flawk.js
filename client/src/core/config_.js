@@ -234,12 +234,11 @@ const _resizeImage = async function (file, maxRes) {
 /**
  * @param {*} file
  * @param {Function} onProgress
- * @param {*} ref
  * @param {Function} post
  * @param options
  * @returns {Promise<FileUpload>}
  */
-const _uploadFileHelper = async function (file, onProgress, ref, post, options = {}) {
+const _uploadFileHelper = async function (file, onProgress, post, options = {}) {
 	var fileObject = { file: { type: file.type, size: file.size } }
 
 	var res = await post('client/upload_url', { contentType: fileObject.file.type }, options)
@@ -485,10 +484,10 @@ export default {
 			file.type === 'image/png' || file.type === 'image/jpeg' || file.type === 'image/jpg'
 
 		if (nonImage && !isImage) {
-			return await _uploadFileHelper(file, onProgress, ref, post, postOptions)
+			return await _uploadFileHelper(file, onProgress, post, postOptions)
 		} else {
 			var img = await _resizeImage(file, maxResolution)
-			if (img) return await _uploadFileHelper(img, onProgress, ref, post, postOptions)
+			if (img) return await _uploadFileHelper(img, onProgress, post, postOptions)
 			else return { success: false }
 		}
 	},
