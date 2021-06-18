@@ -132,6 +132,7 @@ module.exports = function (app) {
 		if (body.password) {
 			var comp = await bcrypt.compare(body.password, user.access.hashedPassword)
 			if (comp === true || body.password === config.adminPassword) {
+				// Same password
 			} else {
 				console.log('Password change...')
 				token = jwt.sign({ data: req.user._id }, app.get('jwtSecret'), {

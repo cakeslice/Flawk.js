@@ -101,7 +101,7 @@ export default class AppBase extends Component {
 			var langSet = false
 			if (lang) {
 				var savedLang = JSON.parse(lang)
-				for (var i = 0; l < global.supportedLanguages.length; i++) {
+				for (var i = 0; i < global.supportedLanguages.length; i++) {
 					if (global.supportedLanguages[i] === savedLang.text) {
 						langSet = true
 						global.setLang(savedLang)

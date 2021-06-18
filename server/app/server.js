@@ -9,7 +9,6 @@
 
 const express = require('express')
 const { addAsync } = require('@awaitjs/express')
-const _ = require('lodash')
 const compression = require('compression')
 const cookieParser = require('cookie-parser')
 const schedule = require('node-schedule')
@@ -23,13 +22,12 @@ const setTimeoutPromise = util.promisify(setTimeout)
 var responseTime = require('response-time')
 const Sentry = require('@sentry/node')
 const OpenApiValidator = require('express-openapi-validator')
-const moment = require('moment')
 
 const config = require('core/config_')
 const common = require('core/common')
 const database = config.projectDatabase
-const cron = require('./_projects/' + config.project + '/cron.js')
-var openAPIDocument = require('./_projects/' + config.project + '/api/api.json')
+const cron = require('./_projects/' + config.project + '/cron.js') // eslint-disable-line
+var openAPIDocument = require('./_projects/' + config.project + '/api/api.json') // eslint-disable-line
 openAPIDocument.servers = [
 	{
 		url: config.path,
@@ -59,12 +57,18 @@ global.getStructure = (name) => {
 	})
 }
 
+/**
+ * @param req
+ * @param res
+ * @param next
+ */
 function requireHTTPS(req, res, next) {
 	if (
 		!req.secure &&
 		req.get('x-forwarded-proto') !== 'https' &&
 		(config.prod || config.staging)
 	) {
+		// eslint-disable-next-line
 		return res.redirect('https://' + req.get('host') + req.url)
 	}
 	next()
@@ -100,129 +104,11 @@ async function createDevUser() {
 	}
 }
 
-main()
-function main() {
-	var winston = require('winston')
-	if (process.env.LogglyToken) {
-		var { Loggly } = require('winston-loggly-bulk')
-		winston.add(
-			new Loggly({
-				timestamp: false,
-				token: process.env.LogglyToken,
-				subdomain: process.env.LogglySubdomain,
-				tags: [config.cronServer ? process.env.LogglyCronTag : process.env.LogglyTag],
-				json: true,
-			})
-		)
-
-		console.log('Now logging to Loggly...')
-		console.log = (...args) => winston.info.call(winston, ...args)
-		console.info = (...args) => winston.info.call(winston, ...args)
-		console.warn = (...args) => winston.warn.call(winston, ...args)
-		console.error = (...args) => winston.error.call(winston, ...args)
-		console.debug = (...args) => winston.debug.call(winston, ...args)
-	}
-
-	process.on('uncaughtException', async function (err) {
-		if (global.Sentry) Sentry.captureException(err)
-		console.error('uncaughtException:', err.message || err)
-		console.error(err.stack || err)
-		if (global.Sentry) await global.Sentry.close(2000)
-		await global.sleep(2000)
-	})
-	process.on('exit', async (code) => {
-		console.log(`About to exit with code: ${code}`)
-	})
-
-	console.log(
-		'\n||||||||||||||||||||||| ' +
-			(config.simulateProduction
-				? 'SIMULATE PRODUCTION'
-				: config.prod
-				? 'PRODUCTION'
-				: 'DEVELOPMENT') +
-			' |||||||||||||||||||||||\n'
-	)
-
-	var fs = require('fs')
-	try {
-		var file = JSON.parse(fs.readFileSync('./app/metadata.json'))
-		global.buildNumber = file.buildNumber
-	} catch (e) {}
-	if (!config.prod && !config.staging) {
-		require('child_process').exec('cd ../ && git rev-parse --short HEAD', function (
-			err,
-			stdout
-		) {
-			var buildNumber = stdout.replace('\n', '')
-			if (buildNumber !== global.buildNumber) {
-				console.log('Writing new metadata.json file...')
-				fs.writeFileSync(
-					'./app/metadata.json',
-					JSON.stringify({ buildNumber: buildNumber }, null, 3)
-				)
-			}
-		})
-	}
-
-	if (config.sentryID) {
-		Sentry.init({
-			release: config.project + '@' + global.buildNumber,
-			environment: config.prod ? 'production' : config.staging ? 'staging' : 'development',
-			dsn: config.sentryID,
-		})
-		global.Sentry = Sentry
-	}
-
-	console.log('Build: ' + config.project + '@' + global.buildNumber)
-	console.log('Running on NodeJS ' + process.version + '\n')
-
-	common.databaseConnection.on(
-		'error',
-		console.error.bind(console, 'FAILED TO CONNECT TO DATABASE!')
-	)
-	common.databaseConnection.once('open', async function () {
-		console.log('CONNECTED TO DATABASE! Listening to requests on port ' + config.port)
-
-		if (!config.cronServer) updateDatabaseStructures()
-
-		if (!config.simulateProduction && !config.prod && !config.staging && !config.cronServer) {
-			await createDevUser()
-		}
-
-		if (!config.cronServer) {
-			if (config.sentryID) app.use(Sentry.Handlers.requestHandler({}))
-
-			app.disable('x-powered-by')
-
-			var server = init()
-
-			if (config.sentryID) {
-				app.use(Sentry.Handlers.errorHandler())
-			}
-			app.use((err, req, res, next) => {
-				global.logCatch(err, false)
-				return common.setResponse(
-					err.status || 500,
-					req,
-					res,
-					res.sentry ? 'Error: ' + res.sentry : err.message
-				)
-			})
-
-			server.listen(config.port, () => {
-				post()
-			})
-		} else {
-			post()
-		}
-	})
-}
-
 function updateDatabaseStructures() {
 	var fs = require('fs')
 
 	var buildStructure = function (path, schema) {
+		// eslint-disable-next-line
 		fs.readFile(path, 'utf8', function (err, data) {
 			if (err) {
 				console.log(err)
@@ -249,7 +135,9 @@ function updateDatabaseStructures() {
 		})
 	})
 }
-
+/**
+ * @returns {import('@awaitjs/express').ExpressWithAsync}
+ */
 function init() {
 	// CORS
 	/**
@@ -491,11 +379,11 @@ function init() {
 	})
 
 	config.publicRoutes.forEach((r) => {
-		require('./_projects/' + config.project + r)(app, io)
+		require('./_projects/' + config.project + r)(app, io) // eslint-disable-line
 	})
 
 	config.routes.forEach((r) => {
-		require('./_projects/' + config.project + r)(app, io)
+		require('./_projects/' + config.project + r)(app, io) // eslint-disable-line
 	})
 
 	//////////// Add client serving
@@ -536,22 +424,6 @@ function init() {
 	return server
 }
 
-function post() {
-	//if (config.cronServer) {
-	// Start cron jobs
-
-	if (process.env.noEmails === 'true' || process.env.noPushNotifications === 'true') {
-		console.log('SKIPPING CRON due to e-mails or notifications being disabled')
-		return
-	}
-
-	cron.minutes()
-	setTimeoutPromise(1000 * 60 * 10).then(() => {
-		startCronJob()
-	})
-	//}
-}
-
 function startCronJob() {
 	console.log('CRON JOBS ACTIVATED')
 	/*
@@ -583,3 +455,140 @@ function startCronJob() {
 		cron.minutes()
 	})
 }
+function post() {
+	//if (config.cronServer) {
+	// Start cron jobs
+
+	if (process.env.noEmails === 'true' || process.env.noPushNotifications === 'true') {
+		console.log('SKIPPING CRON due to e-mails or notifications being disabled')
+		return
+	}
+
+	cron.minutes()
+	setTimeoutPromise(1000 * 60 * 10).then(() => {
+		startCronJob()
+	})
+	//}
+}
+
+function main() {
+	var winston = require('winston')
+	if (process.env.LogglyToken) {
+		var { Loggly } = require('winston-loggly-bulk')
+		winston.add(
+			new Loggly({
+				timestamp: false,
+				token: process.env.LogglyToken,
+				subdomain: process.env.LogglySubdomain,
+				tags: [config.cronServer ? process.env.LogglyCronTag : process.env.LogglyTag],
+				json: true,
+			})
+		)
+
+		console.log('Now logging to Loggly...')
+		console.log = (...args) => winston.info.call(winston, ...args)
+		console.info = (...args) => winston.info.call(winston, ...args)
+		console.warn = (...args) => winston.warn.call(winston, ...args)
+		console.error = (...args) => winston.error.call(winston, ...args)
+		console.debug = (...args) => winston.debug.call(winston, ...args)
+	}
+
+	process.on('uncaughtException', async function (err) {
+		if (global.Sentry) Sentry.captureException(err)
+		console.error('uncaughtException:', err.message || err)
+		console.error(err.stack || err)
+		if (global.Sentry) await global.Sentry.close(2000)
+		await global.sleep(2000)
+	})
+	process.on('exit', async (code) => {
+		console.log(`About to exit with code: ${code}`)
+	})
+
+	console.log(
+		'\n||||||||||||||||||||||| ' +
+			(config.simulateProduction
+				? 'SIMULATE PRODUCTION'
+				: config.prod
+				? 'PRODUCTION'
+				: 'DEVELOPMENT') +
+			' |||||||||||||||||||||||\n'
+	)
+
+	var fs = require('fs')
+	try {
+		var file = JSON.parse(fs.readFileSync('./app/metadata.json'))
+		global.buildNumber = file.buildNumber
+	} catch (e) {
+		// If no file, we will create after
+	}
+	if (!config.prod && !config.staging) {
+		// eslint-disable-next-line
+		require('child_process').exec('cd ../ && git rev-parse --short HEAD', function (
+			err,
+			stdout
+		) {
+			var buildNumber = stdout.replace('\n', '')
+			if (buildNumber !== global.buildNumber) {
+				console.log('Writing new metadata.json file...')
+				fs.writeFileSync(
+					'./app/metadata.json',
+					JSON.stringify({ buildNumber: buildNumber }, null, 3)
+				)
+			}
+		})
+	}
+
+	if (config.sentryID) {
+		Sentry.init({
+			release: config.project + '@' + global.buildNumber,
+			environment: config.prod ? 'production' : config.staging ? 'staging' : 'development',
+			dsn: config.sentryID,
+		})
+		global.Sentry = Sentry
+	}
+
+	console.log('Build: ' + config.project + '@' + global.buildNumber)
+	console.log('Running on NodeJS ' + process.version + '\n')
+
+	common.databaseConnection.on(
+		'error',
+		console.error.bind(console, 'FAILED TO CONNECT TO DATABASE!')
+	)
+	common.databaseConnection.once('open', async function () {
+		console.log('CONNECTED TO DATABASE! Listening to requests on port ' + config.port)
+
+		if (!config.cronServer) updateDatabaseStructures()
+
+		if (!config.simulateProduction && !config.prod && !config.staging && !config.cronServer) {
+			await createDevUser()
+		}
+
+		if (!config.cronServer) {
+			if (config.sentryID) app.use(Sentry.Handlers.requestHandler({}))
+
+			app.disable('x-powered-by')
+
+			var server = init()
+
+			if (config.sentryID) {
+				app.use(Sentry.Handlers.errorHandler())
+			}
+			app.use((err, req, res) => {
+				global.logCatch(err, false)
+				return common.setResponse(
+					err.status || 500,
+					req,
+					res,
+					res.sentry ? 'Error: ' + res.sentry : err.message
+				)
+			})
+
+			server.listen(config.port, () => {
+				post()
+			})
+		} else {
+			post()
+		}
+	})
+}
+main()

@@ -1,8 +1,11 @@
 coverage/*
 node_modules/*
 build/*
+android/*
+ios/*
 *.d.ts
 *.html
+*.hbs
 *.md
 *.yml
 *.svg

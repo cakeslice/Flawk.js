@@ -5,17 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const _ = require('lodash')
-const moment = require('moment')
-
-var config = require('core/config_')
-var database = config.projectDatabase
-var common = require('core/common')
-
 async function checkChats() {
 	console.log('Checking chats...')
 
 	var step = 1000
+	// eslint-disable-next-line
 	for (var lim = 0; true; lim += step) {
 		break
 	}
@@ -34,18 +28,12 @@ module.exports = {
 	},
 
 	hourly: function () {
-		var run = async function () {
-			try {
-			} catch (err) {}
-		}
+		var run = async function () {}
 		run()
 	},
 
 	daily: function () {
-		var run = async function () {
-			try {
-			} catch (err) {}
-		}
+		var run = async function () {}
 		run()
 	},
 }

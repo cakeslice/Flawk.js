@@ -5,6 +5,16 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+/**
+ * @param _project
+ * @param env
+ */
+function loadEnv(_project, env) {
+	var envPath = './app/_projects/' + _project + '/_' + env + '.env'
+	console.log('\nRunning ' + env.toUpperCase() + ' locally: ' + envPath)
+	require('dotenv').config({ path: envPath })
+}
+
 const _project = 'crm' // ! If changed, change below too!
 if (!process.env.staging && !process.env.production) {
 	// Running locally...
@@ -119,10 +129,4 @@ module.exports = {
 	project: _project,
 	projectDatabase: _projectDatabase,
 	..._projectConfig,
-}
-
-function loadEnv(_project, env) {
-	var envPath = './app/_projects/' + _project + '/_' + env + '.env'
-	console.log('\nRunning ' + env.toUpperCase() + ' locally: ' + envPath)
-	require('dotenv').config({ path: envPath })
 }

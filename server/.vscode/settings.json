@@ -10,9 +10,7 @@
 	"editor.formatOnSave": true,
 	"editor.insertSpaces": false,
 	"eslint.run": "onSave",
-	"workbench.colorCustomizations": {
-		"activityBar.background": "#530956",
-		"titleBar.activeBackground": "#740D79",
-		"titleBar.activeForeground": "#FEFBFF"
+	"editor.codeActionsOnSave": {
+		"source.fixAll": true
 	}
 }

@@ -6,7 +6,7 @@
  */
 
 import React, { Component } from 'react'
-import { Formik, Form, useField } from 'formik'
+import { Formik, Form } from 'formik'
 import MediaQuery from 'react-responsive'
 import CustomTooltip from './CustomTooltip'
 import CustomInput from './CustomInput'
@@ -18,7 +18,6 @@ import Avatar from 'core/components/Avatar'
 import Notifications from 'core/components/Notifications'
 import { Fade } from 'react-reveal'
 import HeadShake from 'react-reveal/HeadShake'
-import { Animated } from 'react-animated-css'
 import _ from 'lodash'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import CustomTable from './CustomTable'
@@ -225,7 +224,7 @@ class Layout extends ReactQueryParams {
 	defaultQueryParams = {
 		page: 1,
 		limit: 5,
-		/* 
+		/*
 		sort: 'title',
 		order: 'asc', */
 	}
@@ -1478,7 +1477,7 @@ class Backend extends Component {
 									handleChange,
 									handleBlur,
 								}) => {
-									var formIK = {
+									/* var formIK = {
 										values,
 										touched,
 										errors,
@@ -1486,7 +1485,7 @@ class Backend extends Component {
 										setFieldValue,
 										handleChange,
 										handleBlur,
-									}
+									} */
 									return (
 										<Form noValidate>
 											<div
@@ -2393,7 +2392,7 @@ class Forgot extends Component {
 							setSubmitting(true)
 
 							var res = await post(
-								'client/forgot_password?recaptchaToken=' +
+								'client/forgot_password?recaptchaToken=' + // eslint-disable-line
 									(config.recaptchaBypass || values.captcha),
 								{
 									...values,

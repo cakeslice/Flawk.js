@@ -6,7 +6,7 @@
  */
 
 const _ = require('lodash')
-var validator = require('validator')
+const crypto = require('crypto-extra')
 var mongoose = require('mongoose')
 var uuid = require('uuid')
 var AWS = require('aws-sdk')
@@ -17,7 +17,6 @@ const Nexmo = require('@vonage/server-sdk')
 const jwt = require('jsonwebtoken')
 //
 var config = require('core/config_')
-const { nextTick } = require('process')
 var database = config.projectDatabase
 
 Number.prototype.toFixedNumber = function (x, base) {
@@ -309,7 +308,7 @@ module.exports = {
 
 	///////////////////////////////////// MOBILE PUSH NOTIFICATIONS
 
-	pushNotification: async function (message, clientID, data = {}) {
+	pushNotification: async function (message, clientID /* data = {} */) {
 		if (process.env.noPushNotifications === 'true') {
 			console.log('Skipped push notification: ' + clientID + ': ' + message)
 			return
@@ -317,21 +316,7 @@ module.exports = {
 
 		throw 'Not implemented!'
 
-		// TODO: pushNotificationsClient
-
-		var client = await database.Client.findOne({ _id: clientID })
-			.lean()
-			.select('_id appState.mobileNotificationDevices')
-
-		if (
-			!client.appState.mobileNotificationDevices ||
-			client.appState.mobileNotificationDevices.length === 0
-		) {
-			console.log("Can't send notification! No mobile device ID found!")
-			return
-		}
-
-		/* 
+		/*
 		var notification = new OneSignal.Notification({
 					contents: {
 						en: message,
@@ -342,10 +327,10 @@ module.exports = {
 
 		var data = await oneSignalClient.sendNotification(notification)
 
-		console.log(data, httpResponse.statusCode) 
+		console.log(data, httpResponse.statusCode)
 		*/
 	},
-	pushGlobalNotification: async function (message, data) {
+	pushGlobalNotification: async function (message /* data = {} */) {
 		if (process.env.noPushNotifications === 'true') {
 			console.log('Skipped global push notification: ' + message)
 			return
@@ -355,7 +340,7 @@ module.exports = {
 
 		// TODO: pushNotificationsClient
 
-		/* 
+		/*
 		var notification = new OneSignal.Notification({
 			contents: {
 				en: message,
@@ -364,8 +349,8 @@ module.exports = {
 		notification.postBody['data'] = data
 
 		var data = await oneSignalClient.sendNotification(notification)
-		
-		console.log(data, httpResponse.statusCode)			
+
+		console.log(data, httpResponse.statusCode)
 		*/
 	},
 
@@ -453,13 +438,13 @@ module.exports = {
 			var response = await postmarkClient.sendEmailBatchWithTemplates(bodies)
 
 			response.forEach((r) => {
-				if (r.ErrorCode === 0) {
-				} else console.log(JSON.stringify(r))
+				if (r.ErrorCode !== 0) console.log(JSON.stringify(r))
 			})
 		} else console.log('Skipped sending e-mails, no e-mail service!')
 	},
 	/**
 	 * @param {{subject: string, substitutions:object}} data
+	 * @param template
 	 * @param {boolean} developer
 	 */
 	sendAdminEmail: async function (data, template = undefined, developer = false) {
@@ -569,7 +554,9 @@ module.exports = {
 			if (r && r.success) {
 				return true
 			}
-		} catch (e) {}
+		} catch (e) {
+			// If request fails, we will return 400
+		}
 		_setResponse(400, req, res, config.response('recaptchaFailed', req))
 		return false
 	},
@@ -632,7 +619,13 @@ module.exports = {
 				} else if (user) {
 					var valid = false
 					for (var j = user.access.activeTokens.length - 1; j >= 0; j--) {
-						if (user.access.activeTokens[j] === token) valid = true
+						if (
+							crypto.timingSafeEqual(
+								Buffer.from(user.access.activeTokens[j]),
+								Buffer.from(token)
+							)
+						)
+							valid = true
 					}
 
 					if (valid) {
@@ -701,7 +694,13 @@ module.exports = {
 				} else if (user) {
 					var valid = false
 					for (var j = user.access.activeTokens.length - 1; j >= 0; j--) {
-						if (user.access.activeTokens[j] === token) valid = true
+						if (
+							crypto.timingSafeEqual(
+								Buffer.from(user.access.activeTokens[j]),
+								Buffer.from(token)
+							)
+						)
+							valid = true
 					}
 
 					if (valid) {

@@ -10,8 +10,10 @@
 		"testCI": "jest",
 		"prettier": "prettier --write ./app",
 		"prettierCI": "prettier --check ./",
-		"eslint": "eslint --quiet ./",
-		"auditCI": "npm audit --audit-level=moderate"
+		"lint": "eslint --quiet ./",
+		"auditFix": "npm audit fix",
+		"auditCI": "npm audit --audit-level=moderate",
+		"postinstall": "cd .. && git config core.hooksPath ./git-hooks"
 	},
 	"jest": {
 		"testEnvironment": "node",

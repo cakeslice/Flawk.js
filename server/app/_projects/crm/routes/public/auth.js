@@ -6,7 +6,6 @@
  */
 
 const jwt = require('jsonwebtoken')
-const crypto = require('crypto-extra')
 const bcrypt = require('bcryptjs')
 
 var config = require('core/config_')
@@ -131,7 +130,7 @@ module.exports = function (app) {
 			config.response('SMSConfirmation', req).replace("<code>", newUser.appState.verificationCode),
 			res,
 			req
-		) 
+		)
 		if(!r.success)
 			return
 		*/
@@ -205,7 +204,7 @@ module.exports = function (app) {
 			return
 		}
 
-		var code = /* 
+		var code = /*
 				config.prod || config.staging
 					? crypto.randomNumber({
 							min: 10000,

@@ -5,8 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-var config = require('core/config_')
+/* var config = require('core/config_')
 var common = require('core/common')
-var database = config.projectDatabase
+var database = config.projectDatabase */
 
-module.exports = function (app) {}
+/** @param {import('@awaitjs/express').ExpressWithAsync} app */
+module.exports = function (/* app */) {}

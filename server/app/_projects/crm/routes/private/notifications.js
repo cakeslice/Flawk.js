@@ -13,6 +13,11 @@ var database = config.projectDatabase
 
 /** @param {import('@awaitjs/express').ExpressWithAsync} app */
 module.exports = function (app) {
+	/**
+	 * @param lang
+	 * @param notification
+	 */
+	// eslint-disable-next-line
 	async function outputNotification(lang = 'en', notification) {
 		var output = {
 			_id: notification._id,

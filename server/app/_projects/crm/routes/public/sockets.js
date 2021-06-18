@@ -19,14 +19,69 @@ var database = config.projectDatabase
 module.exports = function (app, io) {
 	if (!config.websocketSupport) return
 
+	// SOCKET TEST: https://amritb.github.io/socketio-client-tool
+	var clientSockets = io.of(config.path + '/sockets')
+	global.clientSockets = clientSockets
+
+	/**
+	 * @param socket
+	 */
 	function disconnectUnidentified(socket) {
 		socket.disconnect(true)
 		console.log('[SOCKET.IO] Unidentified client just connected! Disconnecting...')
 	}
 
-	// SOCKET TEST: https://amritb.github.io/socketio-client-tool
-	var clientSockets = io.of(config.path + '/sockets')
-	global.clientSockets = clientSockets
+	/**
+	 *
+	 * @param {import('socket.io').Socket[]} socketList
+	 * @param {string} title
+	 * @param {string=} description
+	 * @param {string=} type
+	 */
+	function socketNotification(socketList, title, description, type) {
+		socketList.forEach((s) => {
+			s.emit('notification', {
+				title: title,
+				description: description,
+				type: type,
+			})
+		})
+	}
+	global.socketNotification = (socketID, title, description, type = 'info') => {
+		var sockets = []
+		Object.keys(clientSockets.connected).forEach((s) => {
+			if (s.replace('#', '') === socketID) {
+				sockets.push(clientSockets.connected[s])
+			}
+		})
+
+		socketNotification(sockets, title, description, type)
+	}
+	global.clientSocketNotification = (clientID, title, description, type = 'info') => {
+		var sockets = []
+		Object.keys(clientSockets.connected).forEach((s) => {
+			if (
+				clientSockets.connected[s]._client &&
+				clientSockets.connected[s]._client.id === clientID
+			) {
+				sockets.push(clientSockets.connected[s])
+			}
+		})
+
+		socketNotification(sockets, title, description, type)
+	}
+	global.adminSocketNotification = (title, description, type = 'info') => {
+		var adminSockets = []
+		Object.keys(clientSockets.connected).forEach((s) => {
+			if (
+				clientSockets.connected[s]._client &&
+				clientSockets.connected[s]._client.permission <= 10
+			) {
+				adminSockets.push(clientSockets.connected[s])
+			}
+		})
+		socketNotification(adminSockets, title, description, type)
+	}
 
 	clientSockets.on('connection', function (socket) {
 		if (config.debugSockets) console.log('[SOCKET.IO] New socket connection: ' + socket.id)
@@ -80,7 +135,9 @@ module.exports = function (app, io) {
 												if (
 													!_.find(
 														alreadyCounted,
-														(e) => clientSockets.connected[s]._client.id
+														(e) =>
+															e ===
+															clientSockets.connected[s]._client.id
 													)
 												) {
 													alreadyCounted.push(
@@ -90,13 +147,13 @@ module.exports = function (app, io) {
 												}
 											} else unknownUsers++
 										})
-									if (config.debugSockets)
-										global.adminSocketNotification(
-											'Socket connection',
-											'Client ' +
-												(user.email || user.phone) +
-												' just connected!'
-										)
+										if (config.debugSockets)
+											global.adminSocketNotification(
+												'Socket connection',
+												'Client ' +
+													(user.email || user.phone) +
+													' just connected!'
+											)
 										console.log(
 											'[SOCKET.IO] ' +
 												(user.email || user.phone) +
@@ -159,11 +216,11 @@ module.exports = function (app, io) {
 		socket.on('disconnect', () => {
 			if (socket._client) {
 				console.log('[SOCKET.IO] Client ' + socket._client.email + ' just disconnected!')
-			if (config.debugSockets)
-				global.adminSocketNotification(
-					'Socket connection',
-					'Client ' + socket._client.email + ' just disconnected!'
-				)
+				if (config.debugSockets)
+					global.adminSocketNotification(
+						'Socket connection',
+						'Client ' + socket._client.email + ' just disconnected!'
+					)
 				socket._client = undefined
 			} else {
 				//console.log('[SOCKET.IO] Unidentified client just disconnected!')
@@ -191,6 +248,11 @@ module.exports = function (app, io) {
 	}
 	global.isOnline = isOnline
 
+	/**
+	 * @param socketList
+	 * @param channel
+	 * @param data
+	 */
 	function socketMessage(socketList, channel, data) {
 		socketList.forEach((s) => {
 			s.emit(channel, data)
@@ -229,57 +291,5 @@ module.exports = function (app, io) {
 			)
 
 		socketMessage(sockets, channel, data)
-	}
-
-	/**
-	 *
-	 * @param {import('socket.io').Socket[]} socketList
-	 * @param {string} title
-	 * @param {string=} description
-	 * @param {string=} type
-	 */
-	function socketNotification(socketList, title, description, type) {
-		socketList.forEach((s) => {
-			s.emit('notification', {
-				title: title,
-				description: description,
-				type: type,
-			})
-		})
-	}
-	global.socketNotification = (socketID, title, description, type = 'info') => {
-		var sockets = []
-		Object.keys(clientSockets.connected).forEach((s) => {
-			if (s.replace('#', '') === socketID) {
-				sockets.push(clientSockets.connected[s])
-			}
-		})
-
-		socketNotification(sockets, title, description, type)
-	}
-	global.clientSocketNotification = (clientID, title, description, type = 'info') => {
-		var sockets = []
-		Object.keys(clientSockets.connected).forEach((s) => {
-			if (
-				clientSockets.connected[s]._client &&
-				clientSockets.connected[s]._client.id === clientID
-			) {
-				sockets.push(clientSockets.connected[s])
-			}
-		})
-
-		socketNotification(sockets, title, description, type)
-	}
-	global.adminSocketNotification = (title, description, type = 'info') => {
-		var adminSockets = []
-		Object.keys(clientSockets.connected).forEach((s) => {
-			if (
-				clientSockets.connected[s]._client &&
-				clientSockets.connected[s]._client.permission <= 10
-			) {
-				adminSockets.push(clientSockets.connected[s])
-			}
-		})
-		socketNotification(adminSockets, title, description, type)
 	}
 }

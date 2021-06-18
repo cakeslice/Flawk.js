@@ -23,6 +23,13 @@ var emailValidator = {
 
 ///////////////////////
 
+/**
+ * @param schema
+ * @param id
+ * @param arrayName
+ * @param sortObject
+ * @param objectsArray
+ */
 async function unshiftToArray(schema, id, arrayName, sortObject, objectsArray = []) {
 	var o = { $push: {} }
 	o['$push'][arrayName] = {
@@ -37,6 +44,13 @@ async function unshiftToArray(schema, id, arrayName, sortObject, objectsArray = 
 		o
 	)
 }
+/**
+ * @param schema
+ * @param id
+ * @param arrayName
+ * @param key
+ * @param keysArray
+ */
 async function removeFromArray(schema, id, arrayName, key, keysArray = []) {
 	var o = { $pull: {} }
 	o['$pull'][arrayName] = {}
@@ -53,16 +67,6 @@ async function removeFromArray(schema, id, arrayName, key, keysArray = []) {
 global.unshiftToArray = unshiftToArray
 global.removeFromArray = removeFromArray
 
-global.clientNotification = async (notificationType, clientID, data = {}) => {
-	await unshiftToArray(Client, clientID, 'arrays.notifications', { date: -1 }, [
-		{
-			isRead: false,
-			date: Date.now(),
-			notificationType: notificationType,
-			data: data,
-		},
-	])
-}
 var ClientSchema = new mongoose.Schema({
 	// _id
 
@@ -149,7 +153,7 @@ var ClientSchema = new mongoose.Schema({
 				notificationType: { type: String, enum: ['gotCoupon', 'postLiked'] },
 				data: mongoose.Schema.Types.Mixed, // Any object
 				// postLiked example
-				/* 
+				/*
 				{
 					client, (_id)
 					post, (_id)
@@ -189,6 +193,16 @@ ClientSchema.virtual('personal.fullName').get(function () {
 //   return this.model('Animal').find({ type: this.type }, cb);
 // };
 var Client = mongoose.model('Client', ClientSchema)
+global.clientNotification = async (notificationType, clientID, data = {}) => {
+	await unshiftToArray(Client, clientID, 'arrays.notifications', { date: -1 }, [
+		{
+			isRead: false,
+			date: Date.now(),
+			notificationType: notificationType,
+			data: data,
+		},
+	])
+}
 
 var Chat = mongoose.model(
 	'Chat',

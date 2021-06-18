@@ -16,6 +16,7 @@ String.prototype.replaceAll = function (search, replacement) {
 	var target = this
 	return target.split(search).join(replacement)
 }
+global.supportedLanguages = ['pt', 'en']
 
 // ! To change .env, change .rescriptsrc.js
 const _project = 'crm' // ! If changed, change below too and in .rescriptsrc.js
@@ -74,7 +75,6 @@ var logCatch = function (err, useSentry, identifier = '') {
 }
 global.logCatch = logCatch
 
-global.supportedLanguages = ['pt', 'en']
 global.lang = {
 	text: 'en',
 	moment: 'en',

@@ -11,7 +11,6 @@ import { Route, Switch, Redirect } from 'react-router-dom'
 import { Animated } from 'react-animated-css'
 import { Link } from 'react-router-dom'
 import MediaQuery from 'react-responsive'
-import _ from 'lodash'
 import MobileDrawer from 'core/components/MobileDrawer'
 import { Fade } from 'react-reveal'
 import { css } from 'glamor'
@@ -613,7 +612,7 @@ class Menu extends React.Component {
 								<div>
 									<p
 										style={{
-											whiteSpace:'nowrap',
+											whiteSpace: 'nowrap',
 											fontSize:
 												(this.props.entryStyle &&
 													this.props.entryStyle.fontSize) ||

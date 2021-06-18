@@ -1,3 +1,58 @@
+/**
+ * @param value
+ * @param options
+ */
+function encode(value, options) {
+	if (options.encode) {
+		return encodeURIComponent(value)
+	}
+
+	return value
+}
+
+/**
+ * @param value
+ * @param options
+ */
+function decode(value, options) {
+	if (options.decode) {
+		return decodeURIComponent(value)
+	}
+
+	return value
+}
+
+/**
+ * @param input
+ */
+function keysSorter(input) {
+	if (Array.isArray(input)) {
+		return input.sort()
+	}
+
+	if (typeof input === 'object') {
+		return keysSorter(Object.keys(input))
+			.sort((a, b) => Number(a) - Number(b))
+			.map((key) => input[key])
+	}
+
+	return input
+}
+
+/**
+ * @param input
+ */
+function extract(input) {
+	const queryStart = input.indexOf('?')
+	if (queryStart === -1) {
+		return ''
+	}
+	return input.slice(queryStart + 1)
+}
+
+/**
+ * @param options
+ */
 function encoderForArrayFormat(options) {
 	switch (options.arrayFormat) {
 		case 'index':
@@ -27,6 +82,9 @@ function encoderForArrayFormat(options) {
 	}
 }
 
+/**
+ * @param options
+ */
 function parserForArrayFormat(options) {
 	let result
 
@@ -77,44 +135,10 @@ function parserForArrayFormat(options) {
 	}
 }
 
-function encode(value, options) {
-	if (options.encode) {
-		return encodeURIComponent(value)
-	}
-
-	return value
-}
-
-function decode(value, options) {
-	if (options.decode) {
-		return decodeURIComponent(value)
-	}
-
-	return value
-}
-
-function keysSorter(input) {
-	if (Array.isArray(input)) {
-		return input.sort()
-	}
-
-	if (typeof input === 'object') {
-		return keysSorter(Object.keys(input))
-			.sort((a, b) => Number(a) - Number(b))
-			.map((key) => input[key])
-	}
-
-	return input
-}
-
-function extract(input) {
-	const queryStart = input.indexOf('?')
-	if (queryStart === -1) {
-		return ''
-	}
-	return input.slice(queryStart + 1)
-}
-
+/**
+ * @param input
+ * @param options
+ */
 function parse(input, options) {
 	options = Object.assign({ decode: true, arrayFormat: 'none' }, options)
 

@@ -15,13 +15,7 @@
 		"plugin:security-node/recommended",
 		"plugin:jest/recommended"
 	],
-	"plugins": [
-		"jsdoc",
-		"security",
-		"security-node",
-		"jest",
-		"no-secrets"
-	],
+	"plugins": ["jsdoc", "security", "security-node", "jest", "no-secrets"],
 	"globals": {
 		"Atomics": "readonly",
 		"SharedArrayBuffer": "readonly"
@@ -30,24 +24,66 @@
 		"ecmaVersion": 2018
 	},
 	"rules": {
-		"no-secrets/no-secrets": "warn",
+		"no-secrets/no-secrets": "error",
+		"security/detect-object-injection": 0,
+		"security-node/detect-crlf": 0,
+		"security-node/detect-possible-timing-attacks": "error",
+		"jsdoc/require-jsdoc": [
+			"error",
+			{ "exemptEmptyConstructors": true, "exemptEmptyFunctions": true }
+		],
 		"jsdoc/require-property-description": 0,
 		"jsdoc/require-param-description": 0,
 		"jsdoc/require-returns-description": 0,
+		"jsdoc/require-returns": "warn",
+		"jsdoc/require-param": "warn",
+		"jsdoc/require-property": "warn",
 		"jsdoc/valid-types": 0,
 		//
 		"eqeqeq": "error",
-		"no-eq-null": "error",
-		"no-prototype-builtins": "off",
 		"no-console": "off",
-		"no-unused-vars": "off",
+		"no-unused-vars": "error",
+		"no-use-before-define": "error",
+		"no-eq-null": "error",
+		"no-trailing-spaces": "error",
+		"no-prototype-builtins": "off",
+		"comma-spacing": [
+			"error",
+			{
+				"before": false,
+				"after": true
+			}
+		],
+		"key-spacing": [
+			"error",
+			{
+				"beforeColon": false,
+				"afterColon": true
+			}
+		],
+		"padded-blocks": ["error", "never"],
+		"block-spacing": "error",
+		"eol-last": ["error", "always"],
+		"comma-dangle": [
+			"error",
+			{
+				"arrays": "always-multiline",
+				"objects": "always-multiline",
+				"imports": "never",
+				"exports": "never",
+				"functions": "never"
+			}
+		],
+		"no-whitespace-before-property": "error",
+		"require-atomic-updates": 0,
+		"no-multi-spaces": "error",
 		"no-inner-declarations": "error",
-		"no-empty": "warn",
-		"no-useless-catch": "warn",
-		"no-unreachable": "warn",
+		"no-empty": "error",
+		"no-useless-catch": "error",
+		"no-unreachable": "error",
 		"import/no-anonymous-default-export": "off",
 		//
 		"no-redeclare": "error",
-		"no-constant-condition": "warn"
+		"no-constant-condition": "error"
 	}
 }

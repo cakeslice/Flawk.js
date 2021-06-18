@@ -7,7 +7,7 @@
 
 import React, { Component } from 'react'
 import InputMask from 'react-input-mask'
-import { css, style } from 'glamor'
+import { css } from 'glamor'
 import Datetime from 'react-datetime'
 
 var config = require('core/config_').default
@@ -36,7 +36,10 @@ const MaskedInput = (props) => (
 	</InputMask>
 )
 const TextArea = (props) => (
-	<textarea {...props} value={props.value === 0 ? 0 : props.value || (props.isControlled ? '' : undefined)}></textarea>
+	<textarea
+		{...props}
+		value={props.value === 0 ? 0 : props.value || (props.isControlled ? '' : undefined)}
+	></textarea>
 )
 const Input = (props) => (
 	<input
