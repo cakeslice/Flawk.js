@@ -16,7 +16,7 @@ const _main = 'rgba(51,108,251,1)'
 const _mainLight = 'rgba(51,108,251, .85)'
 const _mainVeryLight = 'rgba(51,108,251, .25)'
 
-const _card = {
+/* const _card = {
 	borderStyle: 'solid',
 	borderWidth: 1,
 	padding: 35,
@@ -24,7 +24,7 @@ const _card = {
 	boxSizing: 'border-box',
 	background: 'rgba(255,255,255, 1)',
 	noDarkMode: false,
-}
+} */
 
 module.exports = {
 	font: _font,
@@ -59,7 +59,7 @@ module.exports = {
 
 	/*
 	card: _card,
-	
+
    defaultBorderRadius: 4,
 
 	inputBorderFactorNight: 0.3,
@@ -86,19 +86,19 @@ module.exports = {
 	},
 	*/
 
-	/* 
+	/*
 	customTooltip: {
 		background: 'rgba(54,55,64,0.95)',
 		maxWidth: 200,
 		fontSize: 10,
 		padding: 15,
 		color: 'rgba(255,255,255,1)',
-	}, 
+	},
 	*/
 	customDropdown: {
 		indicator: { background: 'none' },
 	},
-	/* 
+	/*
 	dashboardHeader: { marginBottom: 55, minHeight: 40 },
 	tableSelectedWrapper: {
 		minHeight: 55,

@@ -5,14 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import React, { Component } from 'react'
 import { get, post } from 'core/api'
+import React, { Component } from 'react'
 import Avatar from './Avatar'
 import OutsideAlerter from './OutsideAlerter'
 
 var Parser = require('html-react-parser')
 var styles = require('core/styles').default
-var config = require('core/config_').default
 
 export default class Notifications extends Component {
 	state = {

@@ -9,7 +9,7 @@ import './assets/fonts.css'
 import './assets/main.scss'
 
 import React, { Component } from 'react'
-import { Route, Switch, Redirect } from 'react-router-dom'
+import { Route, Switch } from 'react-router-dom'
 import { fetchUser, fetchStructures } from './redux/UserState'
 import { connect } from 'react-redux'
 import MediaQuery from 'react-responsive'
@@ -18,7 +18,7 @@ import RouterBase from 'core/components/RouterBase'
 import { Fade } from 'react-reveal'
 import { Helmet } from 'react-helmet'
 import Avatar from 'core/components/Avatar'
-import { get, post } from 'core/api'
+import { post } from 'core/api'
 import Header from './pages/common/Header'
 import Footer from './pages/common/Footer'
 import logo from 'core/assets/images/logo.svg'
@@ -73,8 +73,6 @@ class Router extends Component {
 		if (this.props.user) {
 			permission = this.props.user.permission
 		}
-
-		var iconSize = 25
 
 		/** @type {import('core/components/Dashboard.js').route[]} */
 		var routes = [

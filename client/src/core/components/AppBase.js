@@ -6,13 +6,11 @@
  */
 
 import React, { Component } from 'react'
-import io from 'socket.io-client'
-import MediaQuery from 'react-responsive'
-import { get } from 'core/api'
-import { Fade } from 'react-reveal'
 import { Helmet } from 'react-helmet'
+import MediaQuery from 'react-responsive'
+import { Fade } from 'react-reveal'
+import io from 'socket.io-client'
 import CustomButton from '../components/CustomButton'
-import RouterBase from 'core/components/RouterBase'
 
 var styles = require('core/styles').default
 var config = require('core/config_').default
@@ -116,7 +114,9 @@ export default class AppBase extends Component {
 						navigator.language ||
 						navigator.userLanguage
 					browserLanguage = detectBrowserLanguage().toLowerCase()
-				} catch {}
+				} catch {
+					// If can't detect, just move on
+				}
 				for (var l = 0; l < global.supportedLanguages.length; l++) {
 					if (browserLanguage.includes(global.supportedLanguages[l])) {
 						langSet = true
@@ -147,7 +147,7 @@ export default class AppBase extends Component {
 		this.applyNightMode(night)
 	}
 	applyNightMode = function (night, skipPageRefresh = false) {
-		this.state.nightMode = night
+		this.state.nightMode = night // eslint-disable-line
 		global.nightMode = night
 		if (!skipPageRefresh) window.location.reload()
 		else {

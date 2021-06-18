@@ -20,29 +20,48 @@
   SOFTWARE.
 */
 
-import { Component } from 'react'
 import { createBrowserHistory } from 'history'
+import { Component } from 'react'
 
+/**
+ * @param value
+ */
 function isUndefined(value) {
 	return value === undefined
 }
 
+/**
+ * @param value
+ */
 function isNil(value) {
 	// eslint-disable-next-line
 	return value == null
 }
 
+/**
+ * @param value
+ */
 function isObject(value) {
 	const type = typeof value
 	// eslint-disable-next-line
 	return value != null && (type == 'object' || type == 'function')
 }
 
+/**
+ * @param value
+ * @param searchString
+ * @param position
+ */
 function startsWith(value, searchString, position) {
 	position = position || 0
 	return value.substr(position, searchString.length) === searchString
 }
 
+/**
+ * @param value
+ * @param searchString
+ * @param position
+ */
 function endsWith(value, searchString, position) {
 	const subjectString = value.toString()
 	if (
@@ -84,6 +103,7 @@ export default class ReactQueryParams extends Component {
 	/**
 	 * Convert boolean string to boolean type.
 	 * Any query param set to "true" or "false" will be converted to a boolean type.
+	 *
 	 * @param {string} value - the query param string value
 	 */
 	_boolify(value) {
@@ -100,6 +120,8 @@ export default class ReactQueryParams extends Component {
 
 	/**
 	 * If query param string is object-like try to parse it
+	 *
+	 * @param value
 	 */
 	_queryParamToObject(value) {
 		let result = value
@@ -167,8 +189,10 @@ export default class ReactQueryParams extends Component {
 
 	/**
 	 * Get one query param value.
+	 *
 	 * @param {string} key - The query param key
 	 * @param {object} props - Optional. An alternate props object to use instead of the current props
+	 * @param source
 	 */
 	getQueryParam(key, source = window) {
 		const defaults = this.defaultQueryParams || {}
@@ -181,6 +205,7 @@ export default class ReactQueryParams extends Component {
 
 	/**
 	 * Set query param values. Merges changes similar to setState().
+	 *
 	 * @param {object} params - Object of key:values to overlay on current query param values.
 	 * @param {boolean} addHistory - true = add browser history, default false.
 	 */

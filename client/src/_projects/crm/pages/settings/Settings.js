@@ -5,17 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import { fetchUser } from '../../redux/UserState'
-import MediaQuery from 'react-responsive'
-import { Formik, Form } from 'formik'
-import _ from 'lodash'
+import { post } from 'core/api'
+import Avatar from 'core/components/Avatar'
 import CustomButton from 'core/components/CustomButton'
 import CustomInput from 'core/components/CustomInput'
-import { get, post } from 'core/api'
+import { Form, Formik } from 'formik'
 import { css } from 'glamor'
-import Avatar from 'core/components/Avatar'
+import React, { Component } from 'react'
+import MediaQuery from 'react-responsive'
 var validator = require('validator')
 
 var styles = require('core/styles').default

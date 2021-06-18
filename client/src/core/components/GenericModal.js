@@ -5,11 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import { clearAllBodyScrollLocks, disableBodyScroll } from 'body-scroll-lock'
 import React, { Component } from 'react'
-import CustomButton from './CustomButton'
 import { Animated } from 'react-animated-css'
-import { disableBodyScroll, enableBodyScroll, clearAllBodyScrollLocks } from 'body-scroll-lock'
 import { Portal } from 'react-portal'
+import CustomButton from './CustomButton'
 
 var styles = require('core/styles').default
 var config = require('core/config_').default

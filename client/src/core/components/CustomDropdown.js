@@ -5,12 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import _ from 'lodash'
-import PropTypes from 'prop-types'
+import { css } from 'glamor'
 import React, { Component } from 'react'
 import 'react-input-range/lib/css/index.css'
 import Select from 'react-select/'
-import { css } from 'glamor'
 
 var config = require('core/config_').default
 var styles = require('core/styles').default

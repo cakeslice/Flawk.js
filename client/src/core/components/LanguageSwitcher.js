@@ -6,8 +6,6 @@
  */
 
 import React from 'react'
-import { css } from 'glamor'
-var styles = require('core/styles').default
 
 export default class LanguageSwitcher extends React.Component {
 	render() {

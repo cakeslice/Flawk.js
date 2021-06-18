@@ -5,22 +5,17 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import React, { Component } from 'react'
-import { Helmet } from 'react-helmet'
-import { connect } from 'react-redux'
-import { Animated } from 'react-animated-css'
-import { fetchUser } from '../../redux/UserState'
-import logo from '../../assets/images/logo.svg'
-import MediaQuery from 'react-responsive'
-import { Formik, Form } from 'formik'
-import _ from 'lodash'
+import { post } from 'core/api'
 import CustomButton from 'core/components/CustomButton'
 import CustomInput from 'core/components/CustomInput'
-import { get, post } from 'core/api'
-import HeadShake from 'react-reveal/HeadShake'
-import Loading from 'core/components/Loading'
-import { Link } from 'react-router-dom'
+import { Form, Formik } from 'formik'
+import React, { Component } from 'react'
 import ReCaptcha from 'react-google-recaptcha'
+import { Helmet } from 'react-helmet'
+import { connect } from 'react-redux'
+import MediaQuery from 'react-responsive'
+import HeadShake from 'react-reveal/HeadShake'
+import { fetchUser } from '../../redux/UserState'
 var validator = require('validator')
 
 var styles = require('core/styles').default
@@ -220,7 +215,7 @@ class Forgot extends Component {
 									setSubmitting(true)
 
 									var res = await post(
-										'client/forgot_password?recaptchaToken=' +
+										'client/forgot_password?recaptchaToken=' + // eslint-disable-line
 											(config.recaptchaBypass || values.captcha),
 										{
 											...values,

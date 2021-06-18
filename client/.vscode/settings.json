@@ -11,6 +11,7 @@
 	"editor.insertSpaces": false,
 	"eslint.run": "onSave",
 	"editor.codeActionsOnSave": {
-		"source.fixAll": true
+		"source.fixAll": true,
+		"source.organizeImports": true
 	}
 }

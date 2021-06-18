@@ -8,11 +8,10 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import MediaQuery, { Context as ResponsiveContext } from 'react-responsive'
-import { Router, HashRouter } from 'react-router-dom'
-import { createBrowserHistory, createHashHistory } from 'history'
+import { Router } from 'react-router-dom'
+import { createBrowserHistory } from 'history'
 import { ToastContainer, toast, Bounce } from 'react-toastify'
 import ReactGA from 'react-ga'
-import { Fade } from 'react-reveal'
 import CustomButton from './CustomButton'
 import { Plugins } from '@capacitor/core'
 

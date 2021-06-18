@@ -15,11 +15,11 @@ export default class Collapsible extends Component {
 	state = {}
 
 	componentDidMount() {
-		this.state.isOpen = this.props.defaultOpen
+		this.state.isOpen = this.props.defaultOpen // eslint-disable-line
 	}
 
 	render() {
-		this.state.isOpen = this.props.controlledOpen
+		this.state.isOpen = this.props.controlledOpen // eslint-disable-line
 
 		return (
 			<div>

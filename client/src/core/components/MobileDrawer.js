@@ -5,14 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import { clearAllBodyScrollLocks, disableBodyScroll, enableBodyScroll } from 'body-scroll-lock'
+import Collapsible from 'core/components/Collapsible'
+import { css } from 'glamor'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
-
-import { Fade } from 'react-reveal'
-import CustomButton from 'core/components/CustomButton'
-import Collapsible from 'core/components/Collapsible'
-import { disableBodyScroll, enableBodyScroll, clearAllBodyScrollLocks } from 'body-scroll-lock'
-import { css } from 'glamor'
 import { Link } from 'react-router-dom'
 
 var styles = require('core/styles').default

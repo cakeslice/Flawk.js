@@ -5,15 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
-
-import { Fade } from 'react-reveal'
-import MediaQuery from 'react-responsive'
-import LanguageSwitcher from 'core/components/LanguageSwitcher'
 import MobileDrawer from 'core/components/MobileDrawer'
+import React, { Component } from 'react'
+import MediaQuery from 'react-responsive'
+import { Fade } from 'react-reveal'
 import { Link } from 'react-router-dom'
-
 import logo from '../../../../core/assets/images/logo.svg'
 
 var styles = require('core/styles').default

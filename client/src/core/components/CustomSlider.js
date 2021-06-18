@@ -5,9 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import React, { Component } from 'react'
-import Slider, { Range } from 'rc-slider'
+import { Range } from 'rc-slider'
 import 'rc-slider/assets/index.css'
+import React, { Component } from 'react'
 
 var styles = require('core/styles').default
 var config = require('core/config_').default

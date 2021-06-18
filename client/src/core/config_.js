@@ -10,7 +10,9 @@ const Parser = require('html-react-parser')
 try {
 	const toBlob = require('canvas-to-blob')
 	toBlob.init()
-} catch {}
+} catch {
+	console.log('canvas-to-blob failed to initialize!')
+}
 
 String.prototype.replaceAll = function (search, replacement) {
 	var target = this
@@ -231,9 +233,10 @@ const _resizeImage = async function (file, maxRes) {
  */
 /**
  * @param {*} file
- * @param {function} onProgress
+ * @param {Function} onProgress
  * @param {*} ref
- * @param {function} post
+ * @param {Function} post
+ * @param options
  * @returns {Promise<FileUpload>}
  */
 const _uploadFileHelper = async function (file, onProgress, ref, post, options = {}) {
@@ -248,7 +251,7 @@ const _uploadFileHelper = async function (file, onProgress, ref, post, options =
 					var percentComplete = ((e.loaded / e.total) * 100).toFixed(2)
 					onProgress(percentComplete)
 				}
-			}.bind(ref)
+			}
 
 			xhr.open('PUT', res.body.putURL)
 			xhr.setRequestHeader('Cache-Control', 'public,max-age=3600')
@@ -262,7 +265,7 @@ const _uploadFileHelper = async function (file, onProgress, ref, post, options =
 						fileType: file.type,
 					})
 				}
-			}.bind(ref)
+			}
 			xhr.onerror = function () {
 				global.addFlag(
 					_text('extras.somethingWrong'),
@@ -270,12 +273,18 @@ const _uploadFileHelper = async function (file, onProgress, ref, post, options =
 					'error'
 				)
 				resolve({ success: false })
-			}.bind(ref)
+			}
 			xhr.send(file)
 		})
 	} else return { success: false }
 }
 
+/**
+ * @param key
+ * @param lang
+ * @param replaces
+ * @param text
+ */
 function _text(key, lang, replaces, text) {
 	var o
 
@@ -443,7 +452,7 @@ export default {
 	/**
 	 * @typedef UploadFileOptions
 	 * @property {object=} postOptions
-	 * @property {function=} onProgress
+	 * @property {Function=} onProgress
 	 * @property {number=} maxResolution
 	 * @property {boolean=} nonImage
 	 * @property {boolean=} thumbnail

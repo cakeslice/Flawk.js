@@ -5,21 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import React, { Component } from 'react'
 import CustomButton from 'core/components/CustomButton'
-import MediaQuery from 'react-responsive'
-import CustomInput from 'core/components/CustomInput'
-import CustomDropdown from 'core/components/CustomDropdown'
+import React, { Component } from 'react'
 import { Animated } from 'react-animated-css'
-import { Formik, Form } from 'formik'
-import _ from 'lodash'
-import { Fade } from 'react-reveal'
+import MediaQuery from 'react-responsive'
 import scrollToElement from 'scroll-to-element'
-import { Link } from 'react-router-dom'
 
-var styles = require('core/styles').default
 var config = require('core/config_').default
-var validator = require('validator')
 
 export default class Main extends Component {
 	state = { flip: false }

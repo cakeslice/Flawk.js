@@ -5,16 +5,15 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import PropTypes from 'prop-types'
-import React, { Suspense, Component } from 'react'
-import { Route, Switch, Redirect } from 'react-router-dom'
-import { Animated } from 'react-animated-css'
-import { Link } from 'react-router-dom'
-import MediaQuery from 'react-responsive'
-import MobileDrawer from 'core/components/MobileDrawer'
-import { Fade } from 'react-reveal'
-import { css } from 'glamor'
 import Collapsible from 'core/components/Collapsible'
+import MobileDrawer from 'core/components/MobileDrawer'
+import { css } from 'glamor'
+import PropTypes from 'prop-types'
+import React, { Component, Suspense } from 'react'
+import { Animated } from 'react-animated-css'
+import MediaQuery from 'react-responsive'
+import { Fade } from 'react-reveal'
+import { Link, Redirect, Route, Switch } from 'react-router-dom'
 
 var styles = require('core/styles').default
 var config = require('core/config_').default
@@ -80,7 +79,7 @@ export default class Dashboard extends Component {
 		return <div>{props.children}</div>
 	}
 	render() {
-		if (this.props.alwaysOpen) this.state.open = true
+		if (this.props.alwaysOpen) this.state.open = true // eslint-disable-line
 
 		var closedWidth = this.props.closedWidth || 60
 

@@ -5,11 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import React, { Component } from 'react'
-import { MetroSpinner } from 'react-spinners-kit'
 import { css } from 'glamor'
 import PropTypes from 'prop-types'
+import React, { Component } from 'react'
 import MediaQuery from 'react-responsive'
+import { MetroSpinner } from 'react-spinners-kit'
 
 var styles = require('core/styles').default
 var config = require('core/config_').default
@@ -174,7 +174,7 @@ export default class CustomButton extends Component {
 			})
 
 		if (this.props.checkbox) {
-			if (checked !== undefined) this.state.checked = checked
+			if (checked !== undefined) this.state.checked = checked // eslint-disable-line
 
 			if (!this.state.checked) finalStyle.background = 'transparent'
 			if (this.state.checked && !this.props.isDisabled) {

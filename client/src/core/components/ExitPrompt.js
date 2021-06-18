@@ -6,10 +6,9 @@
  */
 
 import React, { Component } from 'react'
-import { Prompt } from 'react-router-dom'
 import { Beforeunload } from 'react-beforeunload'
+import { Prompt } from 'react-router-dom'
 
-var styles = require('core/styles').default
 var config = require('core/config_').default
 
 export default class ExitPrompt extends Component {

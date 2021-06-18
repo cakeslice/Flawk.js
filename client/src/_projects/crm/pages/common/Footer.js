@@ -5,14 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import MediaQuery from 'react-responsive'
 import { Fade } from 'react-reveal'
 
-var styles = require('core/styles').default
 var config = require('core/config_').default
-var validator = require('validator')
 
 export default class Footer extends Component {
 	state = {}

@@ -79,11 +79,27 @@ export async function del(
 
 //
 
+/**
+ * @param method
+ * @param path
+ * @param body
+ * @param internal
+ * @param signal
+ * @param formData
+ */
 async function request(method, path, body, internal, signal, formData) {
 	const response = await sendRequest(method, path, body, internal, signal, formData)
 	return handleResponse(path, response)
 }
 
+/**
+ * @param method
+ * @param path
+ * @param body
+ * @param internal
+ * @param signal
+ * @param formData
+ */
 async function sendRequest(method, path, body, internal, signal, formData) {
 	const apiRoot = config.backendURL
 	const endpoint = !internal
@@ -133,6 +149,10 @@ async function sendRequest(method, path, body, internal, signal, formData) {
 	return fetch(endpoint, options)
 }
 
+/**
+ * @param path
+ * @param response
+ */
 async function handleResponse(path, response) {
 	const responseBody = await response.text()
 
@@ -156,6 +176,10 @@ async function handleResponse(path, response) {
 	}
 }
 
+/**
+ * @param requestPromise
+ * @param noErrorFlag
+ */
 async function bodyOf(requestPromise, noErrorFlag) {
 	try {
 		const response = await requestPromise

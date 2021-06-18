@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import React, { Component } from 'react'
+import React from 'react'
 
 import Router from './Router'
 import AppBase from 'core/components/AppBase'
@@ -13,6 +13,9 @@ import AppBase from 'core/components/AppBase'
 import { Provider } from 'react-redux'
 import store from './redux/_store.js'
 
+/**
+ * @param props
+ */
 export default function App(props) {
 	return (
 		<Provider store={store}>
