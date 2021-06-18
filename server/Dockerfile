@@ -40,11 +40,11 @@
 #     - captain.mydomain.com (no proxy)
 #     - registry.mydomain.com (no proxy)
 # 		- *.mydomain.com (no proxy)
-# For www.* (root domain only) use www CNAME to *
+#     - www
 # In CapRover panel set new root (mydomain.com) and enable HTTPS
 # Don't force HTTPS on that panel!
 # Now access using captain.mydomain.com
-# In CloudFlare turn on the proxy for both entries and delete the "*" entry
+# In CloudFlare turn on the proxy for all entries and delete the "*" entry
 # Also in CloudFlare enable DNSSEC
 # Make sure Auto Minify is disabled for everything
 # Also create a NGINX-Redirect app from one-click named www that redirects to your root domain (and force SSL)
