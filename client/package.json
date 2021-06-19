@@ -5,6 +5,12 @@
 	"engines": {
 		"node": "14.15.0"
 	},
+	"lint-staged": {
+		"*.{js,jsx,css,less,scss,ts,tsx,md}": [
+			"eslint --quiet",
+			"prettier --check"
+		]
+	},
 	"scripts": {
 		"copyPublic": "babel-node copy_public.js",
 		"addPreloadLinks": "babel-node add_preload_links.js",
@@ -22,6 +28,7 @@
 		"lint": "eslint --quiet ./",
 		"auditFix": "npm audit fix",
 		"auditCI": "npm audit --audit-level=moderate",
+		"precommit": "lint-staged",
 		"postinstall": "cd .. & git config core.hooksPath ./git-hooks"
 	},
 	"dependencies": {
@@ -102,6 +109,7 @@
 		"eslint-plugin-no-secrets": "^0.6.8",
 		"eslint-plugin-react": "^7.21.5",
 		"eslint-plugin-security": "^1.4.0",
+		"lint-staged": "^11.0.0",
 		"prettier": "^2.1.2"
 	},
 	"browserslist": {

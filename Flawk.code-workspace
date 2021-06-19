@@ -15,11 +15,8 @@
 			"titleBar.activeBackground": "#2D462F",
 			"titleBar.activeForeground": "#FAFCFA"
 		},
-		"workbench.editorAssociations": [
-			{
-				"viewType": "vscode.markdown.preview.editor",
-				"filenamePattern": "*.md"
-			}
-		]
+		"workbench.editorAssociations": {
+			"*.md": "vscode.markdown.preview.editor"
+		}
 	}
 }

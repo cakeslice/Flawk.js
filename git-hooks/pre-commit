@@ -3,50 +3,28 @@
 # BACKEND CHECKS
 ###########################
 
-npm run lint --prefix ./server
+npm run precommit --prefix ./server
 
 ESLINT_EXIT="$?"
 
 if [[ "${ESLINT_EXIT}" == 0 ]]; then
   echo ""
 else
-  printf "\nCOMMIT FAILED: Fix eslint errors and try again\n"
-  exit 1
-fi
-
-npm run prettierCI --prefix ./server
-
-PRETTIER_EXIT="$?"
-
-if [[ "${PRETTIER_EXIT}" == 0 ]]; then
-  echo ""
-else
-  printf "\nCOMMIT FAILED: Fix prettier errors and try again\n"
+  printf "\nCOMMIT FAILED: Fix eslint/prettier errors and try again\n"
   exit 1
 fi
 
 # FRONTEND CHECKS
 ###########################
 
-npm run lint --prefix ./client
+npm run precommit --prefix ./client
 
 ESLINT_EXIT="$?"
 
 if [[ "${ESLINT_EXIT}" == 0 ]]; then
   echo ""
 else
-  printf "\nCOMMIT FAILED: Fix eslint errors and try again\n"
-  exit 1
-fi
-
-npm run prettierCI --prefix ./client
-
-PRETTIER_EXIT="$?"
-
-if [[ "${PRETTIER_EXIT}" == 0 ]]; then
-  printf "\n\COMMIT SUCCEEDED\n"
-else
-  printf "\nCOMMIT FAILED: Fix prettier errors and try again\n"
+  printf "\nCOMMIT FAILED: Fix eslint/prettier errors and try again\n"
   exit 1
 fi
 
