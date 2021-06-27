@@ -337,6 +337,16 @@ export default {
 		return Parser(s)
 	},
 
+	/**
+	 * @param {Date} birthday
+	 * @returns {number}
+	 */
+	calculateAge: function (birthday) {
+		var ageDifMs = Date.now() - birthday.getTime()
+		var ageDate = new Date(ageDifMs) // miliseconds from epoch
+		return Math.abs(ageDate.getUTCFullYear() - 1970)
+	},
+
 	countriesSearch: (candidate, input) => {
 		return (
 			countries[candidate.value].name.toLowerCase().includes(input.toLowerCase()) ||
