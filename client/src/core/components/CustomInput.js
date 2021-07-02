@@ -5,10 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import React, { Component } from 'react'
-import InputMask from 'react-input-mask'
 import { css } from 'glamor'
+import React, { Component } from 'react'
 import Datetime from 'react-datetime'
+import InputMask from 'react-input-mask'
 
 var config = require('core/config_').default
 var styles = require('core/styles').default
@@ -297,22 +297,19 @@ export default class CustomInput extends Component {
 							} else {
 								this.props.onChange &&
 									this.props.onChange(e.target.value || undefined)
-
-								if (this.props.datePicker)
-									this.props.formIK &&
-										this.props.formIK.setFieldValue &&
-										this.props.formIK.setFieldValue(
-											this.props.name,
-											e || undefined
-										)
-								else
-									this.props.formIK &&
-										this.props.formIK.setFieldValue &&
-										this.props.formIK.setFieldValue(
-											this.props.name,
-											e.target.value || undefined
-										)
 							}
+
+							if (this.props.datePicker)
+								this.props.formIK &&
+									this.props.formIK.setFieldValue &&
+									this.props.formIK.setFieldValue(this.props.name, e || undefined)
+							else
+								this.props.formIK &&
+									this.props.formIK.setFieldValue &&
+									this.props.formIK.setFieldValue(
+										this.props.name,
+										e.target.value || undefined
+									)
 						}}
 						onBlur={(e, editor, next) => {
 							e.target.placeholder = this.props.placeholder
