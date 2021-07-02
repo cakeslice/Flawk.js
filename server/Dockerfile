@@ -51,7 +51,7 @@
 # ---------------------------------------
 
 # ------------ WEB APP DEPLOY ------------
-# Copy .env and change app port to 8080 (or the one in .env) if backend and 80 if website
+# Copy .env and change app port to 8000 (or the one in .env) if backend and 80 if website
 # Add websocket support if needed
 # Then add domain in CloudFlare (no proxy)
 # Then enable HTTPS for your app
