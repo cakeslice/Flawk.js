@@ -155,7 +155,7 @@ function init() {
 				if (o === origin) allowed = true
 			})
 
-			if (!config.prod && !config.staging) allowed = true
+			if (!config.prod) allowed = true
 
 			if (
 				config.mobileAppOrigins &&
