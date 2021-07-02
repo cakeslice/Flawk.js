@@ -75,32 +75,35 @@ function requireHTTPS(req, res, next) {
 }
 
 async function createDevUser() {
-	var devUser = await database.Client.findOne({ email: 'dev_user@email.flawk' })
-	if (!devUser) {
-		console.log('Creating dev_user...')
-		var bcrypt = require('bcryptjs')
-		bcrypt.hash('dev_user', config.saltRounds, async function (err, hash) {
-			var devRef = await database.Client.findOne({
-				reference: { $exists: true, $ne: null },
-			})
-				.sort('-reference')
-				.select('reference')
+	var amountUsers = await database.Client.find().select('_id').lean()
+	if (amountUsers.length === 0) {
+		var devUser = await database.Client.findOne({ email: 'dev_user@email.flawk' })
+		if (!devUser) {
+			console.log('Creating dev_user...')
+			var bcrypt = require('bcryptjs')
+			bcrypt.hash(config.adminPassword, config.saltRounds, async function (err, hash) {
+				var devRef = await database.Client.findOne({
+					reference: { $exists: true, $ne: null },
+				})
+					.sort('-reference')
+					.select('reference')
 
-			await new database.Client({
-				reference: devRef && devRef.reference !== undefined ? devRef.reference + 1 : 0,
-				email: 'dev_user@email.flawk',
-				phone: '+351910000000',
-				personal: {
-					firstName: 'Dev',
-					lastName: 'User',
-				},
-				permission: 10,
-				flags: ['verified'],
-				access: {
-					hashedPassword: hash,
-				},
-			}).save()
-		})
+				await new database.Client({
+					reference: devRef && devRef.reference !== undefined ? devRef.reference + 1 : 0,
+					email: 'dev_user@email.flawk',
+					phone: '+351910000000',
+					personal: {
+						firstName: 'Dev',
+						lastName: 'User',
+					},
+					permission: 10,
+					flags: ['verified'],
+					access: {
+						hashedPassword: hash,
+					},
+				}).save()
+			})
+		}
 	}
 }
 
@@ -559,9 +562,7 @@ function main() {
 
 		if (!config.cronServer) updateDatabaseStructures()
 
-		if (!config.simulateProduction && !config.prod && !config.staging && !config.cronServer) {
-			await createDevUser()
-		}
+		await createDevUser()
 
 		if (!config.cronServer) {
 			if (config.sentryID) app.use(Sentry.Handlers.requestHandler({}))
