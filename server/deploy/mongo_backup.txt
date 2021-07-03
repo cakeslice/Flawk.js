@@ -1,7 +1,6 @@
 nano setup_mongo_backup.sh
 
 ----
-----
 
 #!/bin/bash
 
@@ -13,7 +12,7 @@ export MONGODB_HOST=localhost
 export MONGODB_PORT=1337
 export MONGODB_USER=
 export MONGODB_PASS=
-export BACKUP_FOLDER=remote_folder/mongo_backups/
+export BACKUP_FOLDER=your_project_prod/mongo_backups/
 
 export CRON_TIME="0 3 * * *"
 export TZ=Europe/Lisbon
@@ -146,7 +145,7 @@ nano lifecycle.json
 		{
 			"ID": "mongo_backups",
 			"Filter": {
-				"Prefix": "remote_folder/mongo_backups/"
+				"Prefix": "your_project_prod/mongo_backups/"
 			}, 
 			"Status": "Enabled", 
 			"Expiration": {
@@ -180,15 +179,14 @@ sudo ./backup (for manual backup)
 sudo ./restore (for latest backup)
 sudo ./restore 20170406T155812
 
+----
 
 [Extra] Restore a single collection:
-----
-Duplicate ./restore.sh and add this argument in mongo_restore:
---nsInclude=db.collection
 
-Example:
---nsInclude=test.users
-----
+	Duplicate ./restore.sh and add this argument in mongo_restore: --nsInclude=db.collection
 
-chmod +x /restore_collection.sh
-sudo ./restore_collection.sh 20170406T155812
+	Example: --nsInclude=your_project_prod.clients
+
+	Then save as restore_collection.sh and:
+	chmod +x /restore_collection.sh
+	sudo ./restore_collection.sh 

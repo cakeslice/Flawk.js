@@ -97,8 +97,8 @@ module.exports = {
 	bucketCDNOriginal: process.env.bucketCDNOriginal,
 	imageThumbnailWidth: 200,
 
-	publicUploadsPath: process.env.bucketFolder + '/public_uploads' + (_prod ? '_prod' : '_dev'),
-	privateUploadsPath: process.env.bucketFolder + '/private_uploads' + (_prod ? '_prod' : '_dev'),
+	publicUploadsPath: process.env.bucketFolder + '/public_uploads',
+	privateUploadsPath: process.env.bucketFolder + '/private_uploads',
 
 	//
 

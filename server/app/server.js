@@ -133,7 +133,7 @@ function updateDatabaseStructures() {
 
 	global.structures.forEach((s) => {
 		s.schema.findOne({}, function (err, doc) {
-			if (!doc || (!config.prod && !config.simulateProduction))
+			if (!doc || !config.prod)
 				buildStructure('./app/_projects/' + config.project + s.path, s.schema)
 		})
 	})

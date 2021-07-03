@@ -17,11 +17,13 @@ rclone config
 # Then copy the 2 (scaleway-public and digitalocean-public) and edit the policy (to "public-read")
 
 #### CRON JOB (digitalocean to scaleway)
-# YOU CAN ADD THIS to the mongo cron: backup.sh
-rclone sync --progress digitalocean:your_bucket/your_project/private_uploads scaleway:your_bucket/your_project/private_uploads
-rclone sync --progress digitalocean:your_bucket/your_project/mongo_backups scaleway:your_bucket/your_project/mongo_backups
+# YOU CAN ADD THIS to the Mongo backup.sh
+rclone sync --progress digitalocean:your_bucket/your_project_prod/private_uploads scaleway:your_bucket/your_project_prod/private_uploads
+rclone sync --progress digitalocean:your_bucket/your_project_prod/mongo_backups scaleway:your_bucket/your_project_prod/mongo_backups
 
-rclone sync --progress digitalocean-public:your_bucket/your_project/public_uploads scaleway-public:your_bucket/your_project/public_uploads
+rclone sync --progress digitalocean-public:your_bucket/your_project_prod/public_uploads scaleway-public:your_bucket/your_project_prod/public_uploads
 
 #### TO RESTORE
-rclone sync --progress scaleway:your_bucket/your_private_folder digitalocean:your_bucket/your_private_folder
+rclone sync --progress scaleway:your_bucket/your_project_prod/private_uploads digitalocean:your_bucket/your_project_prod/private_uploads
+
+rclone sync --progress scaleway-public:your_bucket/your_project_prod/private_uploads digitalocean-public:your_bucket/your_project_prod/public_uploads
