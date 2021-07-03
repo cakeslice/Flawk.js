@@ -189,4 +189,4 @@ sudo ./restore 20170406T155812
 
 	Then save as restore_collection.sh and:
 	chmod +x /restore_collection.sh
-	sudo ./restore_collection.sh 
+	sudo ./restore_collection.sh 20170406T155812
