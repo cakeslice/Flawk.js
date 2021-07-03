@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import { get } from 'core/api'
 import React, { Component } from 'react'
 import { Helmet } from 'react-helmet'
 import MediaQuery from 'react-responsive'
@@ -61,7 +62,7 @@ export default class AppBase extends Component {
 								res.buildNumber !== buildNumber
 							) {
 								this.setState({ oldBuild: true, buildNumber: buildNumber })
-							}
+							} else this.setState({ buildNumber: buildNumber })
 
 							if (!this.state.isReconnect) this.setState({ isReconnect: true })
 						}
@@ -84,6 +85,16 @@ export default class AppBase extends Component {
 		}
 
 		var asyncSetup = async function () {
+			var res = await get('build_number', { noErrorFlag: true })
+			var buildNumber
+			if (res && res.ok) {
+				buildNumber = res.body.buildNumber
+				await global.storage.setItem('build_number', buildNumber)
+			} else {
+				buildNumber = await global.storage.getItem('build_number')
+			}
+			this.setState({ buildNumber: buildNumber })
+
 			if (config.darkModeForce) this.applyNightMode(true, true)
 			else if (config.darkModeAvailable) {
 				var isDark = window.matchMedia('(prefers-color-scheme: dark)')

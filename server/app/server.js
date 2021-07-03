@@ -337,6 +337,10 @@ function init() {
 	})
 	/* } */
 
+	app.getAsync(config.path + '/build_number', function (req, res) {
+		common.setResponse(200, req, res, undefined, { buildNumber: global.buildNumber })
+	})
+
 	app.getAsync(config.path + '/structures', async (req, res) => {
 		var promises = []
 		global.structures.forEach((s) => {
@@ -574,7 +578,8 @@ function main() {
 			if (config.sentryID) {
 				app.use(Sentry.Handlers.errorHandler())
 			}
-			app.use((err, req, res) => {
+			// eslint-disable-next-line
+			app.use((err, req, res, next) => {
 				global.logCatch(err, false)
 				return common.setResponse(
 					err.status || 500,

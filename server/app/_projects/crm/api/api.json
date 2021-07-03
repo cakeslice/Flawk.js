@@ -91,7 +91,7 @@
     "/client/logout": {
       "post": {
         "summary": "",
-       "operationId": "none",
+        "operationId": "none",
         "responses": {
           "200": {
             "description": "OK"
@@ -596,6 +596,18 @@
             }
           }
         }
+      }
+    },
+    "/build_number": {
+      "get": {
+        "summary": "Your GET endpoint",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "operationId": "get-build_number"
       }
     }
   },

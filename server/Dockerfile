@@ -33,7 +33,13 @@
 # ---------------------------
 # ---------------------------
 
-# ------------ DOMAIN & SSL ------------
+# ------------ DOMAIN & SSL -------------
+# ----- Simple flow
+# Set DNS A records
+#     - *.yourapp.mydomain.com
+#     - yourapp.domain.com (optional, for the main web app)
+
+# ----- CloudFlare flow
 # Make sure CloudFlare SSL is in Full (strict) mode
 # Also in CloudFlare "Always use HTTPS"
 # In CloudFlare, set DNS A records 
@@ -50,36 +56,7 @@
 # Also create a NGINX-Redirect app from one-click named www that redirects to your root domain (and force SSL)
 # ---------------------------------------
 
-# ------------ WEB APP DEPLOY ------------
-# Copy .env and change app port to 8000 (or the one in .env) if backend and 80 if website
-# Add websocket support if needed
-# Then add domain in CloudFlare (no proxy)
-# Then enable HTTPS for your app
-# Then enable proxy in CloudFlare
-
-# To take advantage of multiple cores in Node.js you can to use clusters and consider websocket support: https://socket.io/docs/using-multiple-nodes/
-# HOWEVER, 4 CORES SEEMS TO BE VERY GOOD FOR MONGO + NODE
-#     For websites with low/no MONGO usage, you should go with CPU-Optimized
-# Make sure it stops build if tests FAIL!
-# You can delete old builds to free space using captain dashboard if too many created
-
-# FOR CI/CD: https://caprover.com/docs/ci-cd-integration.html
-# ---------------------------
-
-# For storage:
-# - Create space in DigitalOcean
-# - Create certicate in CloudFlare for cloud.yourdomain.com
-# - Enable CDN in space using certificate
-#     - Make sure you use bucketCDNOriginal and bucketCDNTarget in the app
-# - Add CNAME with Proxy in CloudFlare (cdn)
-# - Also set CORS in space settings: 
-#     https://your_domain, GET+PUT, Header: *, 600 seconds
-#     https://*.your_domain, GET+PUT, Header: *, 600 seconds
-#     *, PUT+POST, *, 600 seconds (needs to be in bottom!)
-# - NOTE: Can't use this for a lot of video or audio files since CloudFlare doesn't allow!
-# - Follow deploy/S3_backup.txt
-
-# ------- MONGO SETUP -------
+# ------------ MONGO SETUP --------------
 # Create the MongoDB app in CAPROVER
 # Add the port forwarding: Host: 1337 -> Container: 27017
 
@@ -90,17 +67,59 @@
 #    External: mongodb://dbuser:dbpassword@SERVER_IP_ADDRESS:1337/dbname?authSource=admin&w=1
 
 # Follow deploy/mongo_backup.txt
+# ---------------------------------------
 
-# To connect your own Docker registry go to cluster and use:
-# username: nologin
-# Disable Default Push Registry
-# ---------------------------
+# ------------- S3 STORAGE --------------
+# - Create space in DigitalOcean
+# - Set CORS in space settings: 
+#     https://your_domain.com, GET+PUT, Header: *, 600 seconds
+#     https://*.your_domain.com, GET+PUT, Header: *, 600 seconds
+#     *, PUT+POST, *, 600 seconds (needs to be in bottom!)
+#
+# ----- Simple flow (much worse since you can't change provider later)
+# - Just enable CDN
+# - Make sure you use bucketCDNOriginal and bucketCDNTarget in the app
+# -----
+#
+# ----- CloudFlare flow
+# - Create certicate in CloudFlare for cloud.yourdomain.com
+# - Enable CDN in space using certificate
+#     - Make sure you use bucketCDNOriginal and bucketCDNTarget in the app
+# - Add CNAME with Proxy in CloudFlare (cdn)
+# - NOTE: Can't use this for a lot of video or audio files since CloudFlare doesn't allow!
+# -----
+#
+# - Follow deploy/S3_backup.txt
+# ---------------------------------------
+
+# ------------ WEB APP DEPLOY -----------
+# Copy .env and change app port to 8000 (or the one in .env) if backend and 80 if website
+# Add websocket support if needed
+# To connect to your own Docker registry go to cluster and use:
+#     username: nologin
+#     Also Disable Default Push Registry
+
+# ----- Simple flow
+# Add DNS A record for app URL
+
+# ----- CloudFlare flow
+# Add DNS A record for app URL in CloudFlare (no proxy)
+# Then enable HTTPS for your app
+# Then enable proxy in CloudFlare
+# --------------------------------------
 
 # ---------------------------
 # ---------------------------
 
 # Last but not least, make sure you have an image of the entire server after it's all setup!
-# The image can be used on another Droplet, all you need to do is change the IP on CloudFlare
+#     The image can be used on another Droplet, all you need to do is change the IP on CloudFlare
+
+# FOR CI/CD instead of building in CapRover or pushing a Docker image:
+#     https://caprover.com/docs/ci-cd-integration.html
+
+# To take advantage of multiple cores in Node.js you can to use clusters but consider websocket support: https://socket.io/docs/using-multiple-nodes/
+#     HOWEVER, 4 CORES SEEMS TO BE VERY GOOD FOR MONGO + NODE
+#     For websites/apps with low/no MONGO usage, you should go with CPU-Optimized
 
 # ---------------------------
 # ---------------------------
