@@ -5,24 +5,23 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import './assets/fonts.css'
-import './assets/main.scss'
-
+import { post } from 'core/api'
+import logo from 'core/assets/images/logo.svg'
+import Avatar from 'core/components/Avatar'
+import RouterBase from 'core/components/RouterBase'
+import ScrollToTop from 'core/components/ScrollToTop'
 import React, { Component } from 'react'
-import { Route, Switch } from 'react-router-dom'
-import { fetchUser, fetchStructures } from './redux/UserState'
+import { Helmet } from 'react-helmet'
 import { connect } from 'react-redux'
 import MediaQuery from 'react-responsive'
-import ScrollToTop from 'core/components/ScrollToTop'
-import RouterBase from 'core/components/RouterBase'
 import { Fade } from 'react-reveal'
-import { Helmet } from 'react-helmet'
-import Avatar from 'core/components/Avatar'
-import { post } from 'core/api'
-import Header from './pages/common/Header'
-import Footer from './pages/common/Footer'
-import logo from 'core/assets/images/logo.svg'
+import { Route, Switch } from 'react-router-dom'
+import './assets/fonts.css'
+import './assets/main.scss'
 import notificationSound from './assets/sounds/notification.mp3'
+import Footer from './pages/common/Footer'
+import Header from './pages/common/Header'
+import { fetchStructures, fetchUser } from './redux/UserState'
 
 var styles = require('core/styles').default
 var config = require('core/config_').default
@@ -286,7 +285,7 @@ class Router extends Component {
 									</div>
 								</Route>
 
-								{/* {!config.prod && ( */}
+								{/* {!config.prod && !config.staging && ( */}
 								<Route /* exact */ path='/components'>
 									<ComponentsViewer
 										// Redux props

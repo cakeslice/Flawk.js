@@ -5,15 +5,15 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import { Plugins } from '@capacitor/core'
+import { createBrowserHistory } from 'history'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
+import ReactGA from 'react-ga'
 import MediaQuery, { Context as ResponsiveContext } from 'react-responsive'
 import { Router } from 'react-router-dom'
-import { createBrowserHistory } from 'history'
-import { ToastContainer, toast, Bounce } from 'react-toastify'
-import ReactGA from 'react-ga'
+import { Bounce, toast, ToastContainer } from 'react-toastify'
 import CustomButton from './CustomButton'
-import { Plugins } from '@capacitor/core'
 
 var styles = require('core/styles').default
 var config = require('core/config_').default
@@ -161,7 +161,7 @@ export default class RouterBase extends Component {
 
 	render() {
 		return (
-			<MobileSimulator active={!config.prod}>
+			<MobileSimulator active={!config.prod && !config.staging}>
 				<div>
 					<Router history={this.state.history}>{this.props.children}</Router>
 

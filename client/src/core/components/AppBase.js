@@ -381,7 +381,7 @@ export default class AppBase extends Component {
 										this.state.buildNumber}
 								</b>
 
-								{config.darkModeAvailable && (
+								{!config.staging && config.darkModeAvailable && (
 									<b
 										style={{
 											fontSize: 13,
@@ -398,40 +398,44 @@ export default class AppBase extends Component {
 									</b>
 								)}
 
-								<b
-									style={{
-										fontSize: 13,
-										marginLeft: 20,
-										cursor: 'pointer',
-										color: styles.colors.black,
-										textShadow: '1px 1px 2px rgba(0,0,0,.5)',
-									}}
-									onClick={async () => {
-										global.changeLang()
-										await global.storage.setItem(
-											'lang',
-											JSON.stringify(global.lang)
-										)
-										window.location.reload()
-									}}
-								>
-									LANG {'(' + global.lang.text + ')'}
-								</b>
+								{!config.staging && (
+									<b
+										style={{
+											fontSize: 13,
+											marginLeft: 20,
+											cursor: 'pointer',
+											color: styles.colors.black,
+											textShadow: '1px 1px 2px rgba(0,0,0,.5)',
+										}}
+										onClick={async () => {
+											global.changeLang()
+											await global.storage.setItem(
+												'lang',
+												JSON.stringify(global.lang)
+											)
+											window.location.reload()
+										}}
+									>
+										LANG {'(' + global.lang.text + ')'}
+									</b>
+								)}
 
-								<b
-									onClick={() => {
-										window.open('/components', '_blank')
-									}}
-									style={{
-										fontSize: 13,
-										marginLeft: 20,
-										color: styles.colors.black,
-										cursor: 'pointer',
-										textShadow: '1px 1px 2px rgba(0,0,0,.5)',
-									}}
-								>
-									{'COMPONENTS'}
-								</b>
+								{!config.staging && (
+									<b
+										onClick={() => {
+											window.open('/components', '_blank')
+										}}
+										style={{
+											fontSize: 13,
+											marginLeft: 20,
+											color: styles.colors.black,
+											cursor: 'pointer',
+											textShadow: '1px 1px 2px rgba(0,0,0,.5)',
+										}}
+									>
+										{'COMPONENTS'}
+									</b>
+								)}
 							</div>
 						)}
 					</div>
