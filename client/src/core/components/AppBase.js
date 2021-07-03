@@ -362,7 +362,7 @@ export default class AppBase extends Component {
 									alignItems: 'center',
 									zIndex: 100,
 									height: 25,
-									justifyContent: 'center',
+									justifyContent: 'flex-end',
 									maxWidth: 355,
 									userSelect: 'none',
 									paddingLeft: 10,
