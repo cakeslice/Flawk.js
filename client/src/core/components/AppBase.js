@@ -85,15 +85,17 @@ export default class AppBase extends Component {
 		}
 
 		var asyncSetup = async function () {
-			var res = await get('build_number', { noErrorFlag: true })
-			var buildNumber
-			if (res && res.ok) {
-				buildNumber = res.body.buildNumber
-				await global.storage.setItem('build_number', buildNumber)
-			} else {
-				buildNumber = await global.storage.getItem('build_number')
+			if (!config.prod) {
+				var res = await get('build_number', { noErrorFlag: true })
+				var buildNumber
+				if (res && res.ok) {
+					buildNumber = res.body.buildNumber
+					await global.storage.setItem('build_number', buildNumber)
+				} else {
+					buildNumber = await global.storage.getItem('build_number')
+				}
+				this.setState({ buildNumber: buildNumber })
 			}
-			this.setState({ buildNumber: buildNumber })
 
 			if (config.darkModeForce) this.applyNightMode(true, true)
 			else if (config.darkModeAvailable) {

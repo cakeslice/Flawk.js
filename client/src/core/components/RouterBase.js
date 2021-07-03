@@ -6,6 +6,9 @@
  */
 
 import { Plugins } from '@capacitor/core'
+import * as Sentry from '@sentry/react'
+import { Integrations } from '@sentry/tracing'
+import { get } from 'core/api'
 import { createBrowserHistory } from 'history'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
@@ -28,6 +31,42 @@ export default class RouterBase extends Component {
 		global.routerHistory = function () {
 			return this.state.history
 		}.bind(this)
+
+		var setupSentry = async function () {
+			if (config.sentryID) {
+				var res = await get('build_number', { noErrorFlag: true })
+				var buildNumber
+				if (res && res.ok) {
+					buildNumber = res.body.buildNumber
+					await global.storage.setItem('build_number', buildNumber)
+				} else {
+					buildNumber = await global.storage.getItem('build_number')
+				}
+				if (!buildNumber) buildNumber = 'unknown'
+				Sentry.init({
+					release: config.project + '@' + buildNumber,
+					environment: config.prod
+						? 'production'
+						: config.staging
+						? 'staging'
+						: 'development',
+					dsn: config.sentryID,
+
+					integrations: [
+						new Integrations.BrowserTracing({
+							routingInstrumentation: Sentry.reactRouterV5Instrumentation(
+								this.state.history
+							),
+						}),
+					],
+					// We recommend adjusting this value in production, or using tracesSampler
+					// for finer control
+					tracesSampleRate: 1.0,
+				})
+				global.Sentry = Sentry
+			}
+		}
+		setupSentry()
 
 		if (config.googleAnalyticsID) {
 			ReactGA.initialize(config.googleAnalyticsID)

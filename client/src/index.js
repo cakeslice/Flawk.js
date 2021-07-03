@@ -5,18 +5,16 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import { Capacitor, Plugins } from '@capacitor/core'
 import 'abortcontroller-polyfill'
+import 'core/assets/react-toastify.css'
+import { CookieStorage, isSupported, MemoryStorage } from 'local-storage-fallback'
 import React, { Suspense } from 'react'
+import 'react-awesome-lightbox/build/style.css'
+import 'react-datetime/css/react-datetime.css'
 import ReactDOM from 'react-dom'
 //import registerServiceWorker from './utils/registerServiceWorker'
 import { unregister } from './core/utils/registerServiceWorker'
-import * as Sentry from '@sentry/react'
-import { isSupported, CookieStorage, MemoryStorage } from 'local-storage-fallback'
-import { Plugins, Capacitor } from '@capacitor/core'
-
-import 'core/assets/react-toastify.css'
-import 'react-datetime/css/react-datetime.css'
-import 'react-awesome-lightbox/build/style.css'
 
 var config = require('core/config_').default
 
@@ -58,20 +56,6 @@ if (Capacitor.isNative) {
 	storage = new MemoryStorage()
 }
 global.storage = storage
-
-async function setupSentry() {
-	if (config.sentryID) {
-		var buildNumber = await global.storage.getItem('build_number')
-		if (!buildNumber) buildNumber = 'unknown'
-		Sentry.init({
-			release: config.project + '@' + buildNumber,
-			environment: config.prod ? 'production' : config.staging ? 'staging' : 'development',
-			dsn: config.sentryID,
-		})
-		global.Sentry = Sentry
-	}
-}
-setupSentry()
 
 ReactDOM.render(
 	<Suspense fallback={<div></div>}>
