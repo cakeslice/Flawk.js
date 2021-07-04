@@ -86,7 +86,7 @@ export default class AppBase extends Component {
 
 		var asyncSetup = async function () {
 			if (!config.prod) {
-				var res = await get('build_number', { noErrorFlag: true })
+				var res = await get('build_number', { noErrorFlag: 'all' })
 				var buildNumber
 				if (res && res.ok) {
 					buildNumber = res.body.buildNumber

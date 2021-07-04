@@ -34,7 +34,7 @@ export default class RouterBase extends Component {
 
 		var setupSentry = async function () {
 			if (config.sentryID) {
-				var res = await get('build_number', { noErrorFlag: true })
+				var res = await get('build_number', { noErrorFlag: 'all' })
 				var buildNumber
 				if (res && res.ok) {
 					buildNumber = res.body.buildNumber
