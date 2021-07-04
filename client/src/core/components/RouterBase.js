@@ -65,7 +65,7 @@ export default class RouterBase extends Component {
 				})
 				global.Sentry = Sentry
 			}
-		}
+		}.bind(this)
 		setupSentry()
 
 		if (config.googleAnalyticsID) {

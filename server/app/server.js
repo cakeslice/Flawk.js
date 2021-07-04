@@ -76,7 +76,7 @@ function requireHTTPS(req, res, next) {
 
 async function createDevUser() {
 	var amountUsers = await database.Client.find().select('_id').lean()
-	if (amountUsers.length === 0) {
+	if (amountUsers.length === 0 && config.adminPassword) {
 		var devUser = await database.Client.findOne({ email: 'dev_user@email.flawk' })
 		if (!devUser) {
 			console.log('Creating dev_user...')
