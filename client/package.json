@@ -64,7 +64,6 @@
 		"browserslist": "^4.16.6",
 		"canvas-to-blob": "^1.0.0",
 		"countries-list": "^2.6.1",
-		"expo-splash-screen": "^0.6.2",
 		"formik": "^2.2.0",
 		"glamor": "^2.20.40",
 		"html-react-parser": "^0.14.0",
