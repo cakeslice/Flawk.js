@@ -16,9 +16,7 @@ import ReactDOM from 'react-dom'
 //import registerServiceWorker from './utils/registerServiceWorker'
 import { unregister } from './core/utils/registerServiceWorker'
 
-var config = require('core/config_').default
-
-const App = React.lazy(() => import('./_projects/' + config.project + '/App'))
+const App = React.lazy(() => import('./project/App'))
 
 var capacitorStorage = {
 	getItem: async (key) => {

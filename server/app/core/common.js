@@ -67,7 +67,7 @@ async function setupNodemailer() {
 		},
 	})
 	var hbs = require('nodemailer-express-handlebars')
-	var dir = './app/_projects/' + config.project + '/email_templates/'
+	var dir = './app/project/email_templates/'
 	nodemailerClient.use(
 		'compile',
 		hbs({

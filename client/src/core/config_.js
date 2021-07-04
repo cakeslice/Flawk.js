@@ -20,11 +20,9 @@ String.prototype.replaceAll = function (search, replacement) {
 }
 global.supportedLanguages = ['pt', 'en']
 
-// ! To change .env, change .rescriptsrc.js
-const _project = 'crm' // ! If changed, change below too and in .rescriptsrc.js
-const _projectConfig = require('../_projects/crm/_config.js')
-const _projectStyles = require('../_projects/crm/_styles.js')
-const _projectText = require('../_projects/crm/text.js') // {}
+const _projectConfig = require('../project/_config.js')
+const _projectStyles = require('../project/_styles.js')
+const _projectText = require('../project/text.js')
 
 const _prod =
 	process.env.NODE_ENV === 'production' &&
@@ -502,7 +500,6 @@ export default {
 		}
 	},
 
-	project: _project,
 	projectStyles: _projectStyles,
 	..._projectConfig,
 }

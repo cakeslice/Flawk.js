@@ -149,7 +149,7 @@
 
 #COPY ../client/ .
 
-#RUN npm run auditCI && npm run testCI && npm run copyPublic && npm run build && rm -rf /usr/src/react_build/node_modules/* && rm -rf /usr/src/react_build/src/*
+#RUN npm run auditCI && npm run testCI && npm run build && rm -rf /usr/src/react_build/node_modules/* && rm -rf /usr/src/react_build/src/*
 
 # NODE SERVER
 

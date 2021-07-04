@@ -12,8 +12,15 @@
 		]
 	},
 	"scripts": {
+		"env:dev": "env-cmd -f ./_env/flawk_dev.env",
+		"___________________": "___________________",
+		"start:dev": "npm run env:dev npm run startLocal",
+		"_______": "_______",
+		"start": "npm run start:dev",
+		"startLocal": "npm run lint && cross-env NODE_PATH=app/ nodemon node --inspect=1237 --optimize_for_size --max_old_space_size=1024 --expose-gc app/server.js",
 		"test": "jest --coverage",
 		"testCI": "jest",
+		"___________": "___________",
 		"prettier": "prettier --write ./app",
 		"prettierCI": "prettier --check ./",
 		"lint": "eslint --quiet ./",
@@ -81,7 +88,9 @@
 	"devDependencies": {
 		"@types/mongoose": "^5.7.36",
 		"babel-eslint": "^10.1.0",
+		"cross-env": "^7.0.3",
 		"dotenv": "^8.2.0",
+		"env-cmd": "^10.1.0",
 		"eslint": "^7.10.0",
 		"eslint-config-prettier": "^6.12.0",
 		"eslint-plugin-jest": "^24.1.0",

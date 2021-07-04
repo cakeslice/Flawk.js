@@ -10,7 +10,7 @@ import React, { Component } from 'react'
 import MediaQuery from 'react-responsive'
 import { Fade } from 'react-reveal'
 import { Link } from 'react-router-dom'
-import logo from '../../../../core/assets/images/logo.svg'
+import logo from '../../../core/assets/images/logo.svg'
 
 var styles = require('core/styles').default
 var config = require('core/config_').default

@@ -26,8 +26,8 @@ const OpenApiValidator = require('express-openapi-validator')
 const config = require('core/config_')
 const common = require('core/common')
 const database = config.projectDatabase
-const cron = require('./_projects/' + config.project + '/cron.js') // eslint-disable-line
-var openAPIDocument = require('./_projects/' + config.project + '/api/api.json') // eslint-disable-line
+const cron = require('./project/cron.js')
+var openAPIDocument = require('./project/api/api.json')
 openAPIDocument.servers = [
 	{
 		url: config.path,
@@ -133,8 +133,7 @@ function updateDatabaseStructures() {
 
 	global.structures.forEach((s) => {
 		s.schema.findOne({}, function (err, doc) {
-			if (!doc || !config.prod)
-				buildStructure('./app/_projects/' + config.project + s.path, s.schema)
+			if (!doc || !config.prod) buildStructure('./app/project' + s.path, s.schema)
 		})
 	})
 }
@@ -386,11 +385,11 @@ function init() {
 	})
 
 	config.publicRoutes.forEach((r) => {
-		require('./_projects/' + config.project + r)(app, io) // eslint-disable-line
+		require('./project' + r)(app, io) // eslint-disable-line
 	})
 
 	config.routes.forEach((r) => {
-		require('./_projects/' + config.project + r)(app, io) // eslint-disable-line
+		require('./project' + r)(app, io) // eslint-disable-line
 	})
 
 	//////////// Add client serving
@@ -511,16 +510,6 @@ function main() {
 		console.log(`About to exit with code: ${code}`)
 	})
 
-	console.log(
-		'\n||||||||||||||||||||||| ' +
-			(config.simulateProduction
-				? 'SIMULATE PRODUCTION'
-				: config.prod
-				? 'PRODUCTION'
-				: 'DEVELOPMENT') +
-			' |||||||||||||||||||||||\n'
-	)
-
 	var fs = require('fs')
 	try {
 		var file = JSON.parse(fs.readFileSync('./app/metadata.json'))
@@ -554,6 +543,9 @@ function main() {
 		global.Sentry = Sentry
 	}
 
+	console.log(
+		'Environment: ' + (config.prod ? 'production' : config.staging ? 'staging' : 'development')
+	)
 	console.log('Build: ' + config.project + '@' + global.buildNumber)
 	console.log('Running on NodeJS ' + process.version + '\n')
 

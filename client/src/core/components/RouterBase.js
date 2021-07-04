@@ -44,7 +44,7 @@ export default class RouterBase extends Component {
 				}
 				if (!buildNumber) buildNumber = 'unknown'
 				Sentry.init({
-					release: config.project + '@' + buildNumber,
+					release: '@' + buildNumber,
 					environment: config.prod
 						? 'production'
 						: config.staging

@@ -4,12 +4,12 @@
 		{
 			"name": "Backend",
 			"cwd": "../server/",
-			"commands": ["run"]
+			"commands": ["npm run start:dev"]
 		},
 		{
 			"name": "Frontend",
 			"cwd": "../client/",
-			"commands": ["run"]
+			"commands": ["npm run start:dev"]
 		}
 	]
 }
