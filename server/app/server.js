@@ -546,7 +546,7 @@ function main() {
 	console.log(
 		'Environment: ' + (config.prod ? 'production' : config.staging ? 'staging' : 'development')
 	)
-	console.log('Build: ' + config.project + '@' + global.buildNumber)
+	console.log('Build: ' + '@' + global.buildNumber)
 	console.log('Running on NodeJS ' + process.version + '\n')
 
 	common.databaseConnection.on(
