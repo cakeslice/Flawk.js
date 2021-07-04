@@ -536,7 +536,7 @@ function main() {
 
 	if (config.sentryID) {
 		Sentry.init({
-			release: config.project + '@' + global.buildNumber,
+			release: '@' + global.buildNumber,
 			environment: config.prod ? 'production' : config.staging ? 'staging' : 'development',
 			dsn: config.sentryID,
 		})
