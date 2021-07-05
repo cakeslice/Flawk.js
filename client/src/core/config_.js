@@ -6,7 +6,7 @@
  */
 
 const _ = require('lodash')
-const Parser = require('html-react-parser')
+const Parser = require('html-react-parser').default
 try {
 	const toBlob = require('canvas-to-blob')
 	toBlob.init()

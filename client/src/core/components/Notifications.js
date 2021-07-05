@@ -10,7 +10,7 @@ import React, { Component } from 'react'
 import Avatar from './Avatar'
 import OutsideAlerter from './OutsideAlerter'
 
-var Parser = require('html-react-parser')
+var Parser = require('html-react-parser').default
 var styles = require('core/styles').default
 
 export default class Notifications extends Component {

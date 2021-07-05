@@ -21,7 +21,6 @@
 		"plugin:react/recommended",
 		"plugin:jsdoc/recommended",
 		"prettier",
-		"prettier/react",
 		"plugin:jsx-a11y/recommended",
 		"plugin:security/recommended",
 		"plugin:jest/recommended"

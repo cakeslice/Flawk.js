@@ -85,15 +85,13 @@ export const fetchUser = (callback) => {
 			if (res.body.token) await global.storage.setItem('token', res.body.token)
 
 			if (global.Sentry)
-				global.Sentry.configureScope(
-					function (scope) {
-						scope.setUser({ id: res.body._id })
-					}.bind(this)
-				)
+				global.Sentry.configureScope(function (scope) {
+					scope.setUser({ id: res.body._id })
+				})
 
 			if (global.analytics) global.analytics.set({ userId: res.body._id })
 
-			if (global.socket && !global.socket.connected) global.socket.connect()
+			if (global.socket && !global.socket.sockets) global.socket.connect()
 
 			await global.storage.setItem('user', JSON.stringify(res.body))
 

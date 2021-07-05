@@ -18,11 +18,12 @@ module.exports = function (app) {
 
 	app.getAsync(config.path + '/admin/online_users', async (req, res) => {
 		var websockets = { clients: [], unknownClients: 0 }
-		Object.keys(global.clientSockets.connected).forEach((s) => {
-			if (global.clientSockets.connected[s]._client) {
-				websockets.clients.push(global.clientSockets.connected[s]._client)
+		// eslint-disable-next-line
+		for (const [s, socket] of global.clientSockets.sockets) {
+			if (socket._client) {
+				websockets.clients.push(socket._client)
 			} else websockets.unknownClients++
-		})
+		}
 		websockets.clients = _(websockets.clients)
 			.groupBy('id')
 			.values()

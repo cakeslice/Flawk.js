@@ -137,6 +137,32 @@ function updateDatabaseStructures() {
 		})
 	})
 }
+
+/**
+ * @param origin
+ * @param callback
+ */
+function corsOrigins(origin, callback) {
+	var allowed = false
+	config.allowedOrigins.forEach((o) => {
+		if (o === origin) allowed = true
+	})
+
+	if (!config.prod) allowed = true
+
+	if (
+		config.mobileAppOrigins &&
+		origin &&
+		(origin.includes('http://localhost') || origin.includes('capacitor://localhost'))
+	)
+		allowed = true
+
+	if (origin && origin.includes('uptimerobot.com')) allowed = true
+
+	if (!allowed) console.log('CORS: ' + origin && origin.toString() + ' is not allowed!')
+
+	callback(allowed ? null : 'Origin is not allowed', allowed)
+}
 /**
  * @returns {import('@awaitjs/express').ExpressWithAsync}
  */
@@ -148,27 +174,7 @@ function init() {
 	var corsOptions = {
 		credentials: true,
 		exposedHeaders: 'message',
-		origin: function (origin, callback) {
-			var allowed = false
-			config.allowedOrigins.forEach((o) => {
-				if (o === origin) allowed = true
-			})
-
-			if (!config.prod) allowed = true
-
-			if (
-				config.mobileAppOrigins &&
-				origin &&
-				(origin.includes('http://localhost') || origin.includes('capacitor://localhost'))
-			)
-				allowed = true
-
-			if (origin && origin.includes('uptimerobot.com')) allowed = true
-
-			if (!allowed) console.log('CORS: ' + origin && origin.toString() + ' is not allowed!')
-
-			callback(allowed ? null : 'Origin is not allowed', allowed)
-		},
+		origin: corsOrigins,
 	}
 	app.use(function (req, res, next) {
 		req.headers.origin = req.headers.origin || req.headers.host
@@ -302,6 +308,9 @@ function init() {
 		io = require('socket.io')(server, {
 			pingTimeout: 60000,
 			pingInterval: 25000,
+			cors: {
+				origin: corsOrigins,
+			},
 		})
 	}
 
@@ -519,19 +528,19 @@ function main() {
 	}
 	if (!config.prod && !config.staging) {
 		// eslint-disable-next-line
-		require('child_process').exec('cd ../ && git rev-parse --short HEAD', function (
-			err,
-			stdout
-		) {
-			var buildNumber = stdout.replace('\n', '')
-			if (buildNumber !== global.buildNumber) {
-				console.log('Writing new metadata.json file...')
-				fs.writeFileSync(
-					'./app/metadata.json',
-					JSON.stringify({ buildNumber: buildNumber }, null, 3)
-				)
+		require('child_process').exec(
+			'cd ../ && git rev-parse --short HEAD',
+			function (err, stdout) {
+				var buildNumber = stdout.replace('\n', '')
+				if (buildNumber !== global.buildNumber) {
+					console.log('Writing new metadata.json file...')
+					fs.writeFileSync(
+						'./app/metadata.json',
+						JSON.stringify({ buildNumber: buildNumber }, null, 3)
+					)
+				}
 			}
-		})
+		)
 	}
 
 	if (config.sentryID) {

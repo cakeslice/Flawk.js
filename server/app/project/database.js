@@ -80,7 +80,7 @@ var ClientSchema = new mongoose.Schema({
 		validate: emailValidator,
 	},
 	phone: {
-		type: Number,
+		type: String,
 		trim: true,
 		index: true,
 		//unique: true,

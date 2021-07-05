@@ -5,40 +5,40 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import React, { Component } from 'react'
-import { Formik, Form } from 'formik'
-import MediaQuery from 'react-responsive'
-import CustomTooltip from './CustomTooltip'
-import CustomInput from './CustomInput'
-import CustomDropdown from './CustomDropdown'
-import CustomSlider from './CustomSlider'
-import CustomButton from './CustomButton'
-import Dashboard from './Dashboard'
-import Avatar from 'core/components/Avatar'
-import Notifications from 'core/components/Notifications'
-import { Fade } from 'react-reveal'
-import HeadShake from 'react-reveal/HeadShake'
-import _ from 'lodash'
-import { CopyToClipboard } from 'react-copy-to-clipboard'
-import CustomTable from './CustomTable'
-import { UnmountClosed } from 'react-collapse'
-import { css } from 'glamor'
-import ReactQuill from 'react-quill'
-import '../assets/quill.snow.css'
 import { get, post } from 'core/api'
 import logo from 'core/assets/images/logo.svg'
+import Avatar from 'core/components/Avatar'
+import Notifications from 'core/components/Notifications'
 import Paginate from 'core/components/Paginate'
+import QueryString from 'core/utils/queryString'
+import ReactQueryParams from 'core/utils/ReactQueryParams'
+import { Form, Formik } from 'formik'
+import { css } from 'glamor'
+import _ from 'lodash'
+import React, { Component } from 'react'
+import { UnmountClosed } from 'react-collapse'
+import { CopyToClipboard } from 'react-copy-to-clipboard'
+import ReCaptcha from 'react-google-recaptcha'
 import ReactJson from 'react-json-view'
-import scrollToElement from 'scroll-to-element'
+import ReactQuill from 'react-quill'
+import MediaQuery from 'react-responsive'
+import { Fade } from 'react-reveal'
+import HeadShake from 'react-reveal/HeadShake'
 import { Link } from 'react-router-dom'
+import scrollToElement from 'scroll-to-element'
+import '../assets/quill.snow.css'
+import CustomButton from './CustomButton'
+import CustomDropdown from './CustomDropdown'
+import CustomInput from './CustomInput'
+import CustomSlider from './CustomSlider'
+import CustomTable from './CustomTable'
+import CustomTooltip from './CustomTooltip'
+import Dashboard from './Dashboard'
+import GenericModal from './GenericModal'
 import LanguageSwitcher from './LanguageSwitcher'
 import Loading from './Loading'
-import ReCaptcha from 'react-google-recaptcha'
-import ReactQueryParams from 'core/utils/ReactQueryParams'
-import QueryString from 'core/utils/queryString'
-import GenericModal from './GenericModal'
 var validator = require('validator')
-const Parser = require('html-react-parser')
+const Parser = require('html-react-parser').default
 
 var styles = require('core/styles').default
 var config = require('core/config_').default
@@ -932,7 +932,8 @@ class Inputs extends Component {
 										'dropdown',
 									]
 									validate.forEach((v) => {
-										if (values[v] === undefined) errors[v] = '*'
+										if (values[v] === undefined || values[v] === '')
+											errors[v] = '*'
 									})
 
 									if (!values.checkbox)
@@ -1742,7 +1743,7 @@ class Login extends Component {
 
 						var validate = ['email', 'password']
 						validate.forEach((v) => {
-							if (values[v] === undefined) errors[v] = '*'
+							if (values[v] === undefined || values[v] === '') errors[v] = '*'
 						})
 
 						if (values.email && !validator.isEmail(values.email)) {
@@ -1999,7 +2000,7 @@ class Register extends Component {
 
 							var validate = ['firstName', 'lastName', 'email', 'password']
 							validate.forEach((v) => {
-								if (values[v] === undefined) errors[v] = '*'
+								if (values[v] === undefined || values[v] === '') errors[v] = '*'
 							})
 
 							if (values.email && !validator.isEmail(values.email)) {
@@ -2564,7 +2565,7 @@ class Settings extends Component {
 
 						var validate = ['firstName', 'lastName', 'email', 'password']
 						validate.forEach((v) => {
-							if (values[v] === undefined) errors[v] = '*'
+							if (values[v] === undefined || values[v] === '') errors[v] = '*'
 						})
 
 						if (values.email && !validator.isEmail(values.email)) {
@@ -2791,7 +2792,6 @@ class Admin extends ReactQueryParams {
 	defaultQueryParams = {
 		page: 1,
 		limit: 5,
-		email: 'email',
 		/* sort: 'title',
 		order: 'asc', */
 	}
@@ -2806,6 +2806,7 @@ class Admin extends ReactQueryParams {
 				'admin/search_users?' + QueryString.stringify(q),
 				{
 					search: this.queryParams.search,
+					schema: 'Client',
 				},
 				{
 					signal: this.abortController.signal,

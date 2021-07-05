@@ -49,37 +49,33 @@ module.exports = function (app, io) {
 	}
 	global.socketNotification = (socketID, title, description, type = 'info') => {
 		var sockets = []
-		Object.keys(clientSockets.connected).forEach((s) => {
+		for (const [s, socket] of clientSockets.sockets) {
 			if (s.replace('#', '') === socketID) {
-				sockets.push(clientSockets.connected[s])
+				sockets.push(socket)
 			}
-		})
+		}
 
 		socketNotification(sockets, title, description, type)
 	}
 	global.clientSocketNotification = (clientID, title, description, type = 'info') => {
 		var sockets = []
-		Object.keys(clientSockets.connected).forEach((s) => {
-			if (
-				clientSockets.connected[s]._client &&
-				clientSockets.connected[s]._client.id === clientID
-			) {
-				sockets.push(clientSockets.connected[s])
+		// eslint-disable-next-line
+		for (const [s, socket] of clientSockets.sockets) {
+			if (socket._client && socket._client.id === clientID) {
+				sockets.push(socket)
 			}
-		})
+		}
 
 		socketNotification(sockets, title, description, type)
 	}
 	global.adminSocketNotification = (title, description, type = 'info') => {
 		var adminSockets = []
-		Object.keys(clientSockets.connected).forEach((s) => {
-			if (
-				clientSockets.connected[s]._client &&
-				clientSockets.connected[s]._client.permission <= 10
-			) {
-				adminSockets.push(clientSockets.connected[s])
+		// eslint-disable-next-line
+		for (const [s, socket] of clientSockets.sockets) {
+			if (socket._client && socket._client.permission <= 10) {
+				adminSockets.push(socket)
 			}
-		})
+		}
 		socketNotification(adminSockets, title, description, type)
 	}
 
@@ -130,23 +126,20 @@ module.exports = function (app, io) {
 										var unknownUsers = 0
 										var onlineClients = 0
 										var alreadyCounted = []
-										Object.keys(clientSockets.connected).forEach((s) => {
-											if (clientSockets.connected[s]._client) {
+										// eslint-disable-next-line
+										for (const [s, socket] of clientSockets.sockets) {
+											if (socket._client) {
 												if (
 													!_.find(
 														alreadyCounted,
-														(e) =>
-															e ===
-															clientSockets.connected[s]._client.id
+														(e) => e === socket._client.id
 													)
 												) {
-													alreadyCounted.push(
-														clientSockets.connected[s]._client.id
-													)
+													alreadyCounted.push(socket._client.id)
 													onlineClients++
 												}
 											} else unknownUsers++
-										})
+										}
 										if (config.debugSockets)
 											global.adminSocketNotification(
 												'Socket connection',
@@ -235,15 +228,15 @@ module.exports = function (app, io) {
 	 */
 	function isOnline(clientID) {
 		var online = false
-		Object.keys(clientSockets.connected).forEach((s) => {
+		// eslint-disable-next-line
+		for (const [s, socket] of clientSockets.sockets) {
 			if (
-				(clientSockets.connected[s]._client &&
-					clientSockets.connected[s]._client.id.toString()) ===
+				(socket._client && socket._client.id.toString()) ===
 				(clientID && clientID.toString())
 			) {
 				online = true
 			}
-		})
+		}
 		return online
 	}
 	global.isOnline = isOnline
@@ -260,23 +253,20 @@ module.exports = function (app, io) {
 	}
 	global.socketMessage = (socketID, channel, data) => {
 		var sockets = []
-		Object.keys(clientSockets.connected).forEach((s) => {
+		for (const [s, socket] of clientSockets.sockets) {
 			if (s.replace('#', '') === socketID) {
-				sockets.push(clientSockets.connected[s])
+				sockets.push(socket)
 			}
-		})
+		}
 
 		socketMessage(sockets, channel, data)
 	}
 	global.clientSocketMessage = (clientID, channel, data) => {
 		var sockets = []
-		Object.keys(clientSockets.connected).forEach((s) => {
-			if (
-				clientSockets.connected[s]._client &&
-				clientSockets.connected[s]._client.id === clientID
-			)
-				sockets.push(clientSockets.connected[s])
-		})
+		// eslint-disable-next-line
+		for (const [s, socket] of clientSockets.sockets) {
+			if (socket._client && socket._client.id === clientID) sockets.push(socket)
+		}
 
 		if (config.debugSockets)
 			console.log(
