@@ -5,7 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { Capacitor, Plugins } from '@capacitor/core'
+import { Capacitor } from '@capacitor/core'
+import { Storage } from '@capacitor/storage'
 import 'abortcontroller-polyfill'
 import 'core/assets/react-toastify.css'
 import { CookieStorage, isSupported, MemoryStorage } from 'local-storage-fallback'
@@ -20,20 +21,20 @@ const App = React.lazy(() => import('./project/App'))
 
 var capacitorStorage = {
 	getItem: async (key) => {
-		const { value } = await Plugins.Storage.get({ key: key })
+		const { value } = await Storage.get({ key: key })
 		return value
 	},
 	setItem: async (key, value) => {
-		return await Plugins.Storage.set({
+		return await Storage.set({
 			key: key,
 			value: value,
 		})
 	},
 	removeItem: async (key) => {
-		return await Plugins.Storage.remove({ key: key })
+		return await Storage.remove({ key: key })
 	},
 	clear: async () => {
-		return await Plugins.Storage.clear()
+		return await Storage.clear()
 	},
 }
 

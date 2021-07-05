@@ -53,10 +53,14 @@
 		"postinstall": "cd .. & git config core.hooksPath ./git-hooks"
 	},
 	"dependencies": {
-		"@capacitor/android": "^2.4.6",
-		"@capacitor/cli": "^2.4.6",
-		"@capacitor/core": "^2.4.6",
-		"@capacitor/ios": "^2.4.6",
+		"@capacitor/android": "^3.0.2",
+		"@capacitor/camera": "^1.0.2",
+		"@capacitor/cli": "^3.0.2",
+		"@capacitor/core": "^3.0.2",
+		"@capacitor/ios": "^3.0.2",
+		"@capacitor/local-notifications": "^1.0.2",
+		"@capacitor/splash-screen": "^1.0.2",
+		"@capacitor/storage": "^1.0.2",
 		"@sentry/react": "^6.8.0",
 		"@sentry/tracing": "^6.8.0",
 		"abortcontroller-polyfill": "^1.7.3",

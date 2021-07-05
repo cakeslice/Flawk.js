@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { Plugins } from '@capacitor/core'
+import { SplashScreen } from '@capacitor/splash-screen'
 import * as Sentry from '@sentry/react'
 import { Integrations } from '@sentry/tracing'
 import { get } from 'core/api'
@@ -195,7 +195,7 @@ export default class RouterBase extends Component {
 	}
 
 	componentDidMount() {
-		Plugins.SplashScreen.hide()
+		SplashScreen.hide()
 	}
 
 	render() {
