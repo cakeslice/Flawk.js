@@ -1145,7 +1145,19 @@ class Style extends Component {
 
 		return (
 			<div>
-				{header('Typography', true)}
+				{header('Dark mode', true)}
+				<CustomButton
+					onClick={async () => {
+						await global.toggleNightMode()
+					}}
+					appearance='secondary'
+					style={{
+						minWidth: 50,
+					}}
+				>
+					Toggle
+				</CustomButton>
+				{header('Typography')}
 				<div style={{ ...styles.card }}>
 					<h1>
 						{'Hello. '}
