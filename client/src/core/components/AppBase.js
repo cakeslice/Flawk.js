@@ -278,7 +278,7 @@ export default class AppBase extends Component {
 						)}
 						{inRestrictedRoute &&
 							config.websocketSupport &&
-							!global.socket.sockets &&
+							!global.socket.connected &&
 							this.state.socketConnectionDelay &&
 							!this.state.hideWarnings && (
 								<div style={{ maxHeight: 0 }}>

@@ -91,7 +91,7 @@ export const fetchUser = (callback) => {
 
 			if (global.analytics) global.analytics.set({ userId: res.body._id })
 
-			if (global.socket && !global.socket.sockets) global.socket.connect()
+			if (global.socket && !global.socket.connected) global.socket.connect()
 
 			await global.storage.setItem('user', JSON.stringify(res.body))
 
