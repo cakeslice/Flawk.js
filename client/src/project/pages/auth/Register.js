@@ -92,6 +92,7 @@ class Register extends Component {
 									values,
 									handleChange,
 									handleBlur,
+									submitCount,
 									errors,
 									touched,
 									isSubmitting,
@@ -106,6 +107,7 @@ class Register extends Component {
 										setFieldValue,
 										handleChange,
 										handleBlur,
+										submitCount,
 									}
 									return (
 										<Form
@@ -239,6 +241,7 @@ class Register extends Component {
 									values,
 									handleChange,
 									handleBlur,
+									submitCount,
 									errors,
 									touched,
 									isSubmitting,
@@ -253,6 +256,7 @@ class Register extends Component {
 										setFieldValue,
 										handleChange,
 										handleBlur,
+										submitCount,
 									}
 									return (
 										<Form

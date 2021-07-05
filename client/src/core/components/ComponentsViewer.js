@@ -979,6 +979,7 @@ class Inputs extends Component {
 									handleReset,
 									handleChange,
 									handleBlur,
+									submitCount,
 									setFieldValue,
 									setFieldTouched,
 									errors,
@@ -993,6 +994,7 @@ class Inputs extends Component {
 										setFieldValue,
 										handleChange,
 										handleBlur,
+										submitCount,
 									}
 									return (
 										<Form noValidate>
@@ -1489,6 +1491,7 @@ class Backend extends Component {
 									setFieldValue,
 									handleChange,
 									handleBlur,
+									submitCount,
 								}) => {
 									/* var formIK = {
 										values,
@@ -1498,6 +1501,7 @@ class Backend extends Component {
 										setFieldValue,
 										handleChange,
 										handleBlur,
+											submitCount,
 									} */
 									return (
 										<Form noValidate>
@@ -1794,6 +1798,7 @@ class Login extends Component {
 						values,
 						handleChange,
 						handleBlur,
+						submitCount,
 						errors,
 						touched,
 						isSubmitting,
@@ -1808,6 +1813,7 @@ class Login extends Component {
 							setFieldValue,
 							handleChange,
 							handleBlur,
+							submitCount,
 						}
 						return (
 							<Form noValidate>
@@ -1940,6 +1946,7 @@ class Register extends Component {
 							values,
 							handleChange,
 							handleBlur,
+							submitCount,
 							errors,
 							touched,
 							isSubmitting,
@@ -1954,6 +1961,7 @@ class Register extends Component {
 								setFieldValue,
 								handleChange,
 								handleBlur,
+								submitCount,
 							}
 							return (
 								<Form noValidate>
@@ -2066,6 +2074,7 @@ class Register extends Component {
 							values,
 							handleChange,
 							handleBlur,
+							submitCount,
 							errors,
 							touched,
 							isSubmitting,
@@ -2080,6 +2089,7 @@ class Register extends Component {
 								setFieldValue,
 								handleChange,
 								handleBlur,
+								submitCount,
 							}
 							return (
 								<Form noValidate>
@@ -2302,6 +2312,7 @@ class Forgot extends Component {
 							values,
 							handleChange,
 							handleBlur,
+							submitCount,
 							errors,
 							touched,
 							isSubmitting,
@@ -2316,6 +2327,7 @@ class Forgot extends Component {
 								setFieldValue,
 								handleChange,
 								handleBlur,
+								submitCount,
 							}
 							return (
 								<Form noValidate>
@@ -2430,6 +2442,7 @@ class Forgot extends Component {
 							values,
 							handleChange,
 							handleBlur,
+							submitCount,
 							errors,
 							touched,
 							isSubmitting,
@@ -2444,6 +2457,7 @@ class Forgot extends Component {
 								setFieldValue,
 								handleChange,
 								handleBlur,
+								submitCount,
 							}
 							return (
 								<Form noValidate>
@@ -2641,6 +2655,7 @@ class Settings extends Component {
 						values,
 						handleChange,
 						handleBlur,
+						submitCount,
 						errors,
 						touched,
 						isSubmitting,
@@ -2656,6 +2671,7 @@ class Settings extends Component {
 							setFieldValue,
 							handleChange,
 							handleBlur,
+							submitCount,
 						}
 						return (
 							<Form noValidate>

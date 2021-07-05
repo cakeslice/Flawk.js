@@ -98,6 +98,7 @@ class Forgot extends Component {
 									values,
 									handleChange,
 									handleBlur,
+									submitCount,
 									errors,
 									touched,
 									isSubmitting,
@@ -112,6 +113,7 @@ class Forgot extends Component {
 										setFieldValue,
 										handleChange,
 										handleBlur,
+										submitCount,
 									}
 									return (
 										<Form
@@ -245,6 +247,7 @@ class Forgot extends Component {
 									values,
 									handleChange,
 									handleBlur,
+									submitCount,
 									errors,
 									touched,
 									isSubmitting,
@@ -259,6 +262,7 @@ class Forgot extends Component {
 										setFieldValue,
 										handleChange,
 										handleBlur,
+										submitCount,
 									}
 									return (
 										<Form

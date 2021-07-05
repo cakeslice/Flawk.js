@@ -34,27 +34,21 @@ openAPIDocument.servers = [
 	},
 ]
 
-global.getStructure = (name) => {
-	var promises = []
-	global.structures.forEach((s) => {
-		if (s.schema.collection.name === name)
-			promises.push(
-				new Promise((resolve) => {
-					s.schema
-						.find({})
-						.lean()
-						.exec((err, structure) => {
-							resolve({
-								name: s.schema.collection.name,
-								data: structure,
-							})
-						})
-				})
-			)
-	})
-	return Promise.all(promises).then((results) => {
-		return results.length > 0 && results[0].data
-	})
+global.getStructure = async (name) => {
+	for (var g = 0; global.structures.length; g++) {
+		var s = global.structures[g]
+		if (s.schema.collection.name === name) {
+			var structure
+			structure = await s.schema.find({}).lean().sort(s.sortKey).exec()
+
+			if (structure && s.postProcess) {
+				structure = await s.postProcess(structure)
+			}
+			return structure
+		}
+	}
+	console.error('Failed to get structure: ' + s.schema.collection.name)
+	return undefined
 }
 
 /**
@@ -350,41 +344,37 @@ function init() {
 	})
 
 	app.getAsync(config.path + '/structures', async (req, res) => {
-		var promises = []
-		global.structures.forEach((s) => {
-			if (s.sendToFrontend)
-				promises.push(
-					new Promise((resolve) => {
+		return Promise.all(
+			global.structures.map(async (s) => {
+				if (s.sendToFrontend)
+					try {
+						var structure
 						if (s.cache)
-							s.schema
+							structure = await s.schema
 								.find({})
 								.lean()
 								.sort(s.sortKey)
 								.cache(6 * 10 * 60) // 60 minute cache
-								.exec((err, structure) => {
-									resolve({
-										name: s.schema.collection.name,
-										data: structure,
-									})
-								})
-						else
-							s.schema
-								.find({})
-								.lean()
-								.sort(s.sortKey)
-								.exec((err, structure) => {
-									resolve({
-										name: s.schema.collection.name,
-										data: structure,
-									})
-								})
-					})
-				)
-		})
-		return Promise.all(promises).then((results) => {
+								.exec()
+						else structure = await s.schema.find({}).lean().sort(s.sortKey).exec()
+
+						if (structure && s.postProcess) {
+							structure = await s.postProcess(structure)
+						}
+
+						return {
+							name: s.schema.collection.name,
+							data: structure,
+						}
+					} catch (e) {
+						console.error('Failed to get structure: ' + s.schema.collection.name)
+						return undefined
+					}
+			})
+		).then((results) => {
 			var structures = {}
 			results.forEach((r) => {
-				structures[r.name] = r.data
+				if (r) structures[r.name] = r.data
 			})
 
 			common.setResponse(200, req, res, '', {

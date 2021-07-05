@@ -47,7 +47,7 @@ export default class CustomDropdown extends Component {
 				: this.props.value
 		var invalid =
 			this.props.formIK &&
-			this.props.formIK.touched[this.props.name] &&
+			(this.props.formIK.touched[this.props.name] || this.props.formIK.submitCount > 0) &&
 			this.props.formIK.errors
 				? this.props.formIK.errors[this.props.name]
 				: this.props.invalid

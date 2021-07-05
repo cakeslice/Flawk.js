@@ -125,6 +125,7 @@ class Settings extends Component {
 									values,
 									handleChange,
 									handleBlur,
+									submitCount,
 									errors,
 									touched,
 									isSubmitting,
@@ -140,6 +141,7 @@ class Settings extends Component {
 										setFieldValue,
 										handleChange,
 										handleBlur,
+										submitCount,
 									}
 									return (
 										<Form noValidate>
