@@ -52,6 +52,13 @@ export default class RouterBase extends Component {
 						: 'development',
 					dsn: config.sentryID,
 
+					beforeSend(event, hint) {
+						// Check if it is an exception, and if so, show the report dialog
+						if (event.exception) {
+							Sentry.showReportDialog({ eventId: event.event_id })
+						}
+						return event
+					},
 					integrations: [
 						new Integrations.BrowserTracing({
 							routingInstrumentation: Sentry.reactRouterV5Instrumentation(
