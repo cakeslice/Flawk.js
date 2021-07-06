@@ -159,23 +159,23 @@ const _formatNumber = function (n, onlyPositive = false) {
 
 	if (onlyPositive && n < 0) n = 0
 
-	if (n > 999999) return numeral(n).format('0.[0]a')
-	else if (n > 9999) return numeral(n).format('0.[0]a')
-	else return numeral(n).format('0')
+	if (n > 999999) return numeral(n).format('0,0.[0]a')
+	else if (n > 9999) return numeral(n).format('0,0.[0]a')
+	else return numeral(n).format('0,0')
 }
 const _formatDecimal = function (n, onlyPositive = false) {
 	n = Number.parseFloat(n)
 
 	if (onlyPositive && n < 0) n = 0
 
-	return numeral(n).format('0.0')
+	return numeral(n).format('0,0.0')
 }
 const _formatDecimalTwo = function (n, onlyPositive = false) {
 	n = Number.parseFloat(n)
 
 	if (onlyPositive && n < 0) n = 0
 
-	return numeral(n).format('0.00')
+	return numeral(n).format('0,0.00')
 }
 
 const _resizeImage = async function (file, maxRes) {
@@ -318,6 +318,10 @@ export default {
 	publicMaxWidth: 1281.5,
 
 	capitalize: _capitalize,
+	numeral: (number, format, currency, currencySide = 'left') => {
+		var n = numeral(number).format(format)
+		return n
+	},
 	formatNumber: _formatNumber,
 	formatDecimal: _formatDecimal,
 	formatDecimalTwo: _formatDecimalTwo,
