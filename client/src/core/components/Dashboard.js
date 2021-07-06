@@ -565,7 +565,8 @@ class Menu extends React.Component {
 									if (entry.onClick) {
 										entry.onClick(this.props)
 									}
-									this.props.toggleOpen(false)
+									if (!entry.subRoutes) this.props.toggleOpen(false)
+									else this.props.toggleOpen(true)
 								}}
 								to={
 									entry.notRoute

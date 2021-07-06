@@ -118,7 +118,8 @@ export default class MobileDrawer extends Component {
 									if (link.onClick) {
 										link.onClick(this.props)
 									}
-									this.changeState(false)
+									if (!link.subRoutes) this.changeState(false)
+									else this.changeState(true)
 								}}
 								to={
 									link.notRoute
