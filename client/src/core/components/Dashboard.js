@@ -134,7 +134,7 @@ export default class Dashboard extends Component {
 													logo={this.props.logo}
 													textColor={this.props.textColor}
 													entryStyle={this.props.entryStyle}
-													toggleOpen={() => this.toggleOpen()}
+													toggleOpen={(open) => this.toggleOpen(open)}
 													isOpen={this.state.open}
 													entryMaxWidth={this.state.entryMaxWidth}
 													headerHeight={headerHeight}
@@ -565,7 +565,8 @@ class Menu extends React.Component {
 									if (entry.onClick) {
 										entry.onClick(this.props)
 									}
-									if (!entry.subRoutes) this.props.toggleOpen(false)
+									if (!entry.subRoutes || entry.subRoutes.length === 0)
+										this.props.toggleOpen(false)
 									else this.props.toggleOpen(true)
 								}}
 								to={
