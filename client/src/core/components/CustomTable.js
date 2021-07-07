@@ -349,7 +349,7 @@ export default class CustomTable extends ReactQueryParams {
 										}) => {
 											const d = this.props.data[index]
 											var k = _.get(d, this.props.keySelector)
-											return !isVisible || isScrolling ? (
+											return !isVisible ? (
 												<div
 													key={k}
 													style={{
