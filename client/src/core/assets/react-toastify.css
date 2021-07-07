@@ -104,6 +104,11 @@
 	}
 }
 
+.Toastify--animate {
+	animation-fill-mode: both;
+	animation-duration: 0.7s;
+}
+
 .Toastify__toast {
 	position: relative;
 	min-height: 64px;
