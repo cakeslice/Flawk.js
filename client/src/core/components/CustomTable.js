@@ -183,6 +183,7 @@ export default class CustomTable extends ReactQueryParams {
 								style={{
 									width: 'fit-content',
 									minWidth: '100%',
+									minHeight: 250,
 									height: this.props.height || '100%',
 									display: 'flex',
 									flexDirection: 'column',
