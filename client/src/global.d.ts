@@ -65,7 +65,7 @@ declare namespace NodeJS {
 		}) => void;
 		hideWarnings: () => void;
 		changeBackground: (color: string) => void;
-		toggleNightMode: (night: boolean) => Promise<void>;
+		toggleNightMode: (night?: boolean) => Promise<void>;
 		//
 		addFlag: (
 			title?: string, description?: string, type?: string, options?: { closeAfter?: number; playSound?: boolean, closeButton?: boolean, customComponent?: any }
