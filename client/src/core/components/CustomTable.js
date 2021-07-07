@@ -5,13 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import ReactQueryParams from 'core/utils/ReactQueryParams'
+import { css } from 'glamor'
 import _ from 'lodash'
 import React, { Component } from 'react'
 import { UnmountClosed } from 'react-collapse'
 import MediaQuery from 'react-responsive'
-import { css } from 'glamor'
 import { MetroSpinner } from 'react-spinners-kit'
-import ReactQueryParams from 'core/utils/ReactQueryParams'
+import { List } from 'react-virtualized'
 
 var config = require('core/config_').default
 var styles = require('core/styles').default
@@ -97,6 +98,56 @@ export default class CustomTable extends ReactQueryParams {
 				  }
 				: undefined
 
+		var renderRow = (d, k, desktop, style) => {
+			return (
+				<Row
+					key={k}
+					style={{
+						...rowWrapperStyle,
+						...(overrideStyle && overrideStyle.rowWrapperStyle),
+						...style,
+					}}
+					rowStyle={{
+						...rowStyle,
+						...(overrideStyle && overrideStyle.rowStyle),
+					}}
+					expandContent={this.props.expandContent && this.props.expandContent(d)}
+					cellPadding={cellPadding}
+					cellPaddingY={cellPaddingY}
+				>
+					{this.props.columns &&
+						this.props.columns
+							.filter((c) => (desktop ? c : c.hide === 'mobile' ? false : true))
+							.map((c, i) => (
+								<div
+									key={k + '_' + i}
+									style={{
+										minWidth: this.props.cellWidth || 50,
+										width: 100 * (c.grow !== undefined ? c.grow : 1) + '%',
+										padding: cellPadding,
+										paddingTop: cellPaddingY,
+										paddingBottom: cellPaddingY,
+										...(c.style && c.style),
+									}}
+								>
+									<div
+										style={{
+											textOverflow: !c.cell && 'ellipsis',
+											overflow: !c.cell && 'hidden',
+											display: 'inline-grid',
+											...(overrideStyle && overrideStyle.cellStyle),
+										}}
+									>
+										{c.cell
+											? c.cell(_.get(d, c.selector), d)
+											: _.get(d, c.selector)}
+									</div>
+								</div>
+							))}
+				</Row>
+			)
+		}
+
 		return (
 			<div
 				style={{
@@ -166,7 +217,7 @@ export default class CustomTable extends ReactQueryParams {
 															? false
 															: true
 													)
-													.map((c) => {
+													.map((c, i) => {
 														var s = {
 															...headerCellStyle,
 															width:
@@ -212,7 +263,7 @@ export default class CustomTable extends ReactQueryParams {
 																		})
 																		c.onClick && c.onClick()
 																	}}
-																	key={c.selector}
+																	key={i}
 																	style={s}
 																>
 																	{c.name}
@@ -245,7 +296,7 @@ export default class CustomTable extends ReactQueryParams {
 															)
 														else
 															return (
-																<div key={c.selector} style={s}>
+																<div key={i} style={s}>
 																	{c.name}
 																</div>
 															)
@@ -282,86 +333,66 @@ export default class CustomTable extends ReactQueryParams {
 										</div>
 									</div>
 								)}
-								<div
-									style={{
-										opacity: this.props.isLoading && 0.5,
-										overflow: 'auto',
-										flexGrow: 1,
-									}}
-								>
-									{this.props.data &&
-										this.props.data.map((d) => (
-											<Row
-												key={_.get(d, this.props.keySelector)}
-												style={{
-													...rowWrapperStyle,
-													...(overrideStyle &&
-														overrideStyle.rowWrapperStyle),
-												}}
-												rowStyle={{
-													...rowStyle,
-													...(overrideStyle && overrideStyle.rowStyle),
-												}}
-												expandContent={
-													this.props.expandContent &&
-													this.props.expandContent(d)
-												}
-												cellPadding={cellPadding}
-												cellPaddingY={cellPaddingY}
-											>
-												{this.props.columns &&
-													this.props.columns
-														.filter((c) =>
-															desktop
-																? c
-																: c.hide === 'mobile'
-																? false
-																: true
-														)
-														.map((c) => (
-															<div
-																key={c.selector}
-																style={{
-																	minWidth:
-																		this.props.cellWidth || 50,
-																	width:
-																		100 *
-																			(c.grow !== undefined
-																				? c.grow
-																				: 1) +
-																		'%',
-																	padding: cellPadding,
-																	paddingTop: cellPaddingY,
-																	paddingBottom: cellPaddingY,
-																	...(c.style && c.style),
-																}}
-															>
-																<div
-																	style={{
-																		textOverflow:
-																			!c.cell && 'ellipsis',
-																		overflow:
-																			!c.cell && 'hidden',
-																		display: 'inline-grid',
-																		...(overrideStyle &&
-																			overrideStyle.cellStyle),
-																	}}
-																>
-																	{c.cell
-																		? c.cell(
-																				_.get(
-																					d,
-																					c.selector
-																				),
-																				d
-																		  )
-																		: _.get(d, c.selector)}
-																</div>
-															</div>
-														))}
-											</Row>
-										))}
-								</div>
+								{this.props.virtualized && this.props.data && (
+									<List
+										width={this.props.virtualized.width - 2}
+										rowHeight={this.props.virtualized.rowHeight}
+										height={this.props.virtualized.height || this.props.height}
+										rowCount={this.props.data.length}
+										rowRenderer={({
+											index, // Index of row
+											isScrolling, // The List is currently being scrolled
+											isVisible, // This row is visible within the List (eg it is not an overscanned row)
+											key, // Unique key within array of rendered rows
+											parent, // Reference to the parent List (instance)
+											style, // ! This must be passed through to the rendered row element (to position it)
+										}) => {
+											const d = this.props.data[index]
+											var k = _.get(d, this.props.keySelector)
+											return !isVisible || isScrolling ? (
+												<div
+													key={k}
+													style={{
+														...rowWrapperStyle,
+														...(overrideStyle &&
+															overrideStyle.rowWrapperStyle),
+														...style,
+													}}
+												>
+													<div
+														style={{
+															minWidth: this.props.cellWidth || 50,
+															width: '100%',
+															padding: cellPadding,
+															paddingTop: cellPaddingY,
+															paddingBottom: cellPaddingY,
+														}}
+													>
+														{this.props.virtualized.loading || ''}
+													</div>
+												</div>
+											) : (
+												renderRow(d, k, desktop, style)
+											)
+										}}
+									></List>
+								)}
+
+								{!this.props.virtualized && (
+									<div
+										style={{
+											opacity: this.props.isLoading && 0.5,
+											overflow: 'auto',
+											flexGrow: 1,
+										}}
+									>
+										{this.props.data &&
+											this.props.data.map((d) => {
+												var k = _.get(d, this.props.keySelector)
+												return renderRow(d, k, desktop)
+											})}
+									</div>
+								)}
 							</div>
 						)}
 					</MediaQuery>

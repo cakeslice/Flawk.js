@@ -45,7 +45,7 @@ const desktopHeightTop = 65
  */
 export default class Dashboard extends Component {
 	static propTypes = {
-		wrapperComponent: PropTypes.element,
+		wrapperComponent: PropTypes.any,
 	}
 	state = {
 		open: false,
@@ -518,7 +518,7 @@ class Menu extends React.Component {
 
 					var output = (
 						<div
-							key={entry.notRoute ? i : entry.id + entry.params}
+							key={entry.notRoute ? i : entry.id + (entry.params || '')}
 							style={{
 								marginTop:
 									(this.props.entryStyle && this.props.entryStyle.marginTop) ||
@@ -638,7 +638,7 @@ class Menu extends React.Component {
 					if (entry.subRoutes)
 						return (
 							<Collapsible
-								key={entry.notRoute ? i : entry.id + entry.params}
+								key={entry.notRoute ? i : entry.id + (entry.params || '')}
 								controlled
 								controlledOpen={selectedRoute.includes('/' + entry.id)}
 								content={

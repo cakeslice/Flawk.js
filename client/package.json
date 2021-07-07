@@ -109,6 +109,7 @@
 		"react-to-print": "^2.12.6",
 		"react-toastify": "^7.0.4",
 		"react-transition-group": "^4.4.2",
+		"react-virtualized": "^9.22.3",
 		"redux": "^4.1.0",
 		"redux-logger": "^3.0.6",
 		"redux-thunk": "^2.3.0",

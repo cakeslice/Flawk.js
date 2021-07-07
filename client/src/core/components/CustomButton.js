@@ -31,7 +31,7 @@ export default class CustomButton extends Component {
 		invalid: PropTypes.string,
 		noInvalidLabel: PropTypes.bool,
 		// Checkbox props //
-		checkbox: PropTypes.oneOf([PropTypes.string, PropTypes.bool]),
+		checkbox: PropTypes.any,
 		checked: PropTypes.bool,
 		defaultChecked: PropTypes.bool,
 		value: PropTypes.bool,
@@ -49,15 +49,33 @@ export default class CustomButton extends Component {
 	}
 
 	render() {
-		var checked =
-			this.props.formIK && this.props.formIK.values
-				? this.props.formIK.values[this.props.name]
-				: this.props.checked
+		// !DEPRECATED, to be removed later (formIK prop)
+		var formIK = this.props.formIK
+		if (this.props.field) {
+			var field = this.props.field
+			var form = this.props.form
+			formIK = {
+				name: field.name,
+				value: form.values[field.name],
+				error: form.errors[field.name],
+				touch: form.touched[field.name],
+				setFieldValue: form.setFieldValue,
+				setFieldTouched: form.setFieldTouched,
+				handleBlur: form.handleBlur,
+				submitCount: form.submitCount,
+				changed: form.values[field.name] !== form.initialValues[field.name], // TODO: Could be useful!
+			}
+		}
+
+		// !DEPRECATED, to be removed later (formIK.values, formIK.touched, formIK.errors)
+		var name = (formIK && formIK.name) || this.props.name
+		var checked = formIK
+			? (formIK.values && formIK.values[name]) || formIK.value
+			: this.props.checked
 		var invalid =
-			this.props.formIK &&
-			(this.props.formIK.touched[this.props.name] || this.props.formIK.submitCount > 0) &&
-			this.props.formIK.errors
-				? this.props.formIK.errors[this.props.name]
+			formIK &&
+			((formIK.touched && formIK.touched[name]) || formIK.touch || formIK.submitCount > 0)
+				? (formIK.errors && formIK.errors[name]) || formIK.error
 				: this.props.invalid
 
 		var mainStyle = {
@@ -246,37 +264,31 @@ export default class CustomButton extends Component {
 										if (checked !== undefined) {
 											this.props.onChange && this.props.onChange(!checked)
 
-											this.props.formIK &&
-												this.props.formIK.setFieldValue &&
-												this.props.formIK.setFieldValue(
-													this.props.name,
-													!checked
-												)
+											formIK &&
+												formIK.setFieldValue &&
+												formIK.setFieldValue(name, !checked)
 										} else
 											this.setState({ checked: !this.state.checked }, () => {
 												this.props.onChange &&
 													this.props.onChange(this.state.checked)
 
-												this.props.formIK &&
-													this.props.formIK.setFieldValue &&
-													this.props.formIK.setFieldValue(
-														this.props.name,
-														this.state.checked
-													)
+												formIK &&
+													formIK.setFieldValue &&
+													formIK.setFieldValue(name, this.state.checked)
 											})
 									} else if (this.props.onClick) this.props.onClick(e)
 								}}
 								onBlur={(e) => {
 									this.props.onBlur && this.props.onBlur()
 
-									this.props.formIK &&
-										this.props.formIK.setFieldTouched &&
+									formIK &&
+										formIK.setFieldTouched &&
 										setTimeout(() => {
-											this.props.formIK.setFieldTouched(this.props.name, true)
+											formIK.setFieldTouched(name, true)
 										})
 								}}
 								value={this.props.value}
-								name={this.props.name}
+								name={name}
 								type={this.props.type ? this.props.type : 'button'}
 								disabled={this.props.isDisabled || this.props.isLoading}
 							>
@@ -319,7 +331,7 @@ export default class CustomButton extends Component {
 								</div>
 							)}
 						</div>
-						{this.props.name && !this.props.noInvalidLabel && (
+						{name && !this.props.noInvalidLabel && (
 							<div style={{ minHeight: 26 }}>
 								{!this.props.isDisabled && invalid && (
 									<div style={{ minHeight: 5 }}></div>

@@ -41,15 +41,33 @@ export default class CustomDropdown extends Component {
 	}
 
 	render() {
-		var value =
-			this.props.formIK && this.props.formIK.values
-				? this.props.formIK.values[this.props.name]
-				: this.props.value
+		// !DEPRECATED, to be removed later (formIK prop)
+		var formIK = this.props.formIK
+		if (this.props.field) {
+			var field = this.props.field
+			var form = this.props.form
+			formIK = {
+				name: field.name,
+				value: form.values[field.name],
+				error: form.errors[field.name],
+				touch: form.touched[field.name],
+				setFieldValue: form.setFieldValue,
+				setFieldTouched: form.setFieldTouched,
+				handleBlur: form.handleBlur,
+				submitCount: form.submitCount,
+				changed: form.values[field.name] !== form.initialValues[field.name], // TODO: Could be useful!
+			}
+		}
+
+		// !DEPRECATED, to be removed later (formIK.values, formIK.touched, formIK.errors)
+		var name = (formIK && formIK.name) || this.props.name
+		var value = formIK
+			? (formIK.values && formIK.values[name]) || formIK.value
+			: this.props.value
 		var invalid =
-			this.props.formIK &&
-			(this.props.formIK.touched[this.props.name] || this.props.formIK.submitCount > 0) &&
-			this.props.formIK.errors
-				? this.props.formIK.errors[this.props.name]
+			formIK &&
+			((formIK.touched && formIK.touched[name]) || formIK.touch || formIK.submitCount > 0)
+				? (formIK.errors && formIK.errors[name]) || formIK.error
 				: this.props.invalid
 
 		//
@@ -209,7 +227,7 @@ export default class CustomDropdown extends Component {
 					>
 						{this.props.label}
 						{invalidType === 'label' &&
-							this.props.name &&
+							name &&
 							!this.props.isDisabled &&
 							invalid &&
 							invalid.length > 0 && (
@@ -236,20 +254,17 @@ export default class CustomDropdown extends Component {
 						onChange={(o) => {
 							this.props.onChange && this.props.onChange(o ? o.value : undefined)
 
-							this.props.formIK &&
-								this.props.formIK.setFieldValue &&
-								this.props.formIK.setFieldValue(
-									this.props.name,
-									o ? o.value : undefined
-								)
+							formIK &&
+								formIK.setFieldValue &&
+								formIK.setFieldValue(name, o ? o.value : undefined)
 						}}
 						onBlur={(o) => {
 							this.props.onBlur && this.props.onBlur(o ? o.value : undefined)
 
-							this.props.formIK &&
-								this.props.formIK.setFieldTouched &&
+							formIK &&
+								formIK.setFieldTouched &&
 								setTimeout(() => {
-									this.props.formIK.setFieldTouched(this.props.name, true)
+									formIK.setFieldTouched(name, true)
 								})
 						}}
 						placeholder={this.props.placeholder}
@@ -540,7 +555,7 @@ export default class CustomDropdown extends Component {
 						}}
 						options={this.state.loadedOptions || this.props.options}
 					></Select>
-					{invalidType === 'right' && this.props.name && (
+					{invalidType === 'right' && name && (
 						<div style={{ minWidth: 16, display: 'flex' }}>
 							{!this.props.isDisabled && invalid && invalid.length > 0 && (
 								<div style={{ minWidth: 5 }}></div>
@@ -558,7 +573,7 @@ export default class CustomDropdown extends Component {
 						</div>
 					)}
 				</div>
-				{!actualInvalidType && this.props.name && (
+				{!actualInvalidType && name && (
 					<div style={{ minHeight: 26 }}>
 						{!invalidType &&
 							!this.props.isDisabled &&

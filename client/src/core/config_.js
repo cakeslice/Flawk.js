@@ -326,6 +326,8 @@ export default {
 	formatDecimal: _formatDecimal,
 	formatDecimalTwo: _formatDecimalTwo,
 
+	hasInput: (v) => (!v && v !== 0 ? '*' : undefined),
+
 	text: _text,
 	localize: (obj, lang) => {
 		var s

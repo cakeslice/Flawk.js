@@ -78,7 +78,6 @@ export default class CustomInput extends Component {
 		clearTimeout(this.timer)
 
 		this.bufferedValue = e.target.value
-
 		this.timer = setTimeout(this.triggerChange, this.props.bufferInterval || 250)
 	}
 	handleKeyDown = (e) => {
@@ -89,21 +88,36 @@ export default class CustomInput extends Component {
 	}
 	triggerChange = () => {
 		this.props.onChange && this.props.onChange(this.bufferedValue || undefined)
-		/* this.props.formIK &&
-			this.props.formIK.setFieldValue &&
-			this.props.formIK.setFieldValue(this.props.name, this.bufferedValue || undefined) */
 	}
 
 	render() {
-		var value =
-			this.props.formIK && this.props.formIK.values
-				? this.props.formIK.values[this.props.name]
-				: this.props.value
+		// !DEPRECATED, to be removed later (formIK prop)
+		var formIK = this.props.formIK
+		if (this.props.field) {
+			var field = this.props.field
+			var form = this.props.form
+			formIK = {
+				name: field.name,
+				value: form.values[field.name],
+				error: form.errors[field.name],
+				touch: form.touched[field.name],
+				setFieldValue: form.setFieldValue,
+				setFieldTouched: form.setFieldTouched,
+				handleBlur: form.handleBlur,
+				submitCount: form.submitCount,
+				changed: form.values[field.name] !== form.initialValues[field.name], // TODO: Could be useful!
+			}
+		}
+
+		// !DEPRECATED, to be removed later (formIK.values, formIK.touched, formIK.errors)
+		var name = (formIK && formIK.name) || this.props.name
+		var value = formIK
+			? (formIK.values && formIK.values[name]) || formIK.value
+			: this.props.value
 		var invalid =
-			this.props.formIK &&
-			(this.props.formIK.touched[this.props.name] || this.props.formIK.submitCount > 0) &&
-			this.props.formIK.errors
-				? this.props.formIK.errors[this.props.name]
+			formIK &&
+			((formIK.touched && formIK.touched[name]) || formIK.touch || formIK.submitCount > 0)
+				? (formIK.errors && formIK.errors[name]) || formIK.error
 				: this.props.invalid
 
 		//
@@ -247,7 +261,7 @@ export default class CustomInput extends Component {
 					>
 						{this.props.label}
 						{invalidType === 'label' &&
-							this.props.name &&
+							name &&
 							!this.props.isDisabled &&
 							invalid &&
 							invalid.length > 0 && (
@@ -266,17 +280,15 @@ export default class CustomInput extends Component {
 				{this.props.label && <div style={{ minHeight: 5 }}></div>}
 				<div style={{ display: 'flex' }}>
 					<InputComponent
-						isControlled={this.props.formIK ? true : false}
+						isControlled={formIK ? true : false}
 						defaultValue={this.props.defaultValue}
 						autoFocus={this.props.autoFocus}
 						required={this.props.required}
 						value={value}
-						name={this.props.name}
+						name={name}
 						autoComplete={this.props.autoComplete}
 						type={this.props.type ? this.props.type : 'text'}
 						disabled={this.props.isDisabled}
-						mask={this.props.mask}
-						formatChars={this.props.formatChars}
 						placeholder={this.props.placeholder ? this.props.placeholder : ''}
 						onFocus={(e) => {
 							e.target.placeholder = ''
@@ -292,7 +304,7 @@ export default class CustomInput extends Component {
 							}
 						}}
 						onChange={(e, editor, next) => {
-							if (this.props.bufferedInput) {
+							if (this.props.bufferedInput && !formIK) {
 								this.handleChangeBuffered(e)
 							} else {
 								this.props.onChange &&
@@ -300,16 +312,13 @@ export default class CustomInput extends Component {
 							}
 
 							if (this.props.datePicker)
-								this.props.formIK &&
-									this.props.formIK.setFieldValue &&
-									this.props.formIK.setFieldValue(this.props.name, e || undefined)
+								formIK &&
+									formIK.setFieldValue &&
+									formIK.setFieldValue(name, e || undefined)
 							else
-								this.props.formIK &&
-									this.props.formIK.setFieldValue &&
-									this.props.formIK.setFieldValue(
-										this.props.name,
-										e.target.value || undefined
-									)
+								formIK &&
+									formIK.setFieldValue &&
+									formIK.setFieldValue(name, e.target.value || undefined)
 						}}
 						onBlur={(e, editor, next) => {
 							e.target.placeholder = this.props.placeholder
@@ -317,13 +326,15 @@ export default class CustomInput extends Component {
 								: ''
 							this.props.onBlur && this.props.onBlur(e)
 
-							this.props.formIK &&
-								this.props.formIK.handleBlur &&
-								this.props.formIK.handleBlur(e)
+							formIK && formIK.handleBlur && formIK.handleBlur(e)
 						}}
-						finalStyle={this.props.datePicker && finalStyle}
+						{...(this.props.datePicker && { finalStyle: finalStyle })}
 						style={!this.props.datePicker && isMasked ? finalStyle : {}}
 						{...(!this.props.datePicker && !isMasked && css(finalStyle))}
+						{...(this.props.mask && {
+							mask: this.props.mask,
+							formatChars: this.props.formatChars,
+						})}
 					></InputComponent>
 					{this.props.icon && (
 						<div style={{ maxWidth: 0, maxHeight: 0 }}>
@@ -362,7 +373,7 @@ export default class CustomInput extends Component {
 							</div>
 						</div>
 					)}
-					{invalidType === 'right' && this.props.name && (
+					{invalidType === 'right' && name && (
 						<div style={{ minWidth: 16, display: 'flex' }}>
 							{!this.props.isDisabled && invalid && invalid.length > 0 && (
 								<div style={{ minWidth: 5 }}></div>
@@ -380,7 +391,7 @@ export default class CustomInput extends Component {
 						</div>
 					)}
 				</div>
-				{!actualInvalidType && this.props.name && (
+				{!actualInvalidType && name && (
 					<div style={{ minHeight: 26 }}>
 						{!invalidType &&
 							!this.props.isDisabled &&

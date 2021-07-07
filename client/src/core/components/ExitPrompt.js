@@ -16,7 +16,7 @@ export default class ExitPrompt extends Component {
 		return (
 			<Beforeunload
 				onBeforeunload={
-					this.props.dirty ? () => config.text('common.areYouSure') : undefined
+					this.props.dirty ? () => config.text('common.areYouSure') : () => {}
 				}
 			>
 				{!this.props.noRouter && (
