@@ -160,6 +160,7 @@ export default class CustomTable extends ReactQueryParams {
 														display: 'inline-grid',
 														...(overrideStyle &&
 															overrideStyle.cellStyle),
+														...(c.rowStyle && c.rowStyle),
 													}}
 												>
 													{(isVisible || c.alwaysVisible) &&
