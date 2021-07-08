@@ -28,6 +28,25 @@ export default class CustomTable extends ReactQueryParams {
 		}
 	}
 
+	updateID = undefined
+	shouldComponentUpdate(nextProps) {
+		var p = JSON.stringify({
+			data: this.props.data,
+			isLoading: this.props.isLoading,
+		})
+		var nP = JSON.stringify({
+			data: nextProps.data,
+			isLoading: nextProps.isLoading,
+		})
+		if (
+			nP !== p ||
+			(this.props.alwaysUpdateColumns && this.props.columns !== nextProps.columns)
+		)
+			this.updateID = uuid.v1()
+
+		return true
+	}
+
 	componentDidMount() {
 		this.setState({ containment: document.getElementById('custom-table-' + this.state.uuid) })
 	}
@@ -111,75 +130,6 @@ export default class CustomTable extends ReactQueryParams {
 						...this.props.style,
 				  }
 				: undefined
-
-		var renderRow = (d, k, desktop, style) => {
-			var rS = {
-				...rowStyle,
-				...(overrideStyle && overrideStyle.rowStyle),
-			}
-			return this.state.containment ? (
-				<VisibilitySensor partialVisibility key={k} containment={this.state.containment}>
-					{({ isVisible }) => {
-						return (
-							<Row
-								style={{
-									...rowWrapperStyle,
-									...(overrideStyle && overrideStyle.rowWrapperStyle),
-									...style,
-								}}
-								rowStyle={rS}
-								expandContent={
-									this.props.expandContent && this.props.expandContent(d)
-								}
-								cellPadding={cellPadding}
-								cellPaddingY={cellPaddingY}
-							>
-								{this.props.columns &&
-									this.props.columns
-										.filter((c) =>
-											desktop ? c : c.hide === 'mobile' ? false : true
-										)
-										.map((c, i) => (
-											<div
-												key={k + '_' + i}
-												style={{
-													minWidth: this.props.cellWidth || 50,
-													width:
-														100 * (c.grow !== undefined ? c.grow : 1) +
-														'%',
-													padding: cellPadding,
-													paddingTop: cellPaddingY,
-													paddingBottom: cellPaddingY,
-													...(c.style && c.style),
-												}}
-											>
-												<div
-													style={{
-														textOverflow: !c.cell && 'ellipsis',
-														overflow: !c.cell && 'hidden',
-														display: 'inline-grid',
-														...(overrideStyle &&
-															overrideStyle.cellStyle),
-														...(c.rowStyle && c.rowStyle),
-													}}
-												>
-													{(isVisible || c.alwaysVisible) &&
-														(c.cell
-															? c.cell(
-																	_.get(d, c.selector),
-																	d,
-																	isVisible
-															  )
-															: _.get(d, c.selector))}
-												</div>
-											</div>
-										))}
-							</Row>
-						)
-					}}
-				</VisibilitySensor>
-			) : null
-		}
 
 		return (
 			<div
@@ -379,7 +329,110 @@ export default class CustomTable extends ReactQueryParams {
 									{this.props.data &&
 										this.props.data.map((d) => {
 											var k = _.get(d, this.props.keySelector)
-											return renderRow(d, k, desktop)
+											var rS = {
+												...rowStyle,
+												...(overrideStyle && overrideStyle.rowStyle),
+											}
+											return this.state.containment ? (
+												<VisibilitySensor
+													partialVisibility
+													key={k}
+													containment={this.state.containment}
+												>
+													{({ isVisible }) => {
+														return (
+															<Row
+																triggerUpdate={JSON.stringify({
+																	updateID: this.updateID,
+																	isVisible: isVisible,
+																})}
+																style={{
+																	...rowWrapperStyle,
+																	...(overrideStyle &&
+																		overrideStyle.rowWrapperStyle),
+																}}
+																rowStyle={rS}
+																expandContent={
+																	this.props.expandContent &&
+																	this.props.expandContent(d)
+																}
+																cellPadding={cellPadding}
+																cellPaddingY={cellPaddingY}
+															>
+																{this.props.columns &&
+																	this.props.columns
+																		.filter((c) =>
+																			desktop
+																				? c
+																				: c.hide ===
+																				  'mobile'
+																				? false
+																				: true
+																		)
+																		.map((c, i) => (
+																			<div
+																				key={k + '_' + i}
+																				style={{
+																					minWidth:
+																						this.props
+																							.cellWidth ||
+																						50,
+																					width:
+																						100 *
+																							(c.grow !==
+																							undefined
+																								? c.grow
+																								: 1) +
+																						'%',
+																					padding:
+																						cellPadding,
+																					paddingTop:
+																						cellPaddingY,
+																					paddingBottom:
+																						cellPaddingY,
+																					...(c.style &&
+																						c.style),
+																				}}
+																			>
+																				<div
+																					style={{
+																						textOverflow:
+																							!c.cell &&
+																							'ellipsis',
+																						overflow:
+																							!c.cell &&
+																							'hidden',
+																						display:
+																							'inline-grid',
+																						...(overrideStyle &&
+																							overrideStyle.cellStyle),
+																						...(c.rowStyle &&
+																							c.rowStyle),
+																					}}
+																				>
+																					{(isVisible ||
+																						c.alwaysVisible) &&
+																						(c.cell
+																							? c.cell(
+																									_.get(
+																										d,
+																										c.selector
+																									),
+																									d,
+																									isVisible
+																							  )
+																							: _.get(
+																									d,
+																									c.selector
+																							  ))}
+																				</div>
+																			</div>
+																		))}
+															</Row>
+														)
+													}}
+												</VisibilitySensor>
+											) : null
 										})}
 								</div>
 							</div>
@@ -412,12 +465,19 @@ class Row extends Component {
 		isOpen: false,
 	}
 
+	shouldComponentUpdate(nextProps, nextState) {
+		return (
+			this.props.triggerUpdate !== nextProps.triggerUpdate ||
+			this.state.isOpen !== nextState.isOpen
+		)
+	}
+
 	render() {
 		return (
 			<div style={this.props.style}>
 				<div {...css(this.props.rowStyle)}>
 					{this.props.expandContent && (
-						<div
+						<button
 							onClick={() => {
 								this.setState({ isOpen: !this.state.isOpen })
 							}}
@@ -445,7 +505,7 @@ class Row extends Component {
 									)
 								)}
 							</div>
-						</div>
+						</button>
 					)}
 					{this.props.children}
 				</div>

@@ -284,80 +284,84 @@ class Layout extends ReactQueryParams {
 						},
 					},
 				]}
-				content={(close) => (
-					<div
-						style={{
-							display: 'flex',
-							flexDirection: 'column',
-							justifyContent: 'flex-start',
-						}}
-					>
-						{/*@ts-ignore*/}
-						<CustomTable
-							isLoading={this.state.fetching}
-							height={'500px'}
-							expandContent={(data) => <div>Expanded: {data.name}</div>}
-							keySelector={'id'}
-							columns={[
-								{
-									name: 'Name',
-									selector: 'userId',
-
-									style: {
-										color: styles.colors.main,
-									},
-								},
-								{
-									name: 'Type',
-									selector: 'title',
-								},
-								{
-									name: 'Calories (g)',
-									selector: 'calories',
-								},
-								{
-									name: 'Fat (g)',
-									grow: 2,
-									selector: 'fat',
-									hide: 'mobile',
-								},
-								{
-									name: 'Carbs (g)',
-									selector: 'carbs',
-									hide: 'mobile',
-								},
-								{
-									name: 'Protein (g)',
-									selector: 'protein',
-									hide: 'mobile',
-								},
-								{
-									name: 'Sodium (mg)',
-									selector: 'sodium',
-									hide: 'mobile',
-								},
-								{
-									name: 'Calcium (%)',
-									selector: 'calcium',
-									hide: 'mobile',
-								},
-								{
-									name: <div style={styles.textEllipsis}>Custom Head</div>,
-									selector: 'action',
-									cell: (value) => <div>Custom Cell: {value}</div>,
-									hide: 'mobile',
-								},
-							]}
-							data={this.state.data && this.state.data.items}
-						></CustomTable>
-						<sp />
-						<CustomButton
-							onClick={() => {
-								this.fetchData()
+				content={(close, parentStyle, modalWrapper, buttons) => (
+					<div style={parentStyle}>
+						<div
+							style={{
+								...modalWrapper,
+								display: 'flex',
+								flexDirection: 'column',
+								justifyContent: 'flex-start',
 							}}
 						>
-							Fetch
-						</CustomButton>
+							{/*@ts-ignore*/}
+							<CustomTable
+								isLoading={this.state.fetching}
+								height={'500px'}
+								expandContent={(data) => <div>Expanded: {data.name}</div>}
+								keySelector={'id'}
+								columns={[
+									{
+										name: 'Name',
+										selector: 'userId',
+
+										style: {
+											color: styles.colors.main,
+										},
+									},
+									{
+										name: 'Type',
+										selector: 'title',
+									},
+									{
+										name: 'Calories (g)',
+										selector: 'calories',
+									},
+									{
+										name: 'Fat (g)',
+										grow: 2,
+										selector: 'fat',
+										hide: 'mobile',
+									},
+									{
+										name: 'Carbs (g)',
+										selector: 'carbs',
+										hide: 'mobile',
+									},
+									{
+										name: 'Protein (g)',
+										selector: 'protein',
+										hide: 'mobile',
+									},
+									{
+										name: 'Sodium (mg)',
+										selector: 'sodium',
+										hide: 'mobile',
+									},
+									{
+										name: 'Calcium (%)',
+										selector: 'calcium',
+										hide: 'mobile',
+									},
+									{
+										name: <div style={styles.textEllipsis}>Custom Head</div>,
+										selector: 'action',
+										cell: (value) => <div>Custom Cell: {value}</div>,
+										hide: 'mobile',
+									},
+								]}
+								data={this.state.data && this.state.data.items}
+							></CustomTable>
+							<sp />
+							<CustomButton
+								onClick={() => {
+									this.fetchData()
+								}}
+							>
+								Fetch
+							</CustomButton>
+						</div>
+						{buttons()}
 					</div>
 				)}
 			/>

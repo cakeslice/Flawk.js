@@ -97,6 +97,23 @@ export const styles = {
 
 	modalHeader: true,
 	modalButtonWrap: true,
+	modalHeaderStyle: {
+		line: true,
+		noCloseButton: false,
+		fontWeight: 'bold',
+		fontSize: 19,
+		/* textStyle: {
+			marginTop: 10,
+		}, */
+	},
+	modalButtonsStyle: {
+		line: true,
+		//flexWrap: 'none',
+		//paddingBottom: 35 - 5,
+		/* buttonStyle: {
+			width: '100%',
+		}, */
+	},
 
 	//
 

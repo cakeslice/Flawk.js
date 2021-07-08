@@ -28,7 +28,92 @@ export default class GenericModal extends Component {
 		this.props.parent.setState(s)
 	}
 
+	renderButtons() {
+		var modalPadding = styles.modalPadding || 20
+
+		return (
+			this.props.buttons &&
+			this.props.buttons.length > 0 && (
+				<div>
+					{styles.modalButtonsStyle && styles.modalButtonsStyle.line && (
+						<div>
+							<div
+								style={{
+									height: 1,
+									background: this.props.lineColor || styles.colors.black,
+									opacity: this.props.lineColor ? 1 : 0.1,
+									width: '100%',
+								}}
+							></div>
+						</div>
+					)}
+					<div
+						className={styles.modalButtonWrap && 'wrapMargin'}
+						style={{
+							padding: modalPadding - 5,
+							paddingBottom: modalPadding / 2 - 5,
+							paddingTop: modalPadding / 2 - 5,
+							display: 'flex',
+							flexWrap: 'wrap',
+							justifyContent: 'flex-end',
+							...(styles.modalButtonsStyle && styles.modalButtonsStyle),
+						}}
+					>
+						{this.props.buttons.map((b, i) =>
+							b.override ? (
+								<div
+									style={{
+										...(styles.modalButtonsStyle &&
+											styles.modalButtonsStyle.buttonStyle),
+										...b.style,
+									}}
+								>
+									{b.override(this.onClose.bind(this))}
+								</div>
+							) : (
+								<CustomButton
+									key={i}
+									appearance={b.appearance || (!b.cancel ? 'primary' : undefined)}
+									type={b.submit ? 'submit' : undefined}
+									style={{
+										...(styles.modalButtonsStyle &&
+											styles.modalButtonsStyle.buttonStyle),
+										...b.style,
+									}}
+									isLoading={false}
+									onClick={
+										b.cancel
+											? () => {
+													this.onClose()
+													b.action && b.action()
+											  }
+											: () => {
+													b.action && b.action(this.onClose.bind(this))
+											  }
+									}
+								>
+									{b.cancel ? config.text('common.cancel') : b.title}
+								</CustomButton>
+							)
+						)}
+					</div>
+				</div>
+			)
+		)
+	}
+
 	render() {
+		var modalPadding = styles.modalPadding || 20
+		var modalWrapper = {
+			padding: modalPadding,
+			paddingTop: styles.modalHeader || this.props.title ? modalPadding / 2 : modalPadding,
+			paddingBottom:
+				this.props.buttons && this.props.buttons.length > 0
+					? modalPadding / 2
+					: modalPadding,
+			overflow: !this.props.noOverflow && 'auto',
+		}
+
 		return (
 			<Portal>
 				<div
@@ -62,11 +147,11 @@ export default class GenericModal extends Component {
 									...styles.card,
 									...{
 										boxShadow: styles.strongerShadow,
-										overflowY: 'auto',
+										overflowY: this.props.noOverflow && 'auto',
 										margin: 0,
 										borderRadius: 5,
 										maxWidth: 'calc(100vw - 10px)',
-										maxHeight: 'calc(100vh - 100px)',
+										maxHeight: 'calc(100vh - 100px)', // ! Needs to be like this to compensate for browser bars
 										minHeight: 20,
 										width: styles.modalWidth || 500,
 										display: 'flex',
@@ -77,72 +162,28 @@ export default class GenericModal extends Component {
 									},
 								}}
 							>
-								{styles.modalHeader && (
+								{(styles.modalHeader || this.props.title) && (
 									<ModalHeader
+										modalPadding={modalPadding}
 										lineColor={this.props.style && this.props.style.lineColor}
 										title={this.props.title}
 										onClose={this.onClose.bind(this)}
 									/>
 								)}
 
-								<div style={{ padding: styles.modalPadding || 20 }}>
-									<div style={{ overflow: !this.props.noOverflow && 'auto' }}>
+								{this.props.title ||
+								(this.props.buttons && this.props.buttons.length > 0) ? (
+									this.props.content(
+										this.onClose.bind(this),
+										{ display: 'contents' },
+										modalWrapper,
+										this.renderButtons.bind(this)
+									)
+								) : (
+									<div style={{ ...modalWrapper }}>
 										{this.props.content(this.onClose.bind(this))}
 									</div>
-
-									{this.props.buttons && this.props.buttons.length > 0 && (
-										<div style={{ minHeight: 20 }} />
-									)}
-									{this.props.buttons && this.props.buttons.length > 0 && (
-										<div
-											className={
-												styles.modalButtonWrap && 'wrapMarginBottomRight'
-											}
-											style={{
-												display: 'flex',
-												justifyContent:
-													styles.modalButtonWrap && 'flex-end',
-												flexWrap: styles.modalButtonWrap && 'wrap',
-											}}
-										>
-											{this.props.buttons.map((b, i) =>
-												b.notButton ? (
-													<div style={b.style}></div>
-												) : (
-													<CustomButton
-														key={i}
-														appearance={
-															b.appearance ||
-															(!b.cancel ? 'primary' : undefined)
-														}
-														type={b.submit ? 'submit' : undefined}
-														style={b.style}
-														isLoading={false}
-														onClick={
-															b.cancel
-																? () => {
-																		this.onClose()
-																		b.action && b.action()
-																  }
-																: () => {
-																		b.action &&
-																			b.action(
-																				this.onClose.bind(
-																					this
-																				)
-																			)
-																  }
-														}
-													>
-														{b.cancel
-															? config.text('common.cancel')
-															: b.title}
-													</CustomButton>
-												)
-											)}
-										</div>
-									)}
-								</div>
+								)}
 							</div>
 						</div>
 					</Animated>
@@ -182,10 +223,8 @@ class ModalHeader extends Component {
 					style={{
 						display: 'flex',
 						alignItems: 'center',
-						padding: 15,
-						paddingRight: 20,
-						paddingLeft: 20,
-						paddingBottom: 0,
+						padding: this.props.modalPadding / 2,
+						paddingLeft: this.props.modalPadding,
 						flexDirection: 'row',
 						justifyContent: 'space-between',
 						...styles.modalHeaderStyle,
@@ -194,37 +233,37 @@ class ModalHeader extends Component {
 					<div
 						style={{
 							...{
-								textAlign: 'center',
 								letterSpacing: 0.4,
-								paddingBottom: 10,
+								...(styles.modalHeaderStyle && styles.modalHeaderStyle.textStyle),
 							},
 						}}
 					>
 						{this.props.title}
 					</div>
-
-					<button
-						style={{
-							borderRadius: 5,
-							marginLeft: 30,
-							marginBottom: 10,
-							height: 24,
-							opacity: 0.5,
-							background: 'transparent',
-						}}
-						onClick={this.props.onClose}
-					>
-						{this.close(styles.colors.black)}
-					</button>
+					{styles.modalHeaderStyle && !styles.modalHeaderStyle.noCloseButton && (
+						<button
+							style={{
+								borderRadius: 5,
+								height: 24,
+								opacity: 0.5,
+								background: 'transparent',
+							}}
+							onClick={this.props.onClose}
+						>
+							{this.close(styles.colors.black)}
+						</button>
+					)}
 				</div>
-				<div
-					style={{
-						height: 1,
-						background: this.props.lineColor || styles.colors.black,
-						opacity: this.props.lineColor ? 1 : 0.1,
-						width: '100%',
-					}}
-				></div>
+				{styles.modalHeaderStyle && styles.modalHeaderStyle.line && (
+					<div
+						style={{
+							height: 1,
+							background: this.props.lineColor || styles.colors.black,
+							opacity: this.props.lineColor ? 1 : 0.1,
+							width: '100%',
+						}}
+					></div>
+				)}
 			</div>
 		)
 	}

@@ -30,7 +30,7 @@ declare namespace NodeJS {
 		appearance?: string;
 		cancel?: boolean;
 		style?: object;
-		notButton?: boolean;
+		override?: boolean;
 		submit?: string;
 		action?: () => void
 	}
