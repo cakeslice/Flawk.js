@@ -127,7 +127,7 @@ function updateDatabaseStructures() {
 
 	global.structures.forEach((s) => {
 		s.schema.findOne({}, function (err, doc) {
-			if (!doc || !config.prod) buildStructure('./app/project' + s.path, s.schema)
+			if (!doc || s.overrideJson) buildStructure('./app/project' + s.path, s.schema)
 		})
 	})
 }

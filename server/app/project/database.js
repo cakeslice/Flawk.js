@@ -300,6 +300,8 @@ global.structures = [
 		sortKey: 'name',
 		schema: RemoteConfig,
 		path: '/structures/remote_config.json',
+		//overrideJson: false,
+		//postProcess: (array)
 	},
 ]
 

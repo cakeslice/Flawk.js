@@ -20,7 +20,8 @@ declare namespace NodeJS {
 		sortKey: string;
 		schema: any;
 		path: string;
-		postProcess?: (structure: object[]) => Promise<object[]>;
+		overrideJson?: boolean;
+		postProcess?: (array: object[]) => Promise<object[]>;
 	}
 	interface Global {
 		Sentry: any;
