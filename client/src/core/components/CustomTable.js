@@ -33,16 +33,14 @@ export default class CustomTable extends ReactQueryParams {
 		var p = JSON.stringify({
 			data: this.props.data,
 			isLoading: this.props.isLoading,
+			updateID: this.props.updateID,
 		})
 		var nP = JSON.stringify({
 			data: nextProps.data,
 			isLoading: nextProps.isLoading,
+			updateID: nextProps.updateID,
 		})
-		if (
-			nP !== p ||
-			(this.props.alwaysUpdateColumns && this.props.columns !== nextProps.columns)
-		)
-			this.updateID = uuid.v1()
+		if (nP !== p) this.updateID = uuid.v1()
 
 		return true
 	}
