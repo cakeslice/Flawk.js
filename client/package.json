@@ -37,7 +37,7 @@
 		"build": "npm run copyPublic && cross-env CI=false SKIP_PREFLIGHT_CHECK=true GENERATE_SOURCEMAP=true react-scripts --max_old_space_size=4096 build && npm run addPreloadLinks",
 		"buildLocal": "npm run auditFix & npm run test & npm run build",
 		"buildPushDocker": "npm run buildLocal & cross-env-shell docker image build -t $DOCKER_IMAGE . -f Dockerfile.local & cross-env-shell docker push $DOCKER_IMAGE & cross-env-shell docker image rm $DOCKER_IMAGE",
-		"buildAndroid": "npm run buildLocal & npx cap sync & cd android & gradlew bundleRelease & cd app/build/outputs/apk/release & cross-env-shell jarsigner -keystore ./../../../../../../.keystore -storepass $ANDROID_KEYSTORE_PASS app-release.aab $ANDROID_KEYSTORE_ALIAS & cd ../../../../../../",
+		"buildAndroid": "npm run buildLocal & npx cap sync & cd android & gradlew bundleRelease & cd app/build/outputs/apk/release & cross-env-shell jarsigner -keystore ./../../../../../../_env/.flawk_android_keystore -storepass $ANDROID_KEYSTORE_PASS app-release.aab $ANDROID_KEYSTORE_ALIAS & cd ../../../../../../",
 		"test": "cross-env CI=true react-scripts test --coverage",
 		"testCI": "CI=true react-scripts test",
 		"eject": "react-scripts eject",
