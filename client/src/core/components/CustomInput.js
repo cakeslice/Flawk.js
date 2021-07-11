@@ -19,7 +19,7 @@ const MaskedInput = (props) => (
 		formatChars={props.formatChars}
 		mask={props.mask}
 		placeholder={props.placeholder}
-		value={props.value || (props.isControlled ? '' : undefined)}
+		value={props.value}
 		onChange={props.onChange}
 		autoFocus={props.autoFocus}
 		disabled={props.disabled}
@@ -35,23 +35,13 @@ const MaskedInput = (props) => (
 		)}
 	</InputMask>
 )
-const TextArea = (props) => (
-	<textarea
-		{...props}
-		value={props.value === 0 ? 0 : props.value || (props.isControlled ? '' : undefined)}
-	></textarea>
-)
-const Input = (props) => (
-	<input
-		{...props}
-		value={props.value === 0 ? 0 : props.value || (props.isControlled ? '' : undefined)}
-	></input>
-)
+const TextArea = (props) => <textarea {...props} value={props.value}></textarea>
+const Input = (props) => <input {...props} value={props.value}></input>
 const DatePicker = (props) => (
 	<Datetime
 		locale={global.lang.moment}
 		timeFormat={false}
-		value={props.value || (props.isControlled ? '' : undefined)}
+		value={props.value}
 		onChange={props.onChange}
 		renderInput={(p) => {
 			return <input {...p} value={props.value ? p.value : ''} />
@@ -87,7 +77,7 @@ export default class CustomInput extends Component {
 		}
 	}
 	triggerChange = () => {
-		this.props.onChange && this.props.onChange(this.bufferedValue || undefined)
+		this.props.onChange && this.props.onChange(this.bufferedValue)
 	}
 
 	render() {
@@ -121,6 +111,8 @@ export default class CustomInput extends Component {
 				: this.props.invalid
 
 		//
+
+		var controlled = this.props.isControlled || formIK
 
 		var mainStyle = {
 			fontSize: styles.defaultFontSize,
@@ -280,11 +272,11 @@ export default class CustomInput extends Component {
 				{this.props.label && <div style={{ minHeight: 5 }}></div>}
 				<div style={{ display: 'flex' }}>
 					<InputComponent
-						isControlled={formIK ? true : false}
+						isControlled={controlled ? true : false}
 						defaultValue={this.props.defaultValue}
 						autoFocus={this.props.autoFocus}
 						required={this.props.required}
-						value={value}
+						value={controlled ? (value === undefined ? '' : value) : undefined}
 						name={name}
 						autoComplete={this.props.autoComplete}
 						type={this.props.type ? this.props.type : 'text'}
@@ -307,18 +299,15 @@ export default class CustomInput extends Component {
 							if (this.props.bufferedInput && !formIK) {
 								this.handleChangeBuffered(e)
 							} else {
-								this.props.onChange &&
-									this.props.onChange(e.target.value || undefined)
+								this.props.onChange && this.props.onChange(e.target.value)
 							}
 
 							if (this.props.datePicker)
-								formIK &&
-									formIK.setFieldValue &&
-									formIK.setFieldValue(name, e || undefined)
+								formIK && formIK.setFieldValue && formIK.setFieldValue(name, e)
 							else
 								formIK &&
 									formIK.setFieldValue &&
-									formIK.setFieldValue(name, e.target.value || undefined)
+									formIK.setFieldValue(name, e.target.value)
 						}}
 						onBlur={(e, editor, next) => {
 							e.target.placeholder = this.props.placeholder

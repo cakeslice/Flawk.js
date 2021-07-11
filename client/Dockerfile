@@ -34,7 +34,7 @@ COPY . .
 
 RUN npm run auditCI && npm run testCI
 WORKDIR /usr/src/react_build/src
-RUN npm run build && rm -rf /usr/src/react_build/node_modules && rm -rf /usr/src/react_build/src
+RUN npm run buildCI && rm -rf /usr/src/react_build/node_modules && rm -rf /usr/src/react_build/src
 
 # NGINX SERVER
 
