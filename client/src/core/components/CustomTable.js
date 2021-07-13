@@ -45,6 +45,10 @@ export default class CustomTable extends ReactQueryParams {
 		return true
 	}
 
+	triggerUpdate() {
+		this.updateID = uuid.v1()
+	}
+
 	componentDidMount() {
 		this.setState({ containment: document.getElementById('custom-table-' + this.state.uuid) })
 	}
@@ -417,11 +421,18 @@ export default class CustomTable extends ReactQueryParams {
 																										c.selector
 																									),
 																									d,
-																									isVisible
+																									isVisible,
+																									this.triggerUpdate.bind(
+																										this
+																									)
 																							  )
 																							: _.get(
 																									d,
-																									c.selector
+																									c.selector,
+																									isVisible,
+																									this.triggerUpdate.bind(
+																										this
+																									)
 																							  ))}
 																				</div>
 																			</div>
