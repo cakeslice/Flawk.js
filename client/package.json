@@ -45,7 +45,7 @@
 		"postinstall": "cd .. && git config core.hooksPath ./git-hooks",
 		"eject": "react-scripts eject",
 		"test": "cross-env CI=true react-scripts test --coverage",
-		"testCI": "CI=true react-scripts test",
+		"testCI": "cross-env CI=true react-scripts test",
 		"prettierFix": "prettier --write ./src",
 		"prettierCI": "prettier --check ./",
 		"lintCI": "eslint --quiet ./",
