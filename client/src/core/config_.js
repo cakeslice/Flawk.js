@@ -317,6 +317,12 @@ export default {
 	minWidth: 768,
 	publicMaxWidth: 1281.5,
 
+	permissions: {
+		user: 100,
+		admin: 10,
+		superAdmin: 1,
+	},
+
 	capitalize: _capitalize,
 	numeral: (number, format, currency, currencySide = 'left') => {
 		var n = numeral(number).format(format)
@@ -339,6 +345,14 @@ export default {
 			if (typeof s !== 'string') s = 'NOT A STRING'
 		}
 		return Parser(s)
+	},
+
+	getRemoteConfig: (structures, key, code = 'default') => {
+		if (structures && structures['remoteconfigs']) {
+			var s = _.find(structures['remoteconfigs'], { code: code })
+			return s && s[key]
+		}
+		return
 	},
 
 	/**

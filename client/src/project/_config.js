@@ -46,4 +46,12 @@ module.exports = {
 	description: () => {
 		return global.lang && global.lang.text === 'pt' ? '...' : '...'
 	},
+
+	//
+
+	permissions: {
+		user: 100,
+		admin: 10,
+		superAdmin: 1,
+	},
 }

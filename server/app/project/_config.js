@@ -52,4 +52,12 @@ module.exports = {
 	extremeRateLimitedCalls: _extremeRateLimitedCalls,
 	allowedOrigins: _allowedOrigins,
 	path: _path,
+
+	//
+
+	permissions: {
+		user: 100,
+		admin: 10,
+		superAdmin: 1,
+	},
 }

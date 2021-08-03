@@ -133,7 +133,7 @@ class Router extends Component {
 				id: 'notifications',
 			},
 		]
-		if (permission <= 10)
+		if (permission <= config.permissions.admin)
 			routes = routes.concat([
 				{
 					id: 'admin',

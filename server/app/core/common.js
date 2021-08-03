@@ -239,7 +239,7 @@ module.exports = {
 		}
 	},
 
-	getRemoteConfig: async function (key, code = 'general', lean = true) {
+	getRemoteConfig: async function (key, code = 'default', lean = true) {
 		var remoteConfig = await database.RemoteConfig.findOne({ code: code })
 			.select(key)
 			.lean(lean)
@@ -247,7 +247,7 @@ module.exports = {
 		if (remoteConfig) return remoteConfig[key]
 		else return undefined
 	},
-	saveRemoteConfig: async function (key, value, code = 'general') {
+	saveRemoteConfig: async function (key, value, code = 'default') {
 		var remoteConfig = await database.RemoteConfig.findOne({ code: code }).select(key)
 
 		if (!remoteConfig) {
@@ -563,11 +563,12 @@ module.exports = {
 	///////////////////////////////////// Express middlewares
 
 	adminMiddleware: function (req, res, next) {
-		if (req.permission > 10) _setResponse(401, req, res, 'Not an admin!')
+		if (req.permission > config.permissions.admin) _setResponse(401, req, res, 'Not an admin!')
 		else next()
 	},
 	superAdminMiddleware: function (req, res, next) {
-		if (req.permission !== 1) _setResponse(401, req, res, 'Not a super admin!')
+		if (req.permission !== config.permissions.superAdmin)
+			_setResponse(401, req, res, 'Not a super admin!')
 		else next()
 	},
 

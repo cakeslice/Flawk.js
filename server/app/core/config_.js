@@ -53,6 +53,12 @@ module.exports = {
 	cookieSettings: _cookieSettings,
 	tokenDays: _tokenDays,
 
+	permissions: {
+		user: 100,
+		admin: 10,
+		superAdmin: 1,
+	},
+
 	//
 
 	jwtSecret: process.env.jwtSecret,
