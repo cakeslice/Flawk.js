@@ -60,11 +60,12 @@ async function setupNodemailer() {
 	nodemailerClient = nodemailer.createTransport({
 		host: config.nodemailerHost,
 		port: config.nodemailerPort || 465,
-		secure: true,
+		secure: config.nodemailerPort != 465 ? false : true, // eslint-disable-line
 		auth: {
 			user: config.nodemailerUser,
 			pass: config.nodemailerPass,
 		},
+		requireTLS: true,
 	})
 	var hbs = require('nodemailer-express-handlebars')
 	var dir = './app/project/email_templates/'
