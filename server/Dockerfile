@@ -67,6 +67,7 @@
 #    External: mongodb://dbuser:dbpassword@SERVER_IP_ADDRESS:1337/dbname?authSource=admin&w=1
 
 # Follow deploy/mongo_backup.txt
+# WARNING: This method only works for a single Mongo instance! If you use sharding you need another method!
 # ---------------------------------------
 
 # ------------- S3 STORAGE --------------

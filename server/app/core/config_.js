@@ -97,6 +97,7 @@ module.exports = {
 	nodemailerHost: process.env.nodemailerHost,
 	nodemailerUser: process.env.nodemailerUser,
 	nodemailerPass: process.env.nodemailerPass,
+	nodemailerPort: process.env.nodemailerPort,
 
 	pushNotificationsKey: process.env.pushNotificationsKey,
 

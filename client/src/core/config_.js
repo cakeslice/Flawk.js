@@ -324,7 +324,7 @@ export default {
 	},
 
 	capitalize: _capitalize,
-	numeral: (number, format, currency, currencySide = 'left') => {
+	numeral: (number, format) => {
 		var n = numeral(number).format(format)
 		return n
 	},

@@ -59,7 +59,7 @@ let nodemailerClient = undefined
 async function setupNodemailer() {
 	nodemailerClient = nodemailer.createTransport({
 		host: config.nodemailerHost,
-		port: 465,
+		port: config.nodemailerPort || 465,
 		secure: true,
 		auth: {
 			user: config.nodemailerUser,
