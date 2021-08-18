@@ -34,9 +34,6 @@ class Forgot extends Component {
 					<div>
 						<Helmet>
 							<title>{config.title() + config.separator + 'Forgot password'}</title>
-							<meta name='description' content={config.description()} />
-							<link rel='canonical' href={config.domain + '/forgot'} />
-							<meta property='og:url' content={config.domain} />
 						</Helmet>
 
 						<h2>{'Forgot password'}</h2>

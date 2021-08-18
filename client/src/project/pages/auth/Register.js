@@ -35,9 +35,6 @@ class Register extends Component {
 					<div>
 						<Helmet>
 							<title>{config.title() + config.separator + 'Signup'}</title>
-							<meta name='description' content={config.description()} />
-							<link rel='canonical' href={config.domain + '/signup'} />
-							<meta property='og:url' content={config.domain} />
 						</Helmet>
 
 						<h2>{'Signup'}</h2>

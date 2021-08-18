@@ -257,18 +257,6 @@ class Router extends Component {
 											<title>
 												{config.title() + config.separator + 'Dashboard'}
 											</title>
-											<meta
-												name='description'
-												content={config.description()}
-											/>
-											<link
-												rel='canonical'
-												href={config.domain + '/dashboard'}
-											/>
-											<meta
-												property='og:url'
-												content={config.domain + '/dashboard'}
-											/>
 										</Helmet>
 
 										{this.props.user && (

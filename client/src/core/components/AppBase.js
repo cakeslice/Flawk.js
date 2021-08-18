@@ -221,8 +221,8 @@ export default class AppBase extends Component {
 									(config.phrase() ? config.separator + config.phrase() : '')}
 							</title>
 							<meta name='description' content={config.description()} />
-							<link rel='canonical' href={config.domain} />
-							<meta property='og:url' content={config.domain} />
+							{/* Don't use canonical unless you have to and don't use redudant og tags like description and url */}
+							{/* Helmet replaces the title and meta tags so if you want to use the default description in other pages you don't have to declare it again */}
 						</Helmet>
 
 						{inRestrictedRoute && this.state.oldBuild && !this.state.hideWarnings && (
