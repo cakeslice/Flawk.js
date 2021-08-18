@@ -9,9 +9,6 @@ const fs = require('fs')
 fs.copyFile('./src/project/_public/favicon.ico', './public/favicon.ico', (err) => {
 	if (err) throw err
 })
-fs.copyFile('./src/project/_public/manifest.json', './public/manifest.json', (err) => {
-	if (err) throw err
-})
 fs.copyFile('./src/project/_public/robots.txt', './public/robots.txt', (err) => {
 	if (err) throw err
 })

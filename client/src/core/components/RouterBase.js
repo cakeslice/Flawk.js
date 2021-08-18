@@ -13,11 +13,13 @@ import { createBrowserHistory } from 'history'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import ReactGA from 'react-ga'
+import GitInfo from 'react-git-info/macro'
 import MediaQuery, { Context as ResponsiveContext } from 'react-responsive'
 import { Router } from 'react-router-dom'
 import { Bounce, toast, ToastContainer } from 'react-toastify'
 import CustomButton from './CustomButton'
 
+var gitHash = GitInfo().commit.shortHash
 var styles = require('core/styles').default
 var config = require('core/config_').default
 
@@ -33,6 +35,8 @@ export default class RouterBase extends Component {
 		}.bind(this)
 
 		var setupSentry = async function () {
+			var buildEnv = config.prod ? 'production' : config.staging ? 'staging' : 'development'
+
 			if (config.sentryID) {
 				var res = await get('build_number', { noErrorFlag: 'all' })
 				var buildNumber
@@ -43,13 +47,11 @@ export default class RouterBase extends Component {
 					buildNumber = await global.storage.getItem('build_number')
 				}
 				if (!buildNumber) buildNumber = 'unknown'
+
+				console.log('Build: ' + buildEnv + ' | @' + gitHash + ' | SERV@' + buildNumber)
 				Sentry.init({
-					release: '@' + buildNumber,
-					environment: config.prod
-						? 'production'
-						: config.staging
-						? 'staging'
-						: 'development',
+					release: '@' + gitHash + '-SERV@' + buildNumber,
+					environment: buildEnv,
 					dsn: config.sentryID,
 
 					beforeSend(event, hint) {
@@ -71,7 +73,14 @@ export default class RouterBase extends Component {
 					tracesSampleRate: 1.0,
 				})
 				global.Sentry = Sentry
-			}
+			} else
+				console.log(
+					'----- BUILD -----\n\n' +
+						buildEnv +
+						' | @' +
+						gitHash +
+						'\n\n-------------------'
+				)
 		}.bind(this)
 		setupSentry()
 

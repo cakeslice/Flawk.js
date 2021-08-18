@@ -7,12 +7,14 @@
 
 import { get } from 'core/api'
 import React, { Component } from 'react'
+import GitInfo from 'react-git-info/macro'
 import { Helmet } from 'react-helmet'
 import MediaQuery from 'react-responsive'
 import { Fade } from 'react-reveal'
 import io from 'socket.io-client'
 import CustomButton from '../components/CustomButton'
 
+var gitHash = GitInfo().commit.shortHash
 var styles = require('core/styles').default
 var config = require('core/config_').default
 
@@ -62,7 +64,10 @@ export default class AppBase extends Component {
 								res.buildNumber !== buildNumber
 							) {
 								this.setState({ oldBuild: true, buildNumber: buildNumber })
-							} else this.setState({ buildNumber: buildNumber })
+							} else
+								this.setState({
+									buildNumber: gitHash + '_' + buildNumber,
+								})
 
 							if (!this.state.isReconnect) this.setState({ isReconnect: true })
 						}
@@ -94,7 +99,7 @@ export default class AppBase extends Component {
 				} else {
 					buildNumber = await global.storage.getItem('build_number')
 				}
-				this.setState({ buildNumber: buildNumber })
+				this.setState({ buildNumber: gitHash + '_' + buildNumber })
 			}
 
 			if (config.darkModeForce) this.applyNightMode(true, true)
@@ -372,9 +377,10 @@ export default class AppBase extends Component {
 									right: 20,
 									width: '100%',
 									display: 'flex',
-									alignItems: 'center',
+									alignItems: 'flex-end',
+									marginBottom: 5,
 									zIndex: 100,
-									height: 25,
+									height: 45,
 									justifyContent: 'flex-end',
 									maxWidth: 355,
 									userSelect: 'none',
@@ -382,17 +388,30 @@ export default class AppBase extends Component {
 									opacity: 0.8,
 								}}
 							>
-								<b
-									style={{
-										color: 'red',
-										fontSize: 12,
-										textShadow: '1px 1px 2px rgba(0,0,0,.5)',
-									}}
-								>
-									{(!config.staging ? 'DEV' : 'STAG') +
-										'-' +
-										this.state.buildNumber}
-								</b>
+								<div>
+									<div
+										style={{
+											color: 'red',
+											fontSize: 12,
+											fontWeight: 'bold',
+											textShadow: '1px 1px 2px rgba(0,0,0,.5)',
+										}}
+									>
+										{(!config.staging ? 'DEV' : 'STAG') + '@' + gitHash}
+									</div>
+									{this.state.buildNumber && (
+										<div
+											style={{
+												color: 'red',
+												fontSize: 12,
+												fontWeight: 'bold',
+												textShadow: '1px 1px 2px rgba(0,0,0,.5)',
+											}}
+										>
+											{'SERV@' + this.state.buildNumber.split('_')[1]}
+										</div>
+									)}
+								</div>
 
 								{!config.staging && config.darkModeAvailable && (
 									<b
@@ -412,9 +431,10 @@ export default class AppBase extends Component {
 								)}
 
 								{!config.staging && (
-									<b
+									<div
 										style={{
 											fontSize: 13,
+											fontWeight: 'bold',
 											marginLeft: 20,
 											cursor: 'pointer',
 											color: styles.colors.black,
@@ -429,8 +449,9 @@ export default class AppBase extends Component {
 											window.location.reload()
 										}}
 									>
-										LANG {'(' + global.lang.text + ')'}
-									</b>
+										LANG-
+										{global.lang.text}
+									</div>
 								)}
 
 								{!config.staging && (
@@ -446,7 +467,7 @@ export default class AppBase extends Component {
 											textShadow: '1px 1px 2px rgba(0,0,0,.5)',
 										}}
 									>
-										{'COMPONENTS'}
+										STYLE
 									</b>
 								)}
 							</div>

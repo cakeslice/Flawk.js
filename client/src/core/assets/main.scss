@@ -19,9 +19,6 @@
 	--font: 'Roboto';
 	--fontAlt: 'PT Sans';
 
-	/* ------------------------------------------------------------------- 
-		Assign the default/constant/env values to CSS variables
-	*/
 	--safe-area-inset-top: 0px;
 	--safe-area-inset-right: 0px;
 	--safe-area-inset-bottom: 0px;
@@ -249,10 +246,23 @@ button:active {
 }
 
 // Mobile Notch support
-@supports (padding: Max(0px)) {
+.safeAreaMinHeight {
+	min-height: 100vh;
+}
+@supports (margin-top: env(safe-area-inset-top)) {
+	.safeAreaMinHeight {
+		min-height: calc(100vh - (var(--safe-area-inset-top) + var(--safe-area-inset-bottom)));
+	}
+	.safeAreaPaddingMinHeight {
+		padding-top: var(--safe-area-inset-top);
+		padding-bottom: var(--safe-area-inset-bottom);
+		min-height: calc(100vh - (var(--safe-area-inset-top) + var(--safe-area-inset-bottom)));
+	}
 	body {
-		padding-left: Max(12px, env(safe-area-inset-left));
-		padding-right: Max(12px, env(safe-area-inset-right));
+		width: calc(100% - (var(--safe-area-inset-right) + var(--safe-area-inset-left)));
+		height: calc(100% - (var(--safe-area-inset-top) + var(--safe-area-inset-bottom)));
+		margin: var(--safe-area-inset-top) var(--safe-area-inset-right)
+			var(--safe-area-inset-bottom) var(--safe-area-inset-left);
 	}
 }
 
