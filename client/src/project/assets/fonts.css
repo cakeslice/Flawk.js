@@ -9,6 +9,7 @@
 	font-style: normal;
 	font-weight: normal;
 	src: url('./fonts/CorporateALight.otf') format('opentype');
+	font-display: swap;
 }
 
 @font-face {
@@ -16,5 +17,6 @@
 	font-style: normal;
 	font-weight: bold;
 	src: url('./fonts/CorporateABold.otf') format('opentype');
+	font-display: swap;
 }
  */
