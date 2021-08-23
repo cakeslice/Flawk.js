@@ -374,7 +374,8 @@ module.exports = {
 				...data.substitutions,
 				subject: !config.prod ? '[TEST] ' + data.subject : data.subject,
 			},
-			From: config.noReply,
+			From: config.emailFrom,
+			ReplyTo: config.replyTo,
 			To: email,
 			MessageStream: marketing && 'marketing',
 		}
@@ -394,6 +395,7 @@ module.exports = {
 		} else if (nodemailerClient) {
 			let info = await nodemailerClient.sendMail({
 				from: body.From,
+				replyTo: body.ReplyTo,
 				to: body.To,
 				subject: body.TemplateModel.subject,
 
@@ -421,7 +423,8 @@ module.exports = {
 					...a.substitutions,
 					subject: !config.prod ? '[TEST-BULK] ' + a.subject : a.subject,
 				},
-				From: config.noReply,
+				From: config.emailFrom,
+				ReplyTo: config.replyTo,
 				To: a.email,
 				MessageStream: 'marketing',
 			})
@@ -460,7 +463,8 @@ module.exports = {
 				...data.substitutions,
 				subject: !config.prod ? '[TEST-ADMIN] ' + data.subject : data.subject,
 			},
-			From: config.noReply,
+			From: config.emailFrom,
+			ReplyTo: config.replyTo,
 			To: !config.prod || (developer && config.prod) ? config.developerEmail : adminEmails,
 		}
 		if (process.env.noEmails === 'true') {
@@ -479,6 +483,7 @@ module.exports = {
 		} else if (nodemailerClient) {
 			let info = await nodemailerClient.sendMail({
 				from: body.From,
+				replyTo: body.ReplyTo,
 				to: body.To,
 				subject: body.TemplateModel.subject,
 
