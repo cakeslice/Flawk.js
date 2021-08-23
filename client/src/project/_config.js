@@ -12,6 +12,7 @@ const _noTokenRedirect = '/login'
 const _loginRedirect = '/dashboard'
 const _restrictedRoutes = ['/dashboard'] // Make sure to update robots.txt if changed
 const _websocketSupport = true
+const _preconnectURLs = ['https://fonts.googleapis.com']
 
 require('moment/locale/pt')
 require('moment/locale/fr')
@@ -19,6 +20,7 @@ require('moment/locale/fr')
 global.supportedLanguages = ['en']
 
 module.exports = {
+	preconnectURLs: _preconnectURLs,
 	backendURL: _backendURL + '/backend',
 	websocketURL: _backendURL + '/backend/sockets',
 	privacyURL: _privacyURL,

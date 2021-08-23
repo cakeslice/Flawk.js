@@ -228,6 +228,13 @@ export default class AppBase extends Component {
 							<meta name='description' content={config.description()} />
 							{/* Don't use canonical unless you have to and don't use redudant og tags like description and url */}
 							{/* Helmet replaces the title and meta tags so if you want to use the default description in other pages you don't have to declare it again */}
+							{config.preconnectURLs &&
+								config.preconnectURLs.map((p) => (
+									<link key={p} rel='preconnect' href={p}></link>
+								))}
+							{config.backendURL && (
+								<link rel='preconnect' href={config.backendURL}></link>
+							)}
 						</Helmet>
 
 						{inRestrictedRoute && this.state.oldBuild && !this.state.hideWarnings && (
