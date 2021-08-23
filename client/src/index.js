@@ -39,7 +39,7 @@ var capacitorStorage = {
 }
 
 var storage
-if (Capacitor.isNative) {
+if (Capacitor.isNativePlatform()) {
 	storage = capacitorStorage
 } else if (isSupported('localStorage')) {
 	// use localStorage

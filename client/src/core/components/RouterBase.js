@@ -48,7 +48,15 @@ export default class RouterBase extends Component {
 				}
 				if (!buildNumber) buildNumber = 'unknown'
 
-				console.log('Build: ' + buildEnv + ' | @' + gitHash + ' | SERV@' + buildNumber)
+				console.log(
+					'----- BUILD -----\n\n' +
+						buildEnv +
+						' | @' +
+						gitHash +
+						' | SERV@' +
+						buildNumber +
+						'\n\n-------------------'
+				)
 				Sentry.init({
 					release: '@' + gitHash + '-SERV@' + buildNumber,
 					environment: buildEnv,
