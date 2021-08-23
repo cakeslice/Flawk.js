@@ -41,6 +41,24 @@ var numeral = require('numeral')
 require('numeral/locales')
 numeral.register('locale', 'us', {
 	delimiters: {
+		thousands: ',',
+		decimal: '.',
+	},
+	abbreviations: {
+		thousand: 'K',
+		million: 'M',
+		billion: 'B',
+		trillion: 'T',
+	},
+	ordinal: function (number) {
+		return number === 1 ? 'er' : 'ème'
+	},
+	currency: {
+		symbol: '$',
+	},
+})
+numeral.register('locale', 'pt', {
+	delimiters: {
 		thousands: '.',
 		decimal: ',',
 	},
@@ -54,7 +72,7 @@ numeral.register('locale', 'us', {
 		return number === 1 ? 'er' : 'ème'
 	},
 	currency: {
-		symbol: '$',
+		symbol: '€',
 	},
 })
 
@@ -87,21 +105,21 @@ global.setLang = (lang) => {
 			? {
 					text: 'pt',
 					moment: 'pt',
-					numeral: 'us',
+					numeral: 'pt',
 					date: 'pt-PT',
 			  }
 			: lang.text === 'es'
 			? {
 					text: 'es',
 					moment: 'es',
-					numeral: 'us',
+					numeral: 'pt',
 					date: 'es-ES',
 			  }
 			: lang.text === 'fr'
 			? {
 					text: 'fr',
 					moment: 'fr',
-					numeral: 'us',
+					numeral: 'pt',
 					date: 'fr-FR',
 			  }
 			: {
