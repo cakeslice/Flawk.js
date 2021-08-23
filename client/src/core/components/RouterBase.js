@@ -76,9 +76,8 @@ export default class RouterBase extends Component {
 							),
 						}),
 					],
-					// We recommend adjusting this value in production, or using tracesSampler
-					// for finer control
-					tracesSampleRate: 1.0,
+					// Leaving the sample rate at 1.0 means that automatic instrumentation will send a transaction each time a user loads any page or navigates anywhere in your app, which is a lot of transactions. Sampling enables you to collect representative data without overwhelming either your system or your Sentry transaction quota.
+					tracesSampleRate: 0.2,
 				})
 				global.Sentry = Sentry
 			} else

@@ -21,6 +21,7 @@ const util = require('util')
 const setTimeoutPromise = util.promisify(setTimeout)
 var responseTime = require('response-time')
 const Sentry = require('@sentry/node')
+const Tracing = require('@sentry/tracing')
 const OpenApiValidator = require('express-openapi-validator')
 
 const config = require('core/config_')
@@ -538,6 +539,19 @@ function main() {
 			release: '@' + global.buildNumber,
 			environment: config.prod ? 'production' : config.staging ? 'staging' : 'development',
 			dsn: config.sentryID,
+			integrations: [
+				// Enable HTTP calls tracing
+				new Sentry.Integrations.Http({ tracing: true }),
+				// Enable Express.js middleware tracing
+				new Tracing.Integrations.Express({
+					// To trace all requests to the default router
+					app,
+					// Alternatively, you can specify the routes you want to trace:
+					// router: someRouter,
+				}),
+			],
+			// Leaving the sample rate at 1.0 means that automatic instrumentation will send a transaction each time a user loads any page or navigates anywhere in your app, which is a lot of transactions. Sampling enables you to collect representative data without overwhelming either your system or your Sentry transaction quota.
+			tracesSampleRate: 0.2,
 		})
 		global.Sentry = Sentry
 	}
@@ -560,14 +574,27 @@ function main() {
 		await createDevUser()
 
 		if (!config.cronServer) {
-			if (config.sentryID) app.use(Sentry.Handlers.requestHandler({}))
-
 			app.disable('x-powered-by')
+
+			if (config.sentryID) {
+				app.use(Sentry.Handlers.requestHandler())
+				app.use(Sentry.Handlers.tracingHandler())
+			}
 
 			var server = init()
 
 			if (config.sentryID) {
-				app.use(Sentry.Handlers.errorHandler())
+				app.use(
+					Sentry.Handlers.errorHandler({
+						shouldHandleError(error) {
+							// Capture all 404 and 500 errors
+							if (error.status === 404 || error.status === 500) {
+								return true
+							}
+							return false
+						},
+					})
+				)
 			}
 			// eslint-disable-next-line
 			app.use((err, req, res, next) => {

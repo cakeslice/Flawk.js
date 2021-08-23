@@ -14,6 +14,7 @@ import React, { Suspense } from 'react'
 import 'react-awesome-lightbox/build/style.css'
 import 'react-datetime/css/react-datetime.css'
 import ReactDOM from 'react-dom'
+import { ErrorBoundary } from 'react-error-boundary'
 //import registerServiceWorker from './utils/registerServiceWorker'
 import { unregister } from './core/utils/registerServiceWorker'
 
@@ -56,10 +57,25 @@ if (Capacitor.isNativePlatform()) {
 }
 global.storage = storage
 
+/**
+ * @param root0
+ * @param root0.error
+ * @param root0.resetErrorBoundary
+ */
+function ErrorFallback({ error, resetErrorBoundary }) {
+	const chunkFailedMessage = /Loading chunk [\d]+ failed/
+	if (error?.message && chunkFailedMessage.test(error.message)) {
+		window.location.reload()
+	}
+
+	return <div></div>
+}
 ReactDOM.render(
-	<Suspense fallback={<div></div>}>
-		<App></App>
-	</Suspense>,
+	<ErrorBoundary FallbackComponent={ErrorFallback}>
+		<Suspense fallback={<div></div>}>
+			<App></App>
+		</Suspense>
+	</ErrorBoundary>,
 	document.getElementById('root')
 )
 
