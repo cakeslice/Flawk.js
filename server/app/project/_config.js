@@ -38,7 +38,7 @@ module.exports = {
 
 	//
 
-	emailFrom: 'jose@cakeslice.dev',
+	emailFrom: process.env.nodemailerUser || 'jose@cakeslice.dev',
 	replyTo: undefined, // ! Don't use "noreply" e-mails, bad for delivery!
 	adminEmails: [
 		{
