@@ -20,6 +20,12 @@ import { unregister } from './core/utils/registerServiceWorker'
 
 const App = React.lazy(() => import('./project/App'))
 
+global.lazyWithPreload = (factory) => {
+	const Component = React.lazy(factory)
+	Component.preload = factory
+	return Component
+}
+
 var capacitorStorage = {
 	getItem: async (key) => {
 		const { value } = await Storage.get({ key: key })

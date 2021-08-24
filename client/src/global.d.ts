@@ -42,6 +42,7 @@ declare namespace NodeJS {
 		changeLang: () => void;
 		scrollToTop: () => void;
 		routerHistory: () => History;
+		lazyWithPreload: (component: function) => React.LazyExoticComponent;
 		//		
 		logCatch: (err: Error, useSentry: boolean, identifier?: string) => void;
 		Sentry: any;

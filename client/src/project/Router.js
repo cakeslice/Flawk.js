@@ -26,7 +26,13 @@ import { fetchStructures, fetchUser } from './redux/UserState'
 var styles = require('core/styles').default
 var config = require('core/config_').default
 
-const ComponentsViewer = React.lazy(() => import('core/components/ComponentsViewer'))
+// To preload a lazy component:
+/*
+const Something = global.lazyWithPreload(() => import('something')))
+...
+Something.preload()
+*/
+const ComponentsViewer = global.lazyWithPreload(() => import('core/components/ComponentsViewer'))
 const Dashboard = React.lazy(() => import('core/components/Dashboard'))
 const Settings = React.lazy(() => import('./pages/settings/Settings'))
 //
