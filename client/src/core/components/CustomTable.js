@@ -150,7 +150,7 @@ export default class CustomTable extends ReactQueryParams {
 						flexDirection: 'column',
 						width: '100%',
 						minHeight: 250,
-						overflow: 'auto',
+						overflow: 'hidden',
 						...(overrideStyle && overrideStyle.wrapperStyle),
 
 						...(this.props.children && {
