@@ -6,6 +6,7 @@
  */
 
 import { css } from 'glamor'
+import moment from 'moment'
 import React, { Component } from 'react'
 import Datetime from 'react-datetime'
 import InputMask from 'react-input-mask'
@@ -39,6 +40,7 @@ const TextArea = (props) => <textarea {...props} value={props.value}></textarea>
 const Input = (props) => <input {...props} value={props.value}></input>
 const DatePicker = (props) => (
 	<Datetime
+		utc={props.utc}
 		locale={global.lang.moment}
 		timeFormat={false}
 		value={props.value}
@@ -67,7 +69,12 @@ export default class CustomInput extends Component {
 	handleChangeBuffered = (e) => {
 		clearTimeout(this.timer)
 
-		this.bufferedValue = e.target.value
+		this.bufferedValue =
+			this.props.type === 'number'
+				? e.target.value === ''
+					? undefined
+					: Number(e.target.value)
+				: e.target.value
 		this.timer = setTimeout(this.triggerChange, this.props.bufferInterval || 250)
 	}
 	handleKeyDown = (e) => {
@@ -179,7 +186,7 @@ export default class CustomInput extends Component {
 
 		var InputComponent = MaskedInput
 		var isMasked = true
-		if (!this.props.mask) {
+		if (!this.props.mask && !this.props.timeInput) {
 			isMasked = false
 			InputComponent = Input
 		}
@@ -234,6 +241,8 @@ export default class CustomInput extends Component {
 		var invalidType = this.props.invalidType
 		if (invalid === '*' && this.props.label) invalidType = 'label'
 
+		var placeholder = this.props.timeInput ? !value && moment().format('HH:mm') : undefined
+
 		return (
 			<div style={{ width: finalStyle.width || '100%', flex: this.props.flex }}>
 				{this.props.label && (
@@ -281,7 +290,7 @@ export default class CustomInput extends Component {
 						autoComplete={this.props.autoComplete}
 						type={this.props.type ? this.props.type : 'text'}
 						disabled={this.props.isDisabled}
-						placeholder={this.props.placeholder ? this.props.placeholder : ''}
+						placeholder={placeholder || this.props.placeholder || ''}
 						onFocus={(e) => {
 							e.target.placeholder = ''
 							this.props.onFocus && this.props.onFocus(e)
@@ -299,7 +308,14 @@ export default class CustomInput extends Component {
 							if (this.props.bufferedInput && !formIK) {
 								this.handleChangeBuffered(e)
 							} else {
-								this.props.onChange && this.props.onChange(e.target.value)
+								this.props.onChange &&
+									this.props.onChange(
+										this.props.type === 'number'
+											? e.target.value === ''
+												? undefined
+												: Number(e.target.value)
+											: e.target.value
+									)
 							}
 
 							if (this.props.datePicker)
@@ -307,12 +323,17 @@ export default class CustomInput extends Component {
 							else
 								formIK &&
 									formIK.setFieldValue &&
-									formIK.setFieldValue(name, e.target.value)
+									formIK.setFieldValue(
+										name,
+										this.props.type === 'number'
+											? e.target.value === ''
+												? undefined
+												: Number(e.target.value)
+											: e.target.value
+									)
 						}}
 						onBlur={(e, editor, next) => {
-							e.target.placeholder = this.props.placeholder
-								? this.props.placeholder
-								: ''
+							e.target.placeholder = placeholder || this.props.placeholder || ''
 							this.props.onBlur && this.props.onBlur(e)
 
 							formIK && formIK.handleBlur && formIK.handleBlur(e)
@@ -323,6 +344,15 @@ export default class CustomInput extends Component {
 						{...(this.props.mask && {
 							mask: this.props.mask,
 							formatChars: this.props.formatChars,
+						})}
+						{...(this.props.timeInput && {
+							mask: value && value[0] === '2' ? '23:59' : '29:59',
+							formatChars: {
+								9: '[0-9]',
+								3: '[0-3]',
+								5: '[0-5]',
+								2: '[0-2]',
+							},
 						})}
 					></InputComponent>
 					{this.props.icon && (

@@ -32,6 +32,7 @@ var openAPIDocument = require('./project/api/api.json')
 openAPIDocument.servers = [
 	{
 		url: config.path,
+		description: '',
 	},
 ]
 
@@ -264,7 +265,7 @@ function init() {
 			unknownFormats: ['objectid', 'uuid', 'email'], // defaults: date-time, date, password, binary, byte
 
 			validateRequests: {
-				coerceTypes: true,
+				coerceTypes: false,
 				allowUnknownQueryParameters: false,
 			},
 			validateResponses: false,
@@ -401,7 +402,7 @@ function init() {
 		res.setHeader('Cache-Control', 'public, no-cache')
 	}
 	function setLongTermCache(res) {
-		const date = moment(new Date()).add(1, 'years').toDate()
+		const date = moment(new Date()).add(7, 'days').toDate()
 		res.setHeader('Expires', date.toUTCString())
 		res.setHeader('Cache-Control', 'public, max-age=31536000, immutable')
 	}
@@ -412,7 +413,7 @@ function init() {
 				setNoCache(res)
 				return
 			}
-			if (path.match(/\.(txt|js|otf|mp3|woff|woff2|mp4|webm|scss|css|map|png|jpg|jpeg|gif|svg|ico|json)$/)) {
+			if (path.match(/\.(txt|js|otf|mp3|woff|mp4|webm|scss|css|map|png|jpg|jpeg|gif|svg|ico|json)$/)) {
 				setLongTermCache(res)
 			}
 		},
