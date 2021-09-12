@@ -72,6 +72,8 @@
 
 # ------------- S3 STORAGE --------------
 # - Create space in DigitalOcean
+# - API key SHOULDN'T have DELETE/OVERWRITE permissions since it's not needed and it can be a security issue
+#     - DigitalOcean doesn't support this at the moment
 # - Set CORS in space settings: 
 #     https://your_domain.com, GET+PUT, Header: *, 600 seconds
 #     https://*.your_domain.com, GET+PUT, Header: *, 600 seconds

@@ -84,6 +84,7 @@ ReactDOM.render(
 	</ErrorBoundary>,
 	document.getElementById('root')
 )
+console.log('Powered by Flawk.js: https://flawk.cakeslice.dev')
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

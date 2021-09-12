@@ -557,6 +557,7 @@ function main() {
 		global.Sentry = Sentry
 	}
 
+	console.log('Powered by Flawk.js: https://flawk.cakeslice.dev')
 	console.log(
 		'Environment: ' + (config.prod ? 'production' : config.staging ? 'staging' : 'development')
 	)
