@@ -362,6 +362,8 @@ export default class AppBase extends Component {
 													'cookie_notice',
 													'true'
 												)
+												if (global.startAnalytics)
+													await global.startAnalytics()
 												this.setState({
 													hideCookieNotice: true,
 												})

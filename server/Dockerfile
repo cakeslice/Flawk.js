@@ -120,7 +120,7 @@
 # FOR CI/CD instead of building in CapRover or pushing a Docker image:
 #     https://caprover.com/docs/ci-cd-integration.html
 
-# To take advantage of multiple cores in Node.js you can to use clusters but consider websocket support: https://socket.io/docs/using-multiple-nodes/
+# To take advantage of multiple cores in Node.js you can use clusters but consider websocket support: https://socket.io/docs/using-multiple-nodes/
 #     HOWEVER, 4 CORES SEEMS TO BE VERY GOOD FOR MONGO + NODE
 #     For websites/apps with low/no MONGO usage, you should go with CPU-Optimized
 

@@ -34,7 +34,7 @@ export default class RouterBase extends Component {
 			return this.state.history
 		}.bind(this)
 
-		var setupSentry = async function () {
+		var asyncSetup = async function () {
 			var buildEnv = config.prod ? 'production' : config.staging ? 'staging' : 'development'
 
 			if (config.sentryID) {
@@ -88,23 +88,35 @@ export default class RouterBase extends Component {
 						gitHash +
 						'\n\n-------------------'
 				)
-		}.bind(this)
-		setupSentry()
 
-		if (config.googleAnalyticsID) {
-			ReactGA.initialize(config.googleAnalyticsID)
-			var w = window.location.pathname + window.location.search
-			ReactGA.pageview(w)
-			global.routerHistory().listen((location) => {
-				var l = location.pathname + location.search
-				ReactGA.pageview(l)
-			})
-			global.analytics = ReactGA
-		} else
-			global.analytics = {
-				event: () => {},
-				set: () => {},
+			global.startAnalytics = async function () {
+				if (!global.analytics || global.analytics.notReady) {
+					var startAnalytics = false
+					if (!config.showCookieNotice) startAnalytics = true
+					else {
+						var cookie = await global.storage.getItem('cookie_notice')
+						startAnalytics = cookie === 'true'
+					}
+					if (startAnalytics && config.googleAnalyticsID) {
+						ReactGA.initialize(config.googleAnalyticsID)
+						var w = window.location.pathname + window.location.search
+						ReactGA.pageview(w)
+						global.routerHistory().listen((location) => {
+							var l = location.pathname + location.search
+							ReactGA.pageview(l)
+						})
+						global.analytics = ReactGA
+					} else
+						global.analytics = {
+							notReady: true,
+							event: () => {},
+							set: () => {},
+						}
+				}
 			}
+			await global.startAnalytics()
+		}.bind(this)
+		asyncSetup()
 
 		this.socketNotification = this.socketNotification.bind(this)
 		if (config.websocketSupport && global.socket) {

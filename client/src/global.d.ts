@@ -47,9 +47,11 @@ declare namespace NodeJS {
 		logCatch: (err: Error, useSentry: boolean, identifier?: string) => void;
 		Sentry: any;
 		analytics: {
+			notReady: boolean;
 			set: (obj: { userId: string; }) => void;
 			event: (event: { category: string; action: string, label?: string, value?: number; nonInteraction?: boolean }) => void;
 		}
+		startAnalytics: () => Promise<void>;
 		sleep: (ms: number) => Promise<void>;
 		storage: {
 			setItem: (key: string, value: string) => Promise<void>;

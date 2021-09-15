@@ -163,6 +163,9 @@ export AWS_SECRET_ACCESS_KEY=XXXX
 aws s3api put-bucket-lifecycle-configuration --endpoint=https://XXXX --bucket your_bucket --lifecycle-configuration file://lifecycle.json
 aws s3api get-bucket-lifecycle-configuration --endpoint=https://XXXX --bucket your_bucket
 
+sudo chmod +x set_lifecycle.sh
+sudo ./set_lifecycle.sh
+
 ----
 ----
 
