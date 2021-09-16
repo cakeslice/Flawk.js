@@ -336,6 +336,14 @@ export default class CustomTable extends ReactQueryParams {
 												...rowStyle,
 												...(overrideStyle && overrideStyle.rowStyle),
 											}
+
+											var sR
+											if (d.specialRow) {
+												sR = _.find(this.props.specialRows, {
+													key: d.specialRow,
+												})
+											}
+
 											return this.state.containment ? (
 												<VisibilitySensor
 													partialVisibility
@@ -354,7 +362,12 @@ export default class CustomTable extends ReactQueryParams {
 																	...(overrideStyle &&
 																		overrideStyle.rowWrapperStyle),
 																}}
-																rowStyle={rS}
+																rowStyle={{
+																	...rS,
+																	...(d.specialRow &&
+																		sR &&
+																		sR.style),
+																}}
 																expandContent={
 																	this.props.expandContent &&
 																	this.props.expandContent(d)
@@ -362,82 +375,83 @@ export default class CustomTable extends ReactQueryParams {
 																cellPadding={cellPadding}
 																cellPaddingY={cellPaddingY}
 															>
-																{this.props.columns &&
-																	this.props.columns
-																		.filter((c) =>
-																			desktop
-																				? c
-																				: c.hide ===
-																				  'mobile'
-																				? false
-																				: true
-																		)
-																		.map((c, i) => (
-																			<div
-																				key={k + '_' + i}
-																				style={{
-																					minWidth:
-																						this.props
-																							.cellWidth ||
-																						50,
-																					width:
-																						100 *
-																							(c.grow !==
-																							undefined
-																								? c.grow
-																								: 1) +
-																						'%',
-																					padding:
-																						cellPadding,
-																					paddingTop:
-																						cellPaddingY,
-																					paddingBottom:
-																						cellPaddingY,
-																					...(c.style &&
-																						c.style),
-																				}}
-																			>
+																{d.specialRow && sR
+																	? sR.row(d.value, d)
+																	: this.props.columns &&
+																	  this.props.columns
+																			.filter((c) =>
+																				desktop
+																					? c
+																					: c.hide ===
+																					  'mobile'
+																					? false
+																					: true
+																			)
+																			.map((c, i) => (
 																				<div
+																					key={
+																						k + '_' + i
+																					}
 																					style={{
-																						textOverflow:
-																							!c.cell &&
-																							'ellipsis',
-																						overflow:
-																							!c.cell &&
-																							'hidden',
-																						display:
-																							'inline-grid',
-																						...(overrideStyle &&
-																							overrideStyle.cellStyle),
-																						...(c.rowStyle &&
-																							c.rowStyle),
+																						minWidth:
+																							this
+																								.props
+																								.cellWidth ||
+																							50,
+																						width:
+																							100 *
+																								(c.grow !==
+																								undefined
+																									? c.grow
+																									: 1) +
+																							'%',
+																						padding:
+																							cellPadding,
+																						paddingTop:
+																							cellPaddingY,
+																						paddingBottom:
+																							cellPaddingY,
+																						...(c.style &&
+																							c.style),
 																					}}
 																				>
-																					{(isVisible ||
-																						c.alwaysVisible) &&
-																						(c.cell
-																							? c.cell(
-																									_.get(
+																					<div
+																						style={{
+																							textOverflow:
+																								!c.cell &&
+																								'ellipsis',
+																							overflow:
+																								!c.cell &&
+																								'hidden',
+																							display:
+																								'inline-grid',
+																							...(overrideStyle &&
+																								overrideStyle.cellStyle),
+																							...(c.rowStyle &&
+																								c.rowStyle),
+																						}}
+																					>
+																						{(isVisible ||
+																							c.alwaysVisible) &&
+																							(c.cell
+																								? c.cell(
+																										_.get(
+																											d,
+																											c.selector
+																										),
+																										d,
+																										isVisible,
+																										this.triggerUpdate.bind(
+																											this
+																										)
+																								  )
+																								: _.get(
 																										d,
 																										c.selector
-																									),
-																									d,
-																									isVisible,
-																									this.triggerUpdate.bind(
-																										this
-																									)
-																							  )
-																							: _.get(
-																									d,
-																									c.selector,
-																									isVisible,
-																									this.triggerUpdate.bind(
-																										this
-																									)
-																							  ))}
+																								  ))}
+																					</div>
 																				</div>
-																			</div>
-																		))}
+																			))}
 															</Row>
 														)
 													}}
