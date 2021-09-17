@@ -215,19 +215,23 @@ export default class CustomButton extends Component {
 			...finalStyle,
 
 			...this.props.style,
-			...(this.props.isDisabled && {
-				background: config.replaceAlpha(
-					styles.colors.black,
-					global.nightMode ? '0.05' : '.1'
-				),
-				color: config.replaceAlpha(styles.colors.black, global.nightMode ? '0.25' : '.5'),
-				borderColor: config.replaceAlpha(
-					styles.colors.black,
-					global.nightMode ? '0.05' : '.1'
-				),
-				opacity: 0.75,
-				cursor: 'default',
-			}),
+			...(this.props.isDisabled &&
+				!this.props.simpleDisabled && {
+					background: config.replaceAlpha(
+						styles.colors.black,
+						global.nightMode ? '0.05' : '.1'
+					),
+					color: config.replaceAlpha(
+						styles.colors.black,
+						global.nightMode ? '0.25' : '.5'
+					),
+					borderColor: config.replaceAlpha(
+						styles.colors.black,
+						global.nightMode ? '0.05' : '.1'
+					),
+					opacity: 0.75,
+					cursor: 'default',
+				}),
 			...(!this.props.isDisabled &&
 				invalid && {
 					boxShadow: '0 0 0 2px ' + config.replaceAlpha(styles.colors.red, '.1'),

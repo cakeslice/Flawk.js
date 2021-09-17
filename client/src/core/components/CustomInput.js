@@ -223,18 +223,22 @@ export default class CustomInput extends Component {
 						borderColor: styles.colors.red,
 					},
 				}),
-			...(this.props.isDisabled && {
-				background: config.replaceAlpha(
-					styles.colors.black,
-					global.nightMode ? '0.05' : '.1'
-				),
-				color: config.replaceAlpha(styles.colors.black, global.nightMode ? '0.25' : '.5'),
-				borderColor: config.replaceAlpha(
-					styles.colors.black,
-					global.nightMode ? '0.05' : '.1'
-				),
-				opacity: 0.75,
-			}),
+			...(this.props.isDisabled &&
+				!this.props.simpleDisabled && {
+					background: config.replaceAlpha(
+						styles.colors.black,
+						global.nightMode ? '0.05' : '.1'
+					),
+					color: config.replaceAlpha(
+						styles.colors.black,
+						global.nightMode ? '0.25' : '.5'
+					),
+					borderColor: config.replaceAlpha(
+						styles.colors.black,
+						global.nightMode ? '0.05' : '.1'
+					),
+					opacity: 0.75,
+				}),
 		}
 
 		var actualInvalidType = this.props.invalidType
