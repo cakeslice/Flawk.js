@@ -10,6 +10,7 @@ import moment from 'moment'
 import React, { Component } from 'react'
 import Datetime from 'react-datetime'
 import InputMask from 'react-input-mask'
+import TextareaAutosize from 'react-textarea-autosize'
 
 var config = require('core/config_').default
 var styles = require('core/styles').default
@@ -35,6 +36,9 @@ const MaskedInput = (props) => (
 			/>
 		)}
 	</InputMask>
+)
+const TextAreaAuto = (props) => (
+	<TextareaAutosize minRows={2} maxRows={10} {...props} value={props.value}></TextareaAutosize>
 )
 const TextArea = (props) => <textarea {...props} value={props.value}></textarea>
 const Input = (props) => <input {...props} value={props.value}></input>
@@ -192,7 +196,7 @@ export default class CustomInput extends Component {
 		}
 		if (this.props.textArea) {
 			isMasked = false
-			InputComponent = TextArea
+			InputComponent = this.props.textAreaFixed ? TextArea : TextAreaAuto
 		}
 		if (this.props.datePicker) {
 			InputComponent = DatePicker
@@ -358,6 +362,8 @@ export default class CustomInput extends Component {
 								2: '[0-2]',
 							},
 						})}
+						minRows={this.props.minRows}
+						maxRows={this.props.maxRows}
 					></InputComponent>
 					{this.props.icon && (
 						<div style={{ maxWidth: 0, maxHeight: 0 }}>
