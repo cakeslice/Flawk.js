@@ -30,7 +30,6 @@ mongoose.Promise = global.Promise
 mongoose.connect(config.databaseURL, {
 	useUnifiedTopology: true,
 	useNewUrlParser: true,
-	useCreateIndex: true,
 })
 
 //

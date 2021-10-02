@@ -190,8 +190,9 @@ function init() {
 	// Prevent mongo injection attacks
 	app.use(config.path + '/*', mongoSanitize())
 
-	const { RateLimiterMongo } = require('rate-limiter-flexible')
-	global.rateLimiter = {
+	//const { RateLimiterMongo } = require('rate-limiter-flexible')
+	// ! Disabled due to mongoose problem
+	/* global.rateLimiter = {
 		default: new RateLimiterMongo({
 			storeClient: common.databaseConnection,
 			keyPrefix: 'ratelimit_default',
@@ -210,9 +211,10 @@ function init() {
 			points: config.prod ? 10 : 30, // X requests
 			duration: 60 * 15, // per X second by IP
 		}),
-	}
+	} */
 	//if (config.prod || config.staging) {
-	config.rateLimitedCalls.forEach((c) => {
+	// ! Disabled due to mongoose problem
+	/* config.rateLimitedCalls.forEach((c) => {
 		app.use(c, (req, res, next) => {
 			global.rateLimiter.limited
 				.consume(req.ip)
@@ -237,9 +239,10 @@ function init() {
 					common.setResponse(429, req, res, 'Too many requests')
 				})
 		})
-	})
+	}) */
 	//}
-	app.use(config.path + '/*', (req, res, next) => {
+	// ! Disabled due to mongoose problem
+	/* app.use(config.path + '/*', (req, res, next) => {
 		global.rateLimiter.default
 			.consume(req.ip)
 			.then(() => {
@@ -249,7 +252,7 @@ function init() {
 				console.log(req.baseUrl + ': Too many requests from ' + req.ip)
 				common.setResponse(429, req, res, 'Too many requests')
 			})
-	})
+	}) */
 
 	// Request logger
 	app.use(config.path + '/*', function (req, res, next) {
@@ -557,7 +560,6 @@ function main() {
 		global.Sentry = Sentry
 	}
 
-	console.log('Powered by Flawk.js: https://flawk.cakeslice.dev')
 	console.log(
 		'Environment: ' + (config.prod ? 'production' : config.staging ? 'staging' : 'development')
 	)
