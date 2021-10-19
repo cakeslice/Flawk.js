@@ -571,7 +571,13 @@ function main() {
 		console.error.bind(console, 'FAILED TO CONNECT TO DATABASE!')
 	)
 	common.databaseConnection.once('open', async function () {
-		console.log('CONNECTED TO DATABASE! Listening to requests on port ' + config.port)
+		console.log('CONNECTED TO DATABASE! Listening to requests on port ' + config.port + '\n')
+		var mongoose = require('mongoose')
+		var mongoAdmin = new mongoose.mongo.Admin(common.databaseConnection.db)
+		mongoAdmin.buildInfo(function (err, info) {
+			console.log(`MongoDB version: ${info.version}`)
+			console.log(`Mongoose version: ${mongoose.version}\n`)
+		})
 
 		if (!config.cronServer) updateDatabaseStructures()
 
