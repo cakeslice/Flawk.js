@@ -1,101 +1,43 @@
-# For Ubuntu with Docker CE
+nano ubuntu_setup.sh
 
+----
 
-apt -y update && apt -y full-upgrade
+################ Install Docker
 
+curl -fsSL https://get.docker.com -o get-docker.sh
+sudo sh get-docker.sh
+apt -y update && apt -y full-upgrade && apt autoclean -y && apt autoremove -y
 
+################ Add swap space
+swapsize=2048
+grep -q "swapfile" /etc/fstab
+if [ $? -ne 0 ]; then
+	echo 'swapfile not found. Adding swapfile.'
+	fallocate -l ${swapsize}M /swapfile
+	chmod 600 /swapfile
+	mkswap /swapfile
+	swapon /swapfile
+	echo '/swapfile none swap defaults 0 0' >> /etc/fstab
+else
+	echo 'swapfile found. No changes made.'
+fi
+echo '--------------------------------------------'
+echo 'Check whether the swap space created or not?'
+echo '--------------------------------------------'
+swapon --show
 
-############################ WAIT
-
-
-docker pull  caprover/caprover:1.8.0
-
-
-cd /var/lib/cloud/scripts/per-instance
-
-touch z_01_caprover_installation.sh
-rm -f z_01_caprover_installation.sh
-touch z_01_caprover_installation.sh
-
-cat <<EOT >> z_01_caprover_installation.sh
-#!/bin/sh
+################ Install CapRover
 
 ufw allow 80,443,3000,996,7946,4789,2377/tcp; ufw allow 7946,4789,2377/udp;
+docker run -p 80:80 -p 443:443 -p 3000:3000 -v /var/run/docker.sock:/var/run/docker.sock -v /captain:/captain caprover/caprover
 
-docker run -p 80:80 -p 443:443 -p 3000:3000 -v /var/run/docker.sock:/var/run/docker.sock -v /captain:/captain caprover/caprover:1.8.0
+################ Change SSH Port
+sudo ufw allow 1000
+echo "Port 1000" >> /etc/ssh/sshd_config
+systemctl restart sshd
 
+----
 
-EOT
-
-
-chmod +x z_01_caprover_installation.sh
-
-
-cd /etc/update-motd.d/
-rm -f 99*
-touch 99-caprover-readme
-
-
-cat <<EOT >> 99-caprover-readme
-#!/bin/sh
-#
-# Configured as part of the DigitalOcean 1-Click Image build process
-
-cat <<EOF
-********************************************************************************
-
-Welcome to CapRover, Open Source PaaS for developers!
-
-
-Follow the guide here to finish the setup https://caprover.com/docs/get-started.html#step-3-install-caprover-cli
-
-Or you can access the dashboard from http://<IP-ADDRESS>:3000
-
-The default password is captain42
-
-
-
-
-Please make sure to read the documentation https://CapRover.com
-
-
-********************************************************************************
-
-EOF
-
-
-EOT
-
-
-chmod +x 99-caprover-readme
-
-
-
-############################ WAIT
-
-
-
-apt -y update && apt -y full-upgrade
-
-
-cd /etc
-wget https://raw.githubusercontent.com/digitalocean/marketplace-partners/master/scripts/cleanup.sh
-chmod +x cleanup.sh
-./cleanup.sh
-
-
-############################ WAIT
-
-
-
-cd /etc
-wget https://raw.githubusercontent.com/digitalocean/marketplace-partners/master/scripts/img_check.sh
-chmod +x img_check.sh
-./img_check.sh
-
-
-
-cat /var/lib/cloud/scripts/per-instance/z_01_caprover_installation.sh
-cat /etc/update-motd.d/99-caprover-readme
-history -c
-cat /dev/null > /root/.bash_history
+Then:
+sudo chmod +x ubuntu_setup.sh
+sudo ./ubuntu_setup.sh

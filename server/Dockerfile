@@ -7,26 +7,23 @@
 
 # ---------------------------
 
-# Create droplet from https://marketplace.digitalocean.com/apps/caprover OR use deploy/ubuntu.txt
 # To SSH - Use your SSH key and use "root" username
-# sudo apt update
-# sudo apt upgrade (keep the local grub version if prompted)
+# [Ubuntu] Install Docker and CapRover: deploy/ubuntu.txt
+# Then connect using SSH again using port 1000
 
-# Add monitoring to droplet:
-# sudo apt-get purge do-agent
-# curl -sSL https://repos.insights.digitalocean.com/install.sh -o /tmp/install.sh
-# sudo bash /tmp/install.sh
-# /opt/digitalocean/bin/do-agent --version
+# Add Netdata monitoring to server: https://app.netdata.cloud/
+# Change config:
+#   cd /etc/netdata
+#   sudo ./edit-config netdata.conf
+# 		[global]
+# 		    hostname = SERVER_NAME
+#     [web]
+#         bind to = 10.1.1.1:19999 localhost:19999
+#   sudo systemctl restart netdata
+# [Digital Ocean] Remove default monitoring: sudo apt-get purge do-agent
 
-# Also create disk/ram/cpu usage alert (All Droplets tag)
-
-# sudo ufw allow 1000
-# sudo nano /etc/ssh/sshd_config -> Uncomment "Port" and change to 1000
-# sudo service ssh restart (now use 1000 port to connect with SSH)
-
-# Access captain: IP:3000 -> Password captain42
-# UPDATE CAPROVER FIRST!
-# SSH and then follow deploy/add_swap.txt
+# Access CapRover: SERVER_IP:3000 -> Password captain42
+# Update CapRover
 # DON'T use caprover serversetup
 # Change CapRover password in control panel (very strong!)
 
@@ -72,8 +69,6 @@
 
 # ------------- S3 STORAGE --------------
 # - Create space in DigitalOcean
-# - API key SHOULDN'T have DELETE/OVERWRITE permissions since it's not needed and it can be a security issue
-#     - DigitalOcean doesn't support this at the moment
 # - Set CORS in space settings: 
 #     https://your_domain.com, GET+PUT, Header: *, 600 seconds
 #     https://*.your_domain.com, GET+PUT, Header: *, 600 seconds
