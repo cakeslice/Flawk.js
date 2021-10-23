@@ -26,6 +26,19 @@ echo 'Check whether the swap space created or not?'
 echo '--------------------------------------------'
 swapon --show
 
+################ Enable Automatic Updates
+
+apt install unattended-upgrades
+dpkg-reconfigure unattended-upgrades
+
+nano /etc/apt/apt.conf.d/50unattended-upgrades
+# Comment all except "${distro_id}:${distro_codename}-security"
+
+################ Install Fail2Ban
+
+sudo apt install fail2ban
+sudo service fail2ban start
+
 ################ Install CapRover
 
 ufw allow 80,443,3000,996,7946,4789,2377/tcp; ufw allow 7946,4789,2377/udp;
