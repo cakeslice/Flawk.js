@@ -30,7 +30,7 @@ const mobileLinks = [
 		mobileTab: true,
 	},
 	{ name: 'Components', id: '/components' }, */
-	{ name: 'Login', id: '/login' },
+	/* { name: 'Login', id: '/login' }, */
 ]
 
 const mobileHeight = 45

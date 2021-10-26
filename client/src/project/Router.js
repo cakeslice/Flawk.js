@@ -310,7 +310,9 @@ class Router extends Component {
 												</Route>
 
 												<Route path='/'>
-													<Main />
+													<PublicWrapper desktop={desktop}>
+														<Main />
+													</PublicWrapper>
 												</Route>
 											</Switch>
 										</Fade>

@@ -234,22 +234,32 @@ class Layout extends ReactQueryParams {
 				...this.queryParams,
 			}
 
-			var res = await get(
-				'https://jsonplaceholder.typicode.com/todos?_sort=' +
-					q.sort +
-					'&_order=' +
-					q.order +
-					'&_page=' +
-					q.page +
-					'&_limit=' +
-					q.limit +
-					'&q=' +
-					q.search,
-				{
-					internal: false,
-					signal: this.abortController.signal,
-				}
-			)
+			var link = 'https://jsonplaceholder.typicode.com/todos'
+			var pre = '?'
+			if (q.sort) {
+				link += pre + '_sort=' + q.sort
+				pre = '&'
+			}
+			if (q.order) {
+				link += pre + '_order=' + q.order
+				pre = '&'
+			}
+			if (q.page) {
+				link += pre + '_page=' + q.page
+				pre = '&'
+			}
+			if (q.limit) {
+				link += pre + '_limit=' + q.limit
+				pre = '&'
+			}
+			if (q.search) {
+				link += pre + 'q=' + q.search
+			}
+
+			var res = await get(link, {
+				internal: false,
+				signal: this.abortController.signal,
+			})
 
 			if (res.ok)
 				this.setState({
@@ -302,24 +312,26 @@ class Layout extends ReactQueryParams {
 								keySelector={'id'}
 								columns={[
 									{
-										name: 'Name',
-										selector: 'userId',
+										name: 'ID',
+										selector: 'id',
 
 										style: {
 											color: styles.colors.main,
 										},
 									},
 									{
-										name: 'Type',
+										name: 'Title',
 										selector: 'title',
+										grow: 4,
 									},
 									{
-										name: 'Calories (g)',
-										selector: 'calories',
+										name: 'Custom Cell',
+										selector: 'completed',
+										grow: 2,
+										cell: (value) => <div>{value === true ? 'Yes' : 'No'}</div>,
 									},
 									{
 										name: 'Fat (g)',
-										grow: 2,
 										selector: 'fat',
 										hide: 'mobile',
 									},
@@ -346,7 +358,6 @@ class Layout extends ReactQueryParams {
 									{
 										name: <div style={styles.textEllipsis}>Custom Head</div>,
 										selector: 'action',
-										cell: (value) => <div>Custom Cell: {value}</div>,
 										hide: 'mobile',
 									},
 								]}
@@ -419,6 +430,18 @@ class Layout extends ReactQueryParams {
 										width: 250,
 									}}
 									defaultValue={this.queryParams.search}
+									bufferedInput
+									onChange={(e) => {
+										this.setQueryParams({ search: e || undefined })
+										this.fetchData()
+									}}
+									placeholder={'Buffered Search'}
+								></CustomInput>
+								<CustomInput
+									style={{
+										width: 250,
+									}}
+									defaultValue={this.queryParams.search}
 									onChange={(e) => {
 										this.setQueryParams({ search: e || undefined })
 									}}
@@ -428,19 +451,7 @@ class Layout extends ReactQueryParams {
 									onBlur={(e) => {
 										this.fetchData()
 									}}
-									placeholder={'Search'}
-								></CustomInput>
-								<CustomInput
-									style={{
-										width: 250,
-									}}
-									defaultValue={this.queryParams.search}
-									bufferedInput
-									onChange={(e) => {
-										this.setQueryParams({ search: e || undefined })
-										this.fetchData()
-									}}
-									placeholder={'Buffered Search'}
+									placeholder={'Manual Search (Press Enter)'}
 								></CustomInput>
 							</div>
 							<div style={{ minHeight: 10 }}></div>
@@ -448,24 +459,31 @@ class Layout extends ReactQueryParams {
 							<CustomTable
 								isLoading={this.state.fetching}
 								height={'500px'}
-								expandContent={(data) => <div>Expanded: {data.name}</div>}
+								expandContent={(data) => (
+									<div>
+										<b>Expanded:</b> {data.title}
+									</div>
+								)}
 								keySelector={'_id'}
 								columns={[
 									{
-										name: 'Name',
-										selector: 'userId',
+										name: 'ID',
+										selector: 'id',
 
 										style: {
 											color: styles.colors.main,
 										},
 									},
 									{
-										name: 'Type',
+										name: 'Title',
 										selector: 'title',
+										grow: 4,
 									},
 									{
-										name: 'Calories (g)',
-										selector: 'calories',
+										name: 'Custom Cell',
+										selector: 'completed',
+										grow: 2,
+										cell: (value) => <div>{value === true ? 'Yes' : 'No'}</div>,
 									},
 									{
 										name: 'Fat (g)',
@@ -496,7 +514,6 @@ class Layout extends ReactQueryParams {
 									{
 										name: <div style={styles.textEllipsis}>Custom Head</div>,
 										selector: 'action',
-										cell: (value) => <div>Custom Cell: {value}</div>,
 										hide: 'mobile',
 									},
 								]}
@@ -1385,7 +1402,7 @@ class Style extends Component {
 						flexWrap: 'wrap',
 					}}
 				>
-					<div style={{ ...styles.card, minWidth: 100 }}></div>
+					<div style={{ ...styles.card, textAlign: 'center', minWidth: 100 }}>basic</div>
 					<Fade delay={0} duration={750} bottom>
 						<div style={{ ...styles.card, minWidth: 100 }}>animated</div>
 					</Fade>
@@ -1409,7 +1426,9 @@ class Style extends Component {
 					>
 						hover
 					</div>
-					<div style={{ ...styles.outlineCard, minWidth: 100 }}></div>
+					<div style={{ ...styles.outlineCard, textAlign: 'center', minWidth: 100 }}>
+						outline
+					</div>
 					<div
 						{...css({
 							...styles.card,
@@ -2904,17 +2923,6 @@ class Admin extends ReactQueryParams {
 									{
 										name: 'E-mail',
 										selector: 'email',
-									},
-									{
-										name: 'Calcium (%)',
-										selector: 'calcium',
-										hide: 'mobile',
-									},
-									{
-										name: <div style={styles.textEllipsis}>Custom Head</div>,
-										selector: 'action',
-										cell: (value) => <div>Custom Cell: {value}</div>,
-										hide: 'mobile',
 									},
 								]}
 								data={this.state.data && this.state.data.items}

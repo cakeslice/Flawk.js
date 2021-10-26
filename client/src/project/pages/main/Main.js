@@ -83,10 +83,22 @@ export default class Main extends Component {
 											padding: 20,
 										}}
 									>
-										Open-source web app boilerplate using a MERN stack
+										Open-source web app boilerplate
 									</p>
 								</div>
 							</div>
+							<br />
+							<div
+								style={{
+									display: 'flex',
+									flexDirection: 'column',
+									alignItems: 'center',
+									justifyContent: 'center',
+								}}
+							>
+								<b>* WORK IN PROGRESS *</b>
+							</div>
+							<br />
 
 							<div
 								className='wrapMargin'

@@ -10,6 +10,7 @@ import MediaQuery from 'react-responsive'
 import { Fade } from 'react-reveal'
 
 var config = require('core/config_').default
+var styles = require('core/styles').default
 
 export default class Footer extends Component {
 	state = {}
@@ -31,12 +32,19 @@ export default class Footer extends Component {
 							padding: 20,
 							paddingBottom: 60,
 							paddingTop: 60,
+							background: styles.colors.main,
 						}}
 					>
 						<div style={{ overflow: 'hidden' }}>
 							<Fade delay={250} duration={750} distance={'10px'} bottom>
 								<div>
-									<p style={{ fontSize: 14.5, textAlign: 'center' }}>
+									<p
+										style={{
+											fontSize: 14.5,
+											textAlign: 'center',
+											color: styles.colors.whiteDay,
+										}}
+									>
 										© 2020 José Guerreiro
 									</p>
 
@@ -51,9 +59,10 @@ export default class Footer extends Component {
 									>
 										<p
 											style={{
+												fontWeight: 'bold',
 												fontSize: 14.5,
 												//opacity: 0.47,
-												color: '#7F7F7F',
+												color: styles.colors.whiteDay,
 											}}
 										>
 											Made with ❤️
