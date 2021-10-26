@@ -102,7 +102,7 @@ export default class CustomButton extends Component {
 			margin: 0,
 
 			userSelect: 'none',
-			whiteSpace: 'break-spaces',
+			whiteSpace: 'nowrap',
 			textOverflow: 'ellipsis',
 
 			transition: 'background 200ms, border-color 200ms',

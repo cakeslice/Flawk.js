@@ -94,11 +94,11 @@ export default class Dashboard extends Component {
 		var textColor = this.props.textColor || styles.colors.black
 
 		return (
-			<Animated animationIn='fadeIn'>
-				<MediaQuery minWidth={config.mobileWidthTrigger}>
-					{(desktop) => {
-						var headerHeight = desktop ? 90 : 50
-						return (
+			<MediaQuery minWidth={config.mobileWidthTrigger}>
+				{(desktop) => {
+					var headerHeight = desktop ? 90 : 50
+					return (
+						<Animated animationIn='fadeIn'>
 							<div
 								style={{
 									display: 'flex',
@@ -476,10 +476,10 @@ export default class Dashboard extends Component {
 									</Switch>
 								</div>
 							</div>
-						)
-					}}
-				</MediaQuery>
-			</Animated>
+						</Animated>
+					)
+				}}
+			</MediaQuery>
 		)
 	}
 }

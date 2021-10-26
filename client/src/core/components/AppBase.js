@@ -326,7 +326,7 @@ export default class AppBase extends Component {
 											display: 'flex',
 											minWidth: '100vw',
 											minHeight: 50,
-											padding: 5,
+											padding: desktop ? 5 : 15,
 											position: 'fixed',
 											overflow: 'hidden',
 											bottom: 0,
@@ -341,7 +341,7 @@ export default class AppBase extends Component {
 
 										<p
 											style={{
-												fontSize: 12,
+												fontSize: desktop ? 12 : 11,
 												opacity: 0.75,
 												color: 'white',
 											}}
@@ -365,7 +365,7 @@ export default class AppBase extends Component {
 												if (global.startAnalytics)
 													await global.startAnalytics()
 												this.setState({
-													hideCookieNotice: true,
+													cookieNotice: 'true',
 												})
 											}}
 										>
