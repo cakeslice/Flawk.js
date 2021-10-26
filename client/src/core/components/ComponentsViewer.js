@@ -1172,77 +1172,78 @@ class Style extends Component {
 					<hr />
 					<sp />
 					<h2>
-						{'Thank you Morty. '}
+						{'This a title '}
 						<tag>h2</tag>
 					</h2>
 					<hr />
 					<sp />
 					<p>
-						My appearance is designed to be <s>familiar</s> and to put you at ease.
-						Nice, Mrs Pancakes. <Link to='/components/layout#anchor'>Real nice</Link>.
+						Lorem ipsum dolor sit amet, <s>strikethrough</s> adipiscing elit, sed do
+						eiusmod tempor <b>bold</b> ut labore et dolore magna aliqua. Ut enim ad
+						minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
+						ea commodo <Link to='/components/layout#anchor'>anchor link</Link>.
 					</p>
 					<sp />
 					<sp />
 					<sp></sp>
 					<h3>
-						{'Something '}
+						{'Another title '}
 						<tag>h3</tag>
 					</h3>
 					<hr />
 					<sp />
 					<i>
-						My appearance is{' '}
+						Lorem ipsum dolor sit amet,{' '}
 						<CustomTooltip placement='top' content={<div>Hello World!</div>}>
-							<u>tooltip</u>
+							<b>tooltip</b>
 						</CustomTooltip>{' '}
-						to be familiar and to <span style={{ color: styles.colors.red }}>put</span>{' '}
-						you at ease. Nice, Mrs Pancakes.{' '}
+						adipiscing elit, sed do{' '}
+						<span style={{ color: styles.colors.red }}>colorized</span> tempor
+						incididunt ut <u>underline</u> et dolore magna{' '}
 						<a href='https://github.com/cakeslice' target='_blank' rel='noreferrer'>
-							Real nice
+							new tab link
 						</a>
 						.
 					</i>
 					<sp />
 					<p>
 						{
-							"Who cares, Morty? Global acts of terrorism happen every day. Uh, here's something that's never happened before: "
+							'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'
 						}
 					</p>
 					<sp />
 					<p>
-						<b>{"I'm a pickle! "}</b>
-						<bb>{"I'm Pickle Ri-i-i-ick!"}</bb>
+						<b>
+							<bb>{'Bigger. '}</bb>
+						</b>
+						<small>{'Smaller.'}</small>
 					</p>
 					<sp />
 					<sp />
-					<p>
-						{" It's called carpe diem Morty. Look it up. "}
-						<small>(right...)</small>
-					</p>
-					<sp />
-					<p>{'I do not have discolored butthole flaps.'}</p>
+					<p>{'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'}</p>
 					<p>
 						{
-							'Then let me GET to know you! I just killed my family! I don’t care who they were! You gave them proof that there was something bigger and scarier to unite against, you little idiot!'
+							'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat:'
 						}
 					</p>
 					<ul>
 						<li>
-							Morty <tag>Awesome</tag>
+							Lorem <tag>Popular</tag>
 						</li>
-						<li>Rick</li>
-						<li>Jerry</li>
-						<li>Summer</li>
+						<li>Ipsum</li>
+						<li>Dolor</li>
+						<li>Sit</li>
 					</ul>
 					<sp />
 					<p>
 						{
-							"They would have gone back into the Dark Ages for a couple of generations, but instead, they dedicated themselves into making universe-destroying, un-thought-out technology like time travel all so they could try to kill a little shitsack on Earth who couldn't let a dead snake be dead even after it bit his ankle!"
+							'Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?'
 						}
 					</p>
 					<sp />
 					<blockquote>
-						Who cares, Morty? Global acts of terrorism happen every day.
+						Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur,
+						adipisci velit...
 					</blockquote>
 					<sp /> <sp />
 					<code>int var = 1</code>
@@ -2167,15 +2168,16 @@ class Register extends Component {
 											!values.captcha && (
 												<div
 													style={{
-														display: 'flex',
 														maxWidth: this.props.desktop ? 360 : 260,
 													}}
 												>
 													<sp />
 													<div
 														style={{
+															display: 'flex',
 															transform:
 																!this.props.desktop && 'scale(.85)',
+															transformOrigin: 'left',
 														}}
 													>
 														{config.recaptchaSiteKey && (
@@ -2496,15 +2498,16 @@ class Forgot extends Component {
 											!values.captcha && (
 												<div
 													style={{
-														display: 'flex',
 														maxWidth: this.props.desktop ? 360 : 260,
 													}}
 												>
 													<sp />
 													<div
 														style={{
+															display: 'flex',
 															transform:
 																!this.props.desktop && 'scale(.85)',
+															transformOrigin: 'left',
 														}}
 													>
 														{config.recaptchaSiteKey && (

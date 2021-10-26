@@ -21,9 +21,6 @@ export default class MobileDrawer extends Component {
 		children: PropTypes.node,
 		textColor: PropTypes.string,
 	}
-	static defaultProps = {
-		textColor: styles.colors.black,
-	}
 
 	state = {}
 
@@ -66,6 +63,8 @@ export default class MobileDrawer extends Component {
 
 	renderList = () => {
 		var selectedRoute = global.routerHistory().location.pathname.toString()
+
+		var textColor = this.props.textColor || styles.colors.white
 
 		return (
 			<div
@@ -137,7 +136,7 @@ export default class MobileDrawer extends Component {
 									style={{
 										fontSize: styles.defaultFontSize,
 										lineHeight: 1.64,
-										color: this.props.textColor,
+										color: textColor,
 										opacity: selectedRoute.includes('/' + link.id) ? 1 : 0.5,
 									}}
 								>
@@ -223,7 +222,7 @@ export default class MobileDrawer extends Component {
 														style={{
 															fontSize: styles.defaultFontSize - 2,
 															lineHeight: 1.64,
-															color: this.props.textColor,
+															color: textColor,
 															marginLeft: 20,
 															opacity: selectedRoute.includes(
 																'/' + link.id + '/' + sub.id
@@ -258,6 +257,8 @@ export default class MobileDrawer extends Component {
 	}
 
 	render() {
+		var textColor = this.props.textColor || styles.colors.black
+
 		return (
 			<div style={{ display: 'flex' }}>
 				<button
@@ -266,9 +267,7 @@ export default class MobileDrawer extends Component {
 					style={this.props.style}
 				>
 					<div style={{ display: 'flex', alignItems: 'center', opacity: 0.5 }}>
-						{this.state.isOpen
-							? this.close(this.props.textColor)
-							: this.burger(this.props.textColor)}
+						{this.state.isOpen ? this.close(textColor) : this.burger(textColor)}
 					</div>
 				</button>
 

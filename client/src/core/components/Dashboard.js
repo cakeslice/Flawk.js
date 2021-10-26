@@ -91,6 +91,8 @@ export default class Dashboard extends Component {
 		if (defaultRoute) defaultRoute = defaultRoute.id
 		else defaultRoute = this.props.routes.find((e) => e.id).id
 
+		var textColor = this.props.textColor || styles.colors.black
+
 		return (
 			<Animated animationIn='fadeIn'>
 				<MediaQuery minWidth={config.mobileWidthTrigger}>
@@ -132,7 +134,7 @@ export default class Dashboard extends Component {
 													{...this.props.pageProps}
 													path={this.props.path}
 													logo={this.props.logo}
-													textColor={this.props.textColor}
+													textColor={textColor}
 													entryStyle={this.props.entryStyle}
 													toggleOpen={(open) => this.toggleOpen(open)}
 													isOpen={this.state.open}
@@ -265,7 +267,7 @@ export default class Dashboard extends Component {
 																	? mobileHeight
 																	: mobileHeightTop
 															}
-															textColor={this.props.textColor}
+															textColor={textColor}
 															{...this.props.pageProps}
 														></MobileDrawer>
 													</div>
@@ -487,9 +489,6 @@ class Menu extends React.Component {
 		style: PropTypes.object,
 		children: PropTypes.node,
 		textColor: PropTypes.string,
-	}
-	static defaultProps = {
-		textColor: styles.colors.black,
 	}
 
 	render() {
