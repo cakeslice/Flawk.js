@@ -64,11 +64,8 @@ export default class Header extends Component {
 			<MediaQuery minWidth={config.mobileWidthTrigger}>
 				{(desktop) => (
 					<div
+						className='flex-col w-full'
 						style={{
-							width: '100%',
-							display: 'flex',
-							flexDirection: 'column',
-
 							minHeight: this.props.fillSpace
 								? desktop
 									? desktopHeight
@@ -77,12 +74,10 @@ export default class Header extends Component {
 						}}
 					>
 						<div
-							className={desktop && 'blur-background'}
+							className={
+								'flex-col w-full items-center' + (desktop ? ' blur-background' : '')
+							}
 							style={{
-								width: '100%',
-								display: 'flex',
-								flexDirection: 'column',
-								alignItems: 'center',
 								transition: 'border-color .5s, box-shadow .5s, backgroundColor .5s',
 								backgroundColor: !desktop
 									? styles.colors.white
@@ -103,8 +98,8 @@ export default class Header extends Component {
 						>
 							<Fade delay={0} duration={750} top>
 								<div
+									className='flex justify-between w-full'
 									style={{
-										width: '100%',
 										maxWidth: maxWidth,
 										minHeight: desktop
 											? this.state.showHeaderBackground
@@ -124,9 +119,6 @@ export default class Header extends Component {
 										paddingLeft: desktop ? 15 : 35,
 										paddingRight: desktop ? 15 : 35,
 										boxSizing: 'border-box',
-										display: 'flex',
-										justifyContent: 'space-between',
-										flexDirection: 'row',
 									}}
 								>
 									{desktop && <div style={{ minWidth: 175 }}></div>}
@@ -200,9 +192,8 @@ export default class Header extends Component {
 
 									{desktop && (
 										<div
+											className='flex items-center'
 											style={{
-												display: 'flex',
-												alignItems: 'center',
 												minWidth: 175,
 											}}
 										>
@@ -216,9 +207,8 @@ export default class Header extends Component {
 
 									{!desktop && (
 										<MobileDrawer
+											className='flex items-center'
 											style={{
-												display: 'flex',
-												alignItems: 'center',
 												minWidth: desktop ? 48 : 30,
 												paddingBottom: this.state.showHeaderBackground
 													? 10

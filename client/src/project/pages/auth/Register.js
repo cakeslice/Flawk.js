@@ -8,6 +8,7 @@
 import { post } from 'core/api'
 import CustomButton from 'core/components/CustomButton'
 import CustomInput from 'core/components/CustomInput'
+import Field from 'core/components/Field'
 import { Form, Formik } from 'formik'
 import React, { Component } from 'react'
 import ReCaptcha from 'react-google-recaptcha'
@@ -17,7 +18,6 @@ import MediaQuery from 'react-responsive'
 import HeadShake from 'react-reveal/HeadShake'
 import { Link } from 'react-router-dom'
 import { fetchUser } from '../../redux/UserState'
-var validator = require('validator')
 
 var styles = require('core/styles').default
 var config = require('core/config_').default
@@ -44,18 +44,7 @@ class Register extends Component {
 						{this.state.verifyingSignup ? (
 							<Formik
 								enableReinitialize
-								validate={(values) => {
-									let errors = {}
-
-									if (!values.verificationCode) {
-										errors.verificationCode = '*'
-									}
-
-									return errors
-								}}
-								initialValues={{
-									verificationCode: undefined,
-								}}
+								initialValues={{}}
 								onSubmit={async (values, { setSubmitting }) => {
 									this.setState({ wrongLogin: undefined })
 									setSubmitting(true)
@@ -85,27 +74,7 @@ class Register extends Component {
 									setSubmitting(false)
 								}}
 							>
-								{({
-									values,
-									handleChange,
-									handleBlur,
-									submitCount,
-									errors,
-									touched,
-									isSubmitting,
-									setFieldValue,
-									setFieldTouched,
-								}) => {
-									var formIK = {
-										values,
-										touched,
-										errors,
-										setFieldTouched,
-										setFieldValue,
-										handleChange,
-										handleBlur,
-										submitCount,
-									}
+								{({ isSubmitting }) => {
 									return (
 										<Form
 											style={{
@@ -115,32 +84,20 @@ class Register extends Component {
 											}}
 											noValidate
 										>
-											<div
-												style={{
-													display: 'flex',
-													flexDirection: 'column',
-													alignItems: 'center',
-													justifyContent: 'center',
-												}}
-											>
-												<CustomInput
+											<div className='flex-col items-center justify-center'>
+												<Field
+													component={CustomInput}
+													required
 													autoFocus
 													label={'Verification code'}
 													type={'number'}
 													name='verificationCode'
-													formIK={formIK}
 													invalidType={'label'}
 													placeholder={'Use 55555'}
 												/>
 											</div>
 											<sp />
-											<div
-												style={{
-													display: 'flex',
-													flexDirection: 'column',
-													alignItems: 'center',
-												}}
-											>
+											<div className='flex-col items-center'>
 												<HeadShake spy={this.state.wrongLogin || 0}>
 													{this.state.wrongLogin && (
 														<div style={{ color: styles.colors.red }}>
@@ -170,25 +127,6 @@ class Register extends Component {
 								validate={(values) => {
 									let errors = {}
 
-									if (!values.firstName) {
-										errors.firstName = '*'
-									}
-									if (!values.lastName) {
-										errors.lastName = '*'
-									}
-
-									if (!values.email) {
-										errors.email = '*'
-									} else if (!validator.isEmail(values.email)) {
-										errors.email = '*'
-									}
-
-									if (!values.password) {
-										errors.password = '*'
-									} else if (values.password.length < 6) {
-										errors.password = 'Minimum 6 characters'
-									}
-
 									if (
 										config.prod &&
 										config.recaptchaSiteKey &&
@@ -200,10 +138,6 @@ class Register extends Component {
 									return errors
 								}}
 								initialValues={{
-									firstName: '',
-									lastName: '',
-									email: '',
-									password: '',
 									captcha: undefined,
 								}}
 								onSubmit={async (values, { setSubmitting, setFieldValue }) => {
@@ -234,27 +168,7 @@ class Register extends Component {
 									setSubmitting(false)
 								}}
 							>
-								{({
-									values,
-									handleChange,
-									handleBlur,
-									submitCount,
-									errors,
-									touched,
-									isSubmitting,
-									setFieldValue,
-									setFieldTouched,
-								}) => {
-									var formIK = {
-										values,
-										touched,
-										errors,
-										setFieldTouched,
-										setFieldValue,
-										handleChange,
-										handleBlur,
-										submitCount,
-									}
+								{({ values, isSubmitting, setFieldValue, setFieldTouched }) => {
 									return (
 										<Form
 											style={{
@@ -264,71 +178,60 @@ class Register extends Component {
 											}}
 											noValidate
 										>
-											<div
-												style={{
-													display: 'flex',
-													flexDirection: 'column',
-													alignItems: 'center',
-													justifyContent: 'center',
-												}}
-											>
+											<div className='flex-col items-center justify-center'>
 												<div
-													className={'wrapMargin'}
-													style={
-														desktop
-															? {
-																	display: 'flex',
-																	justifyContent: 'space-around',
-																	flexWrap: 'wrap',
-															  }
-															: {}
+													className={
+														'wrapMargin' +
+														(desktop
+															? ' flex flex-wrap justify-around'
+															: '')
 													}
 												>
-													<CustomInput
+													<Field
+														component={CustomInput}
+														required
 														autoFocus
 														label={'First name'}
 														name='firstName'
-														formIK={formIK}
 														invalidType={'label'}
 														placeholder={''}
 													/>
-													<CustomInput
+													<Field
+														component={CustomInput}
+														required
 														label={'Last name'}
 														name='lastName'
-														formIK={formIK}
 														invalidType={'label'}
 														placeholder={''}
 													/>
 												</div>
 												<div
-													className={'wrapMargin'}
-													style={
-														desktop
-															? {
-																	display: 'flex',
-																	justifyContent: 'space-around',
-																	flexWrap: 'wrap',
-															  }
-															: {}
+													className={
+														'wrapMargin' +
+														(desktop
+															? ' flex flex-wrap justify-around'
+															: '')
 													}
 												>
-													<CustomInput
+													<Field
+														component={CustomInput}
+														required
 														autoFocus
 														label={'E-mail'}
 														type={'email'}
 														autoComplete='new-email'
 														name='email'
-														formIK={formIK}
 														invalidType={'label'}
 														placeholder={''}
 													/>
 													<div>
-														<CustomInput
+														<Field
+															component={CustomInput}
+															required
 															label={'Password'}
 															name='password'
 															autoComplete='new-password'
 															type={'password'}
-															formIK={formIK}
 															//invalidType={'label'}
 															placeholder={''}
 														/>
@@ -341,10 +244,8 @@ class Register extends Component {
 													!config.recaptchaBypass &&
 													!values.captcha && (
 														<div
+															className='flex-col items-center'
 															style={{
-																display: 'flex',
-																alignItems: 'center',
-																flexDirection: 'column',
 																maxWidth: desktop ? 360 : 260,
 															}}
 														>
@@ -384,13 +285,7 @@ class Register extends Component {
 													)}
 											</div>
 											<sp />
-											<div
-												style={{
-													display: 'flex',
-													flexDirection: 'column',
-													alignItems: 'center',
-												}}
-											>
+											<div className='flex-col items-center'>
 												<HeadShake spy={this.state.wrongLogin || 0}>
 													{this.state.wrongLogin && (
 														<div style={{ color: styles.colors.red }}>

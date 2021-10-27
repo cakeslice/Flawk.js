@@ -8,6 +8,7 @@
 import { post } from 'core/api'
 import CustomButton from 'core/components/CustomButton'
 import CustomInput from 'core/components/CustomInput'
+import Field from 'core/components/Field'
 import { Form, Formik } from 'formik'
 import React, { Component } from 'react'
 import ReCaptcha from 'react-google-recaptcha'
@@ -16,7 +17,6 @@ import { connect } from 'react-redux'
 import MediaQuery from 'react-responsive'
 import HeadShake from 'react-reveal/HeadShake'
 import { fetchUser } from '../../redux/UserState'
-var validator = require('validator')
 
 var styles = require('core/styles').default
 var config = require('core/config_').default
@@ -44,23 +44,7 @@ class Forgot extends Component {
 							<Formik
 								enableReinitialize
 								key={'reset_password'}
-								validate={(values) => {
-									let errors = {}
-
-									if (!values.newPassword) {
-										errors.newPassword = '*'
-									}
-
-									if (!values.verificationCode) {
-										errors.verificationCode = '*'
-									}
-
-									return errors
-								}}
-								initialValues={{
-									newPassword: undefined,
-									verificationCode: undefined,
-								}}
+								initialValues={{}}
 								onSubmit={async (values, { setSubmitting }) => {
 									this.setState({ wrongLogin: undefined })
 									setSubmitting(true)
@@ -91,27 +75,7 @@ class Forgot extends Component {
 									setSubmitting(false)
 								}}
 							>
-								{({
-									values,
-									handleChange,
-									handleBlur,
-									submitCount,
-									errors,
-									touched,
-									isSubmitting,
-									setFieldValue,
-									setFieldTouched,
-								}) => {
-									var formIK = {
-										values,
-										touched,
-										errors,
-										setFieldTouched,
-										setFieldValue,
-										handleChange,
-										handleBlur,
-										submitCount,
-									}
+								{({ isSubmitting }) => {
 									return (
 										<Form
 											style={{
@@ -121,44 +85,33 @@ class Forgot extends Component {
 											}}
 											noValidate
 										>
-											<div
-												style={{
-													display: 'flex',
-													flexDirection: 'column',
-													alignItems: 'center',
-													justifyContent: 'center',
-												}}
-											>
+											<div className='flex-col items-center justify-center'>
 												<div>
-													<CustomInput
+													<Field
+														component={CustomInput}
+														required
 														autoFocus
 														label={'New password'}
 														name='newPassword'
 														autoComplete='new-password'
 														type={'password'}
-														formIK={formIK}
 														invalidType={'label'}
 														placeholder={''}
 													/>
 												</div>
 												<div style={{ minHeight: 10 }} />
-												<CustomInput
+												<Field
+													component={CustomInput}
+													required
 													label={'Verification code'}
 													type={'number'}
 													name='verificationCode'
-													formIK={formIK}
 													invalidType={'label'}
 													placeholder={'Use 55555'}
 												/>
 											</div>
 											<sp />
-											<div
-												style={{
-													display: 'flex',
-													flexDirection: 'column',
-													alignItems: 'center',
-												}}
-											>
+											<div className='flex-col items-center'>
 												<HeadShake spy={this.state.wrongLogin || 0}>
 													{this.state.wrongLogin && (
 														<div style={{ color: styles.colors.red }}>
@@ -188,12 +141,6 @@ class Forgot extends Component {
 								key={'forgot_password'}
 								validate={(values) => {
 									let errors = {}
-
-									if (!values.email) {
-										errors.email = '*'
-									} else if (!validator.isEmail(values.email)) {
-										errors.email = '*'
-									}
 
 									if (
 										!config.recaptchaBypass &&
@@ -240,27 +187,7 @@ class Forgot extends Component {
 									setSubmitting(false)
 								}}
 							>
-								{({
-									values,
-									handleChange,
-									handleBlur,
-									submitCount,
-									errors,
-									touched,
-									isSubmitting,
-									setFieldValue,
-									setFieldTouched,
-								}) => {
-									var formIK = {
-										values,
-										touched,
-										errors,
-										setFieldTouched,
-										setFieldValue,
-										handleChange,
-										handleBlur,
-										submitCount,
-									}
+								{({ values, isSubmitting, setFieldValue, setFieldTouched }) => {
 									return (
 										<Form
 											style={{
@@ -270,28 +197,15 @@ class Forgot extends Component {
 											}}
 											noValidate
 										>
-											<div
-												style={{
-													display: 'flex',
-													flexDirection: 'column',
-													alignItems: 'center',
-													justifyContent: 'center',
-												}}
-											>
-												<div
-													className='wrapMargin'
-													style={{
-														display: 'flex',
-														justifyContent: 'space-around',
-														flexWrap: 'wrap',
-													}}
-												>
-													<CustomInput
+											<div className='flex-col items-center justify-center'>
+												<div className='wrapMargin flex flex-wrap justify-around'>
+													<Field
+														component={CustomInput}
+														required
 														autoFocus
 														label={'E-mail'}
 														type={'email'}
 														name='email'
-														formIK={formIK}
 														invalidType={'label'}
 														placeholder={''}
 													/>
@@ -300,10 +214,8 @@ class Forgot extends Component {
 													!config.recaptchaBypass &&
 													!values.captcha && (
 														<div
+															className='flex-col items-center'
 															style={{
-																display: 'flex',
-																alignItems: 'center',
-																flexDirection: 'column',
 																maxWidth: desktop ? 360 : 260,
 															}}
 														>
@@ -343,13 +255,7 @@ class Forgot extends Component {
 													)}
 											</div>
 											<sp />
-											<div
-												style={{
-													display: 'flex',
-													flexDirection: 'column',
-													alignItems: 'center',
-												}}
-											>
+											<div className='flex-col items-center'>
 												<HeadShake spy={this.state.wrongLogin || 0}>
 													{this.state.wrongLogin && (
 														<div style={{ color: styles.colors.red }}>

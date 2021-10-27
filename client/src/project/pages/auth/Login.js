@@ -8,7 +8,7 @@
 import { post } from 'core/api'
 import CustomButton from 'core/components/CustomButton'
 import CustomInput from 'core/components/CustomInput'
-import { Form, Formik } from 'formik'
+import { Field, Form, Formik } from 'formik'
 import React, { Component } from 'react'
 import { Helmet } from 'react-helmet'
 import { connect } from 'react-redux'
@@ -16,7 +16,6 @@ import MediaQuery from 'react-responsive'
 import HeadShake from 'react-reveal/HeadShake'
 import { Link } from 'react-router-dom'
 import { fetchUser } from '../../redux/UserState'
-var validator = require('validator')
 
 var styles = require('core/styles').default
 var config = require('core/config_').default
@@ -42,25 +41,7 @@ class Login extends Component {
 						<sp />
 						<Formik
 							enableReinitialize
-							validate={(values) => {
-								let errors = {}
-
-								if (!values.email) {
-									errors.email = '*'
-								} else if (!validator.isEmail(values.email)) {
-									errors.email = '*'
-								}
-
-								if (!values.password) {
-									errors.password = '*'
-								}
-
-								return errors
-							}}
-							initialValues={{
-								email: '',
-								password: '',
-							}}
+							initialValues={{}}
 							onSubmit={async (values, { setSubmitting }) => {
 								this.setState({ wrongLogin: undefined })
 								setSubmitting(true)
@@ -90,27 +71,7 @@ class Login extends Component {
 								setSubmitting(false)
 							}}
 						>
-							{({
-								values,
-								handleChange,
-								handleBlur,
-								submitCount,
-								errors,
-								touched,
-								isSubmitting,
-								setFieldValue,
-								setFieldTouched,
-							}) => {
-								var formIK = {
-									values,
-									touched,
-									errors,
-									setFieldTouched,
-									setFieldValue,
-									handleChange,
-									handleBlur,
-									submitCount,
-								}
+							{({ isSubmitting }) => {
 								return (
 									<Form
 										style={{
@@ -120,29 +81,24 @@ class Login extends Component {
 										}}
 										noValidate
 									>
-										<div
-											style={{
-												display: 'flex',
-												flexDirection: 'column',
-												alignItems: 'center',
-												justifyContent: 'center',
-											}}
-										>
-											<CustomInput
+										<div className='flex-col items-center justify-center'>
+											<Field
+												component={CustomInput}
+												required
 												autoFocus
 												label={'E-mail'}
 												type={'email'}
 												name='email'
-												formIK={formIK}
 												invalidType={'label'}
 												placeholder={''}
 											/>
 											<div style={{ minHeight: 10 }} />
-											<CustomInput
+											<Field
+												component={CustomInput}
+												required
 												label={'Password'}
 												name='password'
 												type={'password'}
-												formIK={formIK}
 												invalidType={'label'}
 												placeholder={''}
 											/>
@@ -154,13 +110,7 @@ class Login extends Component {
 											</Link>
 										</div>
 										<sp />
-										<div
-											style={{
-												display: 'flex',
-												flexDirection: 'column',
-												alignItems: 'center',
-											}}
-										>
+										<div className='flex-col items-center'>
 											<HeadShake spy={this.state.wrongLogin || 0}>
 												{this.state.wrongLogin && (
 													<div style={{ color: styles.colors.red }}>

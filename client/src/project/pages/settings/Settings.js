@@ -9,11 +9,11 @@ import { post } from 'core/api'
 import Avatar from 'core/components/Avatar'
 import CustomButton from 'core/components/CustomButton'
 import CustomInput from 'core/components/CustomInput'
+import Field from 'core/components/Field'
 import { Form, Formik } from 'formik'
 import { css } from 'glamor'
 import React, { Component } from 'react'
 import MediaQuery from 'react-responsive'
-var validator = require('validator')
 
 var styles = require('core/styles').default
 var config = require('core/config_').default
@@ -35,26 +35,6 @@ class Settings extends Component {
 						>
 							<Formik
 								enableReinitialize
-								validate={(values) => {
-									let errors = {}
-
-									if (!values.email) {
-										errors.email = '*'
-									} else if (!validator.isEmail(values.email)) {
-										errors.email = '*'
-									}
-
-									if (!values.firstName) {
-										errors.firstName = '*'
-									}
-									if (!values.lastName) errors.lastName = '*'
-
-									if (values.password && values.password.length < 6) {
-										errors.password = 'Minimum 6 characters'
-									}
-
-									return errors
-								}}
 								initialValues={{
 									firstName: this.props.user.personal.firstName,
 									lastName: this.props.user.personal.lastName,
@@ -121,84 +101,53 @@ class Settings extends Component {
 									}
 								}}
 							>
-								{({
-									values,
-									handleChange,
-									handleBlur,
-									submitCount,
-									errors,
-									touched,
-									isSubmitting,
-									setFieldValue,
-									setFieldTouched,
-									dirty,
-								}) => {
-									var formIK = {
-										values,
-										touched,
-										errors,
-										setFieldTouched,
-										setFieldValue,
-										handleChange,
-										handleBlur,
-										submitCount,
-									}
+								{({ values, isSubmitting, setFieldValue, dirty }) => {
 									return (
 										<Form noValidate>
-											<div
-												className='wrapMargin'
-												style={{
-													display: 'flex',
-													justifyContent: 'space-around',
-													flexWrap: 'wrap',
-												}}
-											>
-												<CustomInput
+											<div className='wrapMargin flex flex-wrap justify-around'>
+												<Field
+													component={CustomInput}
+													required
 													label={'First name'}
 													name='firstName'
-													formIK={formIK}
 													invalidType={'label'}
 													placeholder={''}
 												/>
-												<CustomInput
+												<Field
+													component={CustomInput}
+													required
 													label={'Last name'}
 													name='lastName'
-													formIK={formIK}
 													invalidType={'label'}
 													placeholder={''}
 												/>
 											</div>
-											<div
-												className='wrapMargin'
-												style={{
-													display: 'flex',
-													justifyContent: 'space-around',
-													flexWrap: 'wrap',
-												}}
-											>
-												<CustomInput
+											<div className='wrapMargin flex flex-wrap justify-around'>
+												<Field
+													component={CustomInput}
+													required
 													label={'E-mail'}
 													type={'email'}
 													name='email'
-													formIK={formIK}
 													autoComplete='new-email'
 													invalidType={'label'}
 													placeholder={''}
 												/>
 												<div>
-													<CustomInput
+													<Field
+														component={CustomInput}
+														required
 														label={'Password'}
 														name='password'
 														autoComplete='new-password'
 														type={'password'}
-														formIK={formIK}
 														//invalidType={'label'}
 														placeholder={'********'}
 													/>
 												</div>
 											</div>
 											<sp />
-											<div style={{ display: 'flex', alignItems: 'center' }}>
+											<div className='flex items-center'>
 												<label
 													htmlFor={
 														desktop
@@ -245,13 +194,7 @@ class Settings extends Component {
 												</div>
 											</div>
 											<sp />
-											<div
-												style={{
-													display: 'flex',
-													flexDirection: 'column',
-													alignItems: 'center',
-												}}
-											>
+											<div className='flex-col items-center'>
 												<CustomButton
 													type='submit'
 													isDisabled={!dirty}

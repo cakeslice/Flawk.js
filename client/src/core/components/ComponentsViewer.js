@@ -34,10 +34,10 @@ import CustomSlider from './CustomSlider'
 import CustomTable from './CustomTable'
 import CustomTooltip from './CustomTooltip'
 import Dashboard from './Dashboard'
+import Field from './Field'
 import GenericModal from './GenericModal'
 import LanguageSwitcher from './LanguageSwitcher'
 import Loading from './Loading'
-var validator = require('validator')
 const Parser = require('html-react-parser').default
 
 var styles = require('core/styles').default
@@ -65,14 +65,9 @@ export default class ComponentsViewer extends Component {
 				notRoute: true,
 				tab: (props) => (
 					<div>
-						<div
-							style={{
-								display: 'flex',
-								justifyContent: 'center',
-								alignItems: 'center',
-							}}
-						>
+						<div className='flex justify-center items-center'>
 							<div
+								className='flex items-center'
 								style={{
 									display: 'flex',
 									alignItems: 'center',
@@ -308,7 +303,7 @@ class Layout extends ReactQueryParams {
 							<CustomTable
 								isLoading={this.state.fetching}
 								height={'500px'}
-								expandContent={(data) => <div>Expanded: {data.name}</div>}
+								expandContent={(data) => <div>Expanded: {data.title}</div>}
 								keySelector={'id'}
 								columns={[
 									{
@@ -394,14 +389,7 @@ class Layout extends ReactQueryParams {
 						<div>
 							{this.state.exampleModal && this.exampleModal()}
 							{header('Flex grid', true)}
-							<div
-								className='wrapMargin'
-								style={{
-									display: 'flex',
-									justifyContent: 'space-around',
-									flexWrap: 'wrap',
-								}}
-							>
+							<div className='wrapMargin flex flex-wrap justify-around'>
 								<div style={wrapExample}></div>
 								<div style={wrapExample}></div>
 								<div style={wrapExample}></div>
@@ -417,14 +405,7 @@ class Layout extends ReactQueryParams {
 							</div>
 							<div id='anchor' />
 							{header('Table')}
-							<div
-								className='wrapMarginTopLeft'
-								style={{
-									display: 'flex',
-									justifyContent: 'flex-start',
-									flexWrap: 'wrap',
-								}}
-							>
+							<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
 								<CustomInput
 									style={{
 										width: 250,
@@ -596,14 +577,7 @@ class Misc extends ReactQueryParams {
 				{header('Avatar', true)}
 				<Avatar></Avatar>
 				{header('Loading')}
-				<div
-					className='wrapMarginTopLeft'
-					style={{
-						display: 'flex',
-						justifyContent: 'flex-start',
-						flexWrap: 'wrap',
-					}}
-				>
+				<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
 					<Loading large />
 					<sp />
 					<Loading /> <sp />
@@ -611,14 +585,19 @@ class Misc extends ReactQueryParams {
 				</div>
 				{header('Query parameters')}
 				<div>
-					Parameter {'"test"'}: {this.queryParams.test}
+					<p>
+						Parameter {'"test"'}: {this.queryParams.test}
+					</p>
+					<br />
 					<CustomButton
 						onClick={() => {
 							this.setQueryParams({
 								test: 'Hello!',
 							})
 						}}
-					></CustomButton>
+					>
+						Add test=Hello!
+					</CustomButton>
 				</div>
 				{header('Toasts')}
 				<div>
@@ -710,16 +689,7 @@ class Inputs extends Component {
 				{(desktop) => (
 					<div>
 						{header('Input fields', true)}
-						<div
-							className='wrapMarginTopLeft'
-							style={{
-								display: 'flex',
-								justifyContent: 'flex-start',
-								flexWrap: 'wrap',
-
-								alignItems: 'flex-end',
-							}}
-						>
+						<div className='wrapMarginTopLeft flex flex-wrap justify-start items-end'>
 							<CustomInput
 								style={{
 									width: 250,
@@ -751,16 +721,7 @@ class Inputs extends Component {
 							></CustomInput>
 						</div>
 						<sp />
-						<div
-							className='wrapMarginTopLeft'
-							style={{
-								display: 'flex',
-								justifyContent: 'flex-start',
-								flexWrap: 'wrap',
-
-								alignItems: 'flex-start',
-							}}
-						>
+						<div className='wrapMarginTopLeft flex flex-wrap justify-start items-start'>
 							<CustomInput
 								isDisabled
 								placeholder={'Long placeholder really long'}
@@ -781,14 +742,7 @@ class Inputs extends Component {
 							<input placeholder='Basic'></input>
 						</div>
 						<sp></sp>
-						<div
-							className='wrapMarginTopLeft'
-							style={{
-								display: 'flex',
-								justifyContent: 'flex-start',
-								flexWrap: 'wrap',
-							}}
-						>
+						<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
 							<CustomInput
 								textArea
 								style={{
@@ -816,14 +770,7 @@ class Inputs extends Component {
 							></CustomButton>
 						</div>
 						{header('Dropdown')}
-						<div
-							className='wrapMarginTopLeft'
-							style={{
-								display: 'flex',
-								justifyContent: 'flex-start',
-								flexWrap: 'wrap',
-							}}
-						>
+						<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
 							<CustomDropdown
 								label='Hello'
 								placeholder={'Long placeholder really long'}
@@ -889,14 +836,7 @@ class Inputs extends Component {
 							/>
 						</div>
 						<sp />
-						<div
-							className='wrapMarginTopLeft'
-							style={{
-								display: 'flex',
-								justifyContent: 'flex-start',
-								flexWrap: 'wrap',
-							}}
-						>
+						<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
 							<CustomDropdown
 								config={{ isSearchable: false }}
 								style={{}}
@@ -941,43 +881,7 @@ class Inputs extends Component {
 						<div style={{ ...styles.card, width: desktop && 'fit-content' }}>
 							<Formik
 								enableReinitialize
-								validate={(values) => {
-									let errors = {}
-
-									var validate = [
-										'firstName',
-										'lastName',
-										'phone',
-										'email',
-										'password',
-										'dropdown',
-									]
-									validate.forEach((v) => {
-										if (values[v] === undefined || values[v] === '')
-											errors[v] = '*'
-									})
-
-									if (!values.checkbox)
-										errors.checkbox = 'Please accept the terms'
-
-									if (values.email && validator.isEmail(values.email)) {
-										errors.email = 'Invalid e-mail address'
-									}
-									if (values.password && values.password.length < 6) {
-										errors.password = 'Minimum 6 characters'
-									}
-
-									return errors
-								}}
-								initialValues={{
-									firstName: '',
-									lastName: '',
-									email: '',
-									password: '',
-									phone: '',
-									checkbox: false,
-									dropdown: '',
-								}}
+								initialValues={{}}
 								onSubmit={async (values, { setSubmitting }) => {
 									console.log('Submitting...')
 									setSubmitting(true)
@@ -995,85 +899,56 @@ class Inputs extends Component {
 									setSubmitting(false)
 								}}
 							>
-								{({
-									values,
-									handleReset,
-									handleChange,
-									handleBlur,
-									submitCount,
-									setFieldValue,
-									setFieldTouched,
-									errors,
-									touched,
-									isSubmitting,
-								}) => {
-									var formIK = {
-										values,
-										touched,
-										errors,
-										setFieldTouched,
-										setFieldValue,
-										handleChange,
-										handleBlur,
-										submitCount,
-									}
+								{({ handleReset, isSubmitting }) => {
 									return (
 										<Form noValidate>
-											<div
-												className='wrapMarginTopLeft'
-												style={{
-													display: 'flex',
-													justifyContent: 'flex-start',
-													flexWrap: 'wrap',
-												}}
-											>
-												<CustomInput
+											<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+												<Field
+													component={CustomInput}
+													required
 													type={'text'}
 													name='firstName'
-													formIK={formIK}
 													label={config.text('auth.firstName')}
 												/>
-												<CustomInput
+												<Field
+													component={CustomInput}
+													required
 													type={'text'}
 													name='lastName'
-													formIK={formIK}
 													label={config.text('auth.lastName')}
 												/>
 											</div>
 
 											<div style={{ minHeight: 30 }}></div>
 
-											<div
-												className='wrapMarginTopLeft'
-												style={{
-													display: 'flex',
-													justifyContent: 'flex-start',
-													flexWrap: 'wrap',
-												}}
-											>
-												<CustomInput
+											<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+												<Field
+													component={CustomInput}
+													required
+													invalidMessage={'Invalid e-mail address'}
 													style={{
 														width: 250,
 													}}
 													type={'email'}
 													name='email'
-													formIK={formIK}
 													autoComplete='new-email'
 													label={'E-mail'}
 												/>
-												<CustomInput
+												<Field
+													component={CustomInput}
+													required
 													type={'number'}
 													name='phone'
-													formIK={formIK}
 													label={config.text(
 														'settings.drawer.account.phone'
 													)}
 												/>
 
-												<CustomDropdown
+												<Field
+													component={CustomDropdown}
+													required
 													name='dropdown'
 													config={{ isSearchable: true }}
-													formIK={formIK}
 													placeholder={'Value'}
 													erasable
 													label='Admin'
@@ -1089,39 +964,29 @@ class Inputs extends Component {
 													]}
 												/>
 											</div>
-											<div
-												className='wrapMarginTopLeft'
-												style={{
-													display: 'flex',
-													justifyContent: 'flex-start',
-													flexWrap: 'wrap',
-												}}
-											>
-												<CustomInput
+											<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+												<Field
+													component={CustomInput}
+													required
+													invalidMessage='Minimum 12 characters'
+													validate={(value) => value.length >= 12}
 													name='password'
 													type={'password'}
 													autoComplete='new-password'
-													formIK={formIK}
 													label={'Password'}
 												/>
 											</div>
 
 											<div style={{ flexGrow: 1, minHeight: 40 }}></div>
 
-											<CustomButton
+											<Field
+												component={CustomButton}
+												required='Please accept the terms'
 												name='checkbox'
-												formIK={formIK}
 												checkbox={'I accept'}
-											></CustomButton>
+											/>
 
-											<div
-												className='wrapMarginBottomRight'
-												style={{
-													display: 'flex',
-													justifyContent: 'flex-end',
-													flexWrap: 'wrap',
-												}}
-											>
+											<div className='wrapMarginBottomRight flex flex-wrap justify-end'>
 												<CustomButton
 													appearance={'secondary'}
 													type='submit'
@@ -1268,14 +1133,11 @@ class Style extends Component {
 				</div>
 				{header('Buttons')}
 				<div
-					className='wrapMarginTopLeft'
+					className='wrapMarginTopLeft flex flex-wrap justify-start'
 					style={{
 						...styles.card,
 						paddingBottom: 10,
 						paddingRight: 10,
-						display: 'flex',
-						justifyContent: 'flex-start',
-						flexWrap: 'wrap',
 					}}
 				>
 					<CustomButton isLoading style={{ minWidth: 50 }}>
@@ -1342,12 +1204,9 @@ class Style extends Component {
 				</div>
 				{header('Colors')}
 				<div
-					className='wrapMarginTopLeft'
+					className='wrapMarginTopLeft flex flex-wrap justify-start'
 					style={{
 						...styles.card,
-						display: 'flex',
-						justifyContent: 'flex-start',
-						flexWrap: 'wrap',
 					}}
 				>
 					<div
@@ -1394,14 +1253,7 @@ class Style extends Component {
 					></div>
 				</div>
 				{header('Cards')}
-				<div
-					className='wrapMarginTopLeft'
-					style={{
-						display: 'flex',
-						justifyContent: 'flex-start',
-						flexWrap: 'wrap',
-					}}
-				>
+				<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
 					<div style={{ ...styles.card, textAlign: 'center', minWidth: 100 }}>basic</div>
 					<Fade delay={0} duration={750} bottom>
 						<div style={{ ...styles.card, minWidth: 100 }}>animated</div>
@@ -1454,15 +1306,12 @@ class Backend extends Component {
 		return (
 			<MediaQuery minWidth={config.mobileWidthTrigger}>
 				{(desktop) => (
-					<div style={{ display: 'flex', flexDirection: 'column' }}>
+					<div className='flex-col'>
 						{header('Authentication', true)}
 						<div
-							className={desktop && 'wrapMarginTopLeft'}
-							style={{
-								display: desktop && 'flex',
-								justifyContent: 'space-between',
-								flexWrap: 'wrap',
-							}}
+							className={
+								desktop && 'wrapMarginTopLeft flex flex-wrap justify-between'
+							}
 						>
 							<div>
 								<div>Login</div>
@@ -1486,12 +1335,7 @@ class Backend extends Component {
 						</div>
 						{header('Account & Logout')}
 						<div
-							className={desktop && 'wrapMarginTopLeft'}
-							style={{
-								display: desktop && 'flex',
-								justifyContent: 'flex-start',
-								flexWrap: 'wrap',
-							}}
+							className={desktop && 'wrapMarginTopLeft flex flex-wrap justify-start'}
 						>
 							<Formik
 								enableReinitialize
@@ -1506,36 +1350,10 @@ class Backend extends Component {
 									}
 								}}
 							>
-								{({
-									isSubmitting,
-									values,
-									touched,
-									errors,
-									setFieldTouched,
-									setFieldValue,
-									handleChange,
-									handleBlur,
-									submitCount,
-								}) => {
-									/* var formIK = {
-										values,
-										touched,
-										errors,
-										setFieldTouched,
-										setFieldValue,
-										handleChange,
-										handleBlur,
-											submitCount,
-									} */
+								{({ isSubmitting }) => {
 									return (
 										<Form noValidate>
-											<div
-												style={{
-													display: 'flex',
-													flexDirection: 'column',
-													alignItems: 'center',
-												}}
-											>
+											<div className='flex-col items-center'>
 												<button
 													type='button'
 													style={{
@@ -1668,14 +1486,8 @@ class Backend extends Component {
 								</div>
 							</div>
 						)}
-						{header('Constant data')}
-						<div
-							style={{
-								display: 'flex',
-								flexDirection: 'column',
-								justifyContent: 'center',
-							}}
-						>
+						{header('Remote data')}
+						<div className='flex-col justify-center'>
 							{this.props.structures &&
 								Object.keys(this.props.structures).map((result, j) => (
 									<div key={result}>
@@ -1723,15 +1535,7 @@ class Backend extends Component {
 						</div>
 						{header('Websockets')}
 						{this.props.user ? (
-							<div
-								className='wrapMarginTopLeft'
-								style={{
-									display: 'flex',
-									justifyContent: 'flex-start',
-									flexWrap: 'wrap',
-									alignItems: 'center',
-								}}
-							>
+							<div className='wrapMarginTopLeft flex flex-wrap justify-start items-center'>
 								<CustomButton
 									onClick={async () => {
 										var token = await global.storage.getItem('token')
@@ -1778,20 +1582,6 @@ class Login extends Component {
 			>
 				<Formik
 					enableReinitialize
-					validate={(values) => {
-						let errors = {}
-
-						var validate = ['email', 'password']
-						validate.forEach((v) => {
-							if (values[v] === undefined || values[v] === '') errors[v] = '*'
-						})
-
-						if (values.email && !validator.isEmail(values.email)) {
-							errors.email = '*'
-						}
-
-						return errors
-					}}
 					initialValues={{
 						email: 'dev_user@email.flawk',
 						password: 'dev_user',
@@ -1818,52 +1608,27 @@ class Login extends Component {
 						setSubmitting(false)
 					}}
 				>
-					{({
-						values,
-						handleChange,
-						handleBlur,
-						submitCount,
-						errors,
-						touched,
-						isSubmitting,
-						setFieldValue,
-						setFieldTouched,
-					}) => {
-						var formIK = {
-							values,
-							touched,
-							errors,
-							setFieldTouched,
-							setFieldValue,
-							handleChange,
-							handleBlur,
-							submitCount,
-						}
+					{({ isSubmitting }) => {
 						return (
 							<Form noValidate>
-								<div
-									style={{
-										display: 'flex',
-										flexDirection: 'column',
-										alignItems: 'center',
-										justifyContent: 'center',
-									}}
-								>
-									<CustomInput
+								<div className='flex-col items-center justify-center'>
+									<Field
+										component={CustomInput}
+										required
 										autoFocus
 										label={'E-mail'}
 										type={'email'}
 										name='email'
-										formIK={formIK}
 										invalidType={'label'}
 										placeholder={''}
 									/>
 									<div style={{ minHeight: 10 }} />
-									<CustomInput
+									<Field
+										component={CustomInput}
+										required
 										label={'Password'}
 										name='password'
 										type={'password'}
-										formIK={formIK}
 										invalidType={'label'}
 										placeholder={''}
 									/>
@@ -1872,13 +1637,7 @@ class Login extends Component {
 									</Link>
 								</div>
 								<sp />
-								<div
-									style={{
-										display: 'flex',
-										flexDirection: 'column',
-										alignItems: 'center',
-									}}
-								>
+								<div className='flex-col items-center'>
 									<HeadShake spy={this.state.wrongLogin || 0}>
 										{this.state.wrongLogin && (
 											<div style={{ color: styles.colors.red }}>
@@ -1930,18 +1689,7 @@ class Register extends Component {
 				{this.state.verifyingSignup ? (
 					<Formik
 						enableReinitialize
-						validate={(values) => {
-							let errors = {}
-
-							if (!values.verificationCode) {
-								errors.verificationCode = '*'
-							}
-
-							return errors
-						}}
-						initialValues={{
-							verificationCode: undefined,
-						}}
+						initialValues={{}}
 						onSubmit={async (values, { setSubmitting }) => {
 							this.setState({ wrongLogin: undefined })
 							setSubmitting(true)
@@ -1966,55 +1714,23 @@ class Register extends Component {
 							setSubmitting(false)
 						}}
 					>
-						{({
-							values,
-							handleChange,
-							handleBlur,
-							submitCount,
-							errors,
-							touched,
-							isSubmitting,
-							setFieldValue,
-							setFieldTouched,
-						}) => {
-							var formIK = {
-								values,
-								touched,
-								errors,
-								setFieldTouched,
-								setFieldValue,
-								handleChange,
-								handleBlur,
-								submitCount,
-							}
+						{({ isSubmitting }) => {
 							return (
 								<Form noValidate>
-									<div
-										style={{
-											display: 'flex',
-											flexDirection: 'column',
-											alignItems: 'center',
-											justifyContent: 'center',
-										}}
-									>
-										<CustomInput
+									<div className='flex-col items-center justify-center'>
+										<Field
+											component={CustomInput}
+											required
 											autoFocus
 											label={'Verification code'}
 											type={'number'}
 											name='verificationCode'
-											formIK={formIK}
 											invalidType={'label'}
 											placeholder={'Use 55555'}
 										/>
 									</div>
 									<sp />
-									<div
-										style={{
-											display: 'flex',
-											flexDirection: 'column',
-											alignItems: 'center',
-										}}
-									>
+									<div className='flex-col items-center'>
 										<HeadShake spy={this.state.wrongLogin || 0}>
 											{this.state.wrongLogin && (
 												<div style={{ color: styles.colors.red }}>
@@ -2041,18 +1757,6 @@ class Register extends Component {
 						enableReinitialize
 						validate={(values) => {
 							let errors = {}
-
-							var validate = ['firstName', 'lastName', 'email', 'password']
-							validate.forEach((v) => {
-								if (values[v] === undefined || values[v] === '') errors[v] = '*'
-							})
-
-							if (values.email && !validator.isEmail(values.email)) {
-								errors.email = '*'
-							}
-							if (values.password && values.password.length < 6) {
-								errors.password = 'Password needs to have at least 6 characters'
-							}
 
 							if (
 								!config.recaptchaBypass &&
@@ -2096,84 +1800,54 @@ class Register extends Component {
 					>
 						{({
 							values,
-							handleChange,
-							handleBlur,
-							submitCount,
 							errors,
 							touched,
 							isSubmitting,
 							setFieldValue,
 							setFieldTouched,
 						}) => {
-							var formIK = {
-								values,
-								touched,
-								errors,
-								setFieldTouched,
-								setFieldValue,
-								handleChange,
-								handleBlur,
-								submitCount,
-							}
 							return (
 								<Form noValidate>
-									<div
-										style={{
-											display: 'flex',
-											flexDirection: 'column',
-											alignItems: 'center',
-											justifyContent: 'center',
-										}}
-									>
-										<div
-											className='wrapMargin'
-											style={{
-												display: 'flex',
-												justifyContent: 'space-around',
-												flexWrap: 'wrap',
-											}}
-										>
-											<CustomInput
+									<div className='flex-col items-center justify-center'>
+										<div className='wrapMargin flex flex-wrap justify-around'>
+											<Field
+												component={CustomInput}
+												required
 												autoFocus
 												label={'First name'}
 												name='firstName'
-												formIK={formIK}
 												invalidType={'label'}
 												placeholder={''}
 											/>
-											<CustomInput
+											<Field
+												component={CustomInput}
+												required
 												label={'Last name'}
 												name='lastName'
-												formIK={formIK}
 												invalidType={'label'}
 												placeholder={''}
 											/>
 										</div>
-										<div
-											className='wrapMargin'
-											style={{
-												display: 'flex',
-												justifyContent: 'space-around',
-												flexWrap: 'wrap',
-											}}
-										>
-											<CustomInput
+										<div className='wrapMargin flex flex-wrap justify-around'>
+											<Field
+												component={CustomInput}
+												required
 												autoFocus
 												label={'E-mail'}
 												type={'email'}
 												autoComplete='new-email'
 												name='email'
-												formIK={formIK}
 												invalidType={'label'}
 												placeholder={''}
 											/>
 											<div>
-												<CustomInput
+												<Field
+													component={CustomInput}
+													required
 													label={'Password'}
 													name='password'
 													autoComplete='new-password'
 													type={'password'}
-													formIK={formIK}
 													//invalidType={'label'}
 													placeholder={''}
 												/>
@@ -2232,13 +1906,7 @@ class Register extends Component {
 											)}
 									</div>
 									<sp />
-									<div
-										style={{
-											display: 'flex',
-											flexDirection: 'column',
-											alignItems: 'center',
-										}}
-									>
+									<div className='flex-col items-center'>
 										<HeadShake spy={this.state.wrongLogin || 0}>
 											{this.state.wrongLogin && (
 												<div style={{ color: styles.colors.red }}>
@@ -2293,23 +1961,7 @@ class Forgot extends Component {
 					<Formik
 						enableReinitialize
 						key={'reset_password'}
-						validate={(values) => {
-							let errors = {}
-
-							if (!values.newPassword) {
-								errors.newPassword = '*'
-							}
-
-							if (!values.verificationCode) {
-								errors.verificationCode = '*'
-							}
-
-							return errors
-						}}
-						initialValues={{
-							newPassword: undefined,
-							verificationCode: undefined,
-						}}
+						initialValues={{}}
 						onSubmit={async (values, { setSubmitting }) => {
 							this.setState({ wrongLogin: undefined })
 							setSubmitting(true)
@@ -2333,67 +1985,36 @@ class Forgot extends Component {
 							setSubmitting(false)
 						}}
 					>
-						{({
-							values,
-							handleChange,
-							handleBlur,
-							submitCount,
-							errors,
-							touched,
-							isSubmitting,
-							setFieldValue,
-							setFieldTouched,
-						}) => {
-							var formIK = {
-								values,
-								touched,
-								errors,
-								setFieldTouched,
-								setFieldValue,
-								handleChange,
-								handleBlur,
-								submitCount,
-							}
+						{({ isSubmitting }) => {
 							return (
 								<Form noValidate>
-									<div
-										style={{
-											display: 'flex',
-											flexDirection: 'column',
-											alignItems: 'center',
-											justifyContent: 'center',
-										}}
-									>
+									<div className='flex-col justify-center items-center'>
 										<div>
-											<CustomInput
+											<Field
+												component={CustomInput}
+												required
 												autoFocus
 												label={'New password'}
 												name='newPassword'
 												autoComplete='new-password'
 												type={'password'}
-												formIK={formIK}
 												invalidType={'label'}
 												placeholder={''}
 											/>
 										</div>
 										<div style={{ minHeight: 10 }} />
-										<CustomInput
+										<Field
+											component={CustomInput}
+											required
 											label={'Verification code'}
 											type={'number'}
 											name='verificationCode'
-											formIK={formIK}
 											invalidType={'label'}
 											placeholder={''}
 										/>
 									</div>
 									<sp />
-									<div
-										style={{
-											display: 'flex',
-											flexDirection: 'column',
-											alignItems: 'center',
-										}}
-									>
+									<div className='flex-col items-center'>
 										<HeadShake spy={this.state.wrongLogin || 0}>
 											{this.state.wrongLogin && (
 												<div style={{ color: styles.colors.red }}>
@@ -2421,12 +2042,6 @@ class Forgot extends Component {
 						key={'forgot_password'}
 						validate={(values) => {
 							let errors = {}
-
-							if (!values.email) {
-								errors.email = '*'
-							} else if (!validator.isEmail(values.email)) {
-								errors.email = '*'
-							}
 
 							if (config.recaptchaBypass && config.prod && !values.captcha)
 								errors.captcha = '*'
@@ -2465,49 +2080,23 @@ class Forgot extends Component {
 					>
 						{({
 							values,
-							handleChange,
-							handleBlur,
-							submitCount,
 							errors,
 							touched,
 							isSubmitting,
 							setFieldValue,
 							setFieldTouched,
 						}) => {
-							var formIK = {
-								values,
-								touched,
-								errors,
-								setFieldTouched,
-								setFieldValue,
-								handleChange,
-								handleBlur,
-								submitCount,
-							}
 							return (
 								<Form noValidate>
-									<div
-										style={{
-											display: 'flex',
-											flexDirection: 'column',
-											alignItems: 'center',
-											justifyContent: 'center',
-										}}
-									>
-										<div
-											className='wrapMargin'
-											style={{
-												display: 'flex',
-												justifyContent: 'space-around',
-												flexWrap: 'wrap',
-											}}
-										>
-											<CustomInput
+									<div className='flex-col justify-center items-center'>
+										<div className='wrapMargin flex flex-wrap justify-around'>
+											<Field
+												component={CustomInput}
+												required
 												autoFocus
 												label={'E-mail'}
 												type={'email'}
 												name='email'
-												formIK={formIK}
 												invalidType={'label'}
 												placeholder={''}
 											/>
@@ -2562,13 +2151,7 @@ class Forgot extends Component {
 											)}
 									</div>
 									<sp />
-									<div
-										style={{
-											display: 'flex',
-											flexDirection: 'column',
-											alignItems: 'center',
-										}}
-									>
+									<div className='flex-col items-center'>
 										<HeadShake spy={this.state.wrongLogin || 0}>
 											{this.state.wrongLogin && (
 												<div style={{ color: styles.colors.red }}>
@@ -2612,23 +2195,6 @@ class Settings extends Component {
 			>
 				<Formik
 					enableReinitialize
-					validate={(values) => {
-						let errors = {}
-
-						var validate = ['firstName', 'lastName', 'email', 'password']
-						validate.forEach((v) => {
-							if (values[v] === undefined || values[v] === '') errors[v] = '*'
-						})
-
-						if (values.email && !validator.isEmail(values.email)) {
-							errors.email = '*'
-						}
-						if (values.password && values.password.length < 6) {
-							errors.password = 'Minimum 6 characters'
-						}
-
-						return errors
-					}}
 					initialValues={{
 						firstName: this.props.user.personal.firstName,
 						lastName: this.props.user.personal.lastName,
@@ -2677,84 +2243,53 @@ class Settings extends Component {
 						}
 					}}
 				>
-					{({
-						values,
-						handleChange,
-						handleBlur,
-						submitCount,
-						errors,
-						touched,
-						isSubmitting,
-						setFieldValue,
-						setFieldTouched,
-						dirty,
-					}) => {
-						var formIK = {
-							values,
-							touched,
-							errors,
-							setFieldTouched,
-							setFieldValue,
-							handleChange,
-							handleBlur,
-							submitCount,
-						}
+					{({ values, isSubmitting, setFieldValue, dirty }) => {
 						return (
 							<Form noValidate>
-								<div
-									className='wrapMargin'
-									style={{
-										display: 'flex',
-										justifyContent: 'space-around',
-										flexWrap: 'wrap',
-									}}
-								>
-									<CustomInput
+								<div className='wrapMargin flex justify-around flex-wrap'>
+									<Field
+										component={CustomInput}
+										required
 										label={'First name'}
 										name='firstName'
-										formIK={formIK}
 										invalidType={'label'}
 										placeholder={''}
 									/>
-									<CustomInput
+									<Field
+										component={CustomInput}
+										required
 										label={'Last name'}
 										name='lastName'
-										formIK={formIK}
 										invalidType={'label'}
 										placeholder={''}
 									/>
 								</div>
-								<div
-									className='wrapMargin'
-									style={{
-										display: 'flex',
-										justifyContent: 'space-around',
-										flexWrap: 'wrap',
-									}}
-								>
-									<CustomInput
+								<div className='wrapMargin flex flex-wrap justify-around'>
+									<Field
+										component={CustomInput}
+										required
 										label={'E-mail'}
 										type={'email'}
 										name='email'
 										autoComplete='new-email'
-										formIK={formIK}
 										invalidType={'label'}
 										placeholder={''}
 									/>
 									<div>
-										<CustomInput
+										<Field
+											component={CustomInput}
+											required
 											label={'Password'}
 											name='password'
 											autoComplete='new-password'
 											type={'password'}
-											formIK={formIK}
 											//invalidType={'label'}
 											placeholder={'********'}
 										/>
 									</div>
 								</div>
 								<sp />
-								<div style={{ display: 'flex', alignItems: 'center' }}>
+								<div className='flex items-center'>
 									<label
 										htmlFor={
 											this.props.desktop
@@ -2793,13 +2328,7 @@ class Settings extends Component {
 									</div>
 								</div>
 								<sp />
-								<div
-									style={{
-										display: 'flex',
-										flexDirection: 'column',
-										alignItems: 'center',
-									}}
-								>
+								<div className='flex-col items-center'>
 									<CustomButton
 										type='submit'
 										isDisabled={!dirty}
@@ -2909,7 +2438,7 @@ class Admin extends ReactQueryParams {
 							<CustomTable
 								isLoading={this.state.fetching}
 								height={'500px'}
-								expandContent={(data) => <div>Expanded: {data.name}</div>}
+								expandContent={(data) => <div>Expanded: {data.email}</div>}
 								keySelector={'_id'}
 								columns={[
 									{

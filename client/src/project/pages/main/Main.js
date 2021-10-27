@@ -40,13 +40,10 @@ export default class Main extends Component {
 								position: 'relative',
 							}}
 						>
-							<div style={{ display: 'flex', justifyContent: 'center' }}>
+							<div className='flex justifyCenter'>
 								<div
+									className='flex-col items-center justify-center text-center'
 									style={{
-										display: 'flex',
-										flexDirection: 'column',
-										alignItems: 'center',
-										justifyContent: 'center',
 										marginTop: desktop ? 150 : 75,
 									}}
 								>
@@ -56,7 +53,6 @@ export default class Main extends Component {
 												maxWidth: 800,
 												paddingLeft: 20,
 												paddingRight: 20,
-												textAlign: 'center',
 											}}
 										>
 											{'Flawk.js'}
@@ -67,7 +63,6 @@ export default class Main extends Component {
 												maxWidth: 800,
 												paddingLeft: 20,
 												paddingRight: 20,
-												textAlign: 'center',
 											}}
 										>
 											{'Flawk.js'}
@@ -78,7 +73,6 @@ export default class Main extends Component {
 											marginBottom: 80,
 											marginTop: 20,
 											maxWidth: 500,
-											textAlign: 'center',
 											fontSize: desktop ? 16 : 15,
 											padding: 20,
 										}}
@@ -88,26 +82,12 @@ export default class Main extends Component {
 								</div>
 							</div>
 							<br />
-							<div
-								style={{
-									display: 'flex',
-									flexDirection: 'column',
-									alignItems: 'center',
-									justifyContent: 'center',
-								}}
-							>
+							<div className='flex-col items-center justify-center'>
 								<b>* WORK IN PROGRESS *</b>
 							</div>
 							<br />
 
-							<div
-								className='wrapMargin'
-								style={{
-									display: 'flex',
-									flexWrap: 'wrap',
-									justifyContent: 'center',
-								}}
-							>
+							<div className='wrapMargin flex flex-wrap justify-center'>
 								<CustomButton
 									onClick={() => {
 										global.routerHistory().push('/components')
@@ -131,12 +111,9 @@ export default class Main extends Component {
 
 							{/* <Fade delay={500} duration={750} bottom>
 								<div
+									className='flex-col items-center justify-between'
 									id='about'
 									style={{
-										display: 'flex',
-										flexDirection: 'column',
-										alignItems: 'center',
-										justifyContent: 'space-between',
 										marginTop: desktop ? 133 : 133 / 2,
 										background: styles.colors.main,
 										padding: 60,

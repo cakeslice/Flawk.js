@@ -221,6 +221,61 @@ button:active {
 	opacity: 1;
 }
 
+// Helpers (tailwind.css like)
+
+.w-full {
+	width: 100%;
+}
+.h-full {
+	height: 100%;
+}
+.text-left {
+	text-align: left;
+}
+.text-center {
+	text-align: center;
+}
+.text-right {
+	text-align: right;
+}
+.flex {
+	display: flex;
+}
+.flex-col {
+	display: flex;
+	flex-direction: column;
+}
+.flex-wrap {
+	flex-wrap: wrap;
+}
+.items-start {
+	align-items: flex-start;
+}
+.items-center {
+	align-items: center;
+}
+.items-end {
+	align-items: flex-end;
+}
+.justify-start {
+	justify-content: flex-start;
+}
+.justify-center {
+	justify-content: center;
+}
+.justify-end {
+	justify-content: flex-end;
+}
+.justify-between {
+	justify-content: space-between;
+}
+.justify-around {
+	justify-content: space-around;
+}
+.justify-evenly {
+	justify-content: space-evenly;
+}
+
 .wrapMargin {
 	max-width: 100%;
 }
@@ -247,6 +302,7 @@ button:active {
 }
 
 // Mobile Notch support
+
 .safeAreaMinHeight {
 	min-height: 100vh;
 }

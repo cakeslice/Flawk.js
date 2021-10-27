@@ -20,12 +20,8 @@ export default class Footer extends Component {
 			<MediaQuery minWidth={config.mobileWidthTrigger}>
 				{(desktop) => (
 					<div
+						className='flex-col items-center justify-center w-full'
 						style={{
-							width: '100%',
-							display: 'flex',
-							flexDirection: 'column',
-							alignItems: 'center',
-							justifyContent: 'center',
 							//backgroundColor: 'black', //styles.colors.blackDay,
 							minHeight: 279,
 							boxSizing: 'border-box',
@@ -39,9 +35,9 @@ export default class Footer extends Component {
 							<Fade delay={250} duration={750} distance={'10px'} bottom>
 								<div>
 									<p
+										className='text-center'
 										style={{
 											fontSize: 14.5,
-											textAlign: 'center',
 											color: styles.colors.whiteDay,
 										}}
 									>
@@ -50,13 +46,7 @@ export default class Footer extends Component {
 
 									<div style={{ minHeight: 30 }}></div>
 
-									<div
-										style={{
-											display: 'flex',
-											alignItems: 'center',
-											justifyContent: 'center',
-										}}
-									>
+									<div className='flex items-center justify-center'>
 										<p
 											style={{
 												fontWeight: 'bold',
