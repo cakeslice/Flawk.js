@@ -342,11 +342,8 @@ class PublicWrapper extends Component {
 	render() {
 		return (
 			<div
+				className='flex-col justify-center items-center'
 				style={{
-					display: 'flex',
-					justifyContent: 'center',
-					flexDirection: 'column',
-					alignItems: 'center',
 					marginTop: !this.props.desktop && 30,
 					height: this.props.desktop && '80vh',
 				}}

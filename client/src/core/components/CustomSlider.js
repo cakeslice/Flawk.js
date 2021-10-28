@@ -20,10 +20,9 @@ export default class CustomSlider extends Component {
 	render() {
 		return (
 			<div
+				className='flex-col'
 				style={{
 					width: this.props.width || 150,
-					display: 'flex',
-					flexDirection: 'column',
 				}}
 			>
 				<p style={{ fontSize: styles.defaultFontSize }}>{this.state.value[0] + ' m'}</p>

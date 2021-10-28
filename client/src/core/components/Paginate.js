@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import React from 'react'
 import PropTypes from 'prop-types'
+import React from 'react'
 import { getPaginationModel } from 'ultimate-pagination'
 
 var styles = require('core/styles').default
@@ -87,12 +87,9 @@ class Paginate extends React.Component {
 
 		return (
 			<div
+				className='flex justify-center items-center'
 				style={{
 					alignSelf: 'stretch',
-					display: 'flex',
-					flexDirection: 'row',
-					justifyContent: 'center',
-					alignItems: 'center',
 					...this.props.style,
 				}}
 			>

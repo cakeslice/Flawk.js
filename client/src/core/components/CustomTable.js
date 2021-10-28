@@ -134,14 +134,7 @@ export default class CustomTable extends ReactQueryParams {
 				: undefined
 
 		return (
-			<div
-				style={{
-					width: '100%',
-					height: '100%',
-					display: 'flex',
-					flexDirection: 'column',
-				}}
-			>
+			<div className='w-full h-full flex-col'>
 				<div
 					style={{
 						...wrapperStyle,
@@ -166,13 +159,12 @@ export default class CustomTable extends ReactQueryParams {
 					<MediaQuery minWidth={config.mobileWidthTrigger}>
 						{(desktop) => (
 							<div
+								className='flex-col'
 								style={{
 									width: 'fit-content',
 									minWidth: '100%',
 									minHeight: 250,
 									height: this.props.height || '100%',
-									display: 'flex',
-									flexDirection: 'column',
 								}}
 							>
 								{!this.props.hideHeader && (

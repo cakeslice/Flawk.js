@@ -212,21 +212,12 @@ class ModalHeader extends Component {
 
 	render() {
 		return (
-			<div
-				style={{
-					display: 'flex',
-					flexDirection: 'column',
-					justifyContent: 'center',
-				}}
-			>
+			<div className='flex-col justify-center'>
 				<div
+					className='flex justify-between items-center'
 					style={{
-						display: 'flex',
-						alignItems: 'center',
 						padding: this.props.modalPadding / 2,
 						paddingLeft: this.props.modalPadding,
-						flexDirection: 'row',
-						justifyContent: 'space-between',
 						...styles.modalHeaderStyle,
 					}}
 				>

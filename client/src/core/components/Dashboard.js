@@ -99,20 +99,9 @@ export default class Dashboard extends Component {
 					var headerHeight = desktop ? 90 : 50
 					return (
 						<Animated animationIn='fadeIn'>
-							<div
-								style={{
-									display: 'flex',
-									flexDirection: 'column',
-									justifyContent: 'center',
-								}}
-							>
+							<div className='flex-col justify-center'>
 								{desktop ? (
-									<div
-										style={{
-											display: 'flex',
-											flexDirection: 'row',
-										}}
-									>
+									<div className='flex'>
 										<Fade delay={0} duration={750} left>
 											<div
 												onMouseEnter={() => this.toggleOpen(true)}
@@ -150,11 +139,8 @@ export default class Dashboard extends Component {
 								) : (
 									<div>
 										<div
+											className='flex-col w-full'
 											style={{
-												width: '100%',
-												display: 'flex',
-												flexDirection: 'column',
-
 												minHeight: !this.props.dontFillSpace
 													? desktop
 														? desktopHeightTop
@@ -163,12 +149,8 @@ export default class Dashboard extends Component {
 											}}
 										>
 											<div
-												className='blur-background'
+												className='blur-background w-full flex-col items-center'
 												style={{
-													width: '100%',
-													display: 'flex',
-													flexDirection: 'column',
-													alignItems: 'center',
 													transition:
 														'border-width .5s, box-shadow .5s, backgroundColor .5s',
 													backgroundColor: this.props.color,
@@ -186,8 +168,8 @@ export default class Dashboard extends Component {
 											>
 												<Fade delay={0} duration={750} top>
 													<div
+														className='flex justify-between w-full'
 														style={{
-															width: '100%',
 															maxWidth: maxWidth,
 															minHeight: desktop
 																? this.state.showHeaderBackground
@@ -208,9 +190,6 @@ export default class Dashboard extends Component {
 															paddingLeft: desktop ? 15 : 35,
 															paddingRight: desktop ? 15 : 35,
 															boxSizing: 'border-box',
-															display: 'flex',
-															justifyContent: 'space-between',
-															flexDirection: 'row',
 														}}
 													>
 														<button
@@ -499,11 +478,9 @@ class Menu extends React.Component {
 
 		return (
 			<div
+				className='flex-col justify-start'
 				style={{
-					display: 'flex',
-					flexDirection: 'column',
 					minHeight: '100vh',
-					justifyContent: 'flex-start',
 					color: this.props.textColor,
 					background: this.props.color,
 					borderRightStyle: 'solid',
