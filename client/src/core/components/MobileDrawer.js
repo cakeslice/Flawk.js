@@ -64,7 +64,7 @@ export default class MobileDrawer extends Component {
 	renderList = () => {
 		var selectedRoute = global.routerHistory().location.pathname.toString()
 
-		var textColor = this.props.textColor || styles.colors.white
+		var textColor = this.props.textColor || styles.colors.black
 
 		return (
 			<div

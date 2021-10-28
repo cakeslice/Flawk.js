@@ -109,6 +109,13 @@ export default class Main extends Component {
 								</CustomButton>
 							</div>
 
+							<sp />
+							<sp />
+							<sp />
+							<sp />
+							<sp />
+							<sp />
+
 							{/* <Fade delay={500} duration={750} bottom>
 								<div
 									className='flex-col items-center justify-between'

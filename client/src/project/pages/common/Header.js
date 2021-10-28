@@ -28,8 +28,8 @@ const mobileLinks = [
 		notRoute: true,
 		tab: (props) => <div key={props.key} style={{ minHeight: '30%' }}></div>,
 		mobileTab: true,
-	},
-	{ name: 'Components', id: '/components' }, */
+	},*/
+	{ name: 'Components', id: '/components' },
 	/* { name: 'Login', id: '/login' }, */
 ]
 
@@ -199,7 +199,7 @@ export default class Header extends Component {
 										>
 											{/* <Link to={'/components'}>COMPONENTS</Link>
 											<div style={{ minWidth: 10 }} /> */}
-											<Link to={config.noTokenRedirect}>LOGIN</Link>
+											{/* <Link to={config.noTokenRedirect}>LOGIN</Link> */}
 											{/* <div style={{ minWidth: 10 }} />
 											<LanguageSwitcher></LanguageSwitcher> */}
 										</div>
