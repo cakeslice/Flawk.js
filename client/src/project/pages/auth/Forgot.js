@@ -187,7 +187,14 @@ class Forgot extends Component {
 									setSubmitting(false)
 								}}
 							>
-								{({ values, isSubmitting, setFieldValue, setFieldTouched }) => {
+								{({
+									values,
+									isSubmitting,
+									setFieldValue,
+									setFieldTouched,
+									errors,
+									touched,
+								}) => {
 									return (
 										<Form
 											style={{
@@ -250,6 +257,19 @@ class Forgot extends Component {
 																		}}
 																	/>
 																)}
+																{!config.recaptchaBypass &&
+																	touched.captcha &&
+																	errors.captcha && (
+																		<p
+																			style={{
+																				marginLeft: 5,
+																				color: styles.colors
+																					.red,
+																			}}
+																		>
+																			*
+																		</p>
+																	)}
 															</div>
 														</div>
 													)}

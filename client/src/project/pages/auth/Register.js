@@ -168,7 +168,14 @@ class Register extends Component {
 									setSubmitting(false)
 								}}
 							>
-								{({ values, isSubmitting, setFieldValue, setFieldTouched }) => {
+								{({
+									values,
+									isSubmitting,
+									setFieldValue,
+									setFieldTouched,
+									touched,
+									errors,
+								}) => {
 									return (
 										<Form
 											style={{
@@ -280,6 +287,19 @@ class Register extends Component {
 																		}}
 																	/>
 																)}
+																{!config.recaptchaBypass &&
+																	touched.captcha &&
+																	errors.captcha && (
+																		<p
+																			style={{
+																				marginLeft: 5,
+																				color: styles.colors
+																					.red,
+																			}}
+																		>
+																			*
+																		</p>
+																	)}
 															</div>
 														</div>
 													)}
