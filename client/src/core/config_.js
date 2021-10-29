@@ -330,7 +330,7 @@ export default {
 	darkModeOptIn: false,
 	darkModeForce: false,
 
-	mobileWidthTrigger: 801,
+	mobileWidthTrigger: 700,
 
 	minWidth: 768,
 	publicMaxWidth: 1281.5,

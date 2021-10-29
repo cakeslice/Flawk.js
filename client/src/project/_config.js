@@ -33,7 +33,7 @@ module.exports = {
 	darkModeAvailable: true,
 	showCookieNotice: true,
 
-	mobileWidthTrigger: 801,
+	mobileWidthTrigger: 700,
 	publicMaxWidth: 1281.5,
 
 	title: () => {

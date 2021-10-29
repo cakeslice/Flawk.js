@@ -10,6 +10,7 @@ import moment from 'moment'
 import React, { Component } from 'react'
 import Datetime from 'react-datetime'
 import InputMask from 'react-input-mask'
+import MediaQuery from 'react-responsive'
 import TextareaAutosize from 'react-textarea-autosize'
 
 var config = require('core/config_').default
@@ -138,7 +139,6 @@ export default class CustomInput extends Component {
 
 			minHeight: styles.inputHeight,
 			minWidth: 66,
-			width: '100%',
 
 			padding: this.props.textArea ? 10 : 0,
 			margin: 0,
@@ -245,6 +245,8 @@ export default class CustomInput extends Component {
 				}),
 		}
 
+		var label = this.props.label || (this.props.emptyLabel ? '\u200c' : undefined)
+
 		var actualInvalidType = this.props.invalidType
 		var invalidType = this.props.invalidType
 		if (invalid === '*' && this.props.label) invalidType = 'label'
@@ -252,193 +254,223 @@ export default class CustomInput extends Component {
 		var placeholder = this.props.timeInput ? !value && moment().format('HH:mm') : undefined
 
 		return (
-			<div style={{ width: finalStyle.width || '100%', flex: this.props.flex }}>
-				{this.props.label && (
+			<MediaQuery minWidth={config.mobileWidthTrigger}>
+				{(desktop) => (
 					<div
 						style={{
-							display: 'flex',
-							justifyContent: 'space-between',
-							opacity: global.nightMode
-								? styles.inputLabelOpacityNight
-								: styles.inputLabelOpacityDay,
-							letterSpacing: 0.4,
-							textAlign: this.props.label.length === 1 && 'end',
-							fontSize: styles.defaultFontSize,
-							whiteSpace: 'nowrap',
-							...this.props.labelStyle,
+							width: finalStyle.width || (desktop ? 175 : '100%'),
+							flex: this.props.flex,
 						}}
 					>
-						{this.props.label}
-						{invalidType === 'label' &&
-							name &&
-							!this.props.isDisabled &&
-							invalid &&
-							invalid.length > 0 && (
-								<span
-									style={{
-										marginLeft: 7.5,
-										fontSize: styles.defaultFontSize,
-										color: styles.colors.red,
-									}}
-								>
-									{invalid}
-								</span>
-							)}
-					</div>
-				)}
-				{this.props.label && <div style={{ minHeight: 5 }}></div>}
-				<div style={{ display: 'flex' }}>
-					<InputComponent
-						isControlled={controlled ? true : false}
-						defaultValue={this.props.defaultValue}
-						autoFocus={this.props.autoFocus}
-						required={this.props.required}
-						value={controlled ? (value === undefined ? '' : value) : undefined}
-						name={name}
-						autoComplete={this.props.autoComplete}
-						type={this.props.type ? this.props.type : 'text'}
-						disabled={this.props.isDisabled}
-						placeholder={placeholder || this.props.placeholder || ''}
-						onFocus={(e) => {
-							e.target.placeholder = ''
-							this.props.onFocus && this.props.onFocus(e)
-						}}
-						onKeyPress={(e) => {
-							this.props.bufferedInput
-								? this.handleKeyDown(e)
-								: this.props.onKeyPress && this.props.onKeyPress(e)
-
-							if (!this.props.textArea && e.key === 'Enter') {
-								e.target.blur()
-							}
-						}}
-						onChange={(e, editor, next) => {
-							if (this.props.bufferedInput && !formIK) {
-								this.handleChangeBuffered(e)
-							} else {
-								this.props.onChange &&
-									this.props.onChange(
-										this.props.type === 'number'
-											? e.target.value === ''
-												? undefined
-												: Number(e.target.value)
-											: e.target.value
-									)
-							}
-
-							if (this.props.datePicker)
-								formIK && formIK.setFieldValue && formIK.setFieldValue(name, e)
-							else
-								formIK &&
-									formIK.setFieldValue &&
-									formIK.setFieldValue(
-										name,
-										this.props.type === 'number'
-											? e.target.value === ''
-												? undefined
-												: Number(e.target.value)
-											: e.target.value
-									)
-						}}
-						onBlur={(e, editor, next) => {
-							e.target.placeholder = placeholder || this.props.placeholder || ''
-							this.props.onBlur && this.props.onBlur(e)
-
-							formIK && formIK.handleBlur && formIK.handleBlur(e)
-						}}
-						{...(this.props.datePicker && { finalStyle: finalStyle })}
-						style={!this.props.datePicker && isMasked ? finalStyle : {}}
-						{...(!this.props.datePicker && !isMasked && css(finalStyle))}
-						{...(this.props.mask && {
-							mask: this.props.mask,
-							formatChars: this.props.formatChars,
-						})}
-						{...(this.props.timeInput && {
-							mask: value && value[0] === '2' ? '23:59' : '29:59',
-							formatChars: {
-								9: '[0-9]',
-								3: '[0-3]',
-								5: '[0-5]',
-								2: '[0-2]',
-							},
-						})}
-						minRows={this.props.minRows}
-						maxRows={this.props.maxRows}
-					></InputComponent>
-					{this.props.icon && (
-						<div style={{ maxWidth: 0, maxHeight: 0 }}>
+						{label && (
 							<div
 								style={{
-									pointerEvents: 'none',
-									position: 'relative',
 									display: 'flex',
-									justifyContent: 'center',
-									alignItems: 'center',
-									width: 30,
-									right: 35,
-									height: styles.inputHeight,
-								}}
-							>
-								{this.props.icon}
-							</div>
-						</div>
-					)}
-					{this.props.button && (
-						<div style={{ maxWidth: 0, maxHeight: 0 }}>
-							<div
-								style={{
-									position: 'relative',
-									display: 'flex',
-									justifyContent: 'center',
-									alignItems: 'center',
-									width: 30,
-									right: 35,
-									top: 2,
-									height: styles.inputHeight,
-									...this.props.buttonStyle,
-								}}
-							>
-								{this.props.button}
-							</div>
-						</div>
-					)}
-					{invalidType === 'right' && name && (
-						<div style={{ minWidth: 16, display: 'flex' }}>
-							{!this.props.isDisabled && invalid && invalid.length > 0 && (
-								<div style={{ minWidth: 5 }}></div>
-							)}
-							{!this.props.isDisabled && invalid && invalid.length > 0 && (
-								<p
-									style={{
-										fontSize: styles.defaultFontSize,
-										color: styles.colors.red,
-									}}
-								>
-									{invalid}
-								</p>
-							)}
-						</div>
-					)}
-				</div>
-				{!actualInvalidType && name && (
-					<div style={{ minHeight: 26 }}>
-						{!invalidType &&
-							!this.props.isDisabled &&
-							invalid &&
-							invalid.length > 0 && <div style={{ minHeight: 5 }}></div>}
-						{!invalidType && !this.props.isDisabled && invalid && invalid.length > 0 && (
-							<p
-								style={{
+									justifyContent: 'space-between',
+									opacity: global.nightMode
+										? styles.inputLabelOpacityNight
+										: styles.inputLabelOpacityDay,
+									letterSpacing: 0.4,
+									textAlign: label.length === 1 && 'end',
 									fontSize: styles.defaultFontSize,
-									color: styles.colors.red,
+									whiteSpace: 'nowrap',
+									...this.props.labelStyle,
 								}}
 							>
-								{invalid}
-							</p>
+								{label}
+								{invalidType === 'label' &&
+									name &&
+									!this.props.isDisabled &&
+									invalid &&
+									invalid.length > 0 && (
+										<span
+											style={{
+												marginLeft: 7.5,
+												fontSize: styles.defaultFontSize,
+												color: styles.colors.red,
+											}}
+										>
+											{invalid}
+										</span>
+									)}
+							</div>
+						)}
+						{label && <div style={{ minHeight: 5 }}></div>}
+						<div style={{ display: 'flex' }}>
+							<InputComponent
+								isControlled={controlled ? true : false}
+								defaultValue={this.props.defaultValue}
+								autoFocus={this.props.autoFocus}
+								required={this.props.required}
+								value={controlled ? (value === undefined ? '' : value) : undefined}
+								name={name}
+								autoComplete={this.props.autoComplete}
+								type={this.props.type ? this.props.type : 'text'}
+								disabled={this.props.isDisabled}
+								placeholder={placeholder || this.props.placeholder || ''}
+								onFocus={(e) => {
+									e.target.placeholder = ''
+									this.props.onFocus && this.props.onFocus(e)
+								}}
+								onKeyPress={(e) => {
+									this.props.bufferedInput
+										? this.handleKeyDown(e)
+										: this.props.onKeyPress && this.props.onKeyPress(e)
+
+									if (!this.props.textArea && e.key === 'Enter') {
+										e.target.blur()
+									}
+								}}
+								onChange={(e, editor, next) => {
+									if (this.props.bufferedInput && !formIK) {
+										this.handleChangeBuffered(e)
+									} else {
+										this.props.onChange &&
+											this.props.onChange(
+												this.props.type === 'number'
+													? e.target.value === ''
+														? undefined
+														: Number(e.target.value)
+													: e.target.value
+											)
+									}
+
+									if (this.props.datePicker)
+										formIK &&
+											formIK.setFieldValue &&
+											formIK.setFieldValue(name, e)
+									else
+										formIK &&
+											formIK.setFieldValue &&
+											formIK.setFieldValue(
+												name,
+												this.props.type === 'number'
+													? e.target.value === ''
+														? undefined
+														: Number(e.target.value)
+													: e.target.value
+											)
+								}}
+								onBlur={(e, editor, next) => {
+									e.target.placeholder =
+										placeholder || this.props.placeholder || ''
+									this.props.onBlur && this.props.onBlur(e)
+
+									formIK && formIK.handleBlur && formIK.handleBlur(e)
+								}}
+								{...(this.props.datePicker && {
+									finalStyle: finalStyle,
+									width: finalStyle.width || (desktop ? 175 : '100%'),
+								})}
+								style={
+									!this.props.datePicker && isMasked
+										? {
+												...finalStyle,
+												width: finalStyle.width || (desktop ? 175 : '100%'),
+										  }
+										: {}
+								}
+								{...(!this.props.datePicker &&
+									!isMasked &&
+									css({
+										...finalStyle,
+										width: finalStyle.width || (desktop ? 175 : '100%'),
+									}))}
+								{...(this.props.mask && {
+									mask: this.props.mask,
+									formatChars: this.props.formatChars,
+								})}
+								{...(this.props.timeInput && {
+									mask: value && value[0] === '2' ? '23:59' : '29:59',
+									formatChars: {
+										9: '[0-9]',
+										3: '[0-3]',
+										5: '[0-5]',
+										2: '[0-2]',
+									},
+								})}
+								minRows={this.props.minRows}
+								maxRows={this.props.maxRows}
+							></InputComponent>
+							{this.props.icon && (
+								<div style={{ maxWidth: 0, maxHeight: 0 }}>
+									<div
+										style={{
+											pointerEvents: 'none',
+											position: 'relative',
+											display: 'flex',
+											justifyContent: 'center',
+											alignItems: 'center',
+											width: 30,
+											right: 35,
+											height: styles.inputHeight,
+										}}
+									>
+										{this.props.icon}
+									</div>
+								</div>
+							)}
+							{this.props.button && (
+								<div style={{ maxWidth: 0, maxHeight: 0 }}>
+									<div
+										style={{
+											position: 'relative',
+											display: 'flex',
+											justifyContent: 'center',
+											alignItems: 'center',
+											width: 30,
+											right: 35,
+											top: 2,
+											height: styles.inputHeight,
+											...this.props.buttonStyle,
+										}}
+									>
+										{this.props.button}
+									</div>
+								</div>
+							)}
+							{invalidType === 'right' && name && (
+								<div style={{ minWidth: 16, display: 'flex' }}>
+									{!this.props.isDisabled && invalid && invalid.length > 0 && (
+										<div style={{ minWidth: 7.5 }}></div>
+									)}
+									{!this.props.isDisabled && invalid && invalid.length > 0 && (
+										<p
+											style={{
+												fontSize: styles.defaultFontSize,
+												color: styles.colors.red,
+											}}
+										>
+											{invalid}
+										</p>
+									)}
+								</div>
+							)}
+						</div>
+						{!actualInvalidType && name && (
+							<div style={{ minHeight: 26 }}>
+								{!invalidType &&
+									!this.props.isDisabled &&
+									invalid &&
+									invalid.length > 0 && <div style={{ minHeight: 5 }}></div>}
+								{!invalidType &&
+									!this.props.isDisabled &&
+									invalid &&
+									invalid.length > 0 && (
+										<p
+											style={{
+												fontSize: styles.defaultFontSize,
+												color: styles.colors.red,
+											}}
+										>
+											{invalid}
+										</p>
+									)}
+							</div>
 						)}
 					</div>
 				)}
-			</div>
+			</MediaQuery>
 		)
 	}
 }

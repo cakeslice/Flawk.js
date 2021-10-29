@@ -24,7 +24,7 @@
         "tags": [
           "public"
         ],
-        "description": "Get the application's constant data",
+        "description": "Get the application's remote data",
         "operationId": "none",
         "responses": {
           "200": {
@@ -607,7 +607,8 @@
             "description": "OK"
           }
         },
-        "operationId": "get-build_number"
+        "operationId": "get-build_number",
+        "description": "Get the servers build version"
       }
     }
   },

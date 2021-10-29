@@ -50,6 +50,7 @@ export default class ComponentsViewer extends Component {
 	componentDidUpdate() {
 		this.jumpToHash()
 	}
+
 	jumpToHash = () => {
 		const hash = global.routerHistory().location.hash
 		if (hash) {
@@ -407,9 +408,6 @@ class Layout extends ReactQueryParams {
 							{header('Table')}
 							<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
 								<CustomInput
-									style={{
-										width: 250,
-									}}
 									defaultValue={this.queryParams.search}
 									bufferedInput
 									onChange={(e) => {
@@ -419,9 +417,6 @@ class Layout extends ReactQueryParams {
 									placeholder={'Buffered Search'}
 								></CustomInput>
 								<CustomInput
-									style={{
-										width: 250,
-									}}
 									defaultValue={this.queryParams.search}
 									onChange={(e) => {
 										this.setQueryParams({ search: e || undefined })
@@ -689,182 +684,209 @@ class Inputs extends Component {
 				{(desktop) => (
 					<div>
 						{header('Input fields', true)}
-						<div className='wrapMarginTopLeft flex flex-wrap justify-start items-end'>
-							<CustomInput
-								style={{
-									width: 250,
-								}}
-								type='email'
-								label={'E-mail'}
-								autoComplete='new-email'
-								defaultValue={'someone@gmail.com'}
-								placeholder={'you@gmail.com'}
-							></CustomInput>
-							<CustomInput
-								type='password'
-								autoComplete='new-password'
-								label={'Password'}
-								placeholder={'******'}
-							></CustomInput>
-							<CustomInput
-								type='number'
-								label={'Number'}
-								placeholder={'1337'}
-							></CustomInput>
+						<div style={{ ...styles.card, maxWidth: 783 }}>
+							<div className='wrapMarginTopLeft flex flex-wrap justify-start items-end'>
+								<CustomInput
+									type='email'
+									label={'E-mail'}
+									autoComplete='new-email'
+									defaultValue={'someone@gmail.com'}
+									placeholder={'you@gmail.com'}
+								></CustomInput>
+								<CustomInput
+									type='password'
+									autoComplete='new-password'
+									label={'Password'}
+									placeholder={'******'}
+								></CustomInput>
+								<CustomInput
+									type='number'
+									label={'Number'}
+									placeholder={'1337'}
+								></CustomInput>
 
-							<CustomInput
-								label='Invalid'
-								invalid={'*'}
-								name='input'
-								invalidType={'label'}
-								placeholder={'Invalid Label'}
-							></CustomInput>
-						</div>
-						<sp />
-						<div className='wrapMarginTopLeft flex flex-wrap justify-start items-start'>
-							<CustomInput
-								isDisabled
-								placeholder={'Long placeholder really long'}
-							></CustomInput>
+								<CustomInput
+									label='Invalid Label'
+									invalid={'*'}
+									name='input'
+									invalidType={'label'}
+									placeholder={'someone@gmail'}
+								></CustomInput>
+							</div>
+							<sp />
+							<div className='wrapMarginTopLeft flex flex-wrap justify-start items-start'>
+								<CustomInput
+									isDisabled
+									label='Disabled'
+									placeholder={'Long placeholder really long...'}
+								></CustomInput>
 
+								<CustomInput
+									name='input'
+									emptyLabel
+									invalid={'Wrong format'}
+									placeholder={'Invalid Bottom'}
+								></CustomInput>
+								<CustomInput
+									emptyLabel
+									invalid={'*'}
+									name='input'
+									invalidType={'right'}
+									placeholder={'Invalid Right'}
+								></CustomInput>
+							</div>
+							<sp />
+							<div>
+								Inline Input:{' '}
+								<span>
+									<input type='email' placeholder='someone@gmail.com'></input>
+								</span>
+							</div>
+							<sp />
 							<CustomInput
-								name='input'
-								invalid={'Wrong format'}
-								placeholder={'Invalid'}
-							></CustomInput>
-							<CustomInput
-								invalid={'*'}
-								name='input'
-								invalidType={'right'}
-								placeholder={'Invalid Right'}
-							></CustomInput>
-
-							<input placeholder='Basic'></input>
-						</div>
-						<sp></sp>
-						<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
-							<CustomInput
+								style={{ width: '100%' }}
+								label={'Text Area'}
 								textArea
-								style={{
-									width: 250,
-								}}
-								placeholder={'Text Area'}
+								placeholder={''}
 							></CustomInput>
-							<CustomButton
-								defaultChecked={true}
-								onChange={(e) => {}}
-								checkbox={'Checkbox'}
-							></CustomButton>
-							<CustomButton
-								appearance={'primary'}
-								checked={this.state.checked}
-								onChange={(e) => {
-									this.setState({ checked: e })
-								}}
-								checkbox={'Primary'}
-							></CustomButton>
-							<CustomButton
-								checked={this.state.checked}
-								isDisabled
-								checkbox={'Disabled'}
-							></CustomButton>
+							<sp />
+							<sp />
+							<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+								<CustomButton
+									defaultChecked={true}
+									onChange={(e) => {}}
+									checkbox={'Checkbox'}
+								></CustomButton>
+								<CustomButton
+									appearance={'primary'}
+									checked={this.state.checked}
+									onChange={(e) => {
+										this.setState({ checked: e })
+									}}
+									checkbox={'Primary'}
+								></CustomButton>
+								<CustomButton
+									checked={this.state.checked}
+									isDisabled
+									checkbox={'Disabled'}
+								></CustomButton>
+							</div>
 						</div>
 						{header('Dropdown')}
-						<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
-							<CustomDropdown
-								label='Hello'
-								placeholder={'Long placeholder really long'}
-								erasable
-								options={(function o() {
-									var p = [
-										{
-											value: 'disabled',
-											label: 'Disabled',
-											isDisabled: true,
-										},
-									]
-									p.push({
-										value: 'long',
-										label: 'Long option is very very long',
-										isDisabled: false,
-									})
-									for (var i = 0; i < 60; i++) {
+						<div style={{ ...styles.card, maxWidth: 783 }}>
+							<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+								<CustomDropdown
+									label='Active'
+									placeholder={'Long placeholder really long'}
+									erasable
+									options={(function o() {
+										var p = [
+											{
+												value: 'disabled',
+												label: 'Disabled',
+												isDisabled: true,
+											},
+										]
 										p.push({
-											value: 'accept' + i,
-											label: 'Active ' + i,
+											value: 'long',
+											label: 'Long option is very very long',
 											isDisabled: false,
 										})
-									}
-									return p
-								})()}
-							/>
+										for (var i = 0; i < 60; i++) {
+											p.push({
+												value: 'accept' + i,
+												label: 'Active ' + i,
+												isDisabled: false,
+											})
+										}
+										return p
+									})()}
+								/>
 
+								<CustomDropdown
+									isDisabled
+									label={'Disabled'}
+									defaultValue={'accept'}
+									placeholder={'Value'}
+									options={[
+										{
+											value: 'accept',
+											label: 'Active',
+										},
+										{
+											value: 'deny',
+											label: 'Inactive',
+										},
+									]}
+								/>
+								<CustomDropdown
+									label={'Invalid Label'}
+									config={{ isSearchable: false }}
+									placeholder={'#123'}
+									erasable
+									name='dropdown'
+									invalid={'*'}
+									invalidType={'label'}
+									options={[
+										{
+											value: 'accept',
+											label: 'Active',
+										},
+										{
+											value: 'deny',
+											label: 'Inactive',
+										},
+									]}
+								/>
+							</div>
+							<sp />
+							<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+								<CustomDropdown
+									config={{ isSearchable: false }}
+									style={{}}
+									defaultValue={'accept'}
+									placeholder={'Invalid Bottom'}
+									erasable
+									name='dropdown'
+									invalid={'Not allowed'}
+									options={[
+										{
+											value: 'accept',
+											label: 'Active',
+										},
+										{
+											value: 'deny',
+											label: 'Inactive',
+										},
+									]}
+								/>
+
+								<CustomDropdown
+									config={{ isSearchable: false }}
+									style={{}}
+									placeholder={'Invalid Right'}
+									erasable
+									name='dropdown'
+									invalid={'*'}
+									invalidType={'right'}
+									options={[
+										{
+											value: 'accept',
+											label: 'Active',
+										},
+										{
+											value: 'deny',
+											label: 'Inactive',
+										},
+									]}
+								/>
+							</div>
+							<sp />
 							<CustomDropdown
-								isDisabled
-								label={'Dropdown'}
+								style={{ width: '100%' }}
+								label={'Full width'}
 								defaultValue={'accept'}
 								placeholder={'Value'}
-								options={[
-									{
-										id: 'accept',
-										text: 'Active',
-									},
-									{
-										id: 'deny',
-										text: 'Inactive',
-									},
-								]}
-							/>
-							<CustomDropdown
-								label={'Invalid'}
-								config={{ isSearchable: false }}
-								placeholder={'Invalid Label'}
-								erasable
-								name='dropdown'
-								invalid={'*'}
-								invalidType={'label'}
-								options={[
-									{
-										value: 'accept',
-										label: 'Active',
-									},
-									{
-										value: 'deny',
-										label: 'Inactive',
-									},
-								]}
-							/>
-						</div>
-						<sp />
-						<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
-							<CustomDropdown
-								config={{ isSearchable: false }}
-								style={{}}
-								defaultValue={'accept'}
-								placeholder={'Value'}
-								erasable
-								name='dropdown'
-								invalid={'Not allowed'}
-								options={[
-									{
-										value: 'accept',
-										label: 'Active',
-									},
-									{
-										value: 'deny',
-										label: 'Inactive',
-									},
-								]}
-							/>
-
-							<CustomDropdown
-								config={{ isSearchable: false }}
-								style={{}}
-								placeholder={'Invalid Right'}
-								erasable
-								name='dropdown'
-								invalid={'*'}
-								invalidType={'right'}
 								options={[
 									{
 										value: 'accept',
@@ -878,7 +900,7 @@ class Inputs extends Component {
 							/>
 						</div>
 						{header('Form')}
-						<div style={{ ...styles.card, width: desktop && 'fit-content' }}>
+						<div style={{ ...styles.card, maxWidth: 600 }}>
 							<Formik
 								enableReinitialize
 								initialValues={{}}
@@ -919,16 +941,11 @@ class Inputs extends Component {
 												/>
 											</div>
 
-											<div style={{ minHeight: 30 }}></div>
-
 											<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
 												<Field
 													component={CustomInput}
 													required
 													invalidMessage={'Invalid e-mail address'}
-													style={{
-														width: 250,
-													}}
 													type={'email'}
 													name='email'
 													autoComplete='new-email'
@@ -943,26 +960,6 @@ class Inputs extends Component {
 														'settings.drawer.account.phone'
 													)}
 												/>
-
-												<Field
-													component={CustomDropdown}
-													required
-													name='dropdown'
-													config={{ isSearchable: true }}
-													placeholder={'Value'}
-													erasable
-													label='Admin'
-													options={[
-														{
-															value: 'accept',
-															label: 'Active',
-														},
-														{
-															value: 'deny',
-															label: 'Inactive',
-														},
-													]}
-												/>
 											</div>
 											<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
 												<Field
@@ -975,16 +972,35 @@ class Inputs extends Component {
 													autoComplete='new-password'
 													label={'Password'}
 												/>
+												<Field
+													component={CustomDropdown}
+													required
+													name='dropdown'
+													config={{ isSearchable: true }}
+													placeholder={'Value'}
+													erasable
+													label='Permission'
+													options={[
+														{
+															value: 'admin',
+															label: 'Admin',
+														},
+														{
+															value: 'billing',
+															label: 'Billing',
+														},
+													]}
+												/>
 											</div>
 
-											<div style={{ flexGrow: 1, minHeight: 40 }}></div>
-
-											<Field
-												component={CustomButton}
-												required='Please accept the terms'
-												name='checkbox'
-												checkbox={'I accept'}
-											/>
+											<div className='flex justify-center items-center'>
+												<Field
+													component={CustomButton}
+													required='Please accept the terms'
+													name='checkbox'
+													checkbox={'I accept the Terms and Conditions'}
+												/>
+											</div>
 
 											<div className='wrapMarginBottomRight flex flex-wrap justify-end'>
 												<CustomButton
@@ -1682,6 +1698,8 @@ class Register extends Component {
 			<div
 				style={{
 					...styles.card,
+					paddingRight: 40,
+					paddingLeft: 40,
 					alignSelf: this.props.desktop && 'center',
 					width: this.props.desktop && 'fit-content',
 				}}
@@ -1840,18 +1858,16 @@ class Register extends Component {
 												invalidType={'label'}
 												placeholder={''}
 											/>
-											<div>
-												<Field
-													component={CustomInput}
-													required
-													label={'Password'}
-													name='password'
-													autoComplete='new-password'
-													type={'password'}
-													//invalidType={'label'}
-													placeholder={''}
-												/>
-											</div>
+											<Field
+												component={CustomInput}
+												required
+												label={'Password'}
+												name='password'
+												autoComplete='new-password'
+												type={'password'}
+												//invalidType={'label'}
+												placeholder={''}
+											/>
 										</div>
 										{values.firstName &&
 											values.lastName &&
@@ -1953,6 +1969,8 @@ class Forgot extends Component {
 			<div
 				style={{
 					...styles.card,
+					paddingRight: 40,
+					paddingLeft: 40,
 					alignSelf: this.props.desktop && 'center',
 					width: this.props.desktop && 'fit-content',
 				}}
@@ -1989,19 +2007,17 @@ class Forgot extends Component {
 							return (
 								<Form noValidate>
 									<div className='flex-col justify-center items-center'>
-										<div>
-											<Field
-												component={CustomInput}
-												required
-												autoFocus
-												label={'New password'}
-												name='newPassword'
-												autoComplete='new-password'
-												type={'password'}
-												invalidType={'label'}
-												placeholder={''}
-											/>
-										</div>
+										<Field
+											component={CustomInput}
+											required
+											autoFocus
+											label={'New password'}
+											name='newPassword'
+											autoComplete='new-password'
+											type={'password'}
+											invalidType={'label'}
+											placeholder={''}
+										/>
 										<div style={{ minHeight: 10 }} />
 										<Field
 											component={CustomInput}
@@ -2089,18 +2105,16 @@ class Forgot extends Component {
 							return (
 								<Form noValidate>
 									<div className='flex-col justify-center items-center'>
-										<div className='wrapMargin flex flex-wrap justify-around'>
-											<Field
-												component={CustomInput}
-												required
-												autoFocus
-												label={'E-mail'}
-												type={'email'}
-												name='email'
-												invalidType={'label'}
-												placeholder={''}
-											/>
-										</div>
+										<Field
+											component={CustomInput}
+											required
+											autoFocus
+											label={'E-mail'}
+											type={'email'}
+											name='email'
+											invalidType={'label'}
+											placeholder={''}
+										/>
 										{values.email /* Only show after filling to avoid loading it when page load */ &&
 											!config.recaptchaBypass &&
 											!values.captcha && (
@@ -2189,6 +2203,8 @@ class Settings extends Component {
 			<div
 				style={{
 					...styles.card,
+					paddingRight: 40,
+					paddingLeft: 40,
 					alignSelf: this.props.desktop && 'center',
 					width: this.props.desktop && 'fit-content',
 				}}
@@ -2275,18 +2291,16 @@ class Settings extends Component {
 										invalidType={'label'}
 										placeholder={''}
 									/>
-									<div>
-										<Field
-											component={CustomInput}
-											required
-											label={'Password'}
-											name='password'
-											autoComplete='new-password'
-											type={'password'}
-											//invalidType={'label'}
-											placeholder={'********'}
-										/>
-									</div>
+									<Field
+										component={CustomInput}
+										required
+										label={'Password'}
+										name='password'
+										autoComplete='new-password'
+										type={'password'}
+										//invalidType={'label'}
+										placeholder={'********'}
+									/>
 								</div>
 								<sp />
 								<div className='flex items-center'>
@@ -2327,6 +2341,7 @@ class Settings extends Component {
 										{config.text('settings.drawer.account.profileImage')}
 									</div>
 								</div>
+								<sp />
 								<sp />
 								<div className='flex-col items-center'>
 									<CustomButton
