@@ -69,12 +69,25 @@ global.storage = storage
  * @param root0.resetErrorBoundary
  */
 function ErrorFallback({ error, resetErrorBoundary }) {
-	const chunkFailedMessage = /Loading chunk [\d]+ failed/
-	if (error?.message && chunkFailedMessage.test(error.message)) {
-		window.location.reload()
-	}
+	var alreadyTriedReload = global.storage.getItem('alreadyTriedReload')
 
-	return <div></div>
+	const chunkFailedMessage = /Loading chunk [\d]+ failed/
+	if (alreadyTriedReload !== 'true') {
+		if (error?.message && chunkFailedMessage.test(error.message)) {
+			global.storage.setItem('alreadyTriedReload', 'true')
+			window.location.reload()
+		}
+
+		return <div></div>
+	} else {
+		global.storage.setItem('alreadyTriedReload', 'false')
+		return (
+			<div>
+				<span style={{ color: 'white' }}>Chunk Load Error!</span>{' '}
+				<button onClick={() => window.location.reload()}>Reload</button>
+			</div>
+		)
+	}
 }
 ReactDOM.render(
 	<ErrorBoundary FallbackComponent={ErrorFallback}>

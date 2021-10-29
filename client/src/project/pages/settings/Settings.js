@@ -129,12 +129,11 @@ class Settings extends Component {
 												/>
 												<Field
 													component={CustomInput}
-													required
 													label={'Password'}
 													name='password'
 													autoComplete='new-password'
 													type={'password'}
-													placeholder={'********'}
+													placeholder={'******'}
 												/>
 											</div>
 											<sp />
