@@ -247,18 +247,21 @@ export default class CustomInput extends Component {
 
 		var label = this.props.label || (this.props.emptyLabel ? '\u200c' : undefined)
 
-		var actualInvalidType = this.props.invalidType
-		var invalidType = this.props.invalidType
+		var invalidType = this.props.invalidType || 'label'
 		if (invalid === '*' && this.props.label) invalidType = 'label'
 
 		var placeholder = this.props.timeInput ? !value && moment().format('HH:mm') : undefined
+
+		var defaultWidth = (desktop) => {
+			return desktop ? 175 : '100%'
+		}
 
 		return (
 			<MediaQuery minWidth={config.mobileWidthTrigger}>
 				{(desktop) => (
 					<div
 						style={{
-							width: finalStyle.width || (desktop ? 175 : '100%'),
+							width: finalStyle.width || defaultWidth(desktop),
 							flex: this.props.flex,
 						}}
 					>
@@ -286,7 +289,7 @@ export default class CustomInput extends Component {
 										<span
 											style={{
 												marginLeft: 7.5,
-												fontSize: styles.defaultFontSize,
+												fontSize: styles.invalidFontSize,
 												color: styles.colors.red,
 											}}
 										>
@@ -360,13 +363,13 @@ export default class CustomInput extends Component {
 								}}
 								{...(this.props.datePicker && {
 									finalStyle: finalStyle,
-									width: finalStyle.width || (desktop ? 175 : '100%'),
+									width: finalStyle.width || defaultWidth(desktop),
 								})}
 								style={
 									!this.props.datePicker && isMasked
 										? {
 												...finalStyle,
-												width: finalStyle.width || (desktop ? 175 : '100%'),
+												width: finalStyle.width || defaultWidth(desktop),
 										  }
 										: {}
 								}
@@ -374,7 +377,7 @@ export default class CustomInput extends Component {
 									!isMasked &&
 									css({
 										...finalStyle,
-										width: finalStyle.width || (desktop ? 175 : '100%'),
+										width: finalStyle.width || defaultWidth(desktop),
 									}))}
 								{...(this.props.mask && {
 									mask: this.props.mask,
@@ -437,7 +440,7 @@ export default class CustomInput extends Component {
 									{!this.props.isDisabled && invalid && invalid.length > 0 && (
 										<p
 											style={{
-												fontSize: styles.defaultFontSize,
+												fontSize: styles.invalidFontSize,
 												color: styles.colors.red,
 											}}
 										>
@@ -447,25 +450,21 @@ export default class CustomInput extends Component {
 								</div>
 							)}
 						</div>
-						{!actualInvalidType && name && (
+						{invalidType === 'bottom' && name && (
 							<div style={{ minHeight: 26 }}>
-								{!invalidType &&
-									!this.props.isDisabled &&
-									invalid &&
-									invalid.length > 0 && <div style={{ minHeight: 5 }}></div>}
-								{!invalidType &&
-									!this.props.isDisabled &&
-									invalid &&
-									invalid.length > 0 && (
-										<p
-											style={{
-												fontSize: styles.defaultFontSize,
-												color: styles.colors.red,
-											}}
-										>
-											{invalid}
-										</p>
-									)}
+								{!this.props.isDisabled && invalid && invalid.length > 0 && (
+									<div style={{ minHeight: 5 }}></div>
+								)}
+								{!this.props.isDisabled && invalid && invalid.length > 0 && (
+									<p
+										style={{
+											fontSize: styles.invalidFontSize,
+											color: styles.colors.red,
+										}}
+									>
+										{invalid}
+									</p>
+								)}
 							</div>
 						)}
 					</div>

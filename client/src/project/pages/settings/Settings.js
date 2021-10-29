@@ -110,16 +110,12 @@ class Settings extends Component {
 													required
 													label={'First name'}
 													name='firstName'
-													invalidType={'label'}
-													placeholder={''}
 												/>
 												<Field
 													component={CustomInput}
 													required
 													label={'Last name'}
 													name='lastName'
-													invalidType={'label'}
-													placeholder={''}
 												/>
 											</div>
 											<div className='wrapMargin flex flex-wrap justify-around'>
@@ -130,21 +126,16 @@ class Settings extends Component {
 													type={'email'}
 													name='email'
 													autoComplete='new-email'
-													invalidType={'label'}
-													placeholder={''}
 												/>
-												<div>
-													<Field
-														component={CustomInput}
-														required
-														label={'Password'}
-														name='password'
-														autoComplete='new-password'
-														type={'password'}
-														//invalidType={'label'}
-														placeholder={'********'}
-													/>
-												</div>
+												<Field
+													component={CustomInput}
+													required
+													label={'Password'}
+													name='password'
+													autoComplete='new-password'
+													type={'password'}
+													placeholder={'********'}
+												/>
 											</div>
 											<sp />
 											<div className='flex items-center'>

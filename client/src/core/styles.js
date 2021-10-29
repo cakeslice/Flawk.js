@@ -41,6 +41,8 @@ export const styles = {
 
 	// Input Config
 
+	invalidFontSize: 13,
+
 	inputBorderFactorDay: 0.2,
 	inputBorderFactorNight: 0.15,
 

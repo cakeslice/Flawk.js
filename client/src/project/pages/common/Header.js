@@ -149,20 +149,24 @@ export default class Header extends Component {
 
 									{desktop && <div></div>}
 
-									<img
-										style={{
-											minWidth: desktop ? 48 : 30,
-											maxWidth: desktop ? 48 : 30,
-											objectFit: 'contain',
-											paddingBottom: this.state.showHeaderBackground
-												? 10
-												: 15,
-											paddingTop: this.state.showHeaderBackground ? 10 : 15,
-											transition: 'padding-top .5s, padding-bottom .5s',
-											//filter: !global.nightMode ? 'invert(85%)' : '',
-										}}
-										src={logo}
-									></img>
+									<button onClick={() => global.routerHistory().push('/')}>
+										<img
+											style={{
+												minWidth: desktop ? 48 : 30,
+												maxWidth: desktop ? 48 : 30,
+												objectFit: 'contain',
+												paddingBottom: this.state.showHeaderBackground
+													? 10
+													: 15,
+												paddingTop: this.state.showHeaderBackground
+													? 10
+													: 15,
+												transition: 'padding-top .5s, padding-bottom .5s',
+												//filter: !global.nightMode ? 'invert(85%)' : '',
+											}}
+											src={logo}
+										></img>
+									</button>
 
 									{desktop && <div></div>}
 

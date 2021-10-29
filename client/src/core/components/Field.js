@@ -44,7 +44,7 @@ export default class Field extends Component {
 					}
 				} else if (this.props.type === 'password') {
 					if (value.length < 6) {
-						error = validationError || 'Minimum 6 characters'
+						error = validationError || 'Min. 6 characters'
 					}
 				}
 			}

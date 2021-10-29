@@ -89,8 +89,6 @@ class Login extends Component {
 												label={'E-mail'}
 												type={'email'}
 												name='email'
-												invalidType={'label'}
-												placeholder={''}
 											/>
 											<div style={{ minHeight: 10 }} />
 											<Field
@@ -99,8 +97,6 @@ class Login extends Component {
 												label={'Password'}
 												name='password'
 												type={'password'}
-												invalidType={'label'}
-												placeholder={''}
 											/>
 											<Link
 												style={{ fontSize: 13, marginTop: 5 }}

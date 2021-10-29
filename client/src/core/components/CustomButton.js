@@ -343,7 +343,7 @@ export default class CustomButton extends Component {
 								{!this.props.isDisabled && invalid && (
 									<p
 										style={{
-											fontSize: styles.defaultFontSize,
+											fontSize: styles.invalidFontSize,
 											color: styles.colors.red,
 										}}
 									>

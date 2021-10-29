@@ -304,7 +304,11 @@ class Layout extends ReactQueryParams {
 							<CustomTable
 								isLoading={this.state.fetching}
 								height={'500px'}
-								expandContent={(data) => <div>Expanded: {data.title}</div>}
+								expandContent={(data) => (
+									<div>
+										<b>Expanded:</b> {data.title}
+									</div>
+								)}
 								keySelector={'id'}
 								columns={[
 									{
@@ -404,7 +408,6 @@ class Layout extends ReactQueryParams {
 								<div style={wrapExample}></div>
 								<div style={wrapExample}></div>
 							</div>
-							<div id='anchor' />
 							{header('Table')}
 							<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
 								<CustomInput
@@ -417,6 +420,7 @@ class Layout extends ReactQueryParams {
 									placeholder={'Buffered Search'}
 								></CustomInput>
 								<CustomInput
+									style={{ width: 210 }}
 									defaultValue={this.queryParams.search}
 									onChange={(e) => {
 										this.setQueryParams({ search: e || undefined })
@@ -506,6 +510,7 @@ class Layout extends ReactQueryParams {
 									currentPage={this.queryParams.page}
 								></Paginate>
 							)}
+							<div id='anchor' />
 							{header('Modal')}
 							<CustomButton onClick={() => this.setState({ exampleModal: true })}>
 								Open
@@ -709,7 +714,6 @@ class Inputs extends Component {
 									label='Invalid Label'
 									invalid={'*'}
 									name='input'
-									invalidType={'label'}
 									placeholder={'someone@gmail'}
 								></CustomInput>
 							</div>
@@ -724,6 +728,7 @@ class Inputs extends Component {
 								<CustomInput
 									name='input'
 									emptyLabel
+									invalidType='bottom'
 									invalid={'Wrong format'}
 									placeholder={'Invalid Bottom'}
 								></CustomInput>
@@ -747,7 +752,6 @@ class Inputs extends Component {
 								style={{ width: '100%' }}
 								label={'Text Area'}
 								textArea
-								placeholder={''}
 							></CustomInput>
 							<sp />
 							<sp />
@@ -826,7 +830,6 @@ class Inputs extends Component {
 									erasable
 									name='dropdown'
 									invalid={'*'}
-									invalidType={'label'}
 									options={[
 										{
 											value: 'accept',
@@ -848,6 +851,7 @@ class Inputs extends Component {
 									placeholder={'Invalid Bottom'}
 									erasable
 									name='dropdown'
+									invalidType='bottom'
 									invalid={'Not allowed'}
 									options={[
 										{
@@ -993,6 +997,9 @@ class Inputs extends Component {
 												/>
 											</div>
 
+											<sp />
+											<sp />
+
 											<div className='flex justify-center items-center'>
 												<Field
 													component={CustomButton}
@@ -1048,269 +1055,307 @@ class Style extends Component {
 		}
 
 		return (
-			<div>
-				{header('Dark mode', true)}
-				<CustomButton
-					onClick={async () => {
-						await global.toggleNightMode()
-					}}
-					appearance='secondary'
-					style={{
-						minWidth: 50,
-					}}
-				>
-					Toggle
-				</CustomButton>
-				{header('Typography')}
-				<div style={{ ...styles.card }}>
-					<h1>
-						{'Hello. '}
-						<tag>h1</tag>
-					</h1>
-					<hr />
-					<sp />
-					<h2>
-						{'This a title '}
-						<tag>h2</tag>
-					</h2>
-					<hr />
-					<sp />
-					<p>
-						Lorem ipsum dolor sit amet, <s>strikethrough</s> adipiscing elit, sed do
-						eiusmod tempor <b>bold</b> ut labore et dolore magna aliqua. Ut enim ad
-						minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
-						ea commodo <Link to='/components/layout#anchor'>anchor link</Link>.
-					</p>
-					<sp />
-					<sp />
-					<sp></sp>
-					<h3>
-						{'Another title '}
-						<tag>h3</tag>
-					</h3>
-					<hr />
-					<sp />
-					<i>
-						Lorem ipsum dolor sit amet,{' '}
-						<CustomTooltip placement='top' content={<div>Hello World!</div>}>
-							<b>tooltip</b>
-						</CustomTooltip>{' '}
-						adipiscing elit, sed do{' '}
-						<span style={{ color: styles.colors.red }}>colorized</span> tempor
-						incididunt ut <u>underline</u> et dolore magna{' '}
-						<a href='https://github.com/cakeslice' target='_blank' rel='noreferrer'>
-							new tab link
-						</a>
-						.
-					</i>
-					<sp />
-					<p>
-						{
-							'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'
-						}
-					</p>
-					<sp />
-					<p>
-						<b>
-							<bb>{'Bigger. '}</bb>
-						</b>
-						<small>{'Smaller.'}</small>
-					</p>
-					<sp />
-					<sp />
-					<p>{'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'}</p>
-					<p>
-						{
-							'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat:'
-						}
-					</p>
-					<ul>
-						<li>
-							Lorem <tag>Popular</tag>
-						</li>
-						<li>Ipsum</li>
-						<li>Dolor</li>
-						<li>Sit</li>
-					</ul>
-					<sp />
-					<p>
-						{
-							'Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?'
-						}
-					</p>
-					<sp />
-					<blockquote>
-						Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur,
-						adipisci velit...
-					</blockquote>
-					<sp /> <sp />
-					<code>int var = 1</code>
-					<sp /> <sp /> <sp />
-				</div>
-				{header('Buttons')}
-				<div
-					className='wrapMarginTopLeft flex flex-wrap justify-start'
-					style={{
-						...styles.card,
-						paddingBottom: 10,
-						paddingRight: 10,
-					}}
-				>
-					<CustomButton isLoading style={{ minWidth: 50 }}>
-						Loading
-					</CustomButton>
-					<CustomButton isLoading appearance='primary' style={{ minWidth: 50 }}>
-						Loading
-					</CustomButton>
-					<CustomButton isLoading appearance='secondary' style={{ minWidth: 50 }}>
-						Loading
-					</CustomButton>
-					<CustomButton style={{ minWidth: 50 }}>Default</CustomButton>
-					<CustomButton
-						appearance='primary'
-						style={{
-							minWidth: 50,
-						}}
-					>
-						Primary
-					</CustomButton>
-					<CustomButton
-						appearance='secondary'
-						style={{
-							minWidth: 50,
-						}}
-					>
-						Secondary
-					</CustomButton>
-					<CustomButton
-						isDisabled
-						style={{
-							minWidth: 50,
-						}}
-					>
-						Default Disabled
-					</CustomButton>
-					<CustomButton
-						appearance='primary'
-						isDisabled
-						style={{
-							minWidth: 50,
-						}}
-					>
-						Primary Disabled
-					</CustomButton>
-					<CustomButton
-						appearance='secondary'
-						isDisabled
-						style={{
-							minWidth: 50,
-						}}
-					>
-						Secondary Disabled
-					</CustomButton>
-					<CustomButton
-						style={{
-							minWidth: 50,
-						}}
-					>
-						<img style={{ maxHeight: 15, marginRight: 7.5 }} src={logo}></img>
-						<div>Icon</div>
-					</CustomButton>
-					<button>Basic</button>
-				</div>
-				{header('Colors')}
-				<div
-					className='wrapMarginTopLeft flex flex-wrap justify-start'
-					style={{
-						...styles.card,
-					}}
-				>
-					<div
-						style={{
-							...colorStyle,
-							background: styles.colors.black,
-						}}
-					></div>{' '}
-					<div
-						style={{
-							...colorStyle,
-							background: styles.colors.white,
-						}}
-					></div>
-					<div
-						style={{
-							...colorStyle,
-							background: styles.colors.main,
-						}}
-					></div>
-					<div
-						style={{
-							...colorStyle,
-							background: styles.colors.mainLight,
-						}}
-					></div>
-					<div
-						style={{
-							...colorStyle,
-							background: styles.colors.mainVeryLight,
-						}}
-					></div>
-					<div
-						style={{
-							...colorStyle,
-							background: styles.colors.red,
-						}}
-					></div>
-					<div
-						style={{
-							...colorStyle,
-							background: styles.colors.green,
-						}}
-					></div>
-				</div>
-				{header('Cards')}
-				<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
-					<div style={{ ...styles.card, textAlign: 'center', minWidth: 100 }}>basic</div>
-					<Fade delay={0} duration={750} bottom>
-						<div style={{ ...styles.card, minWidth: 100 }}>animated</div>
-					</Fade>
-					<div
-						{...css({
-							...styles.card,
-							/* 	transition: 'opacity .25s',
+			<MediaQuery minWidth={config.mobileWidthTrigger}>
+				{(desktop) => (
+					<div>
+						{header('Dark mode', true)}
+						<CustomButton
+							onClick={async () => {
+								await global.toggleNightMode()
+							}}
+							appearance='secondary'
+							style={{
+								minWidth: 50,
+							}}
+						>
+							Toggle
+						</CustomButton>
+						{header('Typography')}
+						<div style={{ ...styles.card }}>
+							<h1>
+								{'Hello. '}
+								<tag>h1</tag>
+							</h1>
+							<hr />
+							<sp />
+							<h2>
+								{'This a title '}
+								<tag>h2</tag>
+							</h2>
+							<hr />
+							<sp />
+							<p>
+								Lorem ipsum dolor sit amet, <s>strikethrough</s> adipiscing elit,
+								sed do eiusmod tempor <b>bold</b> ut labore et dolore magna aliqua.
+								Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
+								nisi ut aliquip ex ea commodo{' '}
+								<Link to='/components/layout#anchor'>anchor link</Link>.
+							</p>
+							<sp />
+							<sp />
+							<sp></sp>
+							<h3>
+								{'Another title '}
+								<tag>h3</tag>
+							</h3>
+							<hr />
+							<sp />
+							<i>
+								Lorem ipsum dolor sit amet,{' '}
+								<CustomTooltip placement='top' content={<div>Hello World!</div>}>
+									<b>tooltip</b>
+								</CustomTooltip>{' '}
+								adipiscing elit, sed do{' '}
+								<span style={{ color: styles.colors.red }}>colorized</span> tempor
+								incididunt ut <u>underline</u> et dolore magna{' '}
+								<a
+									href='https://github.com/cakeslice'
+									target='_blank'
+									rel='noreferrer'
+								>
+									new tab link
+								</a>
+								.
+							</i>
+							<sp />
+							<p>
+								{
+									'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'
+								}
+							</p>
+							<sp />
+							<p>
+								<b>
+									<bb>{'Bigger. '}</bb>
+								</b>
+								<small>{'Smaller.'}</small>
+							</p>
+							<sp />
+							<sp />
+							<p>{'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'}</p>
+							<p>
+								{
+									'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat:'
+								}
+							</p>
+							<ul>
+								<li>
+									Lorem <tag>Popular</tag>
+								</li>
+								<li>Ipsum</li>
+								<li>Dolor</li>
+								<li>Sit</li>
+							</ul>
+							<sp />
+							<p>
+								{
+									'Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?'
+								}
+							</p>
+							<sp />
+							<blockquote>
+								Neque porro quisquam est qui dolorem ipsum quia dolor sit amet,
+								consectetur, adipisci velit...
+							</blockquote>
+							<sp /> <sp />
+							<code>int var = 1</code>
+							<sp /> <sp /> <sp />
+						</div>
+						{header('Buttons')}
+						<div
+							className='wrapMarginTopLeft flex flex-wrap justify-start'
+							style={{
+								...styles.card,
+								paddingBottom: 10,
+								paddingRight: 10,
+							}}
+						>
+							<CustomButton isLoading style={{ minWidth: 50 }}>
+								Loading
+							</CustomButton>
+							<CustomButton isLoading appearance='primary' style={{ minWidth: 50 }}>
+								Loading
+							</CustomButton>
+							<CustomButton isLoading appearance='secondary' style={{ minWidth: 50 }}>
+								Loading
+							</CustomButton>
+							<CustomButton style={{ minWidth: 50 }}>Default</CustomButton>
+							<CustomButton
+								appearance='primary'
+								style={{
+									minWidth: 50,
+								}}
+							>
+								Primary
+							</CustomButton>
+							<CustomButton
+								appearance='secondary'
+								style={{
+									minWidth: 50,
+								}}
+							>
+								Secondary
+							</CustomButton>
+							<CustomButton
+								isDisabled
+								style={{
+									minWidth: 50,
+								}}
+							>
+								Default Disabled
+							</CustomButton>
+							<CustomButton
+								appearance='primary'
+								isDisabled
+								style={{
+									minWidth: 50,
+								}}
+							>
+								Primary Disabled
+							</CustomButton>
+							<CustomButton
+								appearance='secondary'
+								isDisabled
+								style={{
+									minWidth: 50,
+								}}
+							>
+								Secondary Disabled
+							</CustomButton>
+							<CustomButton
+								style={{
+									minWidth: 50,
+								}}
+							>
+								<img style={{ maxHeight: 15, marginRight: 7.5 }} src={logo}></img>
+								<div>Icon</div>
+							</CustomButton>
+							<button>Basic</button>
+						</div>
+						{header('Colors')}
+						<div
+							className='wrapMarginTopLeft flex flex-wrap justify-start'
+							style={{
+								...styles.card,
+								maxWidth: 600,
+							}}
+						>
+							<div
+								style={{
+									...colorStyle,
+									background: styles.colors.black,
+								}}
+							></div>{' '}
+							<div
+								style={{
+									...colorStyle,
+									background: styles.colors.white,
+								}}
+							></div>
+							<div
+								style={{
+									...colorStyle,
+									background: styles.colors.main,
+								}}
+							></div>
+							<div
+								style={{
+									...colorStyle,
+									background: styles.colors.mainLight,
+								}}
+							></div>
+							<div
+								style={{
+									...colorStyle,
+									background: styles.colors.mainVeryLight,
+								}}
+							></div>
+							<div
+								style={{
+									...colorStyle,
+									background: styles.colors.red,
+								}}
+							></div>
+							<div
+								style={{
+									...colorStyle,
+									background: styles.colors.green,
+								}}
+							></div>
+						</div>
+						{header('Cards')}
+						<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+							<div
+								style={{
+									...styles.card,
+									textAlign: 'center',
+									width: desktop ? 200 : '100%',
+									height: 200,
+								}}
+							>
+								Basic
+							</div>
+							<Fade delay={0} duration={1000} bottom>
+								<div
+									style={{
+										...styles.card,
+										textAlign: 'center',
+										width: desktop ? 200 : '100%',
+										height: 200,
+									}}
+								>
+									Fade-in
+								</div>
+							</Fade>
+							<div
+								{...css({
+									...styles.card,
+									/* 	transition: 'opacity .25s',
 													opacity: 0.5, */
-							transition: 'top 250ms, box-shadow 250ms',
-							top: 0,
-							boxShadow: styles.card.boxShadow,
-							position: 'relative',
-							':hover': {
-								boxShadow: styles.strongerShadow,
-								top: -5,
-								//	transform: 'translateY(5px)',
-							},
-							minWidth: 100,
-							textAlign: 'center',
-						})}
-					>
-						hover
+									transition: 'top 250ms, box-shadow 250ms',
+									top: 0,
+									boxShadow: styles.card.boxShadow,
+									position: 'relative',
+									':hover': {
+										boxShadow: styles.strongerShadow,
+										top: -5,
+										//	transform: 'translateY(5px)',
+									},
+									width: desktop ? 200 : '100%',
+									height: 200,
+									textAlign: 'center',
+								})}
+							>
+								Hover
+							</div>
+							<div
+								style={{
+									...styles.outlineCard,
+									textAlign: 'center',
+									width: desktop ? 200 : '100%',
+									height: 200,
+								}}
+							>
+								Outline
+							</div>
+							<div
+								{...css({
+									...styles.card,
+									background: config.replaceAlpha(styles.colors.black, 0.1),
+									color: config.replaceAlpha(styles.colors.black, 0.5),
+									boxShadow: 'none',
+									border: 'none',
+									width: desktop ? 200 : '100%',
+									height: 200,
+									textAlign: 'center',
+								})}
+							>
+								Muted
+							</div>
+						</div>
 					</div>
-					<div style={{ ...styles.outlineCard, textAlign: 'center', minWidth: 100 }}>
-						outline
-					</div>
-					<div
-						{...css({
-							...styles.card,
-							background: config.replaceAlpha(styles.colors.black, 0.1),
-							boxShadow: 'none',
-							border: 'none',
-							minWidth: 100,
-							textAlign: 'center',
-						})}
-					>
-						muted
-					</div>
-				</div>
-			</div>
+				)}
+			</MediaQuery>
 		)
 	}
 }
@@ -1350,79 +1395,98 @@ class Backend extends Component {
 							)}
 						</div>
 						{header('Account & Logout')}
-						<div
-							className={desktop && 'wrapMarginTopLeft flex flex-wrap justify-start'}
-						>
-							<Formik
-								enableReinitialize
-								initialValues={{}}
-								onSubmit={async (values, { setSubmitting }) => {
-									setSubmitting(true)
-									var res = await post('client/logout', {})
-									setSubmitting(false)
-
-									if (res.ok) {
-										if (this.props.fetchUser) this.props.fetchUser()
-									}
-								}}
+						{this.props.user ? (
+							<div
+								className={
+									desktop && 'wrapMarginTopLeft flex flex-wrap justify-start'
+								}
 							>
-								{({ isSubmitting }) => {
-									return (
-										<Form noValidate>
-											<div className='flex-col items-center'>
-												<button
-													type='button'
-													style={{
-														fontSize: styles.defaultFontSize,
-														padding: 0,
-														display: 'flex',
-														alignItems: 'center',
-														marginBottom: 30,
-														color: styles.colors.black,
-													}}
-												>
-													<Avatar
-														src={
-															this.props.user &&
-															this.props.user.personal.photoURL
-														}
+								<Formik
+									enableReinitialize
+									initialValues={{}}
+									onSubmit={async (values, { setSubmitting }) => {
+										setSubmitting(true)
+										var res = await post('client/logout', {})
+										setSubmitting(false)
+
+										if (res.ok) {
+											if (this.props.fetchUser) this.props.fetchUser()
+										}
+									}}
+								>
+									{({ isSubmitting }) => {
+										return (
+											<Form noValidate>
+												<div className='flex-col items-center'>
+													<button
+														type='button'
 														style={{
-															width: 30,
-															height: 30,
+															fontSize: styles.defaultFontSize,
+															padding: 0,
+															display: 'flex',
+															alignItems: 'center',
+															marginBottom: 30,
+															color: styles.colors.black,
 														}}
-													></Avatar>
-													{this.props.user && (
-														<p
-															style={{
-																fontSize: styles.defaultFontSize,
-																maxWidth: 100,
-																marginLeft: 10,
-																textOverflow: 'ellipsis',
-																overflow: 'hidden',
-																whiteSpace: 'nowrap',
-															}}
-														>
-															{this.props.user.personal.fullName}
-														</p>
-													)}
-												</button>
-												{this.props.user && (
-													<CustomButton
-														type='submit'
-														isLoading={
-															isSubmitting || this.props.fetchingUser
-														}
-														appearance='secondary'
 													>
-														{'Logout'}
-													</CustomButton>
-												)}
-											</div>
-										</Form>
-									)
-								}}
-							</Formik>
-						</div>
+														<Avatar
+															src={
+																this.props.user &&
+																this.props.user.personal.photoURL
+															}
+															style={{
+																width: 30,
+																height: 30,
+															}}
+														></Avatar>
+														{this.props.user && (
+															<p
+																style={{
+																	fontSize:
+																		styles.defaultFontSize,
+																	maxWidth: 100,
+																	marginLeft: 10,
+																	textOverflow: 'ellipsis',
+																	overflow: 'hidden',
+																	whiteSpace: 'nowrap',
+																}}
+															>
+																{this.props.user.personal.fullName}
+															</p>
+														)}
+													</button>
+													{this.props.user && (
+														<CustomButton
+															type='submit'
+															isLoading={
+																isSubmitting ||
+																this.props.fetchingUser
+															}
+															appearance='secondary'
+														>
+															{'Logout'}
+														</CustomButton>
+													)}
+												</div>
+											</Form>
+										)
+									}}
+								</Formik>
+							</div>
+						) : (
+							<div>
+								<span>
+									{lock(
+										config.replaceAlpha(
+											styles.colors.black,
+											global.nightMode ? '0.15' : '.25'
+										)
+									)}
+								</span>
+								<span> </span>
+								<span style={{ verticalAlign: 'top' }}>Please login to view</span>
+							</div>
+						)}
 						{header('Settings')}
 						{this.props.user ? (
 							<div>
@@ -1635,8 +1699,6 @@ class Login extends Component {
 										label={'E-mail'}
 										type={'email'}
 										name='email'
-										invalidType={'label'}
-										placeholder={''}
 									/>
 									<div style={{ minHeight: 10 }} />
 									<Field
@@ -1645,8 +1707,6 @@ class Login extends Component {
 										label={'Password'}
 										name='password'
 										type={'password'}
-										invalidType={'label'}
-										placeholder={''}
 									/>
 									<Link style={{ fontSize: 13, marginTop: 5 }} to='/forgot'>
 										{config.text('auth.recoverMessage')}
@@ -1680,7 +1740,7 @@ class Login extends Component {
 									}}
 								>
 									{config.text('auth.registerMessage1') + ' '}
-									<Link to='/signup'>{config.text('auth.registerMessage2')}</Link>
+									<Link>{config.text('auth.registerMessage2')}</Link>
 								</div>
 							</Form>
 						)
@@ -1743,7 +1803,6 @@ class Register extends Component {
 											label={'Verification code'}
 											type={'number'}
 											name='verificationCode'
-											invalidType={'label'}
 											placeholder={'Use 55555'}
 										/>
 									</div>
@@ -1779,7 +1838,6 @@ class Register extends Component {
 							if (
 								!config.recaptchaBypass &&
 								config.recaptchaSiteKey &&
-								config.prod &&
 								!values.captcha
 							)
 								errors.captcha = '*'
@@ -1834,16 +1892,12 @@ class Register extends Component {
 												autoFocus
 												label={'First name'}
 												name='firstName'
-												invalidType={'label'}
-												placeholder={''}
 											/>
 											<Field
 												component={CustomInput}
 												required
 												label={'Last name'}
 												name='lastName'
-												invalidType={'label'}
-												placeholder={''}
 											/>
 										</div>
 										<div className='wrapMargin flex flex-wrap justify-around'>
@@ -1855,8 +1909,6 @@ class Register extends Component {
 												type={'email'}
 												autoComplete='new-email'
 												name='email'
-												invalidType={'label'}
-												placeholder={''}
 											/>
 											<Field
 												component={CustomInput}
@@ -1865,8 +1917,7 @@ class Register extends Component {
 												name='password'
 												autoComplete='new-password'
 												type={'password'}
-												//invalidType={'label'}
-												placeholder={''}
+												placeholder={'Min. 6 characters'}
 											/>
 										</div>
 										{values.firstName &&
@@ -1950,7 +2001,7 @@ class Register extends Component {
 										}}
 									>
 										{config.text('auth.loginMessage1') + ' '}
-										<Link to='/login'>{config.text('auth.loginMessage2')}</Link>
+										<Link>{config.text('auth.loginMessage2')}</Link>
 									</div>
 								</Form>
 							)
@@ -2015,8 +2066,6 @@ class Forgot extends Component {
 											name='newPassword'
 											autoComplete='new-password'
 											type={'password'}
-											invalidType={'label'}
-											placeholder={''}
 										/>
 										<div style={{ minHeight: 10 }} />
 										<Field
@@ -2025,8 +2074,6 @@ class Forgot extends Component {
 											label={'Verification code'}
 											type={'number'}
 											name='verificationCode'
-											invalidType={'label'}
-											placeholder={''}
 										/>
 									</div>
 									<sp />
@@ -2059,7 +2106,11 @@ class Forgot extends Component {
 						validate={(values) => {
 							let errors = {}
 
-							if (config.recaptchaBypass && config.prod && !values.captcha)
+							if (
+								config.recaptchaBypass &&
+								config.recaptchaSiteKey &&
+								!values.captcha
+							)
 								errors.captcha = '*'
 
 							return errors
@@ -2112,8 +2163,6 @@ class Forgot extends Component {
 											label={'E-mail'}
 											type={'email'}
 											name='email'
-											invalidType={'label'}
-											placeholder={''}
 										/>
 										{values.email /* Only show after filling to avoid loading it when page load */ &&
 											!config.recaptchaBypass &&
@@ -2268,16 +2317,12 @@ class Settings extends Component {
 										required
 										label={'First name'}
 										name='firstName'
-										invalidType={'label'}
-										placeholder={''}
 									/>
 									<Field
 										component={CustomInput}
 										required
 										label={'Last name'}
 										name='lastName'
-										invalidType={'label'}
-										placeholder={''}
 									/>
 								</div>
 								<div className='wrapMargin flex flex-wrap justify-around'>
@@ -2288,8 +2333,6 @@ class Settings extends Component {
 										type={'email'}
 										name='email'
 										autoComplete='new-email'
-										invalidType={'label'}
-										placeholder={''}
 									/>
 									<Field
 										component={CustomInput}
@@ -2298,7 +2341,6 @@ class Settings extends Component {
 										name='password'
 										autoComplete='new-password'
 										type={'password'}
-										//invalidType={'label'}
 										placeholder={'********'}
 									/>
 								</div>
@@ -2453,7 +2495,11 @@ class Admin extends ReactQueryParams {
 							<CustomTable
 								isLoading={this.state.fetching}
 								height={'500px'}
-								expandContent={(data) => <div>Expanded: {data.email}</div>}
+								expandContent={(data) => (
+									<div>
+										<b>Expanded:</b> {data.email}
+									</div>
+								)}
 								keySelector={'_id'}
 								columns={[
 									{

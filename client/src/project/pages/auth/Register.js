@@ -92,7 +92,6 @@ class Register extends Component {
 													label={'Verification code'}
 													type={'number'}
 													name='verificationCode'
-													invalidType={'label'}
 													placeholder={'Use 55555'}
 												/>
 											</div>
@@ -128,7 +127,6 @@ class Register extends Component {
 									let errors = {}
 
 									if (
-										config.prod &&
 										config.recaptchaSiteKey &&
 										!config.recaptchaBypass &&
 										!values.captcha
@@ -180,70 +178,47 @@ class Register extends Component {
 										<Form
 											style={{
 												...styles.card,
-												paddingRight: desktop ? 40 : 5,
-												paddingLeft: desktop ? 40 : 5,
+												paddingRight: 40,
+												paddingLeft: 40,
 											}}
 											noValidate
 										>
+											<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+												<Field
+													component={CustomInput}
+													required
+													autoFocus
+													label={'First name'}
+													name='firstName'
+												/>
+												<Field
+													component={CustomInput}
+													required
+													label={'Last name'}
+													name='lastName'
+												/>
+											</div>
+											<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+												<Field
+													component={CustomInput}
+													required
+													autoFocus
+													label={'E-mail'}
+													type={'email'}
+													autoComplete='new-email'
+													name='email'
+												/>
+												<Field
+													component={CustomInput}
+													required
+													label={'Password'}
+													name='password'
+													autoComplete='new-password'
+													type={'password'}
+													placeholder={'Min. 6 characters'}
+												/>
+											</div>
 											<div className='flex-col items-center justify-center'>
-												<div
-													className={
-														'wrapMargin' +
-														(desktop
-															? ' flex flex-wrap justify-around'
-															: '')
-													}
-												>
-													<Field
-														component={CustomInput}
-														required
-														autoFocus
-														label={'First name'}
-														name='firstName'
-														invalidType={'label'}
-														placeholder={''}
-													/>
-													<Field
-														component={CustomInput}
-														required
-														label={'Last name'}
-														name='lastName'
-														invalidType={'label'}
-														placeholder={''}
-													/>
-												</div>
-												<div
-													className={
-														'wrapMargin' +
-														(desktop
-															? ' flex flex-wrap justify-around'
-															: '')
-													}
-												>
-													<Field
-														component={CustomInput}
-														required
-														autoFocus
-														label={'E-mail'}
-														type={'email'}
-														autoComplete='new-email'
-														name='email'
-														invalidType={'label'}
-														placeholder={''}
-													/>
-													<div>
-														<Field
-															component={CustomInput}
-															required
-															label={'Password'}
-															name='password'
-															autoComplete='new-password'
-															type={'password'}
-															//invalidType={'label'}
-															placeholder={''}
-														/>
-													</div>
-												</div>
 												{values.firstName &&
 													values.lastName &&
 													values.password &&

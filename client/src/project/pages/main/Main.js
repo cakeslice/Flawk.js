@@ -40,46 +40,44 @@ export default class Main extends Component {
 								position: 'relative',
 							}}
 						>
-							<div className='flex justifyCenter'>
-								<div
-									className='flex-col items-center justify-center text-center'
-									style={{
-										marginTop: desktop ? 150 : 75,
-									}}
-								>
-									{desktop ? (
-										<h1
-											style={{
-												maxWidth: 800,
-												paddingLeft: 20,
-												paddingRight: 20,
-											}}
-										>
-											{'Flawk.js'}
-										</h1>
-									) : (
-										<h2
-											style={{
-												maxWidth: 800,
-												paddingLeft: 20,
-												paddingRight: 20,
-											}}
-										>
-											{'Flawk.js'}
-										</h2>
-									)}
-									<p
+							<div
+								className='flex-col items-center justify-center text-center'
+								style={{
+									marginTop: desktop ? 150 : 75,
+								}}
+							>
+								{desktop ? (
+									<h1
 										style={{
-											marginBottom: 80,
-											marginTop: 20,
-											maxWidth: 500,
-											fontSize: desktop ? 16 : 15,
-											padding: 20,
+											maxWidth: 800,
+											paddingLeft: 20,
+											paddingRight: 20,
 										}}
 									>
-										Open-source web app boilerplate
-									</p>
-								</div>
+										{'Flawk.js'}
+									</h1>
+								) : (
+									<h2
+										style={{
+											maxWidth: 800,
+											paddingLeft: 20,
+											paddingRight: 20,
+										}}
+									>
+										{'Flawk.js'}
+									</h2>
+								)}
+								<p
+									style={{
+										marginBottom: 80,
+										marginTop: 20,
+										maxWidth: 500,
+										fontSize: desktop ? 16 : 15,
+										padding: 20,
+									}}
+								>
+									Open-source web app boilerplate
+								</p>
 							</div>
 							<br />
 							<div className='flex-col items-center justify-center'>
@@ -108,13 +106,6 @@ export default class Main extends Component {
 									GitHub
 								</CustomButton>
 							</div>
-
-							<sp />
-							<sp />
-							<sp />
-							<sp />
-							<sp />
-							<sp />
 
 							{/* <Fade delay={500} duration={750} bottom>
 								<div

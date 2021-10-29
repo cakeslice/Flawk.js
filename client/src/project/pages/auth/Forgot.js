@@ -95,8 +95,6 @@ class Forgot extends Component {
 														name='newPassword'
 														autoComplete='new-password'
 														type={'password'}
-														invalidType={'label'}
-														placeholder={''}
 													/>
 												</div>
 												<div style={{ minHeight: 10 }} />
@@ -106,7 +104,6 @@ class Forgot extends Component {
 													label={'Verification code'}
 													type={'number'}
 													name='verificationCode'
-													invalidType={'label'}
 													placeholder={'Use 55555'}
 												/>
 											</div>
@@ -145,7 +142,6 @@ class Forgot extends Component {
 									if (
 										!config.recaptchaBypass &&
 										config.recaptchaSiteKey &&
-										config.prod &&
 										!values.captcha
 									)
 										errors.captcha = '*'
@@ -199,24 +195,22 @@ class Forgot extends Component {
 										<Form
 											style={{
 												...styles.card,
-												paddingRight: desktop ? 40 : 5,
-												paddingLeft: desktop ? 40 : 5,
+												paddingRight: 40,
+												paddingLeft: 40,
 											}}
 											noValidate
 										>
+											<div className='wrapMargin flex flex-wrap justify-around'>
+												<Field
+													component={CustomInput}
+													required
+													autoFocus
+													label={'E-mail'}
+													type={'email'}
+													name='email'
+												/>
+											</div>
 											<div className='flex-col items-center justify-center'>
-												<div className='wrapMargin flex flex-wrap justify-around'>
-													<Field
-														component={CustomInput}
-														required
-														autoFocus
-														label={'E-mail'}
-														type={'email'}
-														name='email'
-														invalidType={'label'}
-														placeholder={''}
-													/>
-												</div>
 												{values.email /* Only show after filling to avoid loading it when page load */ &&
 													!config.recaptchaBypass &&
 													!values.captcha && (
