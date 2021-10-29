@@ -907,7 +907,7 @@ class Inputs extends Component {
 						<div style={{ ...styles.card, maxWidth: 600 }}>
 							<Formik
 								enableReinitialize
-								initialValues={{}}
+								initialValues={{ checkbox: false }}
 								onSubmit={async (values, { setSubmitting }) => {
 									console.log('Submitting...')
 									setSubmitting(true)
@@ -949,7 +949,7 @@ class Inputs extends Component {
 												<Field
 													component={CustomInput}
 													required
-													invalidMessage={'Invalid e-mail address'}
+													invalidMessage={'Invalid e-mail'}
 													type={'email'}
 													name='email'
 													autoComplete='new-email'
@@ -969,7 +969,8 @@ class Inputs extends Component {
 												<Field
 													component={CustomInput}
 													required
-													invalidMessage='Minimum 12 characters'
+													invalidType='bottom'
+													invalidMessage='Min. 12 characters'
 													validate={(value) => value.length >= 12}
 													name='password'
 													type={'password'}
@@ -980,6 +981,7 @@ class Inputs extends Component {
 													component={CustomDropdown}
 													required
 													name='dropdown'
+													invalidType='bottom'
 													config={{ isSearchable: true }}
 													placeholder={'Value'}
 													erasable
@@ -997,7 +999,6 @@ class Inputs extends Component {
 												/>
 											</div>
 
-											<sp />
 											<sp />
 
 											<div className='flex justify-center items-center'>

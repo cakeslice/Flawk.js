@@ -42,8 +42,7 @@ export default class CustomDropdown extends Component {
 	}
 
 	render() {
-		// !DEPRECATED, to be removed later (formIK prop)
-		var formIK = this.props.formIK
+		var formIK
 		if (this.props.field) {
 			var field = this.props.field
 			var form = this.props.form
@@ -60,16 +59,10 @@ export default class CustomDropdown extends Component {
 			}
 		}
 
-		// !DEPRECATED, to be removed later (formIK.values, formIK.touched, formIK.errors)
 		var name = (formIK && formIK.name) || this.props.name
-		var value = formIK
-			? (formIK.values && formIK.values[name]) || formIK.value
-			: this.props.value
+		var value = formIK ? formIK.value : this.props.value
 		var invalid =
-			formIK &&
-			((formIK.touched && formIK.touched[name]) || formIK.touch || formIK.submitCount > 0)
-				? (formIK.errors && formIK.errors[name]) || formIK.error
-				: this.props.invalid
+			formIK && (formIK.touch || formIK.submitCount > 0) ? formIK.error : this.props.invalid
 
 		//
 
