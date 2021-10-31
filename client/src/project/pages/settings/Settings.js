@@ -15,8 +15,9 @@ import { css } from 'glamor'
 import React, { Component } from 'react'
 import MediaQuery from 'react-responsive'
 
-var styles = require('core/styles').default
-var config = require('core/config_').default
+const styles = require('core/styles').default
+const config = require('core/config_').default
+const upload = require('core/functions/upload').default
 
 class Settings extends Component {
 	state = {}
@@ -53,7 +54,7 @@ class Settings extends Component {
 										/**
 										 * @type {import('core/config_').FileUpload}
 										 */
-										var fileUpload = await config.uploadFile(
+										var fileUpload = await upload.uploadFile(
 											values.photoFile,
 											this,
 											post
@@ -160,7 +161,7 @@ class Settings extends Component {
 														}
 														accept='image/*;capture=camera'
 														onChange={async (e) => {
-															var img = await config.handleFileChange(
+															var img = await upload.handleFileChange(
 																e
 															)
 															if (img) {

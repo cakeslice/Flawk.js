@@ -5,12 +5,6 @@
 	"engines": {
 		"node": "14.15.0"
 	},
-	"lint-staged": {
-		"*.{js,jsx,css,less,scss,ts,tsx,md}": [
-			"eslint --quiet",
-			"prettier --check"
-		]
-	},
 	"scripts": {
 		"env:dev": "env-cmd -f ./_env/flawk_dev.env",
 		"- MAIN SCRIPTS -": "-----------------------------",
@@ -20,27 +14,13 @@
 		"- EXTRA SCRIPTS -": "-----------------------------",
 		"precommit": "lint-staged",
 		"postinstall": "cd .. && git config core.hooksPath ./git-hooks",
-		"test": "jest --coverage",
+		"test": "npm run env:dev jest --coverage",
 		"testCI": "jest",
 		"prettierFix": "prettier --write ./app",
 		"prettierCI": "prettier --check ./",
 		"lintCI": "eslint --quiet ./",
 		"auditFix": "npm audit fix",
 		"auditCI": "npm audit --audit-level=moderate"
-	},
-	"jest": {
-		"testEnvironment": "node",
-		"testPathIgnorePatterns": [
-			"/node_modules/"
-		],
-		"coveragePathIgnorePatterns": [
-			"/node_modules/",
-			"/coverage/"
-		],
-		"collectCoverageFrom": [
-			"**/*.{js,jsx}",
-			"!**/node_modules/**"
-		]
 	},
 	"dependencies": {
 		"@awaitjs/express": "^0.7.2",
@@ -60,8 +40,9 @@
 		"express-mongo-sanitize": "^2.1.0",
 		"express-openapi-validator": "^4.12.14",
 		"express-paginate": "^1.0.2",
+		"git-repo-info": "^2.1.1",
 		"helmet": "^4.6.0",
-		"jest": "^27.0.6",
+		"jest": "^27.3.1",
 		"jsonwebtoken": "^8.5.1",
 		"lodash": "^4.17.21",
 		"moment": "^2.29.1",
@@ -85,6 +66,7 @@
 		"winston-loggly-bulk": "^3.2.1"
 	},
 	"devDependencies": {
+		"@types/jest": "^27.0.2",
 		"@types/mongoose": "^5.11.97",
 		"babel-eslint": "^10.1.0",
 		"cross-env": "^7.0.3",
@@ -100,5 +82,34 @@
 		"lint-staged": "^11.0.0",
 		"nodemon": "^2.0.9",
 		"prettier": "^2.3.2"
+	},
+	"lint-staged": {
+		"*.{js,jsx,css,less,scss,ts,tsx,md}": [
+			"eslint --quiet",
+			"prettier --check"
+		]
+	},
+	"jest": {
+		"testEnvironment": "node",
+		"testPathIgnorePatterns": [
+			"/node_modules/"
+		],
+		"coveragePathIgnorePatterns": [
+			"/node_modules/",
+			"/coverage/"
+		],
+		"collectCoverageFrom": [
+			"**/*.{js,jsx}",
+			"!**/node_modules/**"
+		],
+		"testMatch": [
+			"**/*.test.js",
+			"**/*.test.ts",
+			"**/*.test.jsx",
+			"**/*.test.tsx"
+		],
+		"modulePaths": [
+			"<rootDir>/app/"
+		]
 	}
 }

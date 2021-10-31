@@ -4,3 +4,4 @@ build/*
 *.ts
 *.css
 *.scss
+src/core/utils/serviceWorkerRegistration.js

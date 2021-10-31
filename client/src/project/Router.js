@@ -23,8 +23,8 @@ import Footer from './pages/common/Footer'
 import Header from './pages/common/Header'
 import { fetchStructures, fetchUser } from './redux/UserState'
 
-var styles = require('core/styles').default
-var config = require('core/config_').default
+const styles = require('core/styles').default
+const config = require('core/config_').default
 
 // To preload a lazy component:
 /*
@@ -64,7 +64,7 @@ class Router extends Component {
 	}
 
 	componentDidUpdate() {
-		var selectedRoute = global.routerHistory().location.pathname.toString()
+		let selectedRoute = global.routerHistory().location.pathname.toString()
 		if (
 			selectedRoute.includes('/dashboard') &&
 			!this.props.fetchingUser &&
@@ -74,13 +74,13 @@ class Router extends Component {
 			global.routerHistory().push(config.noTokenRedirect)
 	}
 	render() {
-		var permission = 1000
+		let permission = 1000
 		if (this.props.user) {
 			permission = this.props.user.permission
 		}
 
 		/** @type {import('core/components/Dashboard.js').route[]} */
-		var routes = [
+		let routes = [
 			{
 				desktopTab: true,
 				notRoute: true,
@@ -251,6 +251,8 @@ class Router extends Component {
 			},
 		])
 
+		let landingPage = window.location.pathname.toString() === '/'
+
 		return (
 			<RouterBase dayNightToggle={{ width: 35, height: 40 }}>
 				<ScrollToTop>
@@ -290,7 +292,7 @@ class Router extends Component {
 
 								<Route>
 									<div style={{ background: styles.colors.white }}>
-										<Header fillSpace />
+										<Header landingPage={landingPage} fillSpace />
 										<Fade delay={750} duration={500}>
 											<Switch>
 												<Route exact path='/login'>

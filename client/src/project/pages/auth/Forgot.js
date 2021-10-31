@@ -18,8 +18,8 @@ import MediaQuery from 'react-responsive'
 import HeadShake from 'react-reveal/HeadShake'
 import { fetchUser } from '../../redux/UserState'
 
-var styles = require('core/styles').default
-var config = require('core/config_').default
+const styles = require('core/styles').default
+const config = require('core/config_').default
 
 class Forgot extends Component {
 	state = {}

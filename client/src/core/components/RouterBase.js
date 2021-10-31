@@ -19,9 +19,9 @@ import { Router } from 'react-router-dom'
 import { Bounce, toast, ToastContainer } from 'react-toastify'
 import CustomButton from './CustomButton'
 
-var gitHash = GitInfo().commit.shortHash
-var styles = require('core/styles').default
-var config = require('core/config_').default
+const gitHash = GitInfo().commit.shortHash
+const styles = require('core/styles').default
+const config = require('core/config_').default
 
 var amountToasts = 0
 

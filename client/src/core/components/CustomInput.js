@@ -13,8 +13,8 @@ import InputMask from 'react-input-mask'
 import MediaQuery from 'react-responsive'
 import TextareaAutosize from 'react-textarea-autosize'
 
-var config = require('core/config_').default
-var styles = require('core/styles').default
+const config = require('core/config_').default
+const styles = require('core/styles').default
 
 const MaskedInput = (props) => (
 	<InputMask

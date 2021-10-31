@@ -10,14 +10,12 @@ const crypto = require('crypto-extra')
 var mongoose = require('mongoose')
 var uuid = require('uuid')
 var AWS = require('aws-sdk')
-const postmark = require('postmark')
-const nodemailer = require('nodemailer')
 const { toRegex } = require('diacritic-regex')
 const Nexmo = require('@vonage/server-sdk')
 const jwt = require('jsonwebtoken')
 //
-var config = require('core/config_')
-var database = config.projectDatabase
+const config = require('core/config_')
+const database = config.projectDatabase
 
 Number.prototype.toFixedNumber = function (x, base) {
 	var pow = Math.pow(base || 10, x)
@@ -50,43 +48,10 @@ const s3 = new AWS.S3({
 	apiVersion: '2006-03-01',
 })
 
-/* var pushNotificationsClient
+/* let pushNotificationsClient
 if (config.pushNotificationsKey) pushNotificationsClient = new Something({ accessToken: config.pushNotificationsKey }) */
 
-let postmarkClient = config.postmarkKey ? new postmark.ServerClient(config.postmarkKey) : undefined
-let nodemailerClient = undefined
-async function setupNodemailer() {
-	nodemailerClient = nodemailer.createTransport({
-		host: config.nodemailerHost,
-		port: config.nodemailerPort || 465,
-		secure: config.nodemailerPort != 465 ? false : true, // eslint-disable-line
-		auth: {
-			user: config.nodemailerUser,
-			pass: config.nodemailerPass,
-		},
-		requireTLS: true,
-	})
-	var hbs = require('nodemailer-express-handlebars')
-	var dir = './app/project/email_templates/'
-	nodemailerClient.use(
-		'compile',
-		hbs({
-			viewEngine: {
-				partialsDir: dir + 'partials',
-				layoutsDir: dir + 'layouts',
-				defaultLayout: 'main',
-				extname: '.hbs',
-			},
-			extName: '.hbs',
-			viewPath: dir,
-		})
-	)
-	var htmlToText = require('nodemailer-html-to-text').htmlToText
-	nodemailerClient.use('compile', htmlToText())
-}
-if (!config.postmarkKey && config.nodemailerHost) setupNodemailer()
-
-var nexmoClient = undefined
+let nexmoClient = undefined
 if (config.nexmo.ID)
 	nexmoClient = new Nexmo({
 		apiKey: config.nexmo.ID,
@@ -102,7 +67,7 @@ if (config.nexmo.ID)
  * @param {string=} message
  * @param {object=} data
  */
-var _setResponse = function (code, req, res, message, data) {
+const _setResponse = function (code, req, res, message, data) {
 	var user
 	if (req.user) {
 		user = req.user.email ? req.user.email : req.user.phone
@@ -139,7 +104,7 @@ global.sleep = async function sleep(ms) {
  * @param {string=} identifier
  * @returns {void}
  */
-var logCatch = function (err, useSentry, identifier = '') {
+const logCatch = function (err, useSentry, identifier = '') {
 	console.log(identifier + JSON.stringify(err.message) + ' ' + JSON.stringify(err.stack || err))
 	if (global.Sentry && useSentry) {
 		err.message = identifier + err.message
@@ -148,7 +113,7 @@ var logCatch = function (err, useSentry, identifier = '') {
 }
 global.logCatch = logCatch
 
-var _removeAccents = function (str) {
+const _removeAccents = function (str) {
 	return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
 }
 
@@ -352,150 +317,6 @@ module.exports = {
 
 		console.log(data, httpResponse.statusCode)
 		*/
-	},
-
-	///////////////////////////////////// E-MAIL
-
-	/**
-	 * @typedef emailOptions
-	 * @property {boolean=} marketing
-	 */
-	/**
-	 * @param {string} email
-	 * @param {{subject: string, substitutions:object}} data
-	 * @param {string} template
-	 * @param {emailOptions=} options
-	 */
-	sendEmail: async function (email, data, template = undefined, { marketing = false } = {}) {
-		var body = {
-			TemplateAlias: template,
-			TemplateModel: {
-				...data.substitutions,
-				subject: !config.prod ? '[TEST] ' + data.subject : data.subject,
-			},
-			From: config.emailFrom,
-			ReplyTo: config.replyTo,
-			To: email,
-			MessageStream: marketing && 'marketing',
-		}
-		if (process.env.noEmails === 'true') {
-			console.log('Skipped e-mail: ' + JSON.stringify(body))
-			return
-		}
-		if (!template) {
-			console.log('No template provided! Skipped e-mail: ' + JSON.stringify(body))
-			return
-		}
-		console.log('Sending e-mail: ' + JSON.stringify(body))
-		if (postmarkClient) {
-			var response = await postmarkClient.sendEmailWithTemplate(body)
-			if (response.ErrorCode === 0) console.log('E-mail sent! (202)')
-			else console.log(template + ': ' + JSON.stringify(response))
-		} else if (nodemailerClient) {
-			let info = await nodemailerClient.sendMail({
-				from: body.From,
-				replyTo: body.ReplyTo,
-				to: body.To,
-				subject: body.TemplateModel.subject,
-
-				//text: 'Hello world?',
-				//html: '<b>Hello world?</b>',
-				template: template,
-				context: {
-					...data.substitutions,
-				},
-			})
-
-			console.log('Message sent: %s', info.messageId)
-		} else console.log('Skipped sending e-mail, no e-mail service!')
-	},
-	/**
-	 * @param {{subject: string, email:string,substitutions:object}[]} array
-	 * @param {string} template
-	 */
-	sendBulkEmails: async function (array, template = undefined) {
-		var bodies = []
-		array.forEach((a) => {
-			bodies.push({
-				TemplateAlias: template,
-				TemplateModel: {
-					...a.substitutions,
-					subject: !config.prod ? '[TEST-BULK] ' + a.subject : a.subject,
-				},
-				From: config.emailFrom,
-				ReplyTo: config.replyTo,
-				To: a.email,
-				MessageStream: 'marketing',
-			})
-		})
-		if (process.env.noEmails === 'true') {
-			console.log('------------ Skipped batch e-mails ------------')
-			return
-		}
-		if (!template) {
-			console.log('No template provided! Skipped batch e-mails')
-			return
-		}
-		console.log('------------ Sending batch e-mails ------------')
-		if (postmarkClient) {
-			var response = await postmarkClient.sendEmailBatchWithTemplates(bodies)
-
-			response.forEach((r) => {
-				if (r.ErrorCode !== 0) console.log(JSON.stringify(r))
-			})
-		} else console.log('Skipped sending e-mails, no e-mail service!')
-	},
-	/**
-	 * @param {{subject: string, substitutions:object}} data
-	 * @param template
-	 * @param {boolean} developer
-	 */
-	sendAdminEmail: async function (data, template = undefined, developer = false) {
-		var adminEmails = ''
-		for (var i = 0; i < config.adminEmails.length; i++) {
-			if (i === config.adminEmails.length - 1) adminEmails += config.adminEmails[i]
-			else adminEmails += config.adminEmails[i] + ', '
-		}
-		var body = {
-			TemplateAlias: template,
-			TemplateModel: {
-				...data.substitutions,
-				subject: !config.prod ? '[TEST-ADMIN] ' + data.subject : data.subject,
-			},
-			From: config.emailFrom,
-			ReplyTo: config.replyTo,
-			To: !config.prod || (developer && config.prod) ? config.developerEmail : adminEmails,
-		}
-		if (process.env.noEmails === 'true') {
-			console.log('Skipped e-mail: ' + JSON.stringify(body))
-			return
-		}
-		if (!template) {
-			console.log('No template provided! Skipped e-mail: ' + JSON.stringify(body))
-			return
-		}
-		console.log('Sending e-mail: ' + JSON.stringify(body))
-		if (postmarkClient) {
-			var response = await postmarkClient.sendEmailWithTemplate(body)
-			if (response.ErrorCode === 0) console.log('E-mail sent! (202)')
-			else console.log(JSON.stringify(response))
-		} else if (nodemailerClient) {
-			let info = await nodemailerClient.sendMail({
-				from: body.From,
-				replyTo: body.ReplyTo,
-				to: body.To,
-				subject: body.TemplateModel.subject,
-
-				//text: 'Hello world?',
-				//html: '<b>Hello world?</b>',
-				template: template,
-				context: {
-					...data.substitutions,
-				},
-			})
-
-			console.log('Message sent: %s', info.messageId)
-		} else console.log('Skipped sending e-mail, no e-mail service!')
 	},
 
 	///////////////////////////////////// SMS

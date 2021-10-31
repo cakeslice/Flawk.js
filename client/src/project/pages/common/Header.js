@@ -12,8 +12,8 @@ import { Fade } from 'react-reveal'
 import { Link } from 'react-router-dom'
 import logo from '../../../core/assets/images/logo.svg'
 
-var styles = require('core/styles').default
-var config = require('core/config_').default
+const styles = require('core/styles').default
+const config = require('core/config_').default
 
 const leftLinks = [
 	/* { name: 'About', id: '/#about' } */
@@ -33,28 +33,30 @@ const mobileLinks = [
 	/* { name: 'Login', id: '/login' }, */
 ]
 
-const mobileHeight = 45
-const mobileHeightTop = 65
-const desktopHeight = 45
+const mobileHeight = 50
+const mobileHeightTop = 70
+const desktopHeight = 70
 const desktopHeightTop = 125
 
 export default class Header extends Component {
 	state = {
-		showHeaderBackground: false,
+		shrink: false,
 	}
 
 	handleScroll() {
 		const scrollTop = document.body.scrollTop || document.documentElement.scrollTop
 
 		this.setState({
-			showHeaderBackground: scrollTop > 50,
+			shrink: this.props.landingPage ? scrollTop > 50 : true,
 		})
 	}
 	componentDidMount() {
-		window.addEventListener('scroll', this.handleScroll.bind(this))
+		this.handleScroll()
+		if (this.props.landingPage) window.addEventListener('scroll', this.handleScroll.bind(this))
 	}
 	componentWillUnmount() {
-		window.removeEventListener('scroll', this.handleScroll.bind(this))
+		if (this.props.landingPage)
+			window.removeEventListener('scroll', this.handleScroll.bind(this))
 	}
 
 	render() {
@@ -81,13 +83,13 @@ export default class Header extends Component {
 								transition: 'border-color .5s, box-shadow .5s, backgroundColor .5s',
 								backgroundColor: !desktop
 									? styles.colors.white
-									: this.state.showHeaderBackground
+									: this.state.shrink
 									? config.replaceAlpha(styles.colors.background, '0.75')
 									: 'transparent',
-								boxShadow: this.state.showHeaderBackground && styles.mediumShadow,
+								boxShadow: this.state.shrink && styles.mediumShadow,
 								borderBottomStyle: 'solid',
 								borderWidth: 1,
-								borderColor: this.state.showHeaderBackground
+								borderColor: this.state.shrink
 									? 'rgba(255, 255, 255, 0.05)'
 									: 'transparent',
 
@@ -102,17 +104,17 @@ export default class Header extends Component {
 									style={{
 										maxWidth: maxWidth,
 										minHeight: desktop
-											? this.state.showHeaderBackground
+											? this.state.shrink
 												? desktopHeight
 												: desktopHeightTop
-											: this.state.showHeaderBackground
+											: this.state.shrink
 											? mobileHeight
 											: mobileHeightTop,
 										maxHeight: desktop
-											? this.state.showHeaderBackground
+											? this.state.shrink
 												? desktopHeight
 												: desktopHeightTop
-											: this.state.showHeaderBackground
+											: this.state.shrink
 											? mobileHeight
 											: mobileHeightTop,
 										transition: 'max-height .5s, min-height .5s',
@@ -155,12 +157,8 @@ export default class Header extends Component {
 												minWidth: desktop ? 48 : 30,
 												maxWidth: desktop ? 48 : 30,
 												objectFit: 'contain',
-												paddingBottom: this.state.showHeaderBackground
-													? 10
-													: 15,
-												paddingTop: this.state.showHeaderBackground
-													? 10
-													: 15,
+												paddingBottom: this.state.shrink ? 10 : 15,
+												paddingTop: this.state.shrink ? 10 : 15,
 												transition: 'padding-top .5s, padding-bottom .5s',
 												//filter: !global.nightMode ? 'invert(85%)' : '',
 											}}
@@ -214,20 +212,14 @@ export default class Header extends Component {
 											className='flex items-center'
 											style={{
 												minWidth: desktop ? 48 : 30,
-												paddingBottom: this.state.showHeaderBackground
-													? 10
-													: 15,
-												paddingTop: this.state.showHeaderBackground
-													? 10
-													: 15,
+												paddingBottom: this.state.shrink ? 10 : 15,
+												paddingTop: this.state.shrink ? 10 : 15,
 												transition: 'padding-top .5s, padding-bottom .5s',
 											}}
 											background={styles.colors.white}
 											links={mobileLinks}
 											headerHeight={
-												this.state.showHeaderBackground
-													? mobileHeight
-													: mobileHeightTop
+												this.state.shrink ? mobileHeight : mobileHeightTop
 											}
 										></MobileDrawer>
 									)}

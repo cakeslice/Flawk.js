@@ -15,8 +15,8 @@ import MediaQuery from 'react-responsive'
 import { Fade } from 'react-reveal'
 import { Link, Redirect, Route, Switch } from 'react-router-dom'
 
-var styles = require('core/styles').default
-var config = require('core/config_').default
+const styles = require('core/styles').default
+const config = require('core/config_').default
 
 const mobileHeight = 55
 const mobileHeightTop = 65

@@ -9,8 +9,8 @@ import { Range } from 'rc-slider'
 import 'rc-slider/assets/index.css'
 import React, { Component } from 'react'
 
-var styles = require('core/styles').default
-var config = require('core/config_').default
+const styles = require('core/styles').default
+const config = require('core/config_').default
 
 export default class CustomSlider extends Component {
 	state = {

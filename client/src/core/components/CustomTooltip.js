@@ -8,7 +8,7 @@
 import React from 'react'
 import TooltipTrigger from 'react-popper-tooltip'
 
-var styles = require('core/styles').default
+const styles = require('core/styles').default
 
 const CustomTooltip = ({ children, content, ...props }) => (
 	<TooltipTrigger

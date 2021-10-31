@@ -159,6 +159,8 @@ WORKDIR /usr/src/app
 COPY ./package*.json ./
 RUN npm install --only=prod
 
+# Copy git repo so we can get the SHA in the app
+COPY ../.git/ .
 COPY . .
 
 RUN npm run auditCI && npm run testCI && rm -rf /usr/src/app/client/*

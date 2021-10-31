@@ -9,14 +9,13 @@ import { Capacitor } from '@capacitor/core'
 import { Storage } from '@capacitor/storage'
 import 'abortcontroller-polyfill'
 import 'core/assets/react-toastify.css'
+import * as serviceWorkerRegistration from 'core/utils/serviceWorkerRegistration'
 import { CookieStorage, isSupported, MemoryStorage } from 'local-storage-fallback'
 import React, { Suspense } from 'react'
 import 'react-awesome-lightbox/build/style.css'
 import 'react-datetime/css/react-datetime.css'
 import ReactDOM from 'react-dom'
 import { ErrorBoundary } from 'react-error-boundary'
-//import registerServiceWorker from './utils/registerServiceWorker'
-import { unregister } from './core/utils/registerServiceWorker'
 
 const App = React.lazy(() => import('./project/App'))
 
@@ -26,7 +25,7 @@ global.lazyWithPreload = (factory) => {
 	return Component
 }
 
-var capacitorStorage = {
+const capacitorStorage = {
 	getItem: async (key) => {
 		const { value } = await Storage.get({ key: key })
 		return value
@@ -45,7 +44,7 @@ var capacitorStorage = {
 	},
 }
 
-var storage
+let storage
 if (Capacitor.isNativePlatform()) {
 	storage = capacitorStorage
 } else if (isSupported('localStorage')) {
@@ -101,5 +100,5 @@ console.log('Powered by Flawk.js: https://flawk.cakeslice.dev')
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-unregister() //registerServiceWorker();
+// Learn more about service workers: https://cra.link/PWA
+serviceWorkerRegistration.unregister()

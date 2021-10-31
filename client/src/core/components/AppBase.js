@@ -14,9 +14,9 @@ import { Fade } from 'react-reveal'
 import io from 'socket.io-client'
 import CustomButton from '../components/CustomButton'
 
-var gitHash = GitInfo().commit.shortHash
-var styles = require('core/styles').default
-var config = require('core/config_').default
+const gitHash = GitInfo().commit.shortHash
+const styles = require('core/styles').default
+const config = require('core/config_').default
 
 global.sleep = function sleep(ms) {
 	return new Promise((resolve) => setTimeout(resolve, ms))
@@ -51,12 +51,12 @@ export default class AppBase extends Component {
 					console.log('Socket connected: ' + global.socket.id)
 					this.forceUpdate()
 
-					var token = await global.storage.getItem('token')
+					let token = await global.storage.getItem('token')
 					global.socket.emit('init', { token: token }, async (res) => {
 						if (res.success) {
 							console.log('Connected to websocket! Build number: ' + res.buildNumber)
 
-							var buildNumber = await global.storage.getItem('build_number')
+							let buildNumber = await global.storage.getItem('build_number')
 							await global.storage.setItem('build_number', res.buildNumber)
 							if (
 								this.state.isReconnect &&
@@ -91,8 +91,8 @@ export default class AppBase extends Component {
 
 		var asyncSetup = async function () {
 			if (!config.prod) {
-				var res = await get('build_number', { noErrorFlag: 'all' })
-				var buildNumber
+				let res = await get('build_number', { noErrorFlag: 'all' })
+				let buildNumber
 				if (res && res.ok) {
 					buildNumber = res.body.buildNumber
 					await global.storage.setItem('build_number', buildNumber)
@@ -104,7 +104,7 @@ export default class AppBase extends Component {
 
 			if (config.darkModeForce) this.applyNightMode(true, true)
 			else if (config.darkModeAvailable) {
-				var isDark = window.matchMedia('(prefers-color-scheme: dark)')
+				var isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)')
 				if ((await global.storage.getItem('nightMode')) !== null)
 					/*eslint-disable */
 					this.applyNightMode((await global.storage.getItem('nightMode')) == 'true', true)
@@ -113,11 +113,11 @@ export default class AppBase extends Component {
 				else this.applyNightMode(isDark && isDark.matches && !config.darkModeOptIn, true)
 			} else this.applyNightMode(false, true)
 
-			var lang = await global.storage.getItem('lang')
-			var langSet = false
+			let lang = await global.storage.getItem('lang')
+			let langSet = false
 			if (lang) {
-				var savedLang = JSON.parse(lang)
-				for (var i = 0; i < global.supportedLanguages.length; i++) {
+				let savedLang = JSON.parse(lang)
+				for (let i = 0; i < global.supportedLanguages.length; i++) {
 					if (global.supportedLanguages[i] === savedLang.text) {
 						langSet = true
 						global.setLang(savedLang)
@@ -125,7 +125,7 @@ export default class AppBase extends Component {
 					}
 				}
 			} else {
-				var browserLanguage = ''
+				let browserLanguage = ''
 				try {
 					const detectBrowserLanguage = () =>
 						(navigator.languages && navigator.languages[0]) ||
@@ -135,7 +135,7 @@ export default class AppBase extends Component {
 				} catch {
 					// If can't detect, just move on
 				}
-				for (var l = 0; l < global.supportedLanguages.length; l++) {
+				for (let l = 0; l < global.supportedLanguages.length; l++) {
 					if (browserLanguage.includes(global.supportedLanguages[l])) {
 						langSet = true
 						global.setLang({ text: global.supportedLanguages[l] })
@@ -147,7 +147,7 @@ export default class AppBase extends Component {
 				global.setLang({ text: global.supportedLanguages[0] })
 			}
 
-			var cookieNotice = await global.storage.getItem('cookie_notice')
+			let cookieNotice = await global.storage.getItem('cookie_notice')
 			if (cookieNotice) this.state.cookieNotice = cookieNotice
 
 			this.forceUpdate()
@@ -207,14 +207,14 @@ export default class AppBase extends Component {
 	}
 
 	render() {
-		var cookieNotice = this.state.cookieNotice || this.state.hideWarnings
+		let cookieNotice = this.state.cookieNotice || this.state.hideWarnings
 
-		var inRestrictedRoute = false
+		let inRestrictedRoute = false
 		config.restrictedRoutes.forEach((r) => {
 			if (window.location.href.includes(r)) inRestrictedRoute = true
 		})
 
-		var Child = this.props.component
+		let Child = this.props.component
 
 		return (
 			<MediaQuery minWidth={config.mobileWidthTrigger}>

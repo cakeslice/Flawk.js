@@ -17,8 +17,8 @@ import HeadShake from 'react-reveal/HeadShake'
 import { Link } from 'react-router-dom'
 import { fetchUser } from '../../redux/UserState'
 
-var styles = require('core/styles').default
-var config = require('core/config_').default
+const styles = require('core/styles').default
+const config = require('core/config_').default
 
 class Login extends Component {
 	state = {}

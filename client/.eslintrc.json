@@ -14,20 +14,24 @@
 		"ecmaVersion": 2018,
 		"sourceType": "module"
 	},
-	"plugins": ["react", "jsdoc", "jsx-a11y", "security", "jest", "no-secrets"],
+	"plugins": ["react", "jsdoc", "jsx-a11y", "security", "jest", "no-secrets", "cypress"],
 	"extends": [
 		"react-app",
+		"react-app/jest",
 		"eslint:recommended",
 		"plugin:react/recommended",
 		"plugin:jsdoc/recommended",
 		"prettier",
 		"plugin:jsx-a11y/recommended",
 		"plugin:security/recommended",
-		"plugin:jest/recommended"
+		"plugin:jest/recommended",
+		"plugin:cypress/recommended"
 	],
 	"rules": {
 		"no-secrets/no-secrets": "error",
 		"security/detect-object-injection": 0,
+		"jest/expect-expect": "off",
+		//
 		"jsdoc/require-jsdoc": [
 			"error",
 			{ "exemptEmptyConstructors": true, "exemptEmptyFunctions": true }

@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-var config = require('core/config_').default
+const config = require('core/config_').default
 const _ = require('lodash')
 
 /**

@@ -8,8 +8,8 @@
 import React, { Component } from 'react'
 import { MetroSpinner } from 'react-spinners-kit'
 
-var styles = require('core/styles').default
-var config = require('core/config_').default
+const styles = require('core/styles').default
+const config = require('core/config_').default
 
 export default class Loading extends Component {
 	render() {

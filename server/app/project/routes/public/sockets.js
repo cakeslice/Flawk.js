@@ -7,9 +7,9 @@
 
 const jwt = require('jsonwebtoken')
 var _ = require('lodash')
-var common = require('core/common')
-var config = require('core/config_')
-var database = config.projectDatabase
+const common = require('core/common')
+const config = require('core/config_')
+const database = config.projectDatabase
 
 /**
  *

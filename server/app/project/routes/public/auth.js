@@ -8,9 +8,10 @@
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 
-var config = require('core/config_')
-var common = require('core/common')
-var database = config.projectDatabase
+const config = require('core/config_')
+const common = require('core/common')
+const email = require('core/functions/email')
+const database = config.projectDatabase
 
 /** @param {import('@awaitjs/express').ExpressWithAsync} app */
 module.exports = function (app) {
@@ -134,7 +135,7 @@ module.exports = function (app) {
 		if(!r.success)
 			return
 		*/
-		await common.sendEmail(body.email, {
+		await email.sendEmail(body.email, {
 			subject: config.text('verifyAccount', req),
 			substitutions: {
 				firstName: newUser.personal.firstName,
@@ -215,7 +216,7 @@ module.exports = function (app) {
 
 		await user.save()
 
-		await common.sendEmail(user.email, {
+		await email.sendEmail(user.email, {
 			subject: config.text('forgotVerify', req),
 			substitutions: {
 				email: user.email,
@@ -263,7 +264,7 @@ module.exports = function (app) {
 		user.appState.verificationCode = undefined
 		await user.save()
 
-		await common.sendEmail(body.email, {
+		await email.sendEmail(body.email, {
 			subject: config.text('passwordChanged', req),
 			substitutions: {
 				firstName: user.personal.firstName + ' ' + user.personal.lastName,

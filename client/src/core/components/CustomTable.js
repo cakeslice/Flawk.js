@@ -15,8 +15,8 @@ import { MetroSpinner } from 'react-spinners-kit'
 import VisibilitySensor from 'react-visibility-sensor'
 
 var uuid = require('uuid')
-var config = require('core/config_').default
-var styles = require('core/styles').default
+const config = require('core/config_').default
+const styles = require('core/styles').default
 
 export default class CustomTable extends ReactQueryParams {
 	constructor() {

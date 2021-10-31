@@ -7,12 +7,12 @@
 
 import React, { Component } from 'react'
 import { Img } from 'react-image'
-import avatar from '../assets/images/avatar.svg'
 import { MetroSpinner } from 'react-spinners-kit'
 import uniqolor from 'uniqolor'
+import avatar from '../assets/images/avatar.svg'
 
-var styles = require('core/styles').default
-var config = require('core/config_').default
+const styles = require('core/styles').default
+const config = require('core/config_').default
 
 export default class Avatar extends Component {
 	render() {

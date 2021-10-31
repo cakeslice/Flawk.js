@@ -11,7 +11,7 @@ import { Animated } from 'react-animated-css'
 import MediaQuery from 'react-responsive'
 import scrollToElement from 'scroll-to-element'
 
-var config = require('core/config_').default
+const config = require('core/config_').default
 
 export default class Main extends Component {
 	state = { flip: false }

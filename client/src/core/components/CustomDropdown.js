@@ -11,8 +11,8 @@ import 'react-input-range/lib/css/index.css'
 import MediaQuery from 'react-responsive'
 import Select from 'react-select/'
 
-var config = require('core/config_').default
-var styles = require('core/styles').default
+const config = require('core/config_').default
+const styles = require('core/styles').default
 export default class CustomDropdown extends Component {
 	timer = null
 	bufferedValue = null

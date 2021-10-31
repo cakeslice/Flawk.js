@@ -40,8 +40,9 @@ import LanguageSwitcher from './LanguageSwitcher'
 import Loading from './Loading'
 const Parser = require('html-react-parser').default
 
-var styles = require('core/styles').default
-var config = require('core/config_').default
+const styles = require('core/styles').default
+const config = require('core/config_').default
+const upload = require('core/functions/upload').default
 
 export default class ComponentsViewer extends Component {
 	componentDidMount() {
@@ -2276,7 +2277,7 @@ class Settings extends Component {
 							/**
 							 * @type {import('core/config_').FileUpload}
 							 */
-							var fileUpload = await config.uploadFile(values.photoFile, this, post)
+							var fileUpload = await upload.uploadFile(values.photoFile, this, post)
 							if (fileUpload.success) {
 								var res = await post('client/change_settings', {
 									...values,
@@ -2368,7 +2369,7 @@ class Settings extends Component {
 											}
 											accept='image/*'
 											onChange={async (e) => {
-												var img = await config.handleFileChange(e)
+												var img = await upload.handleFileChange(e)
 												if (img) {
 													setFieldValue('photoURL', img.url)
 													setFieldValue('photoFile', img.file)
