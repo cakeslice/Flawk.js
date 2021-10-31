@@ -110,6 +110,9 @@
 		],
 		"modulePaths": [
 			"<rootDir>/app/"
+		],
+		"setupFilesAfterEnv": [
+			"./app/setupTests.js"
 		]
 	}
 }

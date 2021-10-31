@@ -5,8 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-process.env.recaptchaBypass = 'bypass'
-process.env.verificationCodeBypass = '55555'
 const recaptchaBypass = 'recaptchaToken=' + process.env.recaptchaBypass
 
 const request = require('supertest')
@@ -22,7 +20,7 @@ const validData = {
 	lastName: 'Doe',
 	email: 'valid@credentials.valid',
 	password: 'valid_password',
-	verificationCode: 55555,
+	verificationCode: Number(process.env.verificationCodeBypass),
 }
 const invalidData = {
 	email: 'invalid@credentials.invalid',

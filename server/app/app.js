@@ -173,7 +173,7 @@ function init() {
 		next()
 	})
 	app.use(cors(corsOptions))
-	if (!config.simulateProduction && (config.prod || config.staging)) app.use(requireHTTPS)
+	if (config.prod || config.staging) app.use(requireHTTPS)
 
 	app.use(helmet())
 	app.use(compression())
@@ -273,7 +273,7 @@ function init() {
 	)
 
 	// Response time monitor
-	if (!config.simulateProduction && (config.prod || config.staging))
+	if (config.prod || config.staging)
 		app.use(
 			config.path + '/*',
 			responseTime(function (req, res, time) {

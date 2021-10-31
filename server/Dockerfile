@@ -126,6 +126,9 @@
 
 FROM node:14.15.0
 ENV NODE_ENV=production
+ENV NODE_PATH=app/
+ARG CAPROVER_GIT_COMMIT_SHA=${CAPROVER_GIT_COMMIT_SHA}
+ENV CAPROVER_GIT_COMMIT_SHA=${CAPROVER_GIT_COMMIT_SHA}
 
 WORKDIR /usr/src/app
 # Add package.json before rest of repo for caching
@@ -134,13 +137,20 @@ RUN npm install --only=prod
 
 COPY . .
 
+# Add env vars for testing
+ARG production
+ENV production $production
+ARG staging
+ENV staging $staging
+ARG appName
+ENV appName $appName
+ARG frontendURL
+ENV frontendURL $frontendURL
+
 RUN npm run auditCI && npm run testCI && rm -rf /usr/src/app/client/*
 
 #COPY --from=REACT-BUILD /usr/src/app/react_build/build /usr/src/app/client/build
 
 WORKDIR /usr/src/app
 EXPOSE 8080
-ENV NODE_PATH=app/
-ARG CAPROVER_GIT_COMMIT_SHA=${CAPROVER_GIT_COMMIT_SHA}
-ENV CAPROVER_GIT_COMMIT_SHA=${CAPROVER_GIT_COMMIT_SHA}
 CMD [ "node", "--optimize_for_size", "--max_old_space_size=1024", "--expose-gc", "./app/server.js" ]

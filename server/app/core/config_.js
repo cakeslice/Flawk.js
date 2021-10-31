@@ -28,12 +28,9 @@ const _appName = process.env.appName
 
 //
 
-const _simulateProduction = process.env.simulateProduction === 'true' ? true : false
 const _port = process.env.PORT || 8000
 const _staging = process.env.staging === 'true'
-const _prod =
-	_simulateProduction ||
-	(process.env.production === 'true' && process.env.NODE_ENV === 'production')
+const _prod = process.env.production === 'true' && process.env.NODE_ENV === 'production'
 const _jest = process.env.JEST === 'true'
 const _cronServer = process.env.cronServer === 'true'
 const _frontendURL = process.env.frontendURL
@@ -46,7 +43,6 @@ module.exports = {
 	appName: _appName,
 	prod: _prod,
 	jest: _jest,
-	simulateProduction: _simulateProduction,
 	cronServer: _cronServer,
 	staging: _staging,
 	frontendURL: _frontendURL,
