@@ -458,7 +458,7 @@ function main() {
 	})
 
 	const gitHash = process.env.CAPROVER_GIT_COMMIT_SHA || require('git-repo-info')().sha
-	global.buildNumber = gitHash.substring(0, 7)
+	global.buildNumber = gitHash ? gitHash.substring(0, 7) : 'unknown'
 
 	if (config.sentryID) {
 		Sentry.init({
