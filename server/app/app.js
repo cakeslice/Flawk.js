@@ -140,7 +140,7 @@ function corsOrigins(origin, callback) {
 		if (o === origin) allowed = true
 	})
 
-	if (!config.prod) allowed = true
+	if ((!config.prod && !config.staging) || config.jest) allowed = true
 
 	if (
 		config.mobileAppOrigins &&
@@ -173,7 +173,7 @@ function init() {
 		next()
 	})
 	app.use(cors(corsOptions))
-	if (config.prod || config.staging) app.use(requireHTTPS)
+	if ((config.prod || config.staging) && !config.jest) app.use(requireHTTPS)
 
 	app.use(helmet())
 	app.use(compression())
@@ -198,13 +198,13 @@ function init() {
 		limited: new RateLimiterMongo({
 			storeClient: mongoose.connection,
 			keyPrefix: 'ratelimit_limited',
-			points: config.prod ? 3 : 30, // X requests
+			points: (config.prod || config.staging) ? 3 : 30, // X requests
 			duration: 10, // per X second by IP
 		}),
 		extremelyLimited: new RateLimiterMongo({
 			storeClient: mongoose.connection,
 			keyPrefix: 'ratelimit_extreme',
-			points: config.prod ? 10 : 30, // X requests
+			points: (config.prod || config.staging) ? 10 : 30, // X requests
 			duration: 60 * 15, // per X second by IP
 		}),
 	} */
