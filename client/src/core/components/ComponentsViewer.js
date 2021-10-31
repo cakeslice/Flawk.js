@@ -2275,7 +2275,7 @@ class Settings extends Component {
 
 						if (values.photoFile) {
 							/**
-							 * @type {import('core/config_').FileUpload}
+							 * @type {import('core/functions/upload').FileUpload}
 							 */
 							var fileUpload = await upload.uploadFile(values.photoFile, this, post)
 							if (fileUpload.success) {
