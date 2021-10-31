@@ -208,7 +208,7 @@ export default class CustomDropdown extends Component {
 						style={{
 							width:
 								(this.props.style && this.props.style.width) ||
-								defaultWidth(desktop),
+								(!this.props.customInput && defaultWidth(desktop)),
 							flex: this.props.flex,
 						}}
 					>

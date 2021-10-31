@@ -829,7 +829,6 @@ class Inputs extends Component {
 									config={{ isSearchable: false }}
 									placeholder={'#123'}
 									erasable
-									name='dropdown'
 									invalid={'*'}
 									options={[
 										{
@@ -847,11 +846,9 @@ class Inputs extends Component {
 							<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
 								<CustomDropdown
 									config={{ isSearchable: false }}
-									style={{}}
 									defaultValue={'accept'}
 									placeholder={'Invalid Bottom'}
 									erasable
-									name='dropdown'
 									invalidType='bottom'
 									invalid={'Not allowed'}
 									options={[
@@ -868,10 +865,8 @@ class Inputs extends Component {
 
 								<CustomDropdown
 									config={{ isSearchable: false }}
-									style={{}}
 									placeholder={'Invalid Right'}
 									erasable
-									name='dropdown'
 									invalid={'*'}
 									invalidType={'right'}
 									options={[
@@ -882,6 +877,22 @@ class Inputs extends Component {
 										{
 											value: 'deny',
 											label: 'Inactive',
+										},
+									]}
+								/>
+
+								<CustomDropdown
+									customInput
+									config={{ isSearchable: false }}
+									options={[
+										{
+											value: 'edit',
+											label: 'Edit',
+										},
+										{
+											value: 'delete',
+											label: 'Delete',
+											style: { color: styles.colors.red },
 										},
 									]}
 								/>
