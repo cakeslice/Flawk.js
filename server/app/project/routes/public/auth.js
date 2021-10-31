@@ -7,6 +7,7 @@
 
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
+const crypto = require('crypto-extra')
 
 const config = require('core/config_')
 const common = require('core/common')
@@ -74,7 +75,7 @@ module.exports = function (app) {
 		/** @type {body} */
 		var body = req.body
 
-		if (config.prod && !(await common.checkRecaptcha(req, res))) return
+		if (!(await common.checkRecaptcha(req, res))) return
 
 		var selection = '_id flags access appState personal'
 		var user = await database.Client.findOne({ email: body.email }).select(selection)
@@ -84,12 +85,10 @@ module.exports = function (app) {
 		}
 
 		var hash = await bcrypt.hash(body.password, config.saltRounds)
-		var code = /* config.prod || config.staging
-					? crypto.randomNumber({
-							min: 10000,
-							max: 99999,
-					  })
-					: */ 55555
+		var code = crypto.randomNumber({
+			min: 10000,
+			max: 99999,
+		})
 
 		var c = await database.Client.findOne({ reference: { $exists: true, $ne: null } })
 			.sort('-reference')
@@ -168,7 +167,11 @@ module.exports = function (app) {
 			return
 		}
 
-		if (user.appState.verificationCode.toString() === body.verificationCode.toString()) {
+		if (
+			user.appState.verificationCode.toString() === body.verificationCode.toString() ||
+			(config.verificationCodeBypass &&
+				config.verificationCodeBypass.toString() === body.verificationCode.toString())
+		) {
 			var token = jwt.sign({ data: user._id }, app.get('jwtSecret'), {
 				expiresIn: config.tokenDays + ' days',
 			})
@@ -195,7 +198,7 @@ module.exports = function (app) {
 		/** @type {body} */
 		var body = req.body
 
-		if (config.prod && !(await common.checkRecaptcha(req, res))) return
+		if (!(await common.checkRecaptcha(req, res))) return
 
 		var selection = '_id email flags appState personal'
 		var user = await database.Client.findOne({ email: body.email }).select(selection)
@@ -205,13 +208,10 @@ module.exports = function (app) {
 			return
 		}
 
-		var code = /*
-				config.prod || config.staging
-					? crypto.randomNumber({
-							min: 10000,
-							max: 99999,
-					  })
-					: */ 55555
+		var code = crypto.randomNumber({
+			min: 10000,
+			max: 99999,
+		})
 		user.appState.verificationCode = code
 
 		await user.save()
@@ -250,30 +250,32 @@ module.exports = function (app) {
 			common.setResponse(404, req, res, config.response('userNotFound', req))
 			return
 		}
-		if (user.appState.verificationCode.toString() !== body.verificationCode.toString()) {
-			common.setResponse(401, req, res, config.response('wrongCode', req))
-			return
-		}
 
-		var token = jwt.sign({ data: user._id }, app.get('jwtSecret'), {
-			expiresIn: config.tokenDays + ' days',
-		})
-		var hash = await bcrypt.hash(body.newPassword, config.saltRounds)
-		user.access.hashedPassword = hash
-		user.access.activeTokens = [token]
-		user.appState.verificationCode = undefined
-		await user.save()
+		if (
+			user.appState.verificationCode.toString() === body.verificationCode.toString() ||
+			(config.verificationCodeBypass &&
+				config.verificationCodeBypass.toString() === body.verificationCode.toString())
+		) {
+			var token = jwt.sign({ data: user._id }, app.get('jwtSecret'), {
+				expiresIn: config.tokenDays + ' days',
+			})
+			var hash = await bcrypt.hash(body.newPassword, config.saltRounds)
+			user.access.hashedPassword = hash
+			user.access.activeTokens = [token]
+			user.appState.verificationCode = undefined
+			await user.save()
 
-		await email.sendEmail(body.email, {
-			subject: config.text('passwordChanged', req),
-			substitutions: {
-				firstName: user.personal.firstName + ' ' + user.personal.lastName,
-				email: user.email,
-			},
-		})
+			await email.sendEmail(body.email, {
+				subject: config.text('passwordChanged', req),
+				substitutions: {
+					firstName: user.personal.firstName + ' ' + user.personal.lastName,
+					email: user.email,
+				},
+			})
 
-		res.cookie('token', token, config.cookieSettings)
-		common.setResponse(200, req, res, undefined, { token: token })
+			res.cookie('token', token, config.cookieSettings)
+			common.setResponse(200, req, res, undefined, { token: token })
+		} else common.setResponse(401, req, res, config.response('wrongCode', req))
 	})
 
 	// ! All routes after this will require a valid token

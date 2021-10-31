@@ -8,6 +8,7 @@
  */
 
 const schedule = require('node-schedule')
+const mongoose = require('mongoose')
 const util = require('util')
 const setTimeoutPromise = util.promisify(setTimeout)
 const cron = require('./project/cron.js')
@@ -18,13 +19,12 @@ const config = require('core/config_')
 function startCronJobs() {
 	//if (config.cronServer) {
 	if (process.env.noEmails === 'true' || process.env.noPushNotifications === 'true') {
-		console.log('SKIPPING CRON due to e-mails or notifications being disabled')
+		console.log('SKIPPING CRON due to e-mails or notifications being disabled\n')
 		return
 	}
 
 	cron.minutes()
 	setTimeoutPromise(1000 * 60 * 10).then(() => {
-		console.log('CRON JOBS ACTIVATED')
 		/*
 	*    *    *    *    *    *
 	┬    ┬    ┬    ┬    ┬    ┬
@@ -53,13 +53,25 @@ function startCronJobs() {
 			console.log('------------------ Running minutes cron ------------------')
 			cron.minutes()
 		})
+
+		console.log('CRON JOBS ACTIVATED\n')
 	})
 	//}
 }
 
 if (!config.cronServer) {
+	app.on('close', function () {
+		mongoose.connection.close()
+	})
+
 	app.listen(config.port, () => {
 		console.log('Listening to requests on port ' + config.port + '\n')
+
+		mongoose.connect(config.databaseURL, {
+			useUnifiedTopology: true,
+			useNewUrlParser: true,
+		})
+
 		startCronJobs()
 	})
 } else startCronJobs()

@@ -63,6 +63,7 @@ module.exports = {
 			To: email,
 			MessageStream: marketing && 'marketing',
 		}
+
 		if (process.env.noEmails === 'true') {
 			console.log('Skipped e-mail: ' + JSON.stringify(body))
 			return false
@@ -71,6 +72,9 @@ module.exports = {
 			console.log('No template provided! Skipped e-mail: ' + JSON.stringify(body))
 			return false
 		}
+
+		if (config.jest) return true
+
 		console.log('Sending e-mail: ' + JSON.stringify(body))
 		if (postmarkClient) {
 			var response = await postmarkClient.sendEmailWithTemplate(body)
@@ -130,6 +134,9 @@ module.exports = {
 			console.log('No template provided! Skipped batch e-mails')
 			return
 		}
+
+		if (config.jest) return true
+
 		console.log('------------ Sending batch e-mails ------------')
 		if (postmarkClient) {
 			var response = await postmarkClient.sendEmailBatchWithTemplates(bodies)
@@ -168,7 +175,11 @@ module.exports = {
 			console.log('No template provided! Skipped e-mail: ' + JSON.stringify(body))
 			return
 		}
+
+		if (config.jest) return true
+
 		console.log('Sending e-mail: ' + JSON.stringify(body))
+
 		if (postmarkClient) {
 			var response = await postmarkClient.sendEmailWithTemplate(body)
 			if (response.ErrorCode === 0) console.log('E-mail sent! (202)')

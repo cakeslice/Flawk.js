@@ -5,30 +5,86 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+process.env.recaptchaBypass = 'bypass'
+process.env.verificationCodeBypass = '55555'
+const recaptchaBypass = 'recaptchaToken=' + process.env.recaptchaBypass
+
 const request = require('supertest')
 const app = require('../app')
-
+const mongoose = require('mongoose')
+const MongoMemoryServer = require('mongodb-memory-server').MongoMemoryServer
 const config = require('core/config_')
 
+let mongod
+
+const validData = {
+	firstName: 'John',
+	lastName: 'Doe',
+	email: 'valid@credentials.valid',
+	password: 'valid_password',
+	verificationCode: 55555,
+}
+const invalidData = {
+	email: 'invalid@credentials.invalid',
+	password: 'invalid_password',
+}
+
 describe('Login', () => {
+	beforeAll(async () => {
+		mongod = await MongoMemoryServer.create()
+		const uri = mongod.getUri()
+		await mongoose.connect(uri, {
+			useUnifiedTopology: true,
+			useNewUrlParser: true,
+		})
+	})
+	afterEach(async () => {
+		// TODO: Clear and rebuild database before each test
+	})
+	afterAll(async () => {
+		await mongoose.connection.close()
+		await mongod.stop()
+	})
+
 	it('should login', async () => {
-		const res = await request(app)
-			.post(config.path + '/client/login')
+		await request(app)
+			.post(config.path + '/client/register?' + recaptchaBypass)
 			.send({
-				email: 'dev_user@email.flawk',
-				password: config.adminPassword,
+				firstName: validData.firstName,
+				lastName: validData.lastName,
+				email: validData.email,
+				password: validData.password,
 			})
 			.expect(200)
 			.expect('Content-Type', /json/)
-		expect(res.body.token).toBeDefined()
+
+		const registerVerify = await request(app)
+			.post(config.path + '/client/register_verify')
+			.send({
+				email: validData.email,
+				verificationCode: validData.verificationCode,
+			})
+			.expect(200)
+			.expect('Content-Type', /json/)
+		expect(registerVerify.body.token).toBeDefined()
+
+		const login = await request(app)
+			.post(config.path + '/client/login')
+			.send({
+				email: validData.email,
+				password: validData.password,
+			})
+			.expect(200)
+			.expect('Content-Type', /json/)
+		expect(login.body.token).toBeDefined()
 	})
 
 	it('should not login with invalid credentials', async () => {
 		const res = await request(app)
 			.post(config.path + '/client/login')
 			.send({
-				email: 'invalid@credentials.invalid',
-				password: 'invalid_password',
+				email: invalidData.email,
+				password: invalidData.password,
 			})
 		expect(res.statusCode).toEqual(401)
 	})
@@ -37,7 +93,7 @@ describe('Login', () => {
 		const res = await request(app)
 			.post(config.path + '/client/login')
 			.send({
-				password: config.adminPassword,
+				password: validData.password,
 			})
 		expect(res.statusCode).toEqual(400)
 	})
@@ -46,7 +102,7 @@ describe('Login', () => {
 		const res = await request(app)
 			.post(config.path + '/client/login')
 			.send({
-				email: 'dev_user@email.flawk',
+				email: validData.password,
 			})
 		expect(res.statusCode).toEqual(400)
 	})

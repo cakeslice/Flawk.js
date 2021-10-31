@@ -25,10 +25,6 @@ Number.prototype.toFixedNumber = function (x, base) {
 //
 
 mongoose.Promise = global.Promise
-mongoose.connect(config.databaseURL, {
-	useUnifiedTopology: true,
-	useNewUrlParser: true,
-})
 
 //
 
@@ -330,6 +326,11 @@ module.exports = {
 			return { success: false }
 		} else console.log('Sending SMS to ' + phone + ': ' + msg)
 
+		if (config.jest) {
+			_setResponse(200, req, res, config.response('SMSSuccess', req))
+			return { success: true }
+		}
+
 		var result = await new Promise((resolve, reject) => {
 			nexmoClient.message.sendSms(config.nexmo.phoneNumber, phone, msg, (error, response) => {
 				if (error) {
@@ -362,7 +363,8 @@ module.exports = {
 
 	checkRecaptcha: async function (req, res) {
 		try {
-			if (req.query.recaptchaToken === config.recaptchaBypass) return true
+			if (config.recaptchaBypass && req.query.recaptchaToken === config.recaptchaBypass)
+				return true
 
 			const { URLSearchParams } = require('url')
 			const params = new URLSearchParams()
@@ -550,8 +552,4 @@ module.exports = {
 			next()
 		}
 	},
-
-	//
-
-	databaseConnection: mongoose.connection,
 }

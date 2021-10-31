@@ -34,6 +34,7 @@ const _staging = process.env.staging === 'true'
 const _prod =
 	_simulateProduction ||
 	(process.env.production === 'true' && process.env.NODE_ENV === 'production')
+const _jest = process.env.JEST === 'true'
 const _cronServer = process.env.cronServer === 'true'
 const _frontendURL = process.env.frontendURL
 
@@ -44,6 +45,7 @@ module.exports = {
 	responseTimeAlert: _responseTimeAlert,
 	appName: _appName,
 	prod: _prod,
+	jest: _jest,
 	simulateProduction: _simulateProduction,
 	cronServer: _cronServer,
 	staging: _staging,
@@ -73,6 +75,7 @@ module.exports = {
 
 	recaptchaSecretKey: process.env.recaptchaSecretKey,
 	recaptchaBypass: process.env.recaptchaBypass,
+	verificationCodeBypass: process.env.verificationCodeBypass,
 
 	//
 

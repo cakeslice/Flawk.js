@@ -11,7 +11,9 @@ const compression = require('compression')
 const cookieParser = require('cookie-parser')
 const paginate = require('express-paginate')
 const app = addAsync(express())
+const fs = require('fs')
 const helmet = require('helmet')
+const mongoose = require('mongoose')
 const mongoSanitize = require('express-mongo-sanitize')
 const cors = require('cors')
 const responseTime = require('response-time')
@@ -188,19 +190,19 @@ function init() {
 	// ! Disabled due to mongoose problem
 	/* global.rateLimiter = {
 		default: new RateLimiterMongo({
-			storeClient: common.databaseConnection,
+			storeClient: mongoose.connection,
 			keyPrefix: 'ratelimit_default',
 			points: 12, // X requests
 			duration: 1, // per X second by IP
 		}),
 		limited: new RateLimiterMongo({
-			storeClient: common.databaseConnection,
+			storeClient: mongoose.connection,
 			keyPrefix: 'ratelimit_limited',
 			points: config.prod ? 3 : 30, // X requests
 			duration: 10, // per X second by IP
 		}),
 		extremelyLimited: new RateLimiterMongo({
-			storeClient: common.databaseConnection,
+			storeClient: mongoose.connection,
 			keyPrefix: 'ratelimit_extreme',
 			points: config.prod ? 10 : 30, // X requests
 			duration: 60 * 15, // per X second by IP
@@ -482,6 +484,7 @@ function main() {
 		global.Sentry = Sentry
 	}
 
+	if (config.jest) console.log('----- JEST TESTING -----\n')
 	console.log(
 		'Environment: ' + (config.prod ? 'production' : config.staging ? 'staging' : 'development')
 	)
@@ -490,14 +493,10 @@ function main() {
 
 	init()
 
-	common.databaseConnection.on(
-		'error',
-		console.error.bind(console, 'FAILED TO CONNECT TO DATABASE!')
-	)
-	common.databaseConnection.once('open', async function () {
-		console.log('Connected to database')
-		var mongoose = require('mongoose')
-		var mongoAdmin = new mongoose.mongo.Admin(common.databaseConnection.db)
+	mongoose.connection.on('error', console.error.bind(console, 'FAILED TO CONNECT TO DATABASE!'))
+	mongoose.connection.once('open', async function () {
+		console.log('Connected to database:')
+		var mongoAdmin = new mongoose.mongo.Admin(mongoose.connection.db)
 		mongoAdmin.buildInfo(function (err, info) {
 			console.log(`MongoDB version: ${info.version}`)
 			console.log(`Mongoose version: ${mongoose.version}\n`)
