@@ -390,41 +390,6 @@ function init() {
 		require('./project' + r)(app, io) // eslint-disable-line
 	})
 
-	//////////// Add client serving
-	/* function setNoCache(res) {
-		const date = new Date()
-		date.setFullYear(date.getFullYear() - 1)
-		res.setHeader('Expires', date.toUTCString())
-		res.setHeader('Pragma', 'no-cache')
-		res.setHeader('Cache-Control', 'public, no-cache')
-	}
-	function setLongTermCache(res) {
-		const date = moment(new Date()).add(7, 'days').toDate()
-		res.setHeader('Expires', date.toUTCString())
-		res.setHeader('Cache-Control', 'public, max-age=31536000, immutable')
-	}
-	var options = {
-		extensions: ['html'],
-		setHeaders(res, path) {
-			if (path.match(/(\.html|\/service-worker\.js)$/)) {
-				setNoCache(res)
-				return
-			}
-			if (path.match(/\.(txt|js|otf|mp3|woff|mp4|webm|scss|css|map|png|jpg|jpeg|gif|svg|ico|json)$/)) {
-				setLongTermCache(res)
-			}
-		},
-	}
-	app.use(express.static('client/build', options))
-
-	app.getAsync('/*', function (req, res, next) {
-		if (req.originalUrl.includes(config.path)) return next()
-
-		//console.log(req.originalUrl)
-		setNoCache(res)
-		res.sendFile(path.join(__dirname, 'client/build', 'index.html'))
-	}) */
-
 	if (!config.cronServer) {
 		app.disable('x-powered-by')
 
@@ -492,8 +457,8 @@ function main() {
 		console.log(`About to exit with code: ${code}`)
 	})
 
-	const gitHash = require('git-repo-info')().sha.substring(0, 7)
-	global.buildNumber = gitHash
+	const gitHash = process.env.CAPROVER_GIT_COMMIT_SHA || require('git-repo-info')().sha
+	global.buildNumber = gitHash.substring(0, 7)
 
 	if (config.sentryID) {
 		Sentry.init({

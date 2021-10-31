@@ -122,33 +122,6 @@
 # ---------------------------
 # ---------------------------
 
-# REACT-BUILD (for serving the client using express)
-
-#FROM node:14.15.0 as REACT-BUILD
-#ARG REACT_APP_STAGING
-#ENV REACT_APP_STAGING $REACT_APP_STAGING
-#ARG REACT_APP_DOMAIN
-#ENV REACT_APP_DOMAIN $REACT_APP_DOMAIN
-#ARG REACT_APP_BACKEND
-#ENV REACT_APP_BACKEND $REACT_APP_BACKEND
-#ARG REACT_APP_GA_KEY
-#ENV REACT_APP_GA_KEY $REACT_APP_GA_KEY
-#ARG REACT_APP_RECAPTCHA_KEY
-#ENV REACT_APP_RECAPTCHA_KEY $REACT_APP_RECAPTCHA_KEY
-#ARG REACT_APP_SENTRY_KEY
-#ENV REACT_APP_SENTRY_KEY $REACT_APP_SENTRY_KEY
-#ENV NODE_ENV=production
-
-#WORKDIR /usr/src/react_build
-# Add package.json before rest of repo for caching
-#COPY ../client/package*.json ./
-#RUN npm install --only=prod && npm install --only=dev
-# Install dev dependencies for CRA's eslint
-
-#COPY ../client/ .
-
-#RUN npm run auditCI && npm run testCI && npm run buildCI && rm -rf /usr/src/react_build/node_modules/* && rm -rf /usr/src/react_build/src/*
-
 # NODE SERVER
 
 FROM node:14.15.0
@@ -159,8 +132,6 @@ WORKDIR /usr/src/app
 COPY ./package*.json ./
 RUN npm install --only=prod
 
-# Copy git repo so we can get the SHA in the app
-COPY ../.git/ .
 COPY . .
 
 RUN npm run auditCI && npm run testCI && rm -rf /usr/src/app/client/*
@@ -170,4 +141,6 @@ RUN npm run auditCI && npm run testCI && rm -rf /usr/src/app/client/*
 WORKDIR /usr/src/app
 EXPOSE 8080
 ENV NODE_PATH=app/
+ARG CAPROVER_GIT_COMMIT_SHA=${CAPROVER_GIT_COMMIT_SHA}
+ENV CAPROVER_GIT_COMMIT_SHA=${CAPROVER_GIT_COMMIT_SHA}
 CMD [ "node", "--optimize_for_size", "--max_old_space_size=1024", "--expose-gc", "./app/server.js" ]
