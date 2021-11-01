@@ -883,6 +883,7 @@ class Inputs extends Component {
 
 								<CustomDropdown
 									customInput
+									style={{ menu: { left: 0 } }}
 									config={{ isSearchable: false }}
 									options={[
 										{

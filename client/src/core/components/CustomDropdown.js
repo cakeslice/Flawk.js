@@ -559,10 +559,10 @@ export default class CustomDropdown extends Component {
 												...defaultMenuStyle,
 												...(styles.customDropdown &&
 													styles.customDropdown.menu),
-												...(this.props.style && this.props.style.menu),
 												width: 150,
 												left: -137,
 												top: -10,
+												...(this.props.style && this.props.style.menu),
 											}
 										},
 									}),
