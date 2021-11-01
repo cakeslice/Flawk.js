@@ -12,7 +12,7 @@ const mongoose = require('mongoose')
 const util = require('util')
 const setTimeoutPromise = util.promisify(setTimeout)
 const cron = require('./project/cron.js')
-const app = require('./app')
+const { app, onDatabaseConnected } = require('./app')
 
 const config = require('core/config_')
 
@@ -64,13 +64,19 @@ if (!config.cronServer) {
 		mongoose.connection.close()
 	})
 
-	app.listen(config.port, () => {
+	app.listen(config.port, async () => {
 		console.log('Listening to requests on port ' + config.port + '\n')
 
-		mongoose.connect(config.databaseURL, {
-			useUnifiedTopology: true,
-			useNewUrlParser: true,
-		})
+		try {
+			await mongoose.connect(config.databaseURL, {
+				useUnifiedTopology: true,
+				useNewUrlParser: true,
+			})
+
+			await onDatabaseConnected()
+		} catch (err) {
+			console.log('FAILED TO CONNECT TO DATABASE!', err)
+		}
 
 		startCronJobs()
 	})

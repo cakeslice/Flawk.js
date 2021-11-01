@@ -32,8 +32,6 @@ openAPIDocument.servers = [
 	},
 ]
 
-let server
-
 global.getStructure = async (name) => {
 	for (var g = 0; global.structures.length; g++) {
 		var s = global.structures[g]
@@ -67,69 +65,6 @@ function requireHTTPS(req, res, next) {
 	}
 	next()
 }
-
-async function createDevUser() {
-	var amountUsers = await database.Client.find().select('_id').lean()
-	if (amountUsers.length === 0 && config.adminPassword) {
-		var devUser = await database.Client.findOne({ email: 'dev_user@email.flawk' })
-		if (!devUser) {
-			console.log('Creating dev_user...')
-			var bcrypt = require('bcryptjs')
-			bcrypt.hash(config.adminPassword, config.saltRounds, async function (err, hash) {
-				var devRef = await database.Client.findOne({
-					reference: { $exists: true, $ne: null },
-				})
-					.sort('-reference')
-					.select('reference')
-
-				await new database.Client({
-					reference: devRef && devRef.reference !== undefined ? devRef.reference + 1 : 0,
-					email: 'dev_user@email.flawk',
-					phone: '+351910000000',
-					personal: {
-						firstName: 'Dev',
-						lastName: 'User',
-					},
-					permission: 10,
-					flags: ['verified'],
-					access: {
-						hashedPassword: hash,
-					},
-				}).save()
-			})
-		}
-	}
-}
-
-function updateDatabaseStructures() {
-	var buildStructure = function (path, schema) {
-		// eslint-disable-next-line
-		fs.readFile(path, 'utf8', function (err, data) {
-			if (err) {
-				console.log(err)
-				return
-			}
-			var objects = JSON.parse(data)
-			objects.forEach(function (obj) {
-				schema.updateOne(
-					{ code: obj.code },
-					obj,
-					{ upsert: true, setDefaultsOnInsert: true },
-					function (err) {
-						if (err) console.log(err)
-					}
-				)
-			})
-		})
-	}
-
-	global.structures.forEach((s) => {
-		s.schema.findOne({}, function (err, doc) {
-			if (!doc || s.overrideJson) buildStructure('./app/project' + s.path, s.schema)
-		})
-	})
-}
-
 /**
  * @param origin
  * @param callback
@@ -155,10 +90,77 @@ function corsOrigins(origin, callback) {
 
 	callback(allowed ? null : 'Origin is not allowed', allowed)
 }
-/**
- * @returns {import('@awaitjs/express').ExpressWithAsync}
- */
-function init() {
+
+function initLogging() {
+	var winston = require('winston')
+	if (process.env.LogglyToken) {
+		var { Loggly } = require('winston-loggly-bulk')
+		winston.add(
+			new Loggly({
+				timestamp: false,
+				token: process.env.LogglyToken,
+				subdomain: process.env.LogglySubdomain,
+				tags: [config.cronServer ? process.env.LogglyCronTag : process.env.LogglyTag],
+				json: true,
+			})
+		)
+
+		console.log('Now logging to Loggly...')
+		console.log = (...args) => winston.info.call(winston, ...args)
+		console.info = (...args) => winston.info.call(winston, ...args)
+		console.warn = (...args) => winston.warn.call(winston, ...args)
+		console.error = (...args) => winston.error.call(winston, ...args)
+		console.debug = (...args) => winston.debug.call(winston, ...args)
+	}
+
+	process.on('uncaughtException', async function (err) {
+		if (global.Sentry) Sentry.captureException(err)
+		console.error('uncaughtException:', err.message || err)
+		console.error(err.stack || err)
+		if (global.Sentry) await global.Sentry.close(2000)
+		await global.sleep(2000)
+	})
+	process.on('exit', async (code) => {
+		console.log(`About to exit with code: ${code}`)
+	})
+
+	const gitHash = process.env.CAPROVER_GIT_COMMIT_SHA || require('git-repo-info')().sha
+	global.buildNumber = gitHash ? gitHash.substring(0, 7) : 'unknown'
+
+	if (config.sentryID) {
+		Sentry.init({
+			release: '@' + global.buildNumber,
+			environment: config.prod ? 'production' : config.staging ? 'staging' : 'development',
+			dsn: config.sentryID,
+			integrations: [
+				// Enable HTTP calls tracing
+				new Sentry.Integrations.Http({ tracing: true }),
+				// Enable Express.js middleware tracing
+				new Tracing.Integrations.Express({
+					// To trace all requests to the default router
+					app,
+					// Alternatively, you can specify the routes you want to trace:
+					// router: someRouter,
+				}),
+			],
+			// Leaving the sample rate at 1.0 means that automatic instrumentation will send a transaction each time a user loads any page or navigates anywhere in your app, which is a lot of transactions. Sampling enables you to collect representative data without overwhelming either your system or your Sentry transaction quota.
+			tracesSampleRate: 0.2,
+		})
+		global.Sentry = Sentry
+	}
+}
+
+let server
+function setup() {
+	initLogging()
+
+	if (config.jest) console.log('----- JEST TESTING -----\n')
+	console.log(
+		'Environment: ' + (config.prod ? 'production' : config.staging ? 'staging' : 'development')
+	)
+	console.log('Build: ' + '@' + global.buildNumber)
+	console.log('Running on NodeJS ' + process.version + '\n')
+
 	// CORS
 	/**
 	 * @type {import('cors').CorsOptions}
@@ -425,88 +427,72 @@ function init() {
 		})
 	}
 }
+setup()
 
-function main() {
-	var winston = require('winston')
-	if (process.env.LogglyToken) {
-		var { Loggly } = require('winston-loggly-bulk')
-		winston.add(
-			new Loggly({
-				timestamp: false,
-				token: process.env.LogglyToken,
-				subdomain: process.env.LogglySubdomain,
-				tags: [config.cronServer ? process.env.LogglyCronTag : process.env.LogglyTag],
-				json: true,
+async function createDevUser() {
+	var amountUsers = await database.Client.find().select('_id').lean()
+	if (amountUsers.length === 0 && config.adminPassword) {
+		var devUser = await database.Client.findOne({ email: 'dev_user@email.flawk' })
+		if (!devUser) {
+			console.log('Creating dev_user...')
+			var bcrypt = require('bcryptjs')
+			bcrypt.hash(config.adminPassword, config.saltRounds, async function (err, hash) {
+				var devRef = await database.Client.findOne({
+					reference: { $exists: true, $ne: null },
+				})
+					.sort('-reference')
+					.select('reference')
+
+				await new database.Client({
+					reference: devRef && devRef.reference !== undefined ? devRef.reference + 1 : 0,
+					email: 'dev_user@email.flawk',
+					phone: '+351910000000',
+					personal: {
+						firstName: 'Dev',
+						lastName: 'User',
+					},
+					permission: 10,
+					flags: ['verified'],
+					access: {
+						hashedPassword: hash,
+					},
+				}).save()
 			})
-		)
-
-		console.log('Now logging to Loggly...')
-		console.log = (...args) => winston.info.call(winston, ...args)
-		console.info = (...args) => winston.info.call(winston, ...args)
-		console.warn = (...args) => winston.warn.call(winston, ...args)
-		console.error = (...args) => winston.error.call(winston, ...args)
-		console.debug = (...args) => winston.debug.call(winston, ...args)
+		}
 	}
-
-	process.on('uncaughtException', async function (err) {
-		if (global.Sentry) Sentry.captureException(err)
-		console.error('uncaughtException:', err.message || err)
-		console.error(err.stack || err)
-		if (global.Sentry) await global.Sentry.close(2000)
-		await global.sleep(2000)
-	})
-	process.on('exit', async (code) => {
-		console.log(`About to exit with code: ${code}`)
-	})
-
-	const gitHash = process.env.CAPROVER_GIT_COMMIT_SHA || require('git-repo-info')().sha
-	global.buildNumber = gitHash ? gitHash.substring(0, 7) : 'unknown'
-
-	if (config.sentryID) {
-		Sentry.init({
-			release: '@' + global.buildNumber,
-			environment: config.prod ? 'production' : config.staging ? 'staging' : 'development',
-			dsn: config.sentryID,
-			integrations: [
-				// Enable HTTP calls tracing
-				new Sentry.Integrations.Http({ tracing: true }),
-				// Enable Express.js middleware tracing
-				new Tracing.Integrations.Express({
-					// To trace all requests to the default router
-					app,
-					// Alternatively, you can specify the routes you want to trace:
-					// router: someRouter,
-				}),
-			],
-			// Leaving the sample rate at 1.0 means that automatic instrumentation will send a transaction each time a user loads any page or navigates anywhere in your app, which is a lot of transactions. Sampling enables you to collect representative data without overwhelming either your system or your Sentry transaction quota.
-			tracesSampleRate: 0.2,
-		})
-		global.Sentry = Sentry
-	}
-
-	if (config.jest) console.log('----- JEST TESTING -----\n')
-	console.log(
-		'Environment: ' + (config.prod ? 'production' : config.staging ? 'staging' : 'development')
-	)
-	console.log('Build: ' + '@' + global.buildNumber)
-	console.log('Running on NodeJS ' + process.version + '\n')
-
-	init()
-
-	mongoose.connection.on('error', console.error.bind(console, 'FAILED TO CONNECT TO DATABASE!'))
-	mongoose.connection.once('open', async function () {
-		console.log('Connected to database:')
-		var mongoAdmin = new mongoose.mongo.Admin(mongoose.connection.db)
-		mongoAdmin.buildInfo(function (err, info) {
-			console.log(`MongoDB version: ${info.version}`)
-			console.log(`Mongoose version: ${mongoose.version}\n`)
-		})
-
-		if (!config.cronServer) updateDatabaseStructures()
-
-		await createDevUser()
-	})
 }
-main()
+async function updateDatabaseStructures() {
+	var buildStructure = async function (path, schema) {
+		// eslint-disable-next-line
+		var data = fs.readFileSync(path, 'utf8')
 
-module.exports = server
+		var objects = JSON.parse(data)
+		for (var o = 0; o < objects.length; o++) {
+			var obj = objects[o]
+			await schema.updateOne({ code: obj.code }, obj, {
+				upsert: true,
+				setDefaultsOnInsert: true,
+			})
+		}
+	}
+
+	for (var structure = 0; structure < global.structures.length; structure++) {
+		var s = global.structures[structure]
+		var doc = await s.schema.findOne({})
+		if (!doc || s.overrideJson) await buildStructure('./app/project' + s.path, s.schema)
+	}
+}
+async function onDatabaseConnected() {
+	console.log('Connected to database:')
+	var mongoAdmin = new mongoose.mongo.Admin(mongoose.connection.db)
+	mongoAdmin.buildInfo(function (err, info) {
+		console.log(`MongoDB version: ${info.version}`)
+		console.log(`Mongoose version: ${mongoose.version}\n`)
+	})
+
+	if (!config.cronServer) await updateDatabaseStructures()
+
+	await createDevUser()
+}
+
+module.exports = { app: server, onDatabaseConnected: onDatabaseConnected }

@@ -8,12 +8,9 @@
 const recaptchaBypass = 'recaptchaToken=' + process.env.recaptchaBypass
 
 const request = require('supertest')
-const app = require('../app')
-const mongoose = require('mongoose')
-const MongoMemoryServer = require('mongodb-memory-server').MongoMemoryServer
+const { app } = require('../app')
+const { setupDatabase } = require('./setupDatabase')
 const config = require('core/config_')
-
-let mongod
 
 const validData = {
 	firstName: 'John',
@@ -28,21 +25,7 @@ const invalidData = {
 }
 
 describe('Login', () => {
-	beforeAll(async () => {
-		mongod = await MongoMemoryServer.create()
-		const uri = mongod.getUri()
-		await mongoose.connect(uri, {
-			useUnifiedTopology: true,
-			useNewUrlParser: true,
-		})
-	})
-	afterEach(async () => {
-		// TODO: Clear and rebuild database before each test
-	})
-	afterAll(async () => {
-		await mongoose.connection.close()
-		await mongod.stop()
-	})
+	setupDatabase()
 
 	it('should login', async () => {
 		await request(app)
