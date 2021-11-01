@@ -241,7 +241,6 @@ export default class CustomInput extends Component {
 		var label = this.props.label || (this.props.emptyLabel ? '\u200c' : undefined)
 
 		var invalidType = this.props.invalidType || 'label'
-		if (invalid === '*' && this.props.label) invalidType = 'label'
 
 		var placeholder = this.props.timeInput ? !value && moment().format('HH:mm') : undefined
 

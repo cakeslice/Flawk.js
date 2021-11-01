@@ -195,7 +195,6 @@ export default class CustomDropdown extends Component {
 		var label = this.props.label || (this.props.emptyLabel ? '\u200c' : undefined)
 
 		var invalidType = this.props.invalidType || 'label'
-		if (invalid === '*' && this.props.label) invalidType = 'label'
 
 		var defaultWidth = (desktop) => {
 			return desktop ? 175 : '100%'
