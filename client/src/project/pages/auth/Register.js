@@ -8,6 +8,7 @@
 import { post } from 'core/api'
 import CustomButton from 'core/components/CustomButton'
 import CustomInput from 'core/components/CustomInput'
+import ExitPrompt from 'core/components/ExitPrompt'
 import Field from 'core/components/Field'
 import config from 'core/config_'
 import styles from 'core/styles'
@@ -73,7 +74,7 @@ class Register extends Component {
 									setSubmitting(false)
 								}}
 							>
-								{({ isSubmitting }) => {
+								{({ isSubmitting, dirty }) => {
 									return (
 										<Form
 											style={{
@@ -83,6 +84,7 @@ class Register extends Component {
 											}}
 											noValidate
 										>
+											<ExitPrompt dirty={dirty} />
 											<div className='flex-col items-center justify-center'>
 												<Field
 													component={CustomInput}

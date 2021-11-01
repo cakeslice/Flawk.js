@@ -9,6 +9,7 @@ import { post } from 'core/api'
 import Avatar from 'core/components/Avatar'
 import CustomButton from 'core/components/CustomButton'
 import CustomInput from 'core/components/CustomInput'
+import ExitPrompt from 'core/components/ExitPrompt'
 import Field from 'core/components/Field'
 import config from 'core/config_'
 import upload from 'core/functions/upload'
@@ -104,6 +105,7 @@ class Settings extends Component {
 								{({ values, isSubmitting, setFieldValue, dirty }) => {
 									return (
 										<Form noValidate>
+											<ExitPrompt dirty={dirty} />
 											<div className='wrapMargin flex flex-wrap justify-around'>
 												<Field
 													component={CustomInput}

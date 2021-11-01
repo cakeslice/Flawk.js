@@ -8,6 +8,7 @@
 import { get, post } from 'core/api'
 import logo from 'core/assets/images/logo.svg'
 import Avatar from 'core/components/Avatar'
+import ExitPrompt from 'core/components/ExitPrompt'
 import Notifications from 'core/components/Notifications'
 import Paginate from 'core/components/Paginate'
 import config from 'core/config_'
@@ -938,9 +939,10 @@ class Inputs extends Component {
 									setSubmitting(false)
 								}}
 							>
-								{({ handleReset, isSubmitting }) => {
+								{({ handleReset, isSubmitting, dirty }) => {
 									return (
 										<Form noValidate>
+											<ExitPrompt dirty={dirty} />
 											<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
 												<Field
 													component={CustomInput}
@@ -1806,9 +1808,10 @@ class Register extends Component {
 							setSubmitting(false)
 						}}
 					>
-						{({ isSubmitting }) => {
+						{({ isSubmitting, dirty }) => {
 							return (
 								<Form noValidate>
+									<ExitPrompt dirty={dirty} />
 									<div className='flex-col items-center justify-center'>
 										<Field
 											component={CustomInput}
