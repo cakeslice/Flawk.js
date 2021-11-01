@@ -8,6 +8,8 @@
 import { post } from 'core/api'
 import CustomButton from 'core/components/CustomButton'
 import CustomInput from 'core/components/CustomInput'
+import config from 'core/config_'
+import styles from 'core/styles'
 import { Field, Form, Formik } from 'formik'
 import React, { Component } from 'react'
 import { Helmet } from 'react-helmet'
@@ -16,9 +18,6 @@ import MediaQuery from 'react-responsive'
 import HeadShake from 'react-reveal/HeadShake'
 import { Link } from 'react-router-dom'
 import { fetchUser } from '../../redux/UserState'
-
-const styles = require('core/styles').default
-const config = require('core/config_').default
 
 class Login extends Component {
 	state = {}

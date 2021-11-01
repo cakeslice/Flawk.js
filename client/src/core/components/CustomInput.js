@@ -5,6 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import config from 'core/config_'
+import styles from 'core/styles'
 import { css } from 'glamor'
 import moment from 'moment'
 import React, { Component } from 'react'
@@ -12,9 +14,6 @@ import Datetime from 'react-datetime'
 import InputMask from 'react-input-mask'
 import MediaQuery from 'react-responsive'
 import TextareaAutosize from 'react-textarea-autosize'
-
-const config = require('core/config_').default
-const styles = require('core/styles').default
 
 const MaskedInput = (props) => (
 	<InputMask

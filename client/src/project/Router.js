@@ -10,6 +10,8 @@ import logo from 'core/assets/images/logo.svg'
 import Avatar from 'core/components/Avatar'
 import RouterBase from 'core/components/RouterBase'
 import ScrollToTop from 'core/components/ScrollToTop'
+import config from 'core/config_'
+import styles from 'core/styles'
 import React, { Component } from 'react'
 import { Helmet } from 'react-helmet'
 import { connect } from 'react-redux'
@@ -22,9 +24,6 @@ import notificationSound from './assets/sounds/notification.mp3'
 import Footer from './pages/common/Footer'
 import Header from './pages/common/Header'
 import { fetchStructures, fetchUser } from './redux/UserState'
-
-const styles = require('core/styles').default
-const config = require('core/config_').default
 
 // To preload a lazy component:
 /*

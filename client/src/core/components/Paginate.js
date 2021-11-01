@@ -5,11 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import styles from 'core/styles'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { getPaginationModel } from 'ultimate-pagination'
-
-const styles = require('core/styles').default
 
 const pageArrow = (color) => (
 	<svg width='7' height='11' viewBox='0 0 7 11' fill='none' xmlns='http://www.w3.org/2000/svg'>

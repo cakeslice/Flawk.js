@@ -6,13 +6,13 @@
  */
 
 import { clearAllBodyScrollLocks, disableBodyScroll } from 'body-scroll-lock'
+import config from 'core/config_'
+import styles from 'core/styles'
 import React, { Component } from 'react'
 import { Animated } from 'react-animated-css'
 import { Portal } from 'react-portal'
 import CustomButton from './CustomButton'
 
-const styles = require('core/styles').default
-const config = require('core/config_').default
 export default class GenericModal extends Component {
 	componentDidMount() {
 		disableBodyScroll(document.querySelector('.scrollTarget'))

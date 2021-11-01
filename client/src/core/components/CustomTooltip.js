@@ -5,10 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import styles from 'core/styles'
 import React from 'react'
 import TooltipTrigger from 'react-popper-tooltip'
-
-const styles = require('core/styles').default
 
 const CustomTooltip = ({ children, content, ...props }) => (
 	<TooltipTrigger

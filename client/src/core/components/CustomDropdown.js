@@ -5,14 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import config from 'core/config_'
+import styles from 'core/styles'
 import { css } from 'glamor'
 import React, { Component } from 'react'
 import 'react-input-range/lib/css/index.css'
 import MediaQuery from 'react-responsive'
 import Select from 'react-select/'
 
-const config = require('core/config_').default
-const styles = require('core/styles').default
 export default class CustomDropdown extends Component {
 	timer = null
 	bufferedValue = null

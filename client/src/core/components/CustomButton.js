@@ -5,14 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import config from 'core/config_'
+import styles from 'core/styles'
 import { css } from 'glamor'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import MediaQuery from 'react-responsive'
 import { MetroSpinner } from 'react-spinners-kit'
-
-const styles = require('core/styles').default
-const config = require('core/config_').default
 
 /**
  * @augments {Component<Props, State>}

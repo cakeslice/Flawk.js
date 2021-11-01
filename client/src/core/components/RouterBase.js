@@ -9,6 +9,8 @@ import { SplashScreen } from '@capacitor/splash-screen'
 import * as Sentry from '@sentry/react'
 import { Integrations } from '@sentry/tracing'
 import { get } from 'core/api'
+import config from 'core/config_'
+import styles from 'core/styles'
 import { createBrowserHistory } from 'history'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
@@ -20,8 +22,6 @@ import { Bounce, toast, ToastContainer } from 'react-toastify'
 import CustomButton from './CustomButton'
 
 const gitHash = GitInfo().commit.shortHash
-const styles = require('core/styles').default
-const config = require('core/config_').default
 
 var amountToasts = 0
 

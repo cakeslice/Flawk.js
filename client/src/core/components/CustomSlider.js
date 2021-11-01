@@ -5,12 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import config from 'core/config_'
+import styles from 'core/styles'
 import { Range } from 'rc-slider'
 import 'rc-slider/assets/index.css'
 import React, { Component } from 'react'
-
-const styles = require('core/styles').default
-const config = require('core/config_').default
 
 export default class CustomSlider extends Component {
 	state = {

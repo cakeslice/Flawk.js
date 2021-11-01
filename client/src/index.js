@@ -9,7 +9,7 @@ import { Capacitor } from '@capacitor/core'
 import { Storage } from '@capacitor/storage'
 import 'abortcontroller-polyfill'
 import 'core/assets/react-toastify.css'
-import * as serviceWorkerRegistration from 'core/utils/serviceWorkerRegistration'
+//import * as serviceWorkerRegistration from 'core/utils/serviceWorkerRegistration'
 import { CookieStorage, isSupported, MemoryStorage } from 'local-storage-fallback'
 import React, { Suspense } from 'react'
 import 'react-awesome-lightbox/build/style.css'
@@ -101,4 +101,4 @@ console.log('Powered by Flawk.js: https://flawk.cakeslice.dev')
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://cra.link/PWA
-serviceWorkerRegistration.unregister()
+// serviceWorkerRegistration.unregister()

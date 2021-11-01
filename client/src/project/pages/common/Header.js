@@ -6,14 +6,13 @@
  */
 
 import MobileDrawer from 'core/components/MobileDrawer'
+import config from 'core/config_'
+import styles from 'core/styles'
 import React, { Component } from 'react'
 import MediaQuery from 'react-responsive'
 import { Fade } from 'react-reveal'
 import { Link } from 'react-router-dom'
 import logo from '../../../core/assets/images/logo.svg'
-
-const styles = require('core/styles').default
-const config = require('core/config_').default
 
 const leftLinks = [
 	/* { name: 'About', id: '/#about' } */

@@ -9,6 +9,8 @@ import { post } from 'core/api'
 import CustomButton from 'core/components/CustomButton'
 import CustomInput from 'core/components/CustomInput'
 import Field from 'core/components/Field'
+import config from 'core/config_'
+import styles from 'core/styles'
 import { Form, Formik } from 'formik'
 import React, { Component } from 'react'
 import ReCaptcha from 'react-google-recaptcha'
@@ -18,9 +20,6 @@ import MediaQuery from 'react-responsive'
 import HeadShake from 'react-reveal/HeadShake'
 import { Link } from 'react-router-dom'
 import { fetchUser } from '../../redux/UserState'
-
-const styles = require('core/styles').default
-const config = require('core/config_').default
 
 class Register extends Component {
 	state = {}

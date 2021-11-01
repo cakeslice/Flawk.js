@@ -5,11 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import config from 'core/config_'
+import styles from 'core/styles'
 import React, { Component } from 'react'
 import { MetroSpinner } from 'react-spinners-kit'
-
-const styles = require('core/styles').default
-const config = require('core/config_').default
 
 export default class Loading extends Component {
 	render() {

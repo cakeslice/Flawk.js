@@ -6,12 +6,11 @@
  */
 
 import CustomButton from 'core/components/CustomButton'
+import config from 'core/config_'
 import React, { Component } from 'react'
 import { Animated } from 'react-animated-css'
 import MediaQuery from 'react-responsive'
 import scrollToElement from 'scroll-to-element'
-
-const config = require('core/config_').default
 
 export default class Main extends Component {
 	state = { flip: false }

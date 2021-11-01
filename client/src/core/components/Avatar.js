@@ -5,14 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import config from 'core/config_'
+import styles from 'core/styles'
 import React, { Component } from 'react'
 import { Img } from 'react-image'
 import { MetroSpinner } from 'react-spinners-kit'
 import uniqolor from 'uniqolor'
 import avatar from '../assets/images/avatar.svg'
-
-const styles = require('core/styles').default
-const config = require('core/config_').default
 
 export default class Avatar extends Component {
 	render() {

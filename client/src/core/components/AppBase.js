@@ -5,7 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import { Capacitor } from '@capacitor/core'
 import { get } from 'core/api'
+import config from 'core/config_'
+import styles from 'core/styles'
 import React, { Component } from 'react'
 import GitInfo from 'react-git-info/macro'
 import { Helmet } from 'react-helmet'
@@ -15,8 +18,6 @@ import io from 'socket.io-client'
 import CustomButton from '../components/CustomButton'
 
 const gitHash = GitInfo().commit.shortHash
-const styles = require('core/styles').default
-const config = require('core/config_').default
 
 global.sleep = function sleep(ms) {
 	return new Promise((resolve) => setTimeout(resolve, ms))
@@ -34,10 +35,74 @@ export default class AppBase extends Component {
 		super()
 
 		global.toggleNightMode = this.toggleNightMode.bind(this)
-
 		global.hideWarnings = this.hideWarnings.bind(this)
-
 		global.changeBackground = this.changeBackground.bind(this)
+
+		const asyncSetup = async function () {
+			if (config.darkModeForce) this.applyNightMode(true, true)
+			else if (config.darkModeAvailable) {
+				let storedNightMode
+				if (Capacitor.isNativePlatform())
+					storedNightMode = await global.storage.getItem('nightMode')
+				else storedNightMode = global.storage.getItem('nightMode')
+				const isDark =
+					window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)')
+				if (storedNightMode !== null) this.applyNightMode(storedNightMode === 'true', true)
+				else this.applyNightMode(isDark && isDark.matches && !config.darkModeOptIn, true)
+			} else this.applyNightMode(false, true)
+
+			if (!config.prod) {
+				let res = await get('build_number', { noErrorFlag: 'all' })
+				let buildNumber
+				if (res && res.ok) {
+					buildNumber = res.body.buildNumber
+					await global.storage.setItem('build_number', buildNumber)
+				} else {
+					buildNumber = await global.storage.getItem('build_number')
+				}
+				this.setState({ buildNumber: gitHash + '_' + buildNumber })
+			}
+
+			let lang = await global.storage.getItem('lang')
+			let langSet = false
+			if (lang) {
+				let savedLang = JSON.parse(lang)
+				for (let i = 0; i < global.supportedLanguages.length; i++) {
+					if (global.supportedLanguages[i] === savedLang.text) {
+						langSet = true
+						global.setLang(savedLang)
+						break
+					}
+				}
+			} else {
+				let browserLanguage = ''
+				try {
+					const detectBrowserLanguage = () =>
+						(navigator.languages && navigator.languages[0]) ||
+						navigator.language ||
+						navigator.userLanguage
+					browserLanguage = detectBrowserLanguage().toLowerCase()
+				} catch {
+					// If can't detect, just move on
+				}
+				for (let l = 0; l < global.supportedLanguages.length; l++) {
+					if (browserLanguage.includes(global.supportedLanguages[l])) {
+						langSet = true
+						global.setLang({ text: global.supportedLanguages[l] })
+						break
+					}
+				}
+			}
+			if (!langSet) {
+				global.setLang({ text: global.supportedLanguages[0] })
+			}
+
+			let cookieNotice = await global.storage.getItem('cookie_notice')
+			if (cookieNotice) this.state.cookieNotice = cookieNotice
+
+			this.forceUpdate()
+		}.bind(this)
+		asyncSetup()
 
 		if (config.websocketSupport) {
 			if (global.socket) {
@@ -88,71 +153,6 @@ export default class AppBase extends Component {
 				3000
 			)
 		}
-
-		var asyncSetup = async function () {
-			if (!config.prod) {
-				let res = await get('build_number', { noErrorFlag: 'all' })
-				let buildNumber
-				if (res && res.ok) {
-					buildNumber = res.body.buildNumber
-					await global.storage.setItem('build_number', buildNumber)
-				} else {
-					buildNumber = await global.storage.getItem('build_number')
-				}
-				this.setState({ buildNumber: gitHash + '_' + buildNumber })
-			}
-
-			if (config.darkModeForce) this.applyNightMode(true, true)
-			else if (config.darkModeAvailable) {
-				var isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)')
-				if ((await global.storage.getItem('nightMode')) !== null)
-					/*eslint-disable */
-					this.applyNightMode((await global.storage.getItem('nightMode')) == 'true', true)
-				/*eslint-enable */
-				// ! Don't change to ===
-				else this.applyNightMode(isDark && isDark.matches && !config.darkModeOptIn, true)
-			} else this.applyNightMode(false, true)
-
-			let lang = await global.storage.getItem('lang')
-			let langSet = false
-			if (lang) {
-				let savedLang = JSON.parse(lang)
-				for (let i = 0; i < global.supportedLanguages.length; i++) {
-					if (global.supportedLanguages[i] === savedLang.text) {
-						langSet = true
-						global.setLang(savedLang)
-						break
-					}
-				}
-			} else {
-				let browserLanguage = ''
-				try {
-					const detectBrowserLanguage = () =>
-						(navigator.languages && navigator.languages[0]) ||
-						navigator.language ||
-						navigator.userLanguage
-					browserLanguage = detectBrowserLanguage().toLowerCase()
-				} catch {
-					// If can't detect, just move on
-				}
-				for (let l = 0; l < global.supportedLanguages.length; l++) {
-					if (browserLanguage.includes(global.supportedLanguages[l])) {
-						langSet = true
-						global.setLang({ text: global.supportedLanguages[l] })
-						break
-					}
-				}
-			}
-			if (!langSet) {
-				global.setLang({ text: global.supportedLanguages[0] })
-			}
-
-			let cookieNotice = await global.storage.getItem('cookie_notice')
-			if (cookieNotice) this.state.cookieNotice = cookieNotice
-
-			this.forceUpdate()
-		}.bind(this)
-		asyncSetup()
 	}
 
 	hideWarnings = function () {

@@ -10,6 +10,9 @@ import logo from 'core/assets/images/logo.svg'
 import Avatar from 'core/components/Avatar'
 import Notifications from 'core/components/Notifications'
 import Paginate from 'core/components/Paginate'
+import config from 'core/config_'
+import upload from 'core/functions/upload'
+import styles from 'core/styles'
 import QueryString from 'core/utils/queryString'
 import ReactQueryParams from 'core/utils/ReactQueryParams'
 import { Form, Formik } from 'formik'
@@ -38,11 +41,8 @@ import Field from './Field'
 import GenericModal from './GenericModal'
 import LanguageSwitcher from './LanguageSwitcher'
 import Loading from './Loading'
-const Parser = require('html-react-parser').default
 
-const styles = require('core/styles').default
-const config = require('core/config_').default
-const upload = require('core/functions/upload').default
+const Parser = require('html-react-parser').default
 
 export default class ComponentsViewer extends Component {
 	componentDidMount() {

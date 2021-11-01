@@ -7,6 +7,8 @@
 
 import Collapsible from 'core/components/Collapsible'
 import MobileDrawer from 'core/components/MobileDrawer'
+import config from 'core/config_'
+import styles from 'core/styles'
 import { css } from 'glamor'
 import PropTypes from 'prop-types'
 import React, { Component, Suspense } from 'react'
@@ -14,9 +16,6 @@ import { Animated } from 'react-animated-css'
 import MediaQuery from 'react-responsive'
 import { Fade } from 'react-reveal'
 import { Link, Redirect, Route, Switch } from 'react-router-dom'
-
-const styles = require('core/styles').default
-const config = require('core/config_').default
 
 const mobileHeight = 55
 const mobileHeightTop = 65

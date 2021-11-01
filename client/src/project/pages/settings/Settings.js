@@ -10,14 +10,13 @@ import Avatar from 'core/components/Avatar'
 import CustomButton from 'core/components/CustomButton'
 import CustomInput from 'core/components/CustomInput'
 import Field from 'core/components/Field'
+import config from 'core/config_'
+import upload from 'core/functions/upload'
+import styles from 'core/styles'
 import { Form, Formik } from 'formik'
 import { css } from 'glamor'
 import React, { Component } from 'react'
 import MediaQuery from 'react-responsive'
-
-const styles = require('core/styles').default
-const config = require('core/config_').default
-const upload = require('core/functions/upload').default
 
 class Settings extends Component {
 	state = {}

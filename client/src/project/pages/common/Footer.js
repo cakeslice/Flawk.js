@@ -5,12 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import config from 'core/config_'
+import styles from 'core/styles'
 import React, { Component } from 'react'
 import MediaQuery from 'react-responsive'
 import { Fade } from 'react-reveal'
-
-const config = require('core/config_').default
-const styles = require('core/styles').default
 
 export default class Footer extends Component {
 	state = {}

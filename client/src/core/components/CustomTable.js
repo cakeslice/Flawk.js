@@ -5,6 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import config from 'core/config_'
+import styles from 'core/styles'
 import ReactQueryParams from 'core/utils/ReactQueryParams'
 import { css } from 'glamor'
 import _ from 'lodash'
@@ -15,8 +17,6 @@ import { MetroSpinner } from 'react-spinners-kit'
 import VisibilitySensor from 'react-visibility-sensor'
 
 var uuid = require('uuid')
-const config = require('core/config_').default
-const styles = require('core/styles').default
 
 export default class CustomTable extends ReactQueryParams {
 	constructor() {

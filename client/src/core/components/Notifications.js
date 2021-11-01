@@ -6,12 +6,12 @@
  */
 
 import { get, post } from 'core/api'
+import styles from 'core/styles'
 import React, { Component } from 'react'
 import Avatar from './Avatar'
 import OutsideAlerter from './OutsideAlerter'
 
 var Parser = require('html-react-parser').default
-const styles = require('core/styles').default
 
 export default class Notifications extends Component {
 	state = {
