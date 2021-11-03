@@ -64,10 +64,9 @@ class Forgot extends Component {
 										})
 
 										await global.storage.setItem('token', res.body.token)
-										if (this.props.fetchUser)
-											this.props.fetchUser(() => {
-												global.routerHistory().replace(config.loginRedirect)
-											})
+
+										await fetchUser(this.props.dispatch)
+										global.routerHistory().replace(config.loginRedirect)
 									} else if (res.status === 401)
 										this.setState({ wrongLogin: 'Wrong code' })
 
@@ -300,12 +299,7 @@ class Forgot extends Component {
 		)
 	}
 }
-export default connect(
-	(state) => ({
-		user: state.redux.user,
-		fetchingUser: state.redux.fetchingUser,
-	}),
-	{
-		fetchUser,
-	}
-)(Forgot)
+export default connect((state) => ({
+	user: state.redux.user,
+	fetchingUser: state.redux.fetchingUser,
+}))(Forgot)

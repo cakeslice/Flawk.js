@@ -5,20 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import React from 'react'
 const _ = require('lodash')
 const Parser = require('html-react-parser').default
-try {
-	const toBlob = require('canvas-to-blob')
-	toBlob.init()
-} catch {
-	console.log('canvas-to-blob failed to initialize!')
-}
 
 String.prototype.replaceAll = function (search, replacement) {
 	var target = this
 	return target.split(search).join(replacement)
 }
-global.supportedLanguages = ['pt', 'en']
 
 const _projectConfig = require('../project/_config.js')
 const _projectStyles = require('../project/_styles.js')
@@ -84,14 +78,13 @@ const { countries } = require('countries-list')
  * @param {string=} identifier
  * @returns {void}
  */
-const logCatch = function (err, useSentry, identifier = '') {
+const _logCatch = function (err, useSentry, identifier = '') {
 	console.log(identifier + JSON.stringify(err.message) + ' ' + JSON.stringify(err.stack || err))
 	if (global.Sentry && useSentry) {
 		err.message = identifier + err.message
 		global.Sentry.captureException(err)
 	}
 }
-global.logCatch = logCatch
 
 global.lang = {
 	text: 'en',
@@ -99,7 +92,10 @@ global.lang = {
 	numeral: 'us',
 	date: 'en-US',
 }
-global.setLang = (lang) => {
+/**
+ * @param lang
+ */
+function _setLang(lang) {
 	global.lang =
 		lang.text === 'pt'
 			? {
@@ -128,9 +124,9 @@ global.setLang = (lang) => {
 					numeral: 'us',
 					date: 'en-US',
 			  }
-	global.updateLang()
+	_updateLang()
 }
-global.changeLang = () => {
+function _changeLang() {
 	global.lang =
 		global.lang.text === 'en'
 			? {
@@ -159,13 +155,13 @@ global.changeLang = () => {
 					numeral: 'us',
 					date: 'en-US',
 			  }
-	global.updateLang()
+	_updateLang()
 }
-global.updateLang = () => {
+function _updateLang() {
 	moment.locale(global.lang.moment)
 	numeral.locale(global.lang.numeral)
 }
-global.updateLang()
+_updateLang()
 
 const _capitalize = (s) => {
 	if (typeof s !== 'string') return ''
@@ -254,6 +250,20 @@ export default {
 
 	hasInput: (v) => (!v && v !== 0 ? '*' : undefined),
 
+	logCatch: _logCatch,
+	sleep: function sleep(ms) {
+		return new Promise((resolve) => setTimeout(resolve, ms))
+	},
+	lazyWithPreload: (factory) => {
+		const Component = React.lazy(factory)
+		Component.preload = factory
+		return Component
+	},
+
+	supportedLanguages: ['pt', 'en'],
+	uploadLang: _updateLang,
+	setLang: _setLang,
+	changeLang: _changeLang,
 	text: _text,
 	localize: (obj, lang) => {
 		var s

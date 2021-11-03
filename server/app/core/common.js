@@ -24,10 +24,6 @@ Number.prototype.toFixedNumber = function (x, base) {
 
 //
 
-mongoose.Promise = global.Promise
-
-//
-
 var _validateObjectID = function (id) {
 	if (!mongoose.Types.ObjectId.isValid(id)) return false
 	return true
@@ -90,24 +86,19 @@ const _setResponse = function (code, req, res, message, data) {
 	)
 }
 
-global.sleep = async function sleep(ms) {
-	return new Promise((resolve) => setTimeout(resolve, ms))
-}
-
 /**
  * @param {Error} err
  * @param {boolean} useSentry
  * @param {string=} identifier
  * @returns {void}
  */
-const logCatch = function (err, useSentry, identifier = '') {
+const _logCatch = function (err, useSentry, identifier = '') {
 	console.log(identifier + JSON.stringify(err.message) + ' ' + JSON.stringify(err.stack || err))
 	if (global.Sentry && useSentry) {
 		err.message = identifier + err.message
 		global.Sentry.captureException(err)
 	}
 }
-global.logCatch = logCatch
 
 const _removeAccents = function (str) {
 	return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
@@ -134,6 +125,10 @@ module.exports = {
 	},
 	countPages: function (itemCount, req) {
 		return Math.ceil(itemCount / req.query.limit) || 0
+	},
+
+	sleep: function sleep(ms) {
+		return new Promise((resolve) => setTimeout(resolve, ms))
 	},
 
 	///////////////////////////////////// LOGGER
@@ -184,7 +179,7 @@ module.exports = {
 	setResponse: _setResponse,
 	bucketError: function (req, res, err) {
 		_setResponse(400, req, res, 'Bucket error')
-		global.logCatch(err)
+		_logCatch(err)
 	},
 
 	checkSchema: function (schema, req, res) {

@@ -72,7 +72,7 @@ class Settings extends Component {
 														'token',
 														res.body.token
 													)
-												if (this.props.fetchUser) this.props.fetchUser()
+												await this.props.fetchUser()
 
 												// Fix for password change not resetting form
 												setFieldValue('password', undefined)
@@ -91,7 +91,7 @@ class Settings extends Component {
 										if (r.ok) {
 											if (r.body.token)
 												await global.storage.setItem('token', r.body.token)
-											if (this.props.fetchUser) this.props.fetchUser()
+											await this.props.fetchUser()
 
 											// Fix for password change not resetting form
 											setFieldValue('password', undefined)

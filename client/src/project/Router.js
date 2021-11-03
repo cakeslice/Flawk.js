@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import { useConstructor } from '@toolz/use-constructor'
 import { post } from 'core/api'
 import logo from 'core/assets/images/logo.svg'
 import Avatar from 'core/components/Avatar'
@@ -12,26 +13,26 @@ import RouterBase from 'core/components/RouterBase'
 import ScrollToTop from 'core/components/ScrollToTop'
 import config from 'core/config_'
 import styles from 'core/styles'
-import React, { Component } from 'react'
+import React, { Component, useEffect } from 'react'
 import { Helmet } from 'react-helmet'
-import { connect } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import MediaQuery from 'react-responsive'
 import { Fade } from 'react-reveal'
-import { Route, Switch } from 'react-router-dom'
+import { Route, Switch, useHistory } from 'react-router-dom'
 import './assets/fonts.css'
 import './assets/main.scss'
-import notificationSound from './assets/sounds/notification.mp3'
+//import notificationSound from './assets/sounds/notification.mp3'
 import Footer from './pages/common/Footer'
 import Header from './pages/common/Header'
 import { fetchStructures, fetchUser } from './redux/UserState'
 
 // To preload a lazy component:
 /*
-const Something = global.lazyWithPreload(() => import('something')))
+const Something = config.lazyWithPreload(() => import('something')))
 ...
 Something.preload()
 */
-const ComponentsViewer = global.lazyWithPreload(() => import('core/components/ComponentsViewer'))
+const ComponentsViewer = config.lazyWithPreload(() => import('core/components/ComponentsViewer'))
 const Dashboard = React.lazy(() => import('core/components/Dashboard'))
 const Settings = React.lazy(() => import('./pages/settings/Settings'))
 //
@@ -41,303 +42,320 @@ const Register = React.lazy(() => import('./pages/auth/Register'))
 //
 const Main = React.lazy(() => import('./pages/main/Main'))
 
-class Router extends Component {
-	constructor() {
-		super()
-		this.onUpdateData = this.onUpdateData.bind(this)
-		if (config.websocketSupport && global.socket)
-			global.socket.on('data_update', this.onUpdateData)
+/**
+ * @param root0
+ * @param root0.children
+ */
+export default function Router() {
+	const history = useHistory()
 
-		global.playNotificationSound = () => {
-			let audio = new Audio(notificationSound)
-			audio.play()
-		}
-	}
-
-	componentDidMount() {
-		this.props.fetchStructures()
-		this.props.fetchUser()
-	}
-	onUpdateData() {
-		this.props.fetchUser()
-	}
-
-	componentDidUpdate() {
-		let selectedRoute = global.routerHistory().location.pathname.toString()
-		if (
-			selectedRoute.includes('/dashboard') &&
-			!this.props.fetchingUser &&
-			!this.props.user &&
-			this.props.authError
-		)
-			global.routerHistory().push(config.noTokenRedirect)
-	}
-	render() {
-		let permission = 1000
-		if (this.props.user) {
-			permission = this.props.user.permission
-		}
-
-		/** @type {import('core/components/Dashboard.js').route[]} */
-		let routes = [
-			{
-				desktopTab: true,
-				notRoute: true,
-				tab: (props) => (
-					<div>
-						<div
-							style={{
-								display: 'flex',
-								justifyContent: 'center',
-								alignItems: 'center',
-							}}
-						>
-							<div
-								style={{
-									display: 'flex',
-									alignItems: 'center',
-									height: 120,
-								}}
-							>
-								<button onClick={() => global.routerHistory().push('/')}>
-									<img
-										style={{
-											objectFit: 'contain',
-											maxHeight: props.isOpen ? 50 : 30,
-											minHeight: props.isOpen ? 50 : 30,
-											transition: `min-height 500ms, max-height 500ms`,
-										}}
-										src={logo}
-									></img>
-								</button>
-							</div>
-						</div>
-						<div
-							style={{
-								height: 1,
-								background: styles.colors.lineColor,
-								width: '100%',
-							}}
-						></div>
-						<div style={{ minHeight: 20 }}></div>
-					</div>
-				),
-			},
-			{
-				defaultRoute: true,
-				name: 'Overview',
-				icon: logo,
-				iconActive: logo,
-				id: 'overview',
-				notExact: true, // Support for routes inside the component
-			},
-			{
-				name: 'Notifications',
-				icon: logo,
-				iconActive: logo,
-				id: 'notifications',
-			},
-		]
-		if (permission <= config.permissions.admin)
-			routes = routes.concat([
-				{
-					id: 'admin',
-					params: '/:id',
-					hidden: true,
-				},
-				{
-					name: 'Admin',
-					icon: logo,
-					iconActive: logo,
-					id: 'admin',
-				},
-			])
-		routes = routes.concat([
-			{
-				notRoute: true,
-				tab: (props) => <div key={props.key} style={{ minHeight: '30%' }}></div>,
-				mobileTab: true,
-			},
-			{
-				notRoute: true,
-				tab: (props) => <div key={props.key} style={{ flexGrow: 1 }} />,
-				desktopTab: true,
-			},
-			{
-				notRoute: true,
-				tab: (props) => (
-					<div key={props.key}>
-						<div
-							style={{
-								display: 'flex',
-								justifyContent: 'center',
-								alignItems: 'center',
-							}}
-						>
-							<button
-								style={{
-									fontSize: styles.defaultFontSize,
-									padding: 0,
-									display: 'flex',
-									alignItems: 'center',
-									marginBottom: 30,
-									color: styles.colors.black,
-								}}
-								onClick={() => props.toggleOpen()}
-							>
-								<Avatar
-									src={
-										props.user &&
-										props.user.personal &&
-										props.user.personal.photoURL
-									}
-									style={{
-										width: 30,
-										height: 30,
-									}}
-								></Avatar>
-								{props.user && (
-									<p
-										style={{
-											fontSize: styles.defaultFontSize,
-											transition: `opacity 500ms, margin-left 500ms, max-width 500ms`,
-											opacity: props.isOpen ? 1 : 0,
-											marginLeft: props.isOpen ? 10 : 0,
-											maxWidth: props.isOpen ? 100 : 0,
-											textOverflow: 'ellipsis',
-											overflow: 'hidden',
-											whiteSpace: 'nowrap',
-										}}
-									>
-										{props.user.personal && props.user.personal.firstName}
-									</p>
-								)}
-							</button>
-						</div>
-						<div
-							style={{
-								height: 1,
-								background: styles.colors.lineColor,
-								width: '100%',
-							}}
-						></div>
-						<div style={{ minHeight: 20 }}></div>
-					</div>
-				),
-				desktopTab: true,
-			},
-			{
-				name: 'Settings',
-				customIcon: (active) => iconWrapper(settings),
-				id: 'settings',
-				page: Settings,
-			},
-			{
-				name: 'Logout',
-				customIcon: (active) => iconWrapper(logout),
-				notRoute: true,
-				onClick: async () => {
-					var res = await post('client/logout', {})
-					if (res.ok) {
-						this.props.fetchUser((data) => global.routerHistory().push('/login'))
-					}
-				},
-			},
-			{
-				notRoute: true,
-				tab: (props) => <div key={props.key} style={{ minHeight: 60 }} />,
-				desktopTab: true,
-			},
-		])
-
-		let landingPage = window.location.pathname.toString() === '/'
-
-		return (
-			<RouterBase dayNightToggle={{ width: 35, height: 40 }}>
-				<ScrollToTop>
-					<MediaQuery minWidth={config.mobileWidthTrigger}>
-						{(desktop) => (
-							<Switch>
-								<Route path='/dashboard'>
-									<div>
-										<Helmet>
-											<title>
-												{config.title() + config.separator + 'Dashboard'}
-											</title>
-										</Helmet>
-
-										{this.props.user && (
-											<Dashboard
-												wrapperComponent={DashboardWrapper}
-												path={'/dashboard/'}
-												color={styles.colors.white}
-												logo={logo}
-												routes={routes}
-												// Redux props
-												pageProps={this.props}
-											></Dashboard>
-										)}
-									</div>
-								</Route>
-
-								{/* {!config.prod && !config.staging && ( */}
-								<Route /* exact */ path='/components'>
-									<ComponentsViewer
-										// Redux props
-										{...this.props}
-									/>
-								</Route>
-								{/* )} */}
-
-								<Route>
-									<div style={{ background: styles.colors.white }}>
-										<Header landingPage={landingPage} fillSpace />
-										<Fade delay={750} duration={500}>
-											<Switch>
-												<Route exact path='/login'>
-													<PublicWrapper desktop={desktop}>
-														<Login />
-													</PublicWrapper>
-												</Route>
-												<Route exact path='/signup'>
-													<PublicWrapper desktop={desktop}>
-														<Register />
-													</PublicWrapper>
-												</Route>
-												<Route exact path='/forgot'>
-													<PublicWrapper desktop={desktop}>
-														<Forgot />
-													</PublicWrapper>
-												</Route>
-
-												<Route path='/'>
-													<PublicWrapper desktop={desktop}>
-														<Main />
-													</PublicWrapper>
-												</Route>
-											</Switch>
-										</Fade>
-										<Footer />
-									</div>
-								</Route>
-							</Switch>
-						)}
-					</MediaQuery>
-				</ScrollToTop>
-			</RouterBase>
-		)
-	}
-}
-
-export default connect(
-	(state) => ({
+	const { structures, user, fetchingUser, authError } = useSelector((state) => ({
 		structures: state.redux.structures,
 		user: state.redux.user,
 		fetchingUser: state.redux.fetchingUser,
 		authError: state.redux.authError,
-	}),
-	{ fetchUser, fetchStructures }
-)(Router)
+	}))
+	const dispatch = useDispatch()
+
+	useConstructor(() => {
+		if (config.websocketSupport && global.socket) global.socket.on('data_update', onUpdateData)
+
+		global.playNotificationSound = () => {
+			//let audio = new Audio(notificationSound)
+			//audio.play()
+		}
+	})
+
+	useEffect(() => {
+		fetchStructures(dispatch)
+		fetchUser(dispatch)
+	}, [dispatch])
+
+	async function onUpdateData() {
+		await fetchUser(dispatch)
+	}
+
+	useEffect(() => {
+		if (history) {
+			let selectedRoute = history.location.pathname.toString()
+			if (selectedRoute.includes('/dashboard') && !fetchingUser && !user && authError)
+				history.push(config.noTokenRedirect)
+		}
+	})
+
+	let permission = 1000
+	if (user) {
+		permission = user.permission
+	}
+
+	/** @type {import('core/components/Dashboard.js').route[]} */
+	let routes = [
+		{
+			desktopTab: true,
+			notRoute: true,
+			tab: (props) => (
+				<div>
+					<div
+						style={{
+							display: 'flex',
+							justifyContent: 'center',
+							alignItems: 'center',
+						}}
+					>
+						<div
+							style={{
+								display: 'flex',
+								alignItems: 'center',
+								height: 120,
+							}}
+						>
+							<button onClick={() => history.push('/')}>
+								<img
+									style={{
+										objectFit: 'contain',
+										maxHeight: props.isOpen ? 50 : 30,
+										minHeight: props.isOpen ? 50 : 30,
+										transition: `min-height 500ms, max-height 500ms`,
+									}}
+									src={logo}
+								></img>
+							</button>
+						</div>
+					</div>
+					<div
+						style={{
+							height: 1,
+							background: styles.colors.lineColor,
+							width: '100%',
+						}}
+					></div>
+					<div style={{ minHeight: 20 }}></div>
+				</div>
+			),
+		},
+		{
+			defaultRoute: true,
+			name: 'Overview',
+			icon: logo,
+			iconActive: logo,
+			id: 'overview',
+			notExact: true, // Support for routes inside the component
+		},
+		{
+			name: 'Notifications',
+			icon: logo,
+			iconActive: logo,
+			id: 'notifications',
+		},
+	]
+	if (permission <= config.permissions.admin)
+		routes = routes.concat([
+			{
+				id: 'admin',
+				params: '/:id',
+				hidden: true,
+			},
+			{
+				name: 'Admin',
+				icon: logo,
+				iconActive: logo,
+				id: 'admin',
+			},
+		])
+	routes = routes.concat([
+		{
+			notRoute: true,
+			tab: (props) => <div key={props.key} style={{ minHeight: '30%' }}></div>,
+			mobileTab: true,
+		},
+		{
+			notRoute: true,
+			tab: (props) => <div key={props.key} style={{ flexGrow: 1 }} />,
+			desktopTab: true,
+		},
+		{
+			notRoute: true,
+			tab: (props) => (
+				<div key={props.key}>
+					<div
+						style={{
+							display: 'flex',
+							justifyContent: 'center',
+							alignItems: 'center',
+						}}
+					>
+						<button
+							style={{
+								fontSize: styles.defaultFontSize,
+								padding: 0,
+								display: 'flex',
+								alignItems: 'center',
+								marginBottom: 30,
+								color: styles.colors.black,
+							}}
+							onClick={() => props.toggleOpen()}
+						>
+							<Avatar
+								src={
+									props.user &&
+									props.user.personal &&
+									props.user.personal.photoURL
+								}
+								style={{
+									width: 30,
+									height: 30,
+								}}
+							></Avatar>
+							{props.user && (
+								<p
+									style={{
+										fontSize: styles.defaultFontSize,
+										transition: `opacity 500ms, margin-left 500ms, max-width 500ms`,
+										opacity: props.isOpen ? 1 : 0,
+										marginLeft: props.isOpen ? 10 : 0,
+										maxWidth: props.isOpen ? 100 : 0,
+										textOverflow: 'ellipsis',
+										overflow: 'hidden',
+										whiteSpace: 'nowrap',
+									}}
+								>
+									{props.user.personal && props.user.personal.firstName}
+								</p>
+							)}
+						</button>
+					</div>
+					<div
+						style={{
+							height: 1,
+							background: styles.colors.lineColor,
+							width: '100%',
+						}}
+					></div>
+					<div style={{ minHeight: 20 }}></div>
+				</div>
+			),
+			desktopTab: true,
+		},
+		{
+			name: 'Settings',
+			customIcon: (active) => iconWrapper(settings),
+			id: 'settings',
+			page: Settings,
+		},
+		{
+			name: 'Logout',
+			customIcon: (active) => iconWrapper(logout),
+			notRoute: true,
+			onClick: async () => {
+				var res = await post('client/logout', {})
+				if (res.ok) {
+					await fetchUser()
+					history.push('/login')
+				}
+			},
+		},
+		{
+			notRoute: true,
+			tab: (props) => <div key={props.key} style={{ minHeight: 60 }} />,
+			desktopTab: true,
+		},
+	])
+
+	let landingPage = window.location.pathname.toString() === '/'
+
+	return (
+		<RouterBase>
+			<ScrollToTop>
+				<MediaQuery minWidth={config.mobileWidthTrigger}>
+					{(desktop) => (
+						<Switch>
+							<Route path='/dashboard'>
+								<div>
+									<Helmet>
+										<title>
+											{config.title() + config.separator + 'Dashboard'}
+										</title>
+									</Helmet>
+
+									{user && (
+										<Dashboard
+											wrapperComponent={DashboardWrapper}
+											path={'/dashboard/'}
+											color={styles.colors.white}
+											logo={logo}
+											routes={routes}
+											// Redux props
+											pageProps={{
+												structures,
+												user,
+												fetchingUser,
+												authError,
+												//
+												fetchUser: async () => await fetchUser(dispatch),
+												fetchStructures: async () =>
+													await fetchStructures(dispatch),
+											}}
+										></Dashboard>
+									)}
+								</div>
+							</Route>
+
+							{/* {!config.prod && !config.staging && ( */}
+							<Route /* exact */ path='/components'>
+								<ComponentsViewer
+									// Redux props
+									{...{
+										structures,
+										user,
+										fetchingUser,
+										authError,
+										//
+										fetchUser: async () => await fetchUser(dispatch),
+										fetchStructures: async () =>
+											await fetchStructures(dispatch),
+									}}
+								/>
+							</Route>
+							{/* )} */}
+
+							<Route>
+								<div style={{ background: styles.colors.white }}>
+									<Header landingPage={landingPage} fillSpace />
+									<Fade delay={750} duration={500}>
+										<Switch>
+											<Route exact path='/login'>
+												<PublicWrapper desktop={desktop}>
+													<Login />
+												</PublicWrapper>
+											</Route>
+											<Route exact path='/signup'>
+												<PublicWrapper desktop={desktop}>
+													<Register />
+												</PublicWrapper>
+											</Route>
+											<Route exact path='/forgot'>
+												<PublicWrapper desktop={desktop}>
+													<Forgot />
+												</PublicWrapper>
+											</Route>
+
+											<Route path='/'>
+												<PublicWrapper desktop={desktop}>
+													<Main />
+												</PublicWrapper>
+											</Route>
+										</Switch>
+									</Fade>
+									<Footer />
+								</div>
+							</Route>
+						</Switch>
+					)}
+				</MediaQuery>
+			</ScrollToTop>
+		</RouterBase>
+	)
+}
 
 class PublicWrapper extends Component {
 	render() {
@@ -441,6 +459,6 @@ const iconWrapper = (icon, iconSize) => (
 			width: iconSize * 0.85,
 		}}
 	>
-		{icon(styles.colors.white)}
+		{icon(styles.colors.black)}
 	</div>
 )

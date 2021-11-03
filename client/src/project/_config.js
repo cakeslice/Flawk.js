@@ -17,9 +17,8 @@ const _preconnectURLs = ['https://fonts.googleapis.com']
 require('moment/locale/pt')
 require('moment/locale/fr')
 
-global.supportedLanguages = ['en']
-
 module.exports = {
+	supportedLanguages: ['en'],
 	preconnectURLs: _preconnectURLs,
 	backendURL: _backendURL + '/backend',
 	websocketURL: _backendURL + '/backend/sockets',

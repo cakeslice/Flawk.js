@@ -35,16 +35,16 @@ declare namespace NodeJS {
 		action?: () => void
 	}
 	interface Global {
-		lang: Lang;
-		supportedLanguages: Array<string>;
-		setLang: (lang: Lang) => void;
-		updateLang: () => void;
-		changeLang: () => void;
-		scrollToTop: () => void;
+		// ! DEPRECATED, still active to support class components
+		nightMode: boolean;
+		toggleNightMode: (night?: boolean) => Promise<void>;
+		addFlag: (
+			title?: string, description?: string, type?: string, options?: { closeAfter?: number; playSound?: boolean, closeButton?: boolean, customComponent?: any }
+		) => void;
 		routerHistory: () => History;
-		lazyWithPreload: (component: function) => React.LazyExoticComponent;
-		//		
-		logCatch: (err: Error, useSentry: boolean, identifier?: string) => void;
+		// !
+		lang: Lang;
+		scrollToTop: () => void;
 		Sentry: any;
 		analytics: {
 			notReady: boolean;
@@ -52,7 +52,6 @@ declare namespace NodeJS {
 			event: (event: { category: string; action: string, label?: string, value?: number; nonInteraction?: boolean }) => void;
 		}
 		startAnalytics: () => Promise<void>;
-		sleep: (ms: number) => Promise<void>;
 		storage: {
 			setItem: (key: string, value: string) => Promise<void>;
 			getItem: (key: string) => Promise<string>;
@@ -60,19 +59,7 @@ declare namespace NodeJS {
 			clear: () => Promise<void>;
 		}
 		socket: SocketIOClient.Socket;
-		nightMode: boolean;
-		noFlags: boolean;
-		callToAction: () => void;
-		changeCallToAction: (data: {
-			text: string, buttonText: string, link: string
-		}) => void;
-		hideWarnings: () => void;
-		changeBackground: (color: string) => void;
-		toggleNightMode: (night?: boolean) => Promise<void>;
 		//
-		addFlag: (
-			title?: string, description?: string, type?: string, options?: { closeAfter?: number; playSound?: boolean, closeButton?: boolean, customComponent?: any }
-		) => void;
 		playNotificationSound: () => void;
 	};
 

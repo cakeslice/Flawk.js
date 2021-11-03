@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import config from 'core/config_'
 import React from 'react'
-
 export default class LanguageSwitcher extends React.Component {
 	render() {
 		let lang = global.lang.text
@@ -14,7 +14,7 @@ export default class LanguageSwitcher extends React.Component {
 		return (
 			<button
 				onClick={async () => {
-					global.changeLang()
+					config.changeLang()
 					await global.storage.setItem('lang', JSON.stringify(global.lang))
 					window.location.reload()
 				}}

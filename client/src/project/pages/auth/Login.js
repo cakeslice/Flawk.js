@@ -60,9 +60,8 @@ class Login extends Component {
 									})
 
 									await global.storage.setItem('token', res.body.token)
-									this.props.fetchUser(() => {
-										global.routerHistory().replace(config.loginRedirect)
-									})
+									await fetchUser(this.props.dispatch)
+									global.routerHistory().replace(config.loginRedirect)
 								} else if (res.status === 401) {
 									this.setState({ wrongLogin: 'Authentication Failed' })
 								}
@@ -146,12 +145,7 @@ class Login extends Component {
 		)
 	}
 }
-export default connect(
-	(state) => ({
-		user: state.redux.user,
-		fetchingUser: state.redux.fetchingUser,
-	}),
-	{
-		fetchUser,
-	}
-)(Login)
+export default connect((state) => ({
+	user: state.redux.user,
+	fetchingUser: state.redux.fetchingUser,
+}))(Login)

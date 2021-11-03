@@ -65,6 +65,7 @@
 		"@testing-library/jest-dom": "^5.14.1",
 		"@testing-library/react": "^12.1.2",
 		"@testing-library/user-event": "^13.5.0",
+		"@toolz/use-constructor": "^1.0.1",
 		"abortcontroller-polyfill": "^1.7.3",
 		"body-scroll-lock": "^3.1.5",
 		"browserslist": "^4.16.6",

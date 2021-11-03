@@ -42,7 +42,7 @@
 		//
 		"eqeqeq": "error",
 		"no-console": "off",
-		"no-unused-vars": "error",
+		"no-unused-vars": "warn",
 		"no-use-before-define": "error",
 		"no-eq-null": "error",
 		"no-trailing-spaces": "error",

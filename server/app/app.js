@@ -118,7 +118,7 @@ function initLogging() {
 		console.error('uncaughtException:', err.message || err)
 		console.error(err.stack || err)
 		if (global.Sentry) await global.Sentry.close(2000)
-		await global.sleep(2000)
+		await common.sleep(2000)
 	})
 	process.on('exit', async (code) => {
 		console.log(`About to exit with code: ${code}`)
@@ -292,7 +292,7 @@ function setup() {
 					try {
 						throw new Error('RESPONSE TIME: ' + stat + ' | ' + time)
 					} catch (err) {
-						global.logCatch(err)
+						common.logCatch(err)
 					}
 				}
 			})
@@ -418,7 +418,7 @@ function setup() {
 		}
 		// eslint-disable-next-line
 		app.use((err, req, res, next) => {
-			global.logCatch(err, false)
+			common.logCatch(err, false)
 			return common.setResponse(
 				err.status || 500,
 				req,

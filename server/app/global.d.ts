@@ -26,8 +26,6 @@ declare namespace NodeJS {
 	interface Global {
 		Sentry: any;
 		rateLimiter: RateLimiter;
-		sleep: (ms: number) => Promise<void>;
-		logCatch: (err: Error, useSentry: boolean, identifier?: string) => void;
 		buildNumber: string;
 		structures: Structure[];
 		getStructure: (name: string) => Promise<object[]>;

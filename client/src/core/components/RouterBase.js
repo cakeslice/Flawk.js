@@ -8,12 +8,12 @@
 import { SplashScreen } from '@capacitor/splash-screen'
 import * as Sentry from '@sentry/react'
 import { Integrations } from '@sentry/tracing'
+import { useConstructor } from '@toolz/use-constructor'
 import { get } from 'core/api'
 import config from 'core/config_'
 import styles from 'core/styles'
 import { createBrowserHistory } from 'history'
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import ReactGA from 'react-ga'
 import GitInfo from 'react-git-info/macro'
 import MediaQuery, { Context as ResponsiveContext } from 'react-responsive'
@@ -23,17 +23,29 @@ import CustomButton from './CustomButton'
 
 const gitHash = GitInfo().commit.shortHash
 
-var amountToasts = 0
+let amountToasts = 0
+export const RouterBaseContext = React.createContext(null)
 
-export default class RouterBase extends Component {
-	constructor() {
-		super()
+/**
+ * @param root0
+ * @param root0.children
+ */
+export default function RouterBase({ children }) {
+	const [history] = useState(createBrowserHistory())
 
-		this.state.history = createBrowserHistory()
-		global.routerHistory = function () {
-			return this.state.history
-		}.bind(this)
+	const addFlag = useCallback(addFlagFunction, [])
+	const routerHistory = useCallback(
+		function () {
+			return history
+		},
+		[history]
+	)
+	const routerBaseContext = useMemo(() => ({ addFlag }), [addFlag])
+	global.addFlag = addFlag // ! DEPRECATED, still active to support class components
+	global.routerHistory = routerHistory // ! DEPRECATED, still active to support class components
 
+	// Should be on top of your function after state is declared
+	useConstructor(() => {
 		var asyncSetup = async function () {
 			var buildEnv = config.prod ? 'production' : config.staging ? 'staging' : 'development'
 
@@ -71,9 +83,7 @@ export default class RouterBase extends Component {
 					},
 					integrations: [
 						new Integrations.BrowserTracing({
-							routingInstrumentation: Sentry.reactRouterV5Instrumentation(
-								this.state.history
-							),
+							routingInstrumentation: Sentry.reactRouterV5Instrumentation(history),
 						}),
 					],
 					// Leaving the sample rate at 1.0 means that automatic instrumentation will send a transaction each time a user loads any page or navigates anywhere in your app, which is a lot of transactions. Sampling enables you to collect representative data without overwhelming either your system or your Sentry transaction quota.
@@ -101,7 +111,7 @@ export default class RouterBase extends Component {
 						ReactGA.initialize(config.googleAnalyticsID)
 						var w = window.location.pathname + window.location.search
 						ReactGA.pageview(w)
-						global.routerHistory().listen((location) => {
+						history.listen((location) => {
 							var l = location.pathname + location.search
 							ReactGA.pageview(l)
 						})
@@ -115,40 +125,39 @@ export default class RouterBase extends Component {
 				}
 			}
 			await global.startAnalytics()
-		}.bind(this)
+		}
 		asyncSetup()
 
-		this.socketNotification = this.socketNotification.bind(this)
 		if (config.websocketSupport && global.socket) {
 			global.socket.removeListener('notification')
-			global.socket.on('notification', this.socketNotification)
+			global.socket.on('notification', socketNotification)
 		}
+	})
 
-		global.addFlag = this.addFlag.bind(this)
+	/**
+	 * @param data
+	 */
+	function socketNotification(data) {
+		addFlag(data.title, data.description, data.type)
 	}
 
-	state = {}
-
-	socketNotification(data) {
-		global.addFlag(data.title, data.description, data.type)
-	}
-
-	static childContextTypes = {
-		addFlag: PropTypes.func,
-	}
-	getChildContext() {
-		return {
-			addFlag: this.addFlag,
-		}
-	}
-
-	addFlag = (
+	/**
+	 * @param title
+	 * @param description
+	 * @param type
+	 * @param root0
+	 * @param root0.customComponent
+	 * @param root0.playSound
+	 * @param root0.closeAfter
+	 * @param root0.closeButton
+	 */
+	function addFlagFunction(
 		title,
 		description,
 		type,
 		{ customComponent = undefined, playSound = false, closeAfter = 0, closeButton = true } = {}
-	) => {
-		if (amountToasts > 5) return
+	) {
+		if (amountToasts > 10) return
 
 		if (playSound && global.playNotificationSound) global.playNotificationSound()
 
@@ -217,7 +226,7 @@ export default class RouterBase extends Component {
 								}}
 								onClick={closeToast}
 							>
-								{this.close(styles.colors.black)}
+								{close(styles.colors.black)}
 							</div>
 					  )
 					: false,
@@ -229,23 +238,14 @@ export default class RouterBase extends Component {
 		)
 	}
 
-	componentDidMount() {
+	useEffect(() => {
 		SplashScreen.hide()
-	}
+	}, [])
 
-	render() {
-		return (
-			<MobileSimulator active={!config.prod && !config.staging}>
-				<div>
-					<Router history={this.state.history}>{this.props.children}</Router>
-
-					{!global.noFlags && <ToastContainer />}
-				</div>
-			</MobileSimulator>
-		)
-	}
-
-	close = (color) => {
+	/**
+	 * @param color
+	 */
+	function close(color) {
 		return (
 			<svg
 				width='24'
@@ -261,119 +261,132 @@ export default class RouterBase extends Component {
 			</svg>
 		)
 	}
+
+	return (
+		<RouterBaseContext.Provider value={routerBaseContext}>
+			<MobileSimulator active={!config.prod && !config.staging}>
+				<div>
+					<Router history={history}>{children}</Router>
+
+					<ToastContainer />
+				</div>
+			</MobileSimulator>
+		</RouterBaseContext.Provider>
+	)
 }
 
-class MobileSimulator extends Component {
-	state = {}
+/**
+ * @param root0
+ * @param root0.children
+ * @param root0.active
+ */
+function MobileSimulator({ children, active }) {
+	const [hover, setHover] = useState(false)
+	const [mobileViewer, setMobileViewer] = useState(undefined)
 
-	componentDidMount() {
+	useEffect(() => {
 		var asyncSetup = async function () {
-			var mobileViewer = await global.storage.getItem('mobile_viewer')
-			if (mobileViewer) this.setState({ mobileViewer: mobileViewer })
-		}.bind(this)
+			var storedMobileViewer = await global.storage.getItem('mobile_viewer')
+			if (storedMobileViewer) setMobileViewer(storedMobileViewer)
+		}
 		asyncSetup()
-	}
+	}, [])
 
-	render() {
-		var enabled = this.state.mobileViewer === 'true'
-		return (
-			<MediaQuery minWidth={config.mobileWidthTrigger}>
-				{(desktop) => (
-					<div>
-						{this.props.active && desktop && (
-							<div
-								onMouseEnter={() => this.setState({ hover: true })}
-								onMouseLeave={() => this.setState({ hover: false })}
-								style={
-									enabled
-										? {
-												position: 'fixed',
-												bottom: 75,
-												right: 25,
-												overflow: 'hidden',
-												height: 568,
-												width: 320,
-												maxHeight: 568,
-												maxWidth: 320,
-												zIndex: 100,
-												boxShadow:
-													this.state.hover && styles.strongerShadow,
-												background: styles.colors.background,
-												opacity: this.state.hover ? 1 : 0.75,
-												transition: 'transform 200ms',
-												transformOrigin: '100% 100%',
-												transform: this.state.hover
-													? 'scale(1)'
-													: 'scale(.5)',
+	var enabled = mobileViewer === 'true'
+	return (
+		<MediaQuery minWidth={config.mobileWidthTrigger}>
+			{(desktop) => (
+				<div>
+					{active && desktop && (
+						<div
+							onMouseEnter={() => setHover(true)}
+							onMouseLeave={() => setHover(false)}
+							style={
+								enabled
+									? {
+											position: 'fixed',
+											bottom: 75,
+											right: 25,
+											overflow: 'hidden',
+											height: 568,
+											width: 320,
+											maxHeight: 568,
+											maxWidth: 320,
+											zIndex: 100,
+											boxShadow: hover && styles.strongerShadow,
+											background: styles.colors.background,
+											opacity: hover ? 1 : 0.75,
+											transition: 'transform 200ms',
+											transformOrigin: '100% 100%',
+											transform: hover ? 'scale(1)' : 'scale(.5)',
 
-												borderColor: global.nightMode
-													? 'rgba(255, 255, 255, 0.1)'
-													: 'rgba(0, 0, 0, 0.1)',
-												borderWidth: 1,
-												borderStyle: 'solid',
-										  }
-										: {
-												opacity: this.state.hover ? 1 : 0.75,
-												position: 'fixed',
-												bottom: 37,
-												right: 35,
-										  }
-								}
-							>
-								{enabled ? (
-									<ResponsiveContext.Provider value={{ width: 300, height: 620 }}>
-										<div
-											style={{
-												width: '100%',
-												height: '100%',
-												overflow: 'scroll',
-											}}
-										>
-											{this.props.children}
-											<div style={{ maxHeight: 0 }}>
-												<div
-													style={{
-														position: 'absolute',
-														transformOrigin: '100% 100%',
-														transform: 'scale(.5)',
-														bottom: 7.5,
-														right: 7.5,
-														opacity: 0.5,
-														zIndex: 99999,
-													}}
-												>
-													<CustomButton
-														appearance='primary'
-														onClick={async () => {
-															await global.storage.setItem(
-																'mobile_viewer',
-																'false'
-															)
-															this.setState({ mobileViewer: 'false' })
-														}}
-													>
-														Close
-													</CustomButton>
-												</div>
-											</div>
-										</div>
-									</ResponsiveContext.Provider>
-								) : (
-									<CustomButton
-										onClick={async () => {
-											await global.storage.setItem('mobile_viewer', 'true')
-											this.setState({ mobileViewer: 'true' })
+											borderColor: global.nightMode
+												? 'rgba(255, 255, 255, 0.1)'
+												: 'rgba(0, 0, 0, 0.1)',
+											borderWidth: 1,
+											borderStyle: 'solid',
+									  }
+									: {
+											opacity: hover ? 1 : 0.75,
+											position: 'fixed',
+											bottom: 37,
+											right: 35,
+									  }
+							}
+						>
+							{enabled ? (
+								<ResponsiveContext.Provider value={{ width: 300, height: 620 }}>
+									<div
+										style={{
+											width: '100%',
+											height: '100%',
+											overflow: 'scroll',
 										}}
 									>
-										Mobile
-									</CustomButton>
-								)}
-							</div>
-						)}
-						{this.props.children}
-					</div>
-				)}
-			</MediaQuery>
-		)
-	}
+										{children}
+										<div style={{ maxHeight: 0 }}>
+											<div
+												style={{
+													position: 'absolute',
+													transformOrigin: '100% 100%',
+													transform: 'scale(.5)',
+													bottom: 7.5,
+													right: 7.5,
+													opacity: 0.5,
+													zIndex: 99999,
+												}}
+											>
+												<CustomButton
+													appearance='primary'
+													onClick={async () => {
+														await global.storage.setItem(
+															'mobile_viewer',
+															'false'
+														)
+														setMobileViewer('false')
+													}}
+												>
+													Close
+												</CustomButton>
+											</div>
+										</div>
+									</div>
+								</ResponsiveContext.Provider>
+							) : (
+								<CustomButton
+									onClick={async () => {
+										await global.storage.setItem('mobile_viewer', 'true')
+										setMobileViewer('true')
+									}}
+								>
+									Mobile
+								</CustomButton>
+							)}
+						</div>
+					)}
+					{children}
+				</div>
+			)}
+		</MediaQuery>
+	)
 }

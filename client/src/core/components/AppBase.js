@@ -6,10 +6,11 @@
  */
 
 import { Capacitor } from '@capacitor/core'
+import { useConstructor } from '@toolz/use-constructor'
 import { get } from 'core/api'
 import config from 'core/config_'
 import styles from 'core/styles'
-import React, { Component } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 import GitInfo from 'react-git-info/macro'
 import { Helmet } from 'react-helmet'
 import MediaQuery from 'react-responsive'
@@ -19,27 +20,32 @@ import CustomButton from '../components/CustomButton'
 
 const gitHash = GitInfo().commit.shortHash
 
-global.sleep = function sleep(ms) {
-	return new Promise((resolve) => setTimeout(resolve, ms))
-}
+let isReconnect = false
+export const AppBaseContext = React.createContext(null)
 
-export default class AppBase extends Component {
-	state = {
-		socketConnectionDelay: false,
-		isReconnect: false,
-		oldBuild: false,
-		hideWarnings: false,
-	}
+/**
+ * @param root0
+ * @param root0.component
+ */
+export default function AppBase({ component }) {
+	const [nightMode, setNightMode] = useState(undefined)
+	const toggleNightMode = useCallback(toggleNightModeFunction, [nightMode, applyNightMode])
 
-	constructor() {
-		super()
+	const appBaseContext = useMemo(
+		() => ({ toggleNightMode, nightMode }),
+		[toggleNightMode, nightMode]
+	)
+	global.toggleNightMode = toggleNightMode // ! DEPRECATED, still active to support class components
+	//
+	const [socketConnectionDelay, setSocketConnectionDelay] = useState(false)
+	const [oldBuild, setOldBuild] = useState(false)
+	const [build, setBuildNumber] = useState(undefined)
+	const [cookie, setCookieNotice] = useState(undefined)
 
-		global.toggleNightMode = this.toggleNightMode.bind(this)
-		global.hideWarnings = this.hideWarnings.bind(this)
-		global.changeBackground = this.changeBackground.bind(this)
-
+	// Should be on top of your function after state is declared
+	useConstructor(() => {
 		const asyncSetup = async function () {
-			if (config.darkModeForce) this.applyNightMode(true, true)
+			if (config.darkModeForce) applyNightMode(true, true)
 			else if (config.darkModeAvailable) {
 				let storedNightMode
 				if (Capacitor.isNativePlatform())
@@ -47,9 +53,9 @@ export default class AppBase extends Component {
 				else storedNightMode = global.storage.getItem('nightMode')
 				const isDark =
 					window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)')
-				if (storedNightMode !== null) this.applyNightMode(storedNightMode === 'true', true)
-				else this.applyNightMode(isDark && isDark.matches && !config.darkModeOptIn, true)
-			} else this.applyNightMode(false, true)
+				if (storedNightMode !== null) applyNightMode(storedNightMode === 'true', true)
+				else applyNightMode(isDark && isDark.matches && !config.darkModeOptIn, true)
+			} else applyNightMode(false, true)
 
 			if (!config.prod) {
 				let res = await get('build_number', { noErrorFlag: 'all' })
@@ -60,17 +66,17 @@ export default class AppBase extends Component {
 				} else {
 					buildNumber = await global.storage.getItem('build_number')
 				}
-				this.state.buildNumber = gitHash + '_' + buildNumber
+				setBuildNumber(gitHash + '_' + buildNumber)
 			}
 
 			let lang = await global.storage.getItem('lang')
 			let langSet = false
 			if (lang) {
 				let savedLang = JSON.parse(lang)
-				for (let i = 0; i < global.supportedLanguages.length; i++) {
-					if (global.supportedLanguages[i] === savedLang.text) {
+				for (let i = 0; i < config.supportedLanguages.length; i++) {
+					if (config.supportedLanguages[i] === savedLang.text) {
 						langSet = true
-						global.setLang(savedLang)
+						config.setLang(savedLang)
 						break
 					}
 				}
@@ -85,23 +91,21 @@ export default class AppBase extends Component {
 				} catch {
 					// If can't detect, just move on
 				}
-				for (let l = 0; l < global.supportedLanguages.length; l++) {
-					if (browserLanguage.includes(global.supportedLanguages[l])) {
+				for (let l = 0; l < config.supportedLanguages.length; l++) {
+					if (browserLanguage.includes(config.supportedLanguages[l])) {
 						langSet = true
-						global.setLang({ text: global.supportedLanguages[l] })
+						config.setLang({ text: config.supportedLanguages[l] })
 						break
 					}
 				}
 			}
 			if (!langSet) {
-				global.setLang({ text: global.supportedLanguages[0] })
+				config.setLang({ text: config.supportedLanguages[0] })
 			}
 
 			let cookieNotice = await global.storage.getItem('cookie_notice')
-			if (cookieNotice) this.state.cookieNotice = cookieNotice
-
-			this.forceUpdate()
-		}.bind(this)
+			if (cookieNotice) setCookieNotice(cookieNotice)
+		}
 		asyncSetup()
 
 		if (config.websocketSupport) {
@@ -110,61 +114,53 @@ export default class AppBase extends Component {
 				global.socket.close()
 			}
 			global.socket = io(config.websocketURL, { autoConnect: false })
-			global.socket.on(
-				'connect',
-				async function () {
-					console.log('Socket connected: ' + global.socket.id)
+			global.socket.on('connect', async function () {
+				console.log('Socket connected: ' + global.socket.id)
 
-					let token = await global.storage.getItem('token')
-					global.socket.emit('init', { token: token }, async (res) => {
-						if (res.success) {
-							console.log('Connected to websocket! Build number: ' + res.buildNumber)
+				let token = await global.storage.getItem('token')
+				global.socket.emit('init', { token: token }, async (res) => {
+					if (res.success) {
+						console.log('Connected to websocket! Build number: ' + res.buildNumber)
 
-							let buildNumber = await global.storage.getItem('build_number')
-							await global.storage.setItem('build_number', res.buildNumber)
-							if (
-								this.state.isReconnect &&
-								buildNumber &&
-								res.buildNumber !== buildNumber
-							) {
-								this.setState({ oldBuild: true, buildNumber: buildNumber })
-							} else
-								this.setState({
-									buildNumber: gitHash + '_' + buildNumber,
-									...(!this.state.isReconnect && { isReconnect: true }),
-								})
-						}
-					})
-				}.bind(this)
-			)
+						let buildNumber = await global.storage.getItem('build_number')
+						await global.storage.setItem('build_number', res.buildNumber)
+						if (isReconnect && buildNumber && res.buildNumber !== buildNumber) {
+							setOldBuild(true)
+							setBuildNumber(buildNumber)
+						} else setBuildNumber(gitHash + '_' + buildNumber)
+						if (!isReconnect) isReconnect = true
+					}
+				})
+			})
 			global.socket.on('disconnect', function () {
 				console.warn('Websocket disconnected!')
 			})
-			setTimeout(
-				function () {
-					this.setState({ socketConnectionDelay: true })
-				}.bind(this),
-				3000
-			)
+			setTimeout(function () {
+				setSocketConnectionDelay(true)
+			}, 3000)
 		}
-	}
+	})
 
-	hideWarnings = function () {
-		this.setState({ hideWarnings: true })
-	}
-	toggleNightMode = async function (night) {
-		if (night === undefined) night = !this.state.nightMode
+	/**
+	 * @param night
+	 */
+	async function toggleNightModeFunction(night) {
+		if (night === undefined) night = !nightMode
 
 		await global.storage.setItem('nightMode', night)
-		this.applyNightMode(night)
+		applyNightMode(night)
 	}
-	applyNightMode = function (night, skipPageRefresh = false) {
-		this.state.nightMode = night // eslint-disable-line
-		global.nightMode = night
+	/**
+	 * @param night
+	 * @param skipPageRefresh
+	 */
+	function applyNightMode(night, skipPageRefresh = false) {
+		setNightMode(night)
+		global.nightMode = night // ! DEPRECATED, still active to support class components
 		if (!skipPageRefresh) window.location.reload()
 		else {
 			if (night) {
-				this.changeBackground(styles.colors.backgroundNight)
+				changeBackground(styles.colors.backgroundNight)
 				document.body.style.color = styles.colors.blackNight
 				document.body.style.caretColor = 'rgba(255, 255, 255, 0.5)'
 				styles.colors.background = styles.colors.backgroundNight
@@ -179,7 +175,7 @@ export default class AppBase extends Component {
 				if (!styles.outlineCard.noDarkMode)
 					styles.outlineCard.borderColor = styles.colors.borderColorNight
 			} else {
-				this.changeBackground(styles.colors.backgroundDay)
+				changeBackground(styles.colors.backgroundDay)
 				document.body.style.color = styles.colors.blackDay
 				document.body.style.caretColor = 'rgba(0, 0, 0, 0.5)'
 				styles.colors.background = styles.colors.backgroundDay
@@ -196,21 +192,24 @@ export default class AppBase extends Component {
 			}
 		}
 	}
-	changeBackground = function (color) {
+	/**
+	 * @param color
+	 */
+	function changeBackground(color) {
 		document.body.style.backgroundColor = color
 	}
 
-	render() {
-		let cookieNotice = this.state.cookieNotice || this.state.hideWarnings
+	let cookieNotice = cookie
 
-		let inRestrictedRoute = false
-		config.restrictedRoutes.forEach((r) => {
-			if (window.location.href.includes(r)) inRestrictedRoute = true
-		})
+	let inRestrictedRoute = false
+	config.restrictedRoutes.forEach((r) => {
+		if (window.location.href.includes(r)) inRestrictedRoute = true
+	})
 
-		let Child = this.props.component
+	let Child = component
 
-		return (
+	return (
+		<AppBaseContext.Provider value={appBaseContext}>
 			<MediaQuery minWidth={config.mobileWidthTrigger}>
 				{(desktop) => (
 					<div>
@@ -231,7 +230,7 @@ export default class AppBase extends Component {
 							)}
 						</Helmet>
 
-						{inRestrictedRoute && this.state.oldBuild && !this.state.hideWarnings && (
+						{inRestrictedRoute && oldBuild && (
 							<div style={{ maxHeight: 0 }}>
 								<Fade delay={1000} duration={500} bottom>
 									<div
@@ -285,8 +284,7 @@ export default class AppBase extends Component {
 						{inRestrictedRoute &&
 							config.websocketSupport &&
 							!global.socket.connected &&
-							this.state.socketConnectionDelay &&
-							!this.state.hideWarnings && (
+							socketConnectionDelay && (
 								<div style={{ maxHeight: 0 }}>
 									<Fade delay={1000} duration={500} bottom>
 										<div
@@ -358,9 +356,7 @@ export default class AppBase extends Component {
 												)
 												if (global.startAnalytics)
 													await global.startAnalytics()
-												this.setState({
-													cookieNotice: 'true',
-												})
+												setCookieNotice('true')
 											}}
 										>
 											I AGREE
@@ -402,7 +398,7 @@ export default class AppBase extends Component {
 									>
 										{(!config.staging ? 'DEV' : 'STAG') + '@' + gitHash}
 									</div>
-									{this.state.buildNumber && (
+									{build && (
 										<div
 											style={{
 												color: 'red',
@@ -411,7 +407,7 @@ export default class AppBase extends Component {
 												textShadow: '1px 1px 2px rgba(0,0,0,.5)',
 											}}
 										>
-											{'SERV@' + this.state.buildNumber.split('_')[1]}
+											{'SERV@' + build.split('_')[1]}
 										</div>
 									)}
 								</div>
@@ -426,7 +422,7 @@ export default class AppBase extends Component {
 											color: styles.colors.black,
 										}}
 										onClick={async () => {
-											await global.toggleNightMode()
+											await toggleNightMode()
 										}}
 									>
 										DARK
@@ -444,7 +440,7 @@ export default class AppBase extends Component {
 											textShadow: '1px 1px 2px rgba(0,0,0,.5)',
 										}}
 										onClick={async () => {
-											global.changeLang()
+											config.changeLang()
 											await global.storage.setItem(
 												'lang',
 												JSON.stringify(global.lang)
@@ -478,6 +474,6 @@ export default class AppBase extends Component {
 					</div>
 				)}
 			</MediaQuery>
-		)
-	}
+		</AppBaseContext.Provider>
+	)
 }

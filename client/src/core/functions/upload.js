@@ -6,6 +6,12 @@
  */
 
 const config = require('../config_').default
+try {
+	const toBlob = require('canvas-to-blob')
+	toBlob.init()
+} catch (err) {
+	config.logCatch(err, true)
+}
 
 //
 

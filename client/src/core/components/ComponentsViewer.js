@@ -934,7 +934,7 @@ class Inputs extends Component {
 											lastName: values.lastName,
 										},
 									}
-									await global.sleep(2000)
+									await config.sleep(2000)
 									alert(JSON.stringify(data))
 									setSubmitting(false)
 								}}
@@ -1426,7 +1426,7 @@ class Backend extends Component {
 										setSubmitting(false)
 
 										if (res.ok) {
-											if (this.props.fetchUser) this.props.fetchUser()
+											await this.props.fetchUser()
 										}
 									}}
 								>
@@ -1696,7 +1696,7 @@ class Login extends Component {
 
 						if (res.ok) {
 							await global.storage.setItem('token', res.body.token)
-							if (this.props.fetchUser) this.props.fetchUser()
+							await this.props.fetchUser()
 						} else if (res.status === 401) {
 							this.setState({ wrongLogin: 'Authentication Failed' })
 						}
@@ -1801,7 +1801,7 @@ class Register extends Component {
 									verifyingSignup: false,
 								})
 								await global.storage.setItem('token', res.body.token)
-								if (this.props.fetchUser) this.props.fetchUser()
+								await this.props.fetchUser()
 							} else if (res.status === 401)
 								this.setState({ wrongLogin: 'Wrong code' })
 
@@ -2064,7 +2064,7 @@ class Forgot extends Component {
 							if (res.ok) {
 								this.setState({ verifyingRecover: false })
 								await global.storage.setItem('token', res.body.token)
-								if (this.props.fetchUser) this.props.fetchUser()
+								await this.props.fetchUser()
 							} else if (res.status === 401)
 								this.setState({ wrongLogin: 'Wrong code' })
 
@@ -2303,7 +2303,7 @@ class Settings extends Component {
 								if (res.ok) {
 									if (res.body.token)
 										await global.storage.setItem('token', res.body.token)
-									if (this.props.fetchUser) this.props.fetchUser()
+									await this.props.fetchUser()
 								}
 							}
 
@@ -2318,7 +2318,7 @@ class Settings extends Component {
 							if (r.ok) {
 								if (r.body.token)
 									await global.storage.setItem('token', r.body.token)
-								if (this.props.fetchUser) this.props.fetchUser()
+								await this.props.fetchUser()
 							}
 
 							setSubmitting(false)

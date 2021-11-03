@@ -19,12 +19,6 @@ import { ErrorBoundary } from 'react-error-boundary'
 
 const App = React.lazy(() => import('./project/App'))
 
-global.lazyWithPreload = (factory) => {
-	const Component = React.lazy(factory)
-	Component.preload = factory
-	return Component
-}
-
 const capacitorStorage = {
 	getItem: async (key) => {
 		const { value } = await Storage.get({ key: key })

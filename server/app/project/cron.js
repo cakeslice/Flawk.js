@@ -5,6 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+const common = require('core/common')
+
 async function checkChats() {
 	console.log('Checking chats...')
 
@@ -21,7 +23,7 @@ module.exports = {
 			try {
 				await checkChats()
 			} catch (err) {
-				global.logCatch(err, true, 'CRON checkChats(): ')
+				common.logCatch(err, true, 'CRON checkChats(): ')
 			}
 		}
 		run()
