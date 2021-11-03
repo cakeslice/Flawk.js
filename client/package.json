@@ -125,7 +125,7 @@
 		"uniqolor": "^1.0.1",
 		"universal-cookie": "^4.0.4",
 		"uuid": "^8.3.2",
-		"validator": "^13.6.0",
+		"validator": "^13.7.0",
 		"video-react": "^0.14.1"
 	},
 	"devDependencies": {
