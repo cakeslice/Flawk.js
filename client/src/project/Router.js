@@ -249,8 +249,8 @@ export default function Router() {
 			onClick: async () => {
 				var res = await post('client/logout', {})
 				if (res.ok) {
-					await fetchUser()
-					history.push('/login')
+					await fetchUser(dispatch)
+					global.routerHistory().push('/login')
 				}
 			},
 		},
