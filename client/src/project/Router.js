@@ -109,7 +109,7 @@ export default function Router() {
 								height: 120,
 							}}
 						>
-							<button onClick={() => history.push('/')}>
+							<button onClick={() => global.routerHistory().push('/')}>
 								<img
 									style={{
 										objectFit: 'contain',
