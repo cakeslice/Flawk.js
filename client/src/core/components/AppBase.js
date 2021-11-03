@@ -60,7 +60,7 @@ export default class AppBase extends Component {
 				} else {
 					buildNumber = await global.storage.getItem('build_number')
 				}
-				this.setState({ buildNumber: gitHash + '_' + buildNumber })
+				this.state.buildNumber = gitHash + '_' + buildNumber
 			}
 
 			let lang = await global.storage.getItem('lang')
@@ -114,7 +114,6 @@ export default class AppBase extends Component {
 				'connect',
 				async function () {
 					console.log('Socket connected: ' + global.socket.id)
-					this.forceUpdate()
 
 					let token = await global.storage.getItem('token')
 					global.socket.emit('init', { token: token }, async (res) => {
@@ -132,20 +131,15 @@ export default class AppBase extends Component {
 							} else
 								this.setState({
 									buildNumber: gitHash + '_' + buildNumber,
+									...(!this.state.isReconnect && { isReconnect: true }),
 								})
-
-							if (!this.state.isReconnect) this.setState({ isReconnect: true })
 						}
 					})
 				}.bind(this)
 			)
-			global.socket.on(
-				'disconnect',
-				function () {
-					console.warn('Websocket disconnected!')
-					this.forceUpdate()
-				}.bind(this)
-			)
+			global.socket.on('disconnect', function () {
+				console.warn('Websocket disconnected!')
+			})
 			setTimeout(
 				function () {
 					this.setState({ socketConnectionDelay: true })

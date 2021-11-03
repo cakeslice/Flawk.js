@@ -156,7 +156,8 @@ function setup() {
 
 	if (config.jest) console.log('----- JEST TESTING -----\n')
 	console.log(
-		'Environment: ' + (config.prod ? 'production' : config.staging ? 'staging' : 'development')
+		'\nEnvironment: ' +
+			(config.prod ? 'production' : config.staging ? 'staging' : 'development')
 	)
 	console.log('Build: ' + '@' + global.buildNumber)
 	console.log('Running on NodeJS ' + process.version + '\n')

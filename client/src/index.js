@@ -83,7 +83,7 @@ function ErrorFallback({ error, resetErrorBoundary }) {
 		return (
 			<div>
 				<span style={{ color: 'white' }}>Chunk Load Error!</span>{' '}
-				<button onClick={() => window.location.reload()}>Reload</button>
+				<button onClick={() => window.location.reload()}>Try Again</button>
 			</div>
 		)
 	}
