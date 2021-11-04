@@ -32,7 +32,7 @@ const Something = config.lazyWithPreload(() => import('something')))
 ...
 Something.preload()
 */
-const ComponentsViewer = config.lazyWithPreload(() => import('core/components/ComponentsViewer'))
+const ComponentsViewer = React.lazy(() => import('core/components/ComponentsViewer'))
 const Dashboard = React.lazy(() => import('core/components/Dashboard'))
 const Settings = React.lazy(() => import('./pages/settings/Settings'))
 //
