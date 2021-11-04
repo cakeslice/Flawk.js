@@ -117,7 +117,7 @@
 
 # To take advantage of multiple cores in Node.js you can use clusters but consider websocket support: https://socket.io/docs/using-multiple-nodes/
 #     HOWEVER, 4 CORES SEEMS TO BE VERY GOOD FOR MONGO + NODE
-#     For websites/apps with low/no MONGO usage, you should go with CPU-Optimized
+#     For websites/apps with low/no MONGO usage, you should go with a server with better single-core performance
 
 # ---------------------------
 # ---------------------------
