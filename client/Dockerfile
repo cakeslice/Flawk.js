@@ -7,9 +7,9 @@
 
 # ---------------------------
 
-# REACT-BUILD
+########## REACT BUILD
 
-FROM node:14.15.0 as REACT-BUILD
+FROM node:14.15.0 as react-build
 ARG REACT_APP_STAGING
 ENV REACT_APP_STAGING $REACT_APP_STAGING
 ARG REACT_APP_DOMAIN
@@ -27,8 +27,8 @@ ENV NODE_ENV=production
 # Add package.json before rest of repo for caching
 WORKDIR /usr/src/react_build
 COPY package*.json ./
-RUN npm install --only=prod && npm install --only=dev
-# Install dev dependencies for CRA's eslint
+RUN npm install
+# Install all dependencies including dev for CRA's eslint and testing
 
 COPY . .
 
@@ -36,12 +36,12 @@ RUN npm run auditCI && npm run testCI
 WORKDIR /usr/src/react_build/src
 RUN npm run buildCI && rm -rf /usr/src/react_build/node_modules && rm -rf /usr/src/react_build/src
 
-# NGINX SERVER
+########## NGINX SERVER
 
 FROM nginx:1.13.9-alpine
 
 RUN rm -rf /etc/nginx/conf.d && mkdir -p /etc/nginx/conf.d
 COPY ./default.conf /etc/nginx/conf.d/
-COPY --from=REACT-BUILD /usr/src/react_build/build /etc/nginx/html
+COPY --from=react-build /usr/src/react_build/build /etc/nginx/html
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]

@@ -122,18 +122,14 @@
 # ---------------------------
 # ---------------------------
 
-# NODE SERVER
+########## COMPILE TYPESCRIPT
 
-FROM node:14.15.0
-ENV NODE_ENV=production
-ENV NODE_PATH=app/
-ARG CAPROVER_GIT_COMMIT_SHA=${CAPROVER_GIT_COMMIT_SHA}
-ENV CAPROVER_GIT_COMMIT_SHA=${CAPROVER_GIT_COMMIT_SHA}
-
+FROM node:14.15.0 AS typescript-build
 WORKDIR /usr/src/app
 # Add package.json before rest of repo for caching
 COPY ./package*.json ./
-RUN npm install --only=prod
+RUN npm install
+# Install all dependencies including dev to compile TypeScript
 
 COPY . .
 
@@ -147,11 +143,25 @@ ENV appName $appName
 ARG frontendURL
 ENV frontendURL $frontendURL
 
-RUN npm run auditCI && npm run testCI && rm -rf /usr/src/app/client/*
+RUN npm run auditCI && npm run testCI
 
-#COPY --from=REACT-BUILD /usr/src/app/react_build/build /usr/src/app/client/build
+RUN npm run compileTypescript
+
+########## NODE SERVER
+
+FROM node:14.15.0
+ENV NODE_ENV=production
+ENV NODE_PATH=app/
+ARG CAPROVER_GIT_COMMIT_SHA=${CAPROVER_GIT_COMMIT_SHA}
+ENV CAPROVER_GIT_COMMIT_SHA=${CAPROVER_GIT_COMMIT_SHA}
+
+WORKDIR /usr/src/app
+# Add package.json before rest of repo for caching
+COPY ./package*.json ./
+RUN npm install --only=prod
+
+COPY --from=typescript-build /usr/src/app/dist dist
 
 WORKDIR /usr/src/app
 EXPOSE 8080
-# TODO: "startLocal": "npm run lintCI && cross-env NODE_PATH=app/ nodemon -e ts --exec \"(tsc && node --inspect=1237 --optimize_for_size --max_old_space_size=1024 dist/server.js) || exit 1\"",
 CMD [ "node", "--optimize_for_size", "--max_old_space_size=1024", "./dist/server.js" ]

@@ -11,18 +11,16 @@ testing:
   image: node:12.16.3
   before_script:
     - cd server
-    - npm install --only=prod
-    - npm install --only=dev
+    - npm install
     - cd ../client
-    - npm install --only=prod
-    - npm install --only=dev
+    - npm install
     - cd ..
   script:
     - cd server
     - npm run auditCI
     - npm run prettierCI
     - npm run lintCI
-    - SKIP_PREFLIGHT_CHECK=true npm run testCI
+    - npm run testCI
     - cd ../client
     - npm run auditCI
     - npm run prettierCI
