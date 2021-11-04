@@ -9,8 +9,10 @@
 		"env:dev": "env-cmd -f ./_env/flawk_dev.env",
 		"- MAIN SCRIPTS -": "-----------------------------",
 		"start:dev": "npm run env:dev npm run startLocal",
+		"start:dev-js": "npm run env:dev npm run startLocalJavascript",
 		"- HELPER SCRIPTS -": "-----------------------------",
-		"startLocal": "npm run lintCI && cross-env NODE_PATH=app/ nodemon node --inspect=1237 --optimize_for_size --max_old_space_size=1024 --expose-gc app/server.js",
+		"startLocalJavascript": "npm run lintCI && cross-env NODE_PATH=app/ nodemon -e ts --exec \"(tsc && node --inspect=1237 --optimize_for_size --max_old_space_size=1024 dist/server.js) || exit 1\"",
+		"startLocal": "npm run lintCI && cross-env NODE_PATH=app/ ts-node-dev --transpile-only app/server.ts",
 		"- EXTRA SCRIPTS -": "-----------------------------",
 		"precommit": "lint-staged",
 		"postinstall": "cd .. && git config core.hooksPath ./git-hooks",
@@ -52,7 +54,6 @@
 		"mongoose-lean-id": "^0.2.0",
 		"mongoose-lean-virtuals": "^0.9.0",
 		"node-fetch": "^2.6.1",
-		"node-schedule": "^2.0.0",
 		"nodemailer": "^6.6.2",
 		"nodemailer-express-handlebars": "^4.0.0",
 		"nodemailer-html-to-text": "^3.2.0",
@@ -68,8 +69,12 @@
 		"winston-loggly-bulk": "^3.2.1"
 	},
 	"devDependencies": {
+		"@types/bcryptjs": "^2.4.2",
+		"@types/cors": "^2.8.12",
+		"@types/express": "^4.17.13",
 		"@types/jest": "^27.0.2",
 		"@types/mongoose": "^5.11.97",
+		"@types/node": "^16.11.6",
 		"babel-eslint": "^10.1.0",
 		"env-cmd": "^10.1.0",
 		"eslint": "^7.30.0",
@@ -81,7 +86,10 @@
 		"eslint-plugin-security-node": "^1.0.14",
 		"lint-staged": "^11.0.0",
 		"nodemon": "^2.0.9",
-		"prettier": "^2.3.2"
+		"prettier": "^2.3.2",
+		"ts-jest": "^27.0.7",
+		"ts-node-dev": "^1.1.8",
+		"typescript": "^4.4.4"
 	},
 	"lint-staged": {
 		"*.{js,jsx,css,less,scss,ts,tsx,md}": [
@@ -90,13 +98,16 @@
 		]
 	},
 	"jest": {
+		"preset": "ts-jest",
 		"testEnvironment": "node",
 		"testPathIgnorePatterns": [
-			"/node_modules/"
+			"/node_modules/",
+			"/dist/"
 		],
 		"coveragePathIgnorePatterns": [
 			"/node_modules/",
-			"/coverage/"
+			"/coverage/",
+			"/dist/"
 		],
 		"collectCoverageFrom": [
 			"**/*.{js,jsx}",

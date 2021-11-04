@@ -92,7 +92,7 @@ const _setResponse = function (code, req, res, message, data) {
  * @param {string=} identifier
  * @returns {void}
  */
-const _logCatch = function (err, useSentry, identifier = '') {
+const _logCatch = function (err, useSentry = true, identifier = '') {
 	console.log(identifier + JSON.stringify(err.message) + ' ' + JSON.stringify(err.stack || err))
 	if (global.Sentry && useSentry) {
 		err.message = identifier + err.message
@@ -132,6 +132,8 @@ module.exports = {
 	},
 
 	///////////////////////////////////// LOGGER
+
+	logCatch: _logCatch,
 
 	/**
 	 * @param {import('express').Request} req

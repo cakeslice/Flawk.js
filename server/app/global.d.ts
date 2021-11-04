@@ -5,63 +5,89 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import('socket.io')
-import('express')
+type SocketIONamespace = import('socket.io').Namespace
 
-declare namespace NodeJS {
+declare global {
 	interface RateLimiter {
-		default: any;
-		limited: any;
-		extremelyLimited: any;
+		default: any
+		limited: any
+		extremelyLimited: any
 	}
 	interface Structure {
-		sendToFrontend: boolean;
-		cache: boolean;
-		sortKey: string;
-		schema: any;
-		path: string;
-		overrideJson?: boolean;
-		postProcess?: (array: object[]) => Promise<object[]>;
+		sendToFrontend: boolean
+		cache: boolean
+		sortKey: string
+		schema: any
+		path: string
+		overrideJson?: boolean
+		postProcess?: (array: object[]) => Promise<object[]>
 	}
-	interface Global {
-		Sentry: any;
-		rateLimiter: RateLimiter;
-		buildNumber: string;
-		structures: Structure[];
-		getStructure: (name: string) => Promise<object[]>;
+	var Sentry: any
+	var rateLimiter: RateLimiter
+	var buildNumber: string
+	var structures: Structure[]
+	var getStructure: (name: string) => Promise<object[]>
 
-		unshiftToArray: (schema: object, id: string, arrayName: string, sortObject: object, objectsArray: array) => Promise<void>;
-		removeFromArray: (schema: object, id: string, arrayName: string, key: string, keysArray: array) => Promise<void>;
+	var unshiftToArray: (
+		schema: object,
+		id: string,
+		arrayName: string,
+		sortObject: object,
+		objectsArray: [object]
+	) => Promise<void>
+	var removeFromArray: (
+		schema: object,
+		id: string,
+		arrayName: string,
+		key: string,
+		keysArray: [string]
+	) => Promise<void>
 
-		clientSockets: SocketIO.Namespace;
-		isOnline: (clientID: string) => boolean;
-		socketMessage: (socketID: string, channel: string, data: object) => void
-		clientSocketMessage: (clientID: string, channel: string, data: object) => void
-		socketNotification: (socketID: string, title: string, description?: string, type?: string) => void
-		clientSocketNotification: (clientID: string, title: string, description?: string, type?: string) => void
-		adminSocketNotification: (title: string, description?: string, type?: string) => void
-	}
+	var clientSockets: SocketIONamespace
+	var isOnline: (clientID: string) => boolean
+	var socketMessage: (socketID: string, channel: string, data: object) => void
+	var clientSocketMessage: (clientID: string, channel: string, data: object) => void
+	var socketNotification: (
+		socketID: string,
+		title: string,
+		description?: string,
+		type?: string
+	) => void
+	var clientSocketNotification: (
+		clientID: string,
+		title: string,
+		description?: string,
+		type?: string
+	) => void
+	var adminSocketNotification: (title: string, description?: string, type?: string) => void
 }
 declare namespace SocketIO {
 	interface Socket {
 		_client: {
-			id: string;
-			email: string;
-			phone: string;
-			permission: number;
+			id: string
+			email: string
+			phone: string
+			permission: number
 		}
 	}
 }
-declare namespace Express {
+
+declare module 'express-serve-static-core' {
 	interface User {
-		_id: string;
-		email: string;
+		_id: string
+		email?: string
+		phone?: string
 	}
 	interface Request {
-		user: User;
-		token: string;
-		tokenExpiration: number;
-		permission: number;
-		lang: string;
+		user?: User
+		token?: string
+		tokenExpiration?: number
+		permission?: number
+		lang?: string
+	}
+	interface Response {
+		sentry?: any
 	}
 }
+
+export {}

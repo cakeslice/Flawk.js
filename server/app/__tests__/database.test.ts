@@ -23,3 +23,5 @@ describe('Structures', () => {
 		expect(Object.keys(structures.body.structures)).toHaveLength(1)
 	})
 })
+
+export {}

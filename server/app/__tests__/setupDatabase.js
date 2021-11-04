@@ -17,10 +17,7 @@ module.exports = {
 			mongod = await MongoMemoryServer.create()
 			const uri = await mongod.getUri()
 
-			await mongoose.connect(uri, {
-				useUnifiedTopology: true,
-				useNewUrlParser: true,
-			})
+			await mongoose.connect(uri)
 
 			await onDatabaseConnected()
 		})

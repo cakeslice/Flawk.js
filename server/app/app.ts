@@ -5,32 +5,41 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const express = require('express')
-const { addAsync } = require('@awaitjs/express')
+import { addAsync } from '@awaitjs/express'
+import Sentry from '@sentry/node'
+import Tracing from '@sentry/tracing'
+import bcrypt from 'bcryptjs'
+import common from 'core/common'
+import config from 'core/config_'
+import HttpException from 'core/utils/HttpException'
+import cors from 'cors'
+import express, { ErrorRequestHandler, RequestHandler } from 'express'
+import mongoSanitize from 'express-mongo-sanitize'
+import fs from 'fs'
+import helmet from 'helmet'
+import mongoose from 'mongoose'
+import { Server as SocketServer } from 'socket.io'
+import openAPIDocument from './project/api/api.json'
+const OpenApiValidator = require('express-openapi-validator')
 const compression = require('compression')
 const cookieParser = require('cookie-parser')
 const paginate = require('express-paginate')
 const app = addAsync(express())
-const fs = require('fs')
-const helmet = require('helmet')
-const mongoose = require('mongoose')
-const mongoSanitize = require('express-mongo-sanitize')
-const cors = require('cors')
 const responseTime = require('response-time')
-const Sentry = require('@sentry/node')
-const Tracing = require('@sentry/tracing')
-const OpenApiValidator = require('express-openapi-validator')
 
-const config = require('core/config_')
-const common = require('core/common')
 const database = config.projectDatabase
-const openAPIDocument = require('./project/api/api.json')
 openAPIDocument.servers = [
 	{
 		url: config.path,
 		description: '',
 	},
 ]
+
+type StaticOrigin = boolean | string | RegExp | (boolean | string | RegExp)[]
+type CustomOrigin = (
+	requestOrigin: string | undefined,
+	callback: (err: Error | null, origin?: StaticOrigin) => void
+) => void
 
 global.getStructure = async (name) => {
 	for (var g = 0; global.structures.length; g++) {
@@ -45,33 +54,23 @@ global.getStructure = async (name) => {
 			return structure
 		}
 	}
-	console.error('Failed to get structure: ' + s.schema.collection.name)
+	console.error('Failed to get structure: ' + name)
 	return undefined
 }
 
-/**
- * @param req
- * @param res
- * @param next
- */
-function requireHTTPS(req, res, next) {
+const requireHTTPS = <RequestHandler>function (req, res, next) {
 	if (
 		!req.secure &&
 		req.get('x-forwarded-proto') !== 'https' &&
 		(config.prod || config.staging)
 	) {
-		// eslint-disable-next-line
 		return res.redirect('https://' + req.get('host') + req.url)
 	}
 	next()
 }
-/**
- * @param origin
- * @param callback
- */
-function corsOrigins(origin, callback) {
+const corsOrigins = <CustomOrigin>function (origin: string, callback: Function) {
 	var allowed = false
-	config.allowedOrigins.forEach((o) => {
+	config.allowedOrigins.forEach((o: string) => {
 		if (o === origin) allowed = true
 	})
 
@@ -100,7 +99,7 @@ function initLogging() {
 				timestamp: false,
 				token: process.env.LogglyToken,
 				subdomain: process.env.LogglySubdomain,
-				tags: [config.cronServer ? process.env.LogglyCronTag : process.env.LogglyTag],
+				tags: [process.env.LogglyTag],
 				json: true,
 			})
 		)
@@ -163,15 +162,12 @@ function setup() {
 	console.log('Running on NodeJS ' + process.version + '\n')
 
 	// CORS
-	/**
-	 * @type {import('cors').CorsOptions}
-	 */
-	const corsOptions = {
+	const corsOptions: cors.CorsOptions = {
 		credentials: true,
 		exposedHeaders: 'message',
 		origin: corsOrigins,
 	}
-	app.use(function (req, res, next) {
+	app.use(<RequestHandler>function (req, res, next) {
 		req.headers.origin = req.headers.origin || req.headers.host
 		next()
 	})
@@ -254,7 +250,7 @@ function setup() {
 	}) */
 
 	// Request logger
-	app.use(config.path + '/*', function (req, res, next) {
+	app.use(config.path + '/*', <RequestHandler>function (req, res, next) {
 		common.logCall(req)
 		next()
 	})
@@ -279,10 +275,10 @@ function setup() {
 	if (config.prod || config.staging)
 		app.use(
 			config.path + '/*',
-			responseTime(function (req, res, time) {
-				var user = ''
+			responseTime(function (req: express.Request, res: express.Response, time: number) {
+				let user: string | undefined
 				if (req.user) user = req.user.email ? req.user.email : req.user.phone
-				var stat =
+				const stat =
 					(req.method + req.url).toLowerCase().replace(/[:.]/g, '').replace(/\//g, '_') +
 					' | ' +
 					user
@@ -292,18 +288,17 @@ function setup() {
 					try {
 						throw new Error('RESPONSE TIME: ' + stat + ' | ' + time)
 					} catch (err) {
-						common.logCatch(err)
+						common.logCatch(err as Error)
 					}
 				}
 			})
 		)
 
 	// socket.io
-	// @ts-ignore
 	server = require('http').Server(app)
-	var io = undefined
+	let io: SocketServer
 	if (config.websocketSupport) {
-		io = require('socket.io')(server, {
+		io = new SocketServer(server, {
 			pingTimeout: 60000,
 			pingInterval: 25000,
 			cors: {
@@ -313,9 +308,9 @@ function setup() {
 	}
 
 	// Multiple language support
-	app.use(config.path + '/*', function (req, res, next) {
-		var lang = req.headers['lang']
-		if (!lang) lang = 'en'
+	app.use(config.path + '/*', <RequestHandler>function (req, res, next) {
+		let lang = 'en'
+		if (req.headers['lang']) lang = req.headers['lang'] as string
 		req.lang = lang
 
 		next()
@@ -323,31 +318,32 @@ function setup() {
 
 	// Pagination
 	app.use(config.path + '/*', paginate.middleware(10, 50))
-	app.all(config.path + '/*', function (req, res, next) {
+	app.all(config.path + '/*', <RequestHandler>function (req, res, next) {
 		// Minimum results to fetch (0 is all of them)
-		if (req.query.limit <= 1) req.query.limit = 1
-		if (req.query.limit > 100) req.query.limit = 100
+		const limit = Number(req.query.limit)
+		if (limit <= 1) req.query.limit = '1'
+		if (limit > 100) req.query.limit = '100'
 		next()
 	})
 
 	/////////////////////// ROUTES
 
 	// Is server online
-	app.getAsync(config.path + '/online', function (req, res) {
+	app.getAsync(config.path + '/online', <RequestHandler>function (req, res) {
 		common.setResponse(200, req, res)
 	})
 
 	/* if (!config.prod && !config.staging) { */
-	app.getAsync(config.path + '/api', function (req, res) {
+	app.getAsync(config.path + '/api', <RequestHandler>function (req, res) {
 		common.setResponse(200, req, res, undefined, openAPIDocument)
 	})
 	/* } */
 
-	app.getAsync(config.path + '/build_number', function (req, res) {
+	app.getAsync(config.path + '/build_number', <RequestHandler>function (req, res) {
 		common.setResponse(200, req, res, undefined, { buildNumber: global.buildNumber })
 	})
 
-	app.getAsync(config.path + '/structures', async (req, res) => {
+	app.getAsync(config.path + '/structures', <RequestHandler>async function (req, res) {
 		return Promise.all(
 			global.structures.map(async (s) => {
 				if (s.sendToFrontend)
@@ -376,7 +372,7 @@ function setup() {
 					}
 			})
 		).then((results) => {
-			var structures = {}
+			const structures: any = {}
 			results.forEach((r) => {
 				if (r) structures[r.name] = r.data
 			})
@@ -387,46 +383,43 @@ function setup() {
 		})
 	})
 
-	config.publicRoutes.forEach((r) => {
-		require('./project' + r)(app, io) // eslint-disable-line
+	config.publicRoutes.forEach((r: string) => {
+		require('./project' + r)(app, io)
 	})
 
-	config.routes.forEach((r) => {
-		require('./project' + r)(app, io) // eslint-disable-line
+	config.routes.forEach((r: string) => {
+		require('./project' + r)(app, io)
 	})
 
-	if (!config.cronServer) {
-		app.disable('x-powered-by')
+	app.disable('x-powered-by')
 
-		if (config.sentryID) {
-			app.use(Sentry.Handlers.requestHandler())
-			app.use(Sentry.Handlers.tracingHandler())
-		}
-
-		if (config.sentryID) {
-			app.use(
-				Sentry.Handlers.errorHandler({
-					shouldHandleError(error) {
-						// Capture all 404 and 500 errors
-						if (error.status === 404 || error.status === 500) {
-							return true
-						}
-						return false
-					},
-				})
-			)
-		}
-		// eslint-disable-next-line
-		app.use((err, req, res, next) => {
-			common.logCatch(err, false)
-			return common.setResponse(
-				err.status || 500,
-				req,
-				res,
-				res.sentry ? 'Error: ' + res.sentry : err.message
-			)
-		})
+	if (config.sentryID) {
+		app.use(Sentry.Handlers.requestHandler())
+		app.use(Sentry.Handlers.tracingHandler())
 	}
+
+	if (config.sentryID) {
+		app.use(
+			Sentry.Handlers.errorHandler({
+				shouldHandleError(error: HttpException) {
+					// Capture all 404 and 500 errors
+					if (error.status === 404 || error.status === 500) {
+						return true
+					}
+					return false
+				},
+			})
+		)
+	}
+	app.use(<ErrorRequestHandler>function (err, req, res, next) {
+		common.logCatch(err, false)
+		return common.setResponse(
+			err.status || 500,
+			req,
+			res,
+			res.sentry ? 'Error: ' + res.sentry : err.message
+		)
+	})
 }
 setup()
 
@@ -436,7 +429,6 @@ async function createDevUser() {
 		var devUser = await database.Client.findOne({ email: 'dev_user@email.flawk' })
 		if (!devUser) {
 			console.log('Creating dev_user...')
-			var bcrypt = require('bcryptjs')
 			bcrypt.hash(config.adminPassword, config.saltRounds, async function (err, hash) {
 				var devRef = await database.Client.findOne({
 					reference: { $exists: true, $ne: null },
@@ -463,8 +455,7 @@ async function createDevUser() {
 	}
 }
 async function updateDatabaseStructures() {
-	var buildStructure = async function (path, schema) {
-		// eslint-disable-next-line
+	var buildStructure = async function (path: string, schema: mongoose.Model<any>) {
 		var data = fs.readFileSync(path, 'utf8')
 
 		var objects = JSON.parse(data)
@@ -485,15 +476,15 @@ async function updateDatabaseStructures() {
 }
 async function onDatabaseConnected() {
 	console.log('Connected to database:')
-	var mongoAdmin = new mongoose.mongo.Admin(mongoose.connection.db)
+	var mongoAdmin = mongoose.connection.db.admin()
 	mongoAdmin.buildInfo(function (err, info) {
-		console.log(`MongoDB version: ${info.version}`)
+		console.log(`MongoDB version: ${info && info.version}`)
 		console.log(`Mongoose version: ${mongoose.version}\n`)
 	})
 
-	if (!config.cronServer) await updateDatabaseStructures()
+	await updateDatabaseStructures()
 
 	await createDevUser()
 }
 
-module.exports = { app: server, onDatabaseConnected: onDatabaseConnected }
+export { app, server, onDatabaseConnected }

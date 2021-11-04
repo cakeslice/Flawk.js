@@ -1,9 +1,9 @@
 coverage/*
 node_modules/*
-*.d.ts
 *.html
 *.hbs
 *.md
 *.yml
 *api.json
 *metadata.json
+dist/*

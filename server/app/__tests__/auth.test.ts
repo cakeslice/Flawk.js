@@ -105,3 +105,5 @@ describe('Login', () => {
 		expect(res.statusCode).toEqual(400)
 	})
 })
+
+export {}

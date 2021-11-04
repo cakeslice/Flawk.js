@@ -1,5 +1,5 @@
-declare namespace NodeJS {
-	interface Global {
-		projectSpecificGlobal: () => object;
-	};
+declare global {
+	var projectSpecificGlobal: () => object
 }
+
+export {}

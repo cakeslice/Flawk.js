@@ -15,22 +15,22 @@ import React, { Suspense } from 'react'
 import 'react-awesome-lightbox/build/style.css'
 import 'react-datetime/css/react-datetime.css'
 import ReactDOM from 'react-dom'
-import { ErrorBoundary } from 'react-error-boundary'
+import { ErrorBoundary, FallbackProps } from 'react-error-boundary'
 
 const App = React.lazy(() => import('./project/App'))
 
 const capacitorStorage = {
-	getItem: async (key) => {
+	getItem: async (key: string) => {
 		const { value } = await Storage.get({ key: key })
 		return value
 	},
-	setItem: async (key, value) => {
+	setItem: async (key: string, value: string) => {
 		return await Storage.set({
 			key: key,
 			value: value,
 		})
 	},
-	removeItem: async (key) => {
+	removeItem: async (key: string) => {
 		return await Storage.remove({ key: key })
 	},
 	clear: async () => {
@@ -38,7 +38,7 @@ const capacitorStorage = {
 	},
 }
 
-let storage
+let storage: typeof global.storage
 if (Capacitor.isNativePlatform()) {
 	storage = capacitorStorage
 } else if (isSupported('localStorage')) {
@@ -56,12 +56,15 @@ if (Capacitor.isNativePlatform()) {
 }
 global.storage = storage
 
-/**
- * @param root0
- * @param root0.error
- * @param root0.resetErrorBoundary
- */
-function ErrorFallback({ error, resetErrorBoundary }) {
+function ErrorFallback({ error }: FallbackProps) {
+	if (Capacitor.isNativePlatform())
+		return (
+			<div>
+				<span style={{ color: 'white' }}>Chunk Load Error!</span>{' '}
+				<button onClick={() => window.location.reload()}>Try Again</button>
+			</div>
+		)
+
 	var alreadyTriedReload = global.storage.getItem('alreadyTriedReload')
 
 	const chunkFailedMessage = /Loading chunk [\d]+ failed/

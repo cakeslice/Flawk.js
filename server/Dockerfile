@@ -153,4 +153,5 @@ RUN npm run auditCI && npm run testCI && rm -rf /usr/src/app/client/*
 
 WORKDIR /usr/src/app
 EXPOSE 8080
-CMD [ "node", "--optimize_for_size", "--max_old_space_size=1024", "--expose-gc", "./app/server.js" ]
+# TODO: "startLocal": "npm run lintCI && cross-env NODE_PATH=app/ nodemon -e ts --exec \"(tsc && node --inspect=1237 --optimize_for_size --max_old_space_size=1024 dist/server.js) || exit 1\"",
+CMD [ "node", "--optimize_for_size", "--max_old_space_size=1024", "./dist/server.js" ]
