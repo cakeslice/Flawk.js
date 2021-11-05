@@ -8,3 +8,4 @@ ios/*
 *.md
 *.yml
 *.svg
+package-lock.json
