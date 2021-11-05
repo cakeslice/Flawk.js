@@ -16,7 +16,7 @@ jobs:
           name: Install dependencies
           command: |
             if [ ! -d node_modules ]; then
-              npm ci
+              npm ci --ignore-scripts
             fi
       - save_cache:
           name: Save node modules cache
@@ -49,7 +49,7 @@ jobs:
           name: Install dependencies
           command: |
             if [ ! -d node_modules ]; then
-              npm ci
+              npm ci --ignore-scripts
             fi
       - save_cache:
           name: Save node modules cache

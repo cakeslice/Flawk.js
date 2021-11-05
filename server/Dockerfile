@@ -128,7 +128,7 @@ FROM node:14.15.0 AS typescript-build
 WORKDIR /usr/src/typescript_build
 # Add package.json before rest of repo for caching
 COPY ./package*.json ./
-RUN npm ci
+RUN npm ci --ignore-scripts
 # Install all dependencies including dev to compile TypeScript
 
 COPY . .
@@ -159,7 +159,7 @@ WORKDIR /usr/src/app
 # Add package.json before rest of repo for caching
 COPY ./package*.json ./
 # NODE_ENV=production will only install prod dependencies
-RUN npm ci
+RUN npm ci --ignore-scripts
 
 COPY --from=typescript-build /usr/src/typescript_build/dist app
 

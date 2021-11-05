@@ -19,7 +19,7 @@ WORKDIR /usr/src/app
 # Add package.json before rest of repo for caching
 COPY ./package*.json ./
 # NODE_ENV=production will only install prod dependencies
-RUN npm ci
+RUN npm ci --ignore-scripts
 
 COPY ./dist app
 
