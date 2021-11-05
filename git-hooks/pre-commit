@@ -4,13 +4,15 @@
 ###########################
 
 npm run precommit --prefix ./server
+PRECOMMIT_EXIT="$?"
 
-ESLINT_EXIT="$?"
+npm run auditCI --prefix ./server
+AUDIT_EXIT="$?"
 
-if [[ "${ESLINT_EXIT}" == 0 ]]; then
+if [[ "${PRECOMMIT_EXIT}" == 0 && "${AUDIT_EXIT}" == 0  ]]; then
   echo ""
 else
-  printf "\nCOMMIT FAILED: Fix eslint/prettier errors and try again\n"
+  printf "\nCOMMIT FAILED: Fix BACKEND errors and try again\n"
   exit 1
 fi
 
@@ -18,13 +20,15 @@ fi
 ###########################
 
 npm run precommit --prefix ./client
+PRECOMMIT_EXIT="$?"
 
-ESLINT_EXIT="$?"
+npm run auditCI --prefix ./client
+AUDIT_EXIT="$?"
 
-if [[ "${ESLINT_EXIT}" == 0 ]]; then
+if [[ "${PRECOMMIT_EXIT}" == 0 && "${AUDIT_EXIT}" == 0 ]]; then
   echo ""
 else
-  printf "\nCOMMIT FAILED: Fix eslint/prettier errors and try again\n"
+  printf "\nCOMMIT FAILED: Fix FRONTEND errors and try again\n"
   exit 1
 fi
 

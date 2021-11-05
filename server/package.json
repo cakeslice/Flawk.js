@@ -17,7 +17,7 @@
 		"startLocalJavascript": "npm run lintCI && cross-env NODE_PATH=dist/ nodemon -e ts --exec \"(tsc && node --inspect=1237 --optimize_for_size --max_old_space_size=1024 dist/server.js) || exit 1\"",
 		"startLocal": "npm run lintCI && cross-env ts-node-dev app/server.ts",
 		"buildCI": "tsc",
-		"buildLocal": "npm run auditFix && npm run testCI && npm run buildCI",
+		"buildLocal": "npm run auditCI && npm run testCI && npm run buildCI",
 		"buildPushDocker": "npm run buildLocal && cross-env-shell docker image build -t $DOCKER_IMAGE . -f Dockerfile.local && cross-env-shell docker push $DOCKER_IMAGE && cross-env-shell docker image rm $DOCKER_IMAGE",
 		"- EXTRA SCRIPTS -": "-----------------------------",
 		"precommit": "lint-staged",

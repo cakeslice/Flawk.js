@@ -5,6 +5,14 @@
 	"engines": {
 		"node": "14.15.0"
 	},
+	"resolutions": {
+		"glob-parent": "5.1.2",
+		"ansi-regex": "5.0.1",
+		"nth-check": "2.0.1",
+		"set-value": "4.0.1",
+		"immer": "9.0.6",
+		"ansi-html": "https://registry.npmjs.org/ansi-html-community/-/ansi-html-community-0.0.8.tgz"
+	},
 	"scripts": {
 		"env:dev": "env-cmd -f ./_env/flawk_dev.env",
 		"env:staging": "env-cmd -f ./_env/flawk_staging.env",
@@ -30,10 +38,11 @@
 		"startAndroid": "npm run buildLocal && npx cap sync && cd android && gradlew assembleDebug && gradlew installDebug && cd ..",
 		"startiOS": "npm run buildLocal && npx cap sync && npx cap open ios",
 		"buildCI": "npx browserslist@latest --update-db updates caniuse-lite && cross-env CI=false GENERATE_SOURCEMAP=true react-scripts --max_old_space_size=4096 build && npm run addPreloadLinks",
-		"buildLocal": "npm run auditFix && npm run testCI && npm run buildCI",
+		"buildLocal": "npm run auditCI && npm run testCI && npm run buildCI",
 		"buildPushDocker": "npm run buildLocal && cross-env-shell docker image build -t $DOCKER_IMAGE . -f Dockerfile.local && cross-env-shell docker push $DOCKER_IMAGE && cross-env-shell docker image rm $DOCKER_IMAGE",
 		"buildAndroid": "npm run buildLocal && npx cap sync && cd android && gradlew bundleRelease && cd .. && cross-env-shell jarsigner -keystore ./_env/flawk_android_keystore.env -storepass $ANDROID_KEYSTORE_PASS ./android/app/build/outputs/bundle/release/app-release.aab $ANDROID_KEYSTORE_ALIAS",
 		"- EXTRA SCRIPTS -": "-----------------------------",
+		"preinstall": "npx npm-force-resolutions",
 		"precommit": "lint-staged",
 		"postinstall": "cd .. && git config core.hooksPath ./git-hooks",
 		"eject": "react-scripts eject",
@@ -48,7 +57,7 @@
 		"lintCI": "eslint --quiet ./",
 		"lintTypescriptCI": "tsc --noEmit",
 		"auditFix": "npm audit fix",
-		"auditCI": "npm audit --audit-level=moderate",
+		"auditCI": "npm audit --audit-level=high",
 		"addPreloadLinks": "babel-node add_preload_links.js"
 	},
 	"dependencies": {
