@@ -484,7 +484,7 @@ async function onDatabaseConnected() {
 
 	await updateDatabaseStructures()
 
-	await createDevUser()
+	if (!config.jest) await createDevUser()
 }
 
 export { app, server, onDatabaseConnected }
