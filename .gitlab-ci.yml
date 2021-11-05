@@ -20,9 +20,11 @@ testing:
     - npm run auditCI
     - npm run prettierCI
     - npm run lintCI
+    - npm run lintTypescriptCI
     - npm run testCI
     - cd ../client
     - npm run auditCI
     - npm run prettierCI
     - npm run lintCI
-    - SKIP_PREFLIGHT_CHECK=true npm run testCI
+    - npm run lintTypescriptCI
+    - npm run testCI

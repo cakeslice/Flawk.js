@@ -29,7 +29,7 @@
 		"startLocal": "react-scripts start",
 		"startAndroid": "npm run buildLocal && npx cap sync && cd android && gradlew assembleDebug && gradlew installDebug && cd ..",
 		"startiOS": "npm run buildLocal && npx cap sync && npx cap open ios",
-		"buildCI": "npx browserslist@latest --update-db updates caniuse-lite && cross-env CI=false SKIP_PREFLIGHT_CHECK=true GENERATE_SOURCEMAP=true react-scripts --max_old_space_size=4096 build && npm run addPreloadLinks",
+		"buildCI": "npx browserslist@latest --update-db updates caniuse-lite && cross-env CI=false GENERATE_SOURCEMAP=true react-scripts --max_old_space_size=4096 build && npm run addPreloadLinks",
 		"buildLocal": "npm run auditFix && npm run testCI && npm run buildCI",
 		"buildPushDocker": "npm run buildLocal && cross-env-shell docker image build -t $DOCKER_IMAGE . -f Dockerfile.local && cross-env-shell docker push $DOCKER_IMAGE && cross-env-shell docker image rm $DOCKER_IMAGE",
 		"buildAndroid": "npm run buildLocal && npx cap sync && cd android && gradlew bundleRelease && cd .. && cross-env-shell jarsigner -keystore ./_env/flawk_android_keystore.env -storepass $ANDROID_KEYSTORE_PASS ./android/app/build/outputs/bundle/release/app-release.aab $ANDROID_KEYSTORE_ALIAS",
@@ -38,7 +38,7 @@
 		"postinstall": "cd .. && git config core.hooksPath ./git-hooks",
 		"eject": "react-scripts eject",
 		"test": "cross-env CI=true react-scripts test --env=jsdom --coverage",
-		"testCI": "cross-env CI=true react-scripts test --env=jsdom",
+		"testCI": "cross-env CI=true react-scripts test --env=jsdom --bail",
 		"cypress": "npx cypress open",
 		"cypressCI": "npx cypress run",
 		"cypressComponent": "npx cypress open-ct",
@@ -46,6 +46,7 @@
 		"prettierFix": "prettier --write ./src",
 		"prettierCI": "prettier --check ./",
 		"lintCI": "eslint --quiet ./",
+		"lintTypescriptCI": "tsc --noEmit",
 		"auditFix": "npm audit fix",
 		"auditCI": "npm audit --audit-level=moderate",
 		"addPreloadLinks": "babel-node add_preload_links.js"
@@ -153,12 +154,19 @@
 		"eslint-plugin-testing-library": "^3.9.0",
 		"html-webpack-plugin": "^4.5.2",
 		"lint-staged": "^11.0.0",
-		"prettier": "^2.3.2"
+		"prettier": "^2.3.2",
+		"tsc-files": "^1.1.2"
 	},
 	"lint-staged": {
-		"*.{js,jsx,css,less,scss,ts,tsx,md}": [
+		"*.{js,jsx,css,less,scss,md}": [
 			"eslint --quiet",
-			"prettier --check"
+			"prettier --check",
+			"cross-env CI=true react-scripts test --env=jsdom --findRelatedTests --bail"
+		],
+		"*.{ts,tsx}": [
+			"tsc-files --noEmit",
+			"prettier --check",
+			"cross-env CI=true react-scripts test --env=jsdom --findRelatedTests --bail"
 		]
 	},
 	"jest": {

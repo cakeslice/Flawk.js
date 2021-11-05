@@ -6,7 +6,6 @@
  */
 
 import { render, screen } from '@testing-library/react'
-import React from 'react'
 import CustomButton from './CustomButton'
 
 beforeEach(() => {
@@ -14,8 +13,6 @@ beforeEach(() => {
 })
 
 it('exists', () => {
-	const button = screen.getByText((content, element) => {
-		return element.tagName.toLowerCase() === 'button'
-	})
+	const button = screen.getByRole('button')
 	expect(button).toBeInTheDocument()
 })
