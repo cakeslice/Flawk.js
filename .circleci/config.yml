@@ -71,3 +71,4 @@ workflows:
   checks:
     jobs:
       - backend-checks
+      - frontend-checks
