@@ -29,8 +29,11 @@ const _appName = process.env.appName
 //
 
 const _port = process.env.PORT || 8000
-const _staging = process.env.staging === 'true'
-const _prod = process.env.production === 'true' && process.env.NODE_ENV === 'production'
+const _staging = process.env.JEST !== 'true' && process.env.staging === 'true'
+const _prod =
+	process.env.JEST !== 'true' &&
+	process.env.production === 'true' &&
+	process.env.NODE_ENV === 'production'
 const _jest = process.env.JEST === 'true'
 const _frontendURL = process.env.frontendURL
 
@@ -63,7 +66,7 @@ module.exports = {
 
 	//
 
-	databaseURL: process.env.databaseURL,
+	databaseURL: process.env.JEST !== 'true' && process.env.databaseURL,
 
 	//
 

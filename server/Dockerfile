@@ -128,7 +128,7 @@ FROM node:14.15.0 AS typescript-build
 WORKDIR /usr/src/typescript_build
 # Add package.json before rest of repo for caching
 COPY ./package*.json ./
-RUN npm install
+RUN npm ci
 # Install all dependencies including dev to compile TypeScript
 
 COPY . .
@@ -158,7 +158,7 @@ ENV CAPROVER_GIT_COMMIT_SHA=${CAPROVER_GIT_COMMIT_SHA}
 WORKDIR /usr/src/app
 # Add package.json before rest of repo for caching
 COPY ./package*.json ./
-RUN npm install --only=prod
+RUN npm ci --production
 
 COPY --from=typescript-build /usr/src/typescript_build/dist app
 

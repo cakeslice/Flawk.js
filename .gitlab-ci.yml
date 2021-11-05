@@ -8,12 +8,12 @@ testing:
   only:
     - master
   stage: test
-  image: node:12.16.3
+  image: node:14.15.0
   before_script:
     - cd server
-    - npm install
+    - npm ci
     - cd ../client
-    - npm install
+    - npm ci
     - cd ..
   script:
     - cd server

@@ -27,7 +27,7 @@ ENV NODE_ENV=production
 # Add package.json before rest of repo for caching
 WORKDIR /usr/src/react_build
 COPY package*.json ./
-RUN npm install
+RUN npm ci
 # Install all dependencies including dev for CRA's eslint and testing
 
 COPY . .

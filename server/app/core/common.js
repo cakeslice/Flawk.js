@@ -272,6 +272,10 @@ module.exports = {
 			return
 		}
 
+		if (config.jest) {
+			return { success: true }
+		}
+
 		throw 'Not implemented!'
 
 		/*
@@ -294,9 +298,11 @@ module.exports = {
 			return
 		}
 
-		throw 'Not implemented!'
+		if (config.jest) {
+			return { success: true }
+		}
 
-		// TODO: pushNotificationsClient
+		throw 'Not implemented!'
 
 		/*
 		var notification = new OneSignal.Notification({

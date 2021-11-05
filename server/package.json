@@ -22,7 +22,7 @@
 		"- EXTRA SCRIPTS -": "-----------------------------",
 		"precommit": "lint-staged",
 		"postinstall": "cd .. && git config core.hooksPath ./git-hooks",
-		"test": "npm run env:dev cross-env JEST=true jest --coverage --runInBand",
+		"test": "cross-env JEST=true jest --coverage --runInBand",
 		"testCI": "cross-env JEST=true jest --bail --runInBand",
 		"prettierFix": "prettier --write ./app",
 		"prettierCI": "prettier --check ./",
