@@ -158,7 +158,8 @@ ENV CAPROVER_GIT_COMMIT_SHA=${CAPROVER_GIT_COMMIT_SHA}
 WORKDIR /usr/src/app
 # Add package.json before rest of repo for caching
 COPY ./package*.json ./
-RUN npm ci --production
+# NODE_ENV=production will only install prod dependencies
+RUN npm ci
 
 COPY --from=typescript-build /usr/src/typescript_build/dist app
 
