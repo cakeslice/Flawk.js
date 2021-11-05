@@ -167,7 +167,7 @@ function setup() {
 		exposedHeaders: 'message',
 		origin: corsOrigins,
 	}
-	app.use(<RequestHandler>function (req, res, next) {
+	app.use(function (req, res, next) {
 		req.headers.origin = req.headers.origin || req.headers.host
 		next()
 	})
@@ -250,7 +250,7 @@ function setup() {
 	}) */
 
 	// Request logger
-	app.use(config.path + '/*', <RequestHandler>function (req, res, next) {
+	app.use(config.path + '/*', function (req, res, next) {
 		common.logCall(req)
 		next()
 	})
@@ -308,7 +308,7 @@ function setup() {
 	}
 
 	// Multiple language support
-	app.use(config.path + '/*', <RequestHandler>function (req, res, next) {
+	app.use(config.path + '/*', function (req, res, next) {
 		let lang = 'en'
 		if (req.headers['lang']) lang = req.headers['lang'] as string
 		req.lang = lang
@@ -318,7 +318,7 @@ function setup() {
 
 	// Pagination
 	app.use(config.path + '/*', paginate.middleware(10, 50))
-	app.all(config.path + '/*', <RequestHandler>function (req, res, next) {
+	app.all(config.path + '/*', function (req, res, next) {
 		// Minimum results to fetch (0 is all of them)
 		const limit = Number(req.query.limit)
 		if (limit <= 1) req.query.limit = '1'
@@ -329,21 +329,21 @@ function setup() {
 	/////////////////////// ROUTES
 
 	// Is server online
-	app.getAsync(config.path + '/online', <RequestHandler>function (req, res) {
+	app.getAsync(config.path + '/online', async function (req, res) {
 		common.setResponse(200, req, res)
 	})
 
 	/* if (!config.prod && !config.staging) { */
-	app.getAsync(config.path + '/api', <RequestHandler>function (req, res) {
+	app.getAsync(config.path + '/api', async function (req, res) {
 		common.setResponse(200, req, res, undefined, openAPIDocument)
 	})
 	/* } */
 
-	app.getAsync(config.path + '/build_number', <RequestHandler>function (req, res) {
+	app.getAsync(config.path + '/build_number', async function (req, res) {
 		common.setResponse(200, req, res, undefined, { buildNumber: global.buildNumber })
 	})
 
-	app.getAsync(config.path + '/structures', <RequestHandler>async function (req, res) {
+	app.getAsync(config.path + '/structures', async function (req, res) {
 		return Promise.all(
 			global.structures.map(async (s) => {
 				if (s.sendToFrontend)

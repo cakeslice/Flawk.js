@@ -125,7 +125,7 @@
 ########## COMPILE TYPESCRIPT
 
 FROM node:14.15.0 AS typescript-build
-WORKDIR /usr/src/app
+WORKDIR /usr/src/typescript_build
 # Add package.json before rest of repo for caching
 COPY ./package*.json ./
 RUN npm install
@@ -145,7 +145,7 @@ ENV frontendURL $frontendURL
 
 RUN npm run auditCI && npm run testCI
 
-RUN npm run compileTypescript
+RUN npm run buildCI && rm -rf /usr/src/typescript_build/node_modules && rm -rf /usr/src/typescript_build/app
 
 ########## NODE SERVER
 
@@ -160,8 +160,8 @@ WORKDIR /usr/src/app
 COPY ./package*.json ./
 RUN npm install --only=prod
 
-COPY --from=typescript-build /usr/src/app/dist dist
+COPY --from=typescript-build /usr/src/typescript_build/dist app
 
 WORKDIR /usr/src/app
 EXPOSE 8080
-CMD [ "node", "--optimize_for_size", "--max_old_space_size=1024", "./dist/server.js" ]
+CMD [ "node", "--optimize_for_size", "--max_old_space_size=1024", "./app/server.js" ]

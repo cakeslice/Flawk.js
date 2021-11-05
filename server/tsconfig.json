@@ -19,5 +19,5 @@
 		"sourceMap": true
 	},
 	"exclude": ["./node_modules/*", "./dist/*"],
-	"include": ["app"]
+	"include": ["./app/*"]
 }

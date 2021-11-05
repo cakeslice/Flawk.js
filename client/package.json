@@ -19,7 +19,6 @@
 		"start_ios:dev": "npm run env:dev npm run startiOS",
 		"start_ios:staging": "npm run env:staging npm run startiOS",
 		"start_ios:prod": "npm run env:prod npm run startiOS",
-		"build_local:dev": "npm run env:dev npm run buildLocal",
 		"build_local:staging": "npm run env:staging npm run buildLocal",
 		"build_local:prod": "npm run env:prod npm run buildLocal",
 		"build_docker:staging": "npm run env:staging npm run buildPushDocker",

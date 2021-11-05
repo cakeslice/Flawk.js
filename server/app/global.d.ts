@@ -6,26 +6,17 @@
  */
 
 type SocketIONamespace = import('socket.io').Namespace
-
+type StructureConfig = import('flawk-types').StructureConfig
+type RequestUser = import('flawk-types').RequestUser
 declare global {
-	interface RateLimiter {
+	var Sentry: any
+	var rateLimiter: {
 		default: any
 		limited: any
 		extremelyLimited: any
 	}
-	interface Structure {
-		sendToFrontend: boolean
-		cache: boolean
-		sortKey: string
-		schema: any
-		path: string
-		overrideJson?: boolean
-		postProcess?: (array: object[]) => Promise<object[]>
-	}
-	var Sentry: any
-	var rateLimiter: RateLimiter
 	var buildNumber: string
-	var structures: Structure[]
+	var structures: StructureConfig[]
 	var getStructure: (name: string) => Promise<object[]>
 
 	var unshiftToArray: (
@@ -61,6 +52,7 @@ declare global {
 	) => void
 	var adminSocketNotification: (title: string, description?: string, type?: string) => void
 }
+
 declare namespace SocketIO {
 	interface Socket {
 		_client: {
@@ -73,13 +65,8 @@ declare namespace SocketIO {
 }
 
 declare module 'express-serve-static-core' {
-	interface User {
-		_id: string
-		email?: string
-		phone?: string
-	}
 	interface Request {
-		user?: User
+		user?: RequestUser
 		token?: string
 		tokenExpiration?: number
 		permission?: number
