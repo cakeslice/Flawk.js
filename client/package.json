@@ -37,7 +37,7 @@
 		"startLocal": "react-scripts start",
 		"startAndroid": "npm run buildLocal && npx cap sync && cd android && gradlew assembleDebug && gradlew installDebug && cd ..",
 		"startiOS": "npm run buildLocal && npx cap sync && npx cap open ios",
-		"buildCI": "npx browserslist@latest --update-db updates caniuse-lite && cross-env CI=false GENERATE_SOURCEMAP=true react-scripts --max_old_space_size=4096 build && npm run addPreloadLinks",
+		"buildCI": "npx browserslist@latest --update-db updates caniuse-lite && npx npm-force-resolutions && cross-env CI=false GENERATE_SOURCEMAP=true react-scripts --max_old_space_size=4096 build && npm run addPreloadLinks",
 		"buildLocal": "npm run auditCI && npm run testCI && npm run buildCI",
 		"buildPushDocker": "npm run buildLocal && cross-env-shell docker image build -t $DOCKER_IMAGE . -f Dockerfile.local && cross-env-shell docker push $DOCKER_IMAGE && cross-env-shell docker image rm $DOCKER_IMAGE",
 		"buildAndroid": "npm run buildLocal && npx cap sync && cd android && gradlew bundleRelease && cd .. && cross-env-shell jarsigner -keystore ./_env/flawk_android_keystore.env -storepass $ANDROID_KEYSTORE_PASS ./android/app/build/outputs/bundle/release/app-release.aab $ANDROID_KEYSTORE_ALIAS",
@@ -58,7 +58,7 @@
 		"lintTypescriptCI": "tsc --noEmit",
 		"auditFix": "npm audit fix && npx npm-force-resolutions && npm run auditCI",
 		"auditCI": "npm audit --audit-level=high",
-		"addPreloadLinks": "babel-node ./app/core/utils/addPreloadLinks.js"
+		"addPreloadLinks": "babel-node ./src/core/utils/addPreloadLinks.js"
 	},
 	"dependencies": {
 		"@capacitor/android": "^3.1.1",
