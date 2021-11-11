@@ -5,12 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const recaptchaBypass = 'recaptchaToken=' + process.env.recaptchaBypass
+const recaptchaBypass = 'recaptchaToken=' + (process.env.recaptchaBypass || '')
 
-const request = require('supertest')
-const { app } = require('../app')
-const { setupDatabase } = require('./setupDatabase')
-const config = require('core/config_')
+import config from 'core/config_'
+import request from 'supertest'
+import { app } from '../core/app'
+import { setupDatabase } from './setupDatabase'
 
 const validData = {
 	firstName: 'John',
@@ -83,7 +83,7 @@ describe('Login', () => {
 		const res = await request(app)
 			.post(config.path + '/client/login')
 			.send({
-				email: validData.password,
+				email: validData.email,
 			})
 		expect(res.statusCode).toEqual(400)
 	})
@@ -105,5 +105,3 @@ describe('Login', () => {
 		expect(res.statusCode).toEqual(400)
 	})
 })
-
-export {}

@@ -16,9 +16,12 @@
 		"noEmit": true,
 		"jsx": "react-jsx",
 		//
-		"baseUrl": "src",
-		"noImplicitAny": true
+		"baseUrl": "src/",
+		"noImplicitAny": true,
+		"noImplicitReturns": true,
+		"noImplicitThis": true
+		//"noImplicitOverride": true // Disabled to avoid override in all React classes
 	},
-	"exclude": ["./node_modules/*", "./cypress/**/*"],
+	"exclude": ["node_modules", "cypress"],
 	"include": ["src"]
 }

@@ -18,7 +18,7 @@ import { Helmet } from 'react-helmet'
 import { connect } from 'react-redux'
 import MediaQuery from 'react-responsive'
 import HeadShake from 'react-reveal/HeadShake'
-import { fetchUser } from '../../redux/UserState'
+import { fetchUser } from '../../redux/AppReducer'
 
 class Forgot extends Component {
 	state = {}
@@ -300,6 +300,6 @@ class Forgot extends Component {
 	}
 }
 export default connect((state) => ({
-	user: state.redux.user,
-	fetchingUser: state.redux.fetchingUser,
+	user: state.app.user,
+	fetchingUser: state.app.fetchingUser,
 }))(Forgot)

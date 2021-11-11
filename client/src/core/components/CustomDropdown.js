@@ -14,8 +14,8 @@ import MediaQuery from 'react-responsive'
 import Select from 'react-select/'
 
 export default class CustomDropdown extends Component {
-	timer = null
-	bufferedValue = null
+	timer = undefined
+	bufferedValue = undefined
 	handleChangeBuffered = (value) => {
 		clearTimeout(this.timer)
 

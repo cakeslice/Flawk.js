@@ -15,9 +15,13 @@
 		//
 		"baseUrl": "app/",
 		"noImplicitAny": true,
+		"noImplicitReturns": true,
+		"noImplicitThis": true,
+		"noImplicitOverride": true,
+		//
 		"outDir": "dist/",
 		"sourceMap": true
 	},
-	"exclude": ["./node_modules/*", "./dist/*"],
-	"include": ["./app/*"]
+	"exclude": ["node_modules", "dist"],
+	"include": ["app"]
 }

@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 /*
  * Copyright (c) 2020 José Guerreiro. All rights reserved.
  *
@@ -7,8 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { listen } from 'core/app'
-
-listen()
+process.env.jwtSecret = 'test'
+process.env.adminPassword = 'test123456'
+process.env.recaptchaBypass = 'bypass'
+process.env.verificationCodeBypass = '55555'
 
 export {}

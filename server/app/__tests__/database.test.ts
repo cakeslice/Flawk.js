@@ -5,23 +5,22 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const request = require('supertest')
-const { app } = require('../app')
-const { setupDatabase } = require('./setupDatabase')
-const config = require('core/config_')
+import config from 'core/config_'
+import { Obj } from 'flawk-types'
+import request from 'supertest'
+import { app } from '../core/app'
+import { setupDatabase } from './setupDatabase'
 
 describe('Structures', () => {
 	setupDatabase()
 
 	it('should get structures', async () => {
-		const structures = await request(app)
+		const res = await request(app)
 			.get(config.path + '/structures')
 			.send()
 			.expect(200)
 			.expect('Content-Type', /json/)
-		expect(structures.body.structures).toBeDefined()
-		expect(Object.keys(structures.body.structures)).toHaveLength(1)
+		expect(res.body.structures).toBeDefined()
+		expect(Object.keys(res.body.structures as Obj)).toHaveLength(2)
 	})
 })
-
-export {}

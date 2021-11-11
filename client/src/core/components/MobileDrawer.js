@@ -84,7 +84,7 @@ export default class MobileDrawer extends Component {
 					var last = arr.length - 1 === i
 
 					var output = (
-						<div key={link.notRoute ? i : link.id + link.params}>
+						<div key={link.notRoute ? i : link.id + '/' + link.params}>
 							<Link
 								{...css({
 									':focus-visible': {
@@ -114,7 +114,7 @@ export default class MobileDrawer extends Component {
 								}}
 								onClick={() => {
 									if (link.onClick) {
-										link.onClick(this.props)
+										link.onClick()
 									}
 									if (!link.subRoutes || link.subRoutes.length === 0)
 										this.changeState(false)
@@ -159,13 +159,21 @@ export default class MobileDrawer extends Component {
 					if (link.subRoutes)
 						return (
 							<Collapsible
-								key={link.notRoute ? i : link.id + link.params}
+								key={link.notRoute ? i : link.id + '/' + link.params}
 								controlled
 								controlledOpen={selectedRoute.includes('/' + link.id)}
 								content={
 									<div>
 										{link.subRoutes.map((sub, i) => (
-											<div key={link.id + '/' + sub.id}>
+											<div
+												key={
+													link.id +
+													'/' +
+													sub.id +
+													'/' +
+													(sub.params || '')
+												}
+											>
 												<Link
 													{...css({
 														':focus-visible': {
@@ -202,7 +210,7 @@ export default class MobileDrawer extends Component {
 													}}
 													onClick={() => {
 														if (link.onClick) {
-															link.onClick(this.props)
+															link.onClick()
 														}
 														this.changeState(false)
 													}}

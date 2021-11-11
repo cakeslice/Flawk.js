@@ -1,8 +1,7 @@
 coverage/*
 node_modules/*
 build/*
-*.ts
-*.tsx
 *.css
 *.scss
+*.d.ts
 src/core/utils/serviceWorkerRegistration.js

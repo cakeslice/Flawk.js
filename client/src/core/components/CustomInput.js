@@ -67,8 +67,8 @@ const DatePicker = (props) => (
 )
 
 export default class CustomInput extends Component {
-	timer = null
-	bufferedValue = null
+	timer = undefined
+	bufferedValue = undefined
 
 	handleChangeBuffered = (e) => {
 		clearTimeout(this.timer)

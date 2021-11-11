@@ -56,9 +56,9 @@
 		"prettierCI": "prettier --check ./",
 		"lintCI": "eslint --quiet ./",
 		"lintTypescriptCI": "tsc --noEmit",
-		"auditFix": "npm audit fix",
+		"auditFix": "npm audit fix && npx npm-force-resolutions",
 		"auditCI": "npm audit --audit-level=high",
-		"addPreloadLinks": "babel-node add_preload_links.js"
+		"addPreloadLinks": "babel-node ./app/core/utils/addPreloadLinks.js"
 	},
 	"dependencies": {
 		"@capacitor/android": "^3.1.1",
@@ -69,6 +69,7 @@
 		"@capacitor/local-notifications": "^1.0.2",
 		"@capacitor/splash-screen": "^1.0.2",
 		"@capacitor/storage": "^1.0.2",
+		"@reduxjs/toolkit": "^1.6.2",
 		"@sentry/react": "^6.11.0",
 		"@sentry/tracing": "^6.11.0",
 		"@testing-library/jest-dom": "^5.14.1",
@@ -86,6 +87,7 @@
 		"formik": "^2.2.9",
 		"glamor": "^2.20.40",
 		"html-react-parser": "^1.2.7",
+		"immer": "^9.0.6",
 		"local-storage-fallback": "^4.1.2",
 		"lodash": "^4.17.21",
 		"moment": "^2.29.1",
@@ -130,7 +132,6 @@
 		"react-visibility-sensor": "^5.1.1",
 		"redux": "^4.1.0",
 		"redux-logger": "^3.0.6",
-		"redux-thunk": "^2.3.0",
 		"scroll-to-element": "^2.0.3",
 		"socket.io-client": "^4.1.2",
 		"typescript": "^4.3.5",
@@ -146,6 +147,14 @@
 		"@cypress/react": "^5.10.2",
 		"@cypress/webpack-dev-server": "^1.7.0",
 		"@types/jest": "^27.0.2",
+		"@types/lodash": "^4.14.176",
+		"@types/numeral": "^2.0.2",
+		"@types/react-helmet": "^6.1.4",
+		"@types/react-responsive": "^8.0.4",
+		"@types/react-router-dom": "^5.3.2",
+		"@types/redux-logger": "^3.0.9",
+		"@typescript-eslint/eslint-plugin": "^5.3.0",
+		"@typescript-eslint/parser": "^5.3.0",
 		"babel-eslint": "^10.1.0",
 		"cross-env": "^7.0.3",
 		"cypress": "^8.7.0",
@@ -154,6 +163,7 @@
 		"eslint-config-prettier": "^8.3.0",
 		"eslint-config-react": "^1.1.7",
 		"eslint-plugin-cypress": "^2.12.1",
+		"eslint-plugin-import": "^2.25.2",
 		"eslint-plugin-jest": "^24.3.6",
 		"eslint-plugin-jsdoc": "^35.4.1",
 		"eslint-plugin-jsx-a11y": "^6.4.1",
@@ -167,15 +177,13 @@
 		"tsc-files": "^1.1.2"
 	},
 	"lint-staged": {
-		"*.{js,jsx,css,less,scss,md}": [
+		"*.{js,jsx,css,less,scss,md,ts,tsx}": [
 			"eslint --quiet",
 			"prettier --check",
 			"cross-env CI=true react-scripts test --env=jsdom --findRelatedTests --bail"
 		],
 		"*.{ts,tsx}": [
-			"tsc-files --noEmit",
-			"prettier --check",
-			"cross-env CI=true react-scripts test --env=jsdom --findRelatedTests --bail"
+			"tsc-files --noEmit"
 		]
 	},
 	"jest": {

@@ -20,7 +20,7 @@ import { connect } from 'react-redux'
 import MediaQuery from 'react-responsive'
 import HeadShake from 'react-reveal/HeadShake'
 import { Link } from 'react-router-dom'
-import { fetchUser } from '../../redux/UserState'
+import { fetchUser } from '../../redux/AppReducer'
 
 class Register extends Component {
 	state = {}
@@ -325,6 +325,6 @@ class Register extends Component {
 	}
 }
 export default connect((state) => ({
-	user: state.redux.user,
-	fetchingUser: state.redux.fetchingUser,
+	user: state.app.user,
+	fetchingUser: state.app.fetchingUser,
 }))(Register)
