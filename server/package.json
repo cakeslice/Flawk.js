@@ -19,7 +19,7 @@
 		"buildLocal": "npm run auditCI && npm run testCI && npm run buildCI",
 		"buildPushDocker": "npm run buildLocal && cross-env-shell docker image build -t $DOCKER_IMAGE . -f Dockerfile.local && cross-env-shell docker push $DOCKER_IMAGE && cross-env-shell docker image rm $DOCKER_IMAGE",
 		"- EXTRA SCRIPTS -": "-----------------------------",
-		"precommit": "lint-staged",
+		"precommit": "lint-staged --verbose",
 		"postinstall": "cd .. && git config core.hooksPath ./git-hooks",
 		"test": "cross-env JEST=true jest --coverage --runInBand",
 		"testCI": "cross-env JEST=true jest --bail --runInBand",
