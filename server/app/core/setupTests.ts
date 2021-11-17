@@ -5,6 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+process.env.frontendURL = 'https:test.app.jest'
+process.env.appName = 'Test App'
 process.env.jwtSecret = 'test'
 process.env.adminPassword = 'test123456'
 process.env.recaptchaBypass = 'bypass'

@@ -29,8 +29,10 @@ import makeSynchronous from 'make-synchronous'
 import mongoose from 'mongoose'
 import openAPIDocument from 'project/api/api.json'
 import { Client, structures } from 'project/database'
+import { RateLimiterMongo } from 'rate-limiter-flexible'
 import responseTime from 'response-time'
 import { Server as SocketServer } from 'socket.io'
+import 'source-map-support/register'
 import winston from 'winston'
 import { Loggly } from 'winston-loggly-bulk'
 
@@ -181,66 +183,67 @@ async function setup() {
 	// Prevent mongo injection attacks
 	app.use(config.path + '/*', mongoSanitize())
 
-	// ! Disabled due to mongoose problem
-	/* global.rateLimiter = {
-		default: new RateLimiterMongo({
-			storeClient: mongoose.connection,
-			keyPrefix: 'ratelimit_default',
-			points: 12, // X requests
-			duration: 1, // per X second by IP
-		}),
-		limited: new RateLimiterMongo({
-			storeClient: mongoose.connection,
-			keyPrefix: 'ratelimit_limited',
-			points: config.prod || config.staging ? 3 : 30, // X requests
-			duration: 10, // per X second by IP
-		}),
-		extremelyLimited: new RateLimiterMongo({
-			storeClient: mongoose.connection,
-			keyPrefix: 'ratelimit_extreme',
-			points: config.prod || config.staging ? 10 : 30, // X requests
-			duration: 60 * 15, // per X second by IP
-		}),
-	}
-	if (config.prod || config.staging) {
-		config.rateLimitedCalls.forEach((c) => {
-			app.use(c, (req, res, next) => {
-				global.rateLimiter.limited
-					.consume(req.ip)
-					.then(() => {
-						next()
-					})
-					.catch(() => {
-						console.log(req.baseUrl + ': Too many requests from ' + req.ip)
-						common.setResponse(429, req, res, 'Too many requests')
-					})
+	if (!config.jest) {
+		const rateLimiter = {
+			default: new RateLimiterMongo({
+				storeClient: mongoose.connection,
+				keyPrefix: 'ratelimit_default',
+				points: 12, // X requests
+				duration: 1, // per X second by IP
+			}),
+			limited: new RateLimiterMongo({
+				storeClient: mongoose.connection,
+				keyPrefix: 'ratelimit_limited',
+				points: config.prod || config.staging ? 3 : 30, // X requests
+				duration: 10, // per X second by IP
+			}),
+			extremelyLimited: new RateLimiterMongo({
+				storeClient: mongoose.connection,
+				keyPrefix: 'ratelimit_extreme',
+				points: config.prod || config.staging ? 10 : 30, // X requests
+				duration: 60 * 15, // per X second by IP
+			}),
+		}
+		if (config.prod || config.staging) {
+			config.rateLimitedCalls.forEach((c) => {
+				app.use(c, (req, res, next) => {
+					rateLimiter.limited
+						.consume(req.ip)
+						.then(() => {
+							next()
+						})
+						.catch(() => {
+							console.log(req.baseUrl + ': Too many requests from ' + req.ip)
+							common.setResponse(429, req, res, 'Too many requests')
+						})
+				})
 			})
+			config.extremeRateLimitedCalls.forEach((c) => {
+				app.use(c, (req, res, next) => {
+					rateLimiter.extremelyLimited
+						.consume(req.ip)
+						.then(() => {
+							next()
+						})
+						.catch(() => {
+							console.log(req.baseUrl + ': Too many requests from ' + req.ip)
+							common.setResponse(429, req, res, 'Too many requests')
+						})
+				})
+			})
+		}
+		app.use(config.path + '/*', (req, res, next) => {
+			rateLimiter.default
+				.consume(req.ip)
+				.then(() => {
+					next()
+				})
+				.catch(() => {
+					console.log(req.baseUrl + ': Too many requests from ' + req.ip)
+					common.setResponse(429, req, res, 'Too many requests')
+				})
 		})
-		config.extremeRateLimitedCalls.forEach((c) => {
-			app.use(c, (req, res, next) => {
-				global.rateLimiter.extremelyLimited
-					.consume(req.ip)
-					.then(() => {
-						next()
-					})
-					.catch(() => {
-						console.log(req.baseUrl + ': Too many requests from ' + req.ip)
-						common.setResponse(429, req, res, 'Too many requests')
-					})
-			})
-		})
 	}
-	app.use(config.path + '/*', (req, res, next) => {
-		global.rateLimiter.default
-			.consume(req.ip)
-			.then(() => {
-				next()
-			})
-			.catch(() => {
-				console.log(req.baseUrl + ': Too many requests from ' + req.ip)
-				common.setResponse(429, req, res, 'Too many requests')
-			})
-	}) */
 
 	// Request logger
 	app.use(config.path + '/*', function (req, res, next) {
@@ -514,17 +517,16 @@ async function onDatabaseConnected() {
 }
 
 async function listen() {
+	try {
+		await mongoose.connect(config.databaseURL as string)
+
+		await onDatabaseConnected()
+	} catch (err) {
+		console.log('FAILED TO CONNECT TO DATABASE!' + '\n', err)
+	}
+
 	const server = app.listen(config.port, () => {
 		console.log('Listening to requests on port ' + config.port.toString() + '\n')
-		void (async function () {
-			try {
-				await mongoose.connect(config.databaseURL as string)
-
-				await onDatabaseConnected()
-			} catch (err) {
-				console.log('FAILED TO CONNECT TO DATABASE!' + '\n', err)
-			}
-		})()
 	})
 
 	if (config.websocketSupport) {

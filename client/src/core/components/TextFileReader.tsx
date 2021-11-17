@@ -7,31 +7,25 @@
 
 import React from 'react'
 
-class TextFileReader extends React.Component {
-	constructor(props) {
-		super(props)
-
-		this.state = {
-			text: '',
-		}
+export default class TextFileReader extends React.Component<{
+	txt: string
+	classOverride?: string
+}> {
+	state = {
+		text: '',
 	}
 
 	componentDidMount() {
-		setTimeout(
-			function () {
-				this.readTextFile(this.props.txt)
-			}.bind(this),
-			500
-		)
+		setTimeout(() => this.readTextFile(this.props.txt), 500)
 	}
 
-	readTextFile = (file) => {
-		var rawFile = new XMLHttpRequest()
+	readTextFile = (file: string) => {
+		const rawFile = new XMLHttpRequest()
 		rawFile.open('GET', file, false)
 		rawFile.onreadystatechange = () => {
 			if (rawFile.readyState === 4) {
 				if (rawFile.status === 200 || rawFile.status === 0) {
-					var allText = rawFile.responseText
+					const allText = rawFile.responseText
 					this.setState({
 						text: allText,
 					})
@@ -41,7 +35,8 @@ class TextFileReader extends React.Component {
 		try {
 			rawFile.send(null)
 		} catch (e) {
-			console.log(e.message)
+			const err = e as Error
+			console.log(err.message)
 		}
 	}
 
@@ -62,5 +57,3 @@ class TextFileReader extends React.Component {
 		)
 	}
 }
-
-export default TextFileReader

@@ -58,10 +58,11 @@ class Forgot extends Component {
 									)
 
 									if (res.ok) {
-										global.analytics.event({
-											category: 'User',
-											action: 'Recovered account',
-										})
+										if (global.analytics)
+											global.analytics.event({
+												category: 'User',
+												action: 'Recovered account',
+											})
 
 										await global.storage.setItem('token', res.body.token)
 
@@ -166,10 +167,11 @@ class Forgot extends Component {
 									setFieldValue('captcha', undefined)
 
 									if (res.ok) {
-										global.analytics.event({
-											category: 'User',
-											action: 'Forgot password',
-										})
+										if (global.analytics)
+											global.analytics.event({
+												category: 'User',
+												action: 'Forgot password',
+											})
 
 										this.setState({
 											verifyingRecover: true,

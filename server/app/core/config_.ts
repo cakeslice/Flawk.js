@@ -35,7 +35,7 @@ const _prod =
 	process.env.production === 'true' &&
 	process.env.NODE_ENV === 'production'
 const _jest = process.env.JEST === 'true'
-const _frontendURL = process.env.frontendURL
+const _frontendURL = process.env.frontendURL || ''
 
 //
 

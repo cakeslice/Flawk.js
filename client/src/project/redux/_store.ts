@@ -22,7 +22,7 @@ const store = configureStore({
 })
 export default store
 
-type StoreState = ReturnType<typeof store.getState>
+export type StoreState = ReturnType<typeof store.getState>
 export type StoreDispatch = ThunkDispatch<StoreState, null | undefined, AnyAction> &
 	Dispatch<AnyAction>
 // Use throughout your app instead of plain `useDispatch` and `useSelector`

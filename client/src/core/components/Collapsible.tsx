@@ -10,15 +10,16 @@ import styles from 'core/styles'
 import React, { Component } from 'react'
 import { UnmountClosed } from 'react-collapse'
 
-export default class Collapsible extends Component {
-	state = {}
-
-	componentDidMount() {
-		this.state.isOpen = this.props.defaultOpen // eslint-disable-line
-	}
+export default class Collapsible extends Component<{
+	content: JSX.Element
+	defaultOpen?: boolean
+	controlled?: boolean
+	controlledOpen?: boolean
+}> {
+	state = { isOpen: this.props.defaultOpen !== undefined ? this.props.defaultOpen : false }
 
 	render() {
-		this.state.isOpen = this.props.controlledOpen // eslint-disable-line
+		if (this.props.controlledOpen !== undefined) this.state.isOpen = this.props.controlledOpen // eslint-disable-line
 
 		return (
 			<div>
@@ -48,7 +49,7 @@ export default class Collapsible extends Component {
 							{arrow(
 								config.replaceAlpha(
 									styles.colors.black,
-									global.nightMode ? '0.15' : '.25'
+									global.nightMode ? 0.15 : 0.25
 								)
 							)}
 						</div>
@@ -64,7 +65,7 @@ export default class Collapsible extends Component {
 	}
 }
 
-const arrow = (color) => (
+const arrow = (color: string) => (
 	<svg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'>
 		<path d='M21 21H3L12 3L21 21Z' fill={color} />
 	</svg>

@@ -5,6 +5,5 @@
 		"componentFolder": "src"
 	},
 	"integrationFolder": "src/__tests__",
-	"darkMediaQuery": true,
-	"nodeVersion": "system"
+	"darkMediaQuery": true
 }

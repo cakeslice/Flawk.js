@@ -13,7 +13,7 @@ import db from 'core/functions/db'
 import crypto from 'crypto-extra'
 import { toRegex } from 'diacritic-regex'
 import { NextFunction, Request, Response } from 'express'
-import { Obj } from 'flawk-types'
+import { JwtPayload, Obj } from 'flawk-types'
 import jwt from 'jsonwebtoken'
 import _ from 'lodash'
 import mongoose from 'mongoose'
@@ -399,179 +399,191 @@ export default {
 		else next()
 	},
 
-	tokenMiddleware: async function (req: Request, res: Response, next: NextFunction) {
-		// Check header or URL parameters or POST parameters for token or cookie
-		const token: string =
-			req.query.token ||
-			req.headers['x-access-token'] ||
-			req.headers['token'] ||
-			req.cookies.token
+	tokenMiddleware: (extraClientSelect?: string) => {
+		async function middleware(req: Request, res: Response, next: NextFunction) {
+			// Check header or URL parameters or POST parameters for token or cookie
+			const token: string =
+				req.query.token ||
+				req.headers['x-access-token'] ||
+				req.headers['token'] ||
+				req.cookies.token
 
-		// Decode token
-		if (token) {
-			// Verifies secret and checks if expired
-			let decoded: jwt.JwtPayload | undefined
-			let err: Error | undefined
-			try {
-				decoded = jwt.verify(token, config.jwtSecret) as jwt.JwtPayload
-			} catch (e) {
-				err = e as Error
-			}
+			// Decode token
+			if (token) {
+				// Verifies secret and checks if expired
+				let decoded: JwtPayload | undefined
+				let err: Error | undefined
+				try {
+					decoded = jwt.verify(token, config.jwtSecret) as JwtPayload
+				} catch (e) {
+					err = e as Error
+				}
 
-			if (err || !decoded) {
-				console.log('Token error: ' + (err ? err.message : "couldn't decode!"))
-				_setResponse(401, req, res, config.response('invalidToken', req), {
-					invalidToken: true,
-				})
-			} else {
-				if (
-					// @ts-ignore: Object is possibly 'undefined'.
-					decoded.exp * 1000 < Date.now() ||
-					!db.validateObjectID(decoded.data as string)
-				) {
-					console.log(
-						'Token expiration: ' +
-							// @ts-ignore: Object is possibly 'undefined'.
-							(decoded.exp * 1000).toString() +
-							' < ' +
-							Date.now().toString()
-					)
+				if (err || !decoded) {
+					console.log('Token error: ' + (err ? err.message : "couldn't decode!"))
 					_setResponse(401, req, res, config.response('invalidToken', req), {
 						invalidToken: true,
 					})
-					return
-				}
-
-				// Check if token belongs to a user
-				const user = await Client.findOne({ _id: decoded.data }).select(
-					'_id email permission flags timestamps.lastCall access.activeTokens settings.language'
-				)
-				if (!user) {
-					_setResponse(
-						401,
-						req,
-						res,
-						config.response('invalidToken', req, { invalidToken: true })
-					)
-				} else if (user.flags.includes('suspended')) {
-					_setResponse(400, req, res, config.response('accountSuspended', req))
-				} else if (user) {
-					let valid = false
-					for (let j = user.access.activeTokens.length - 1; j >= 0; j--) {
-						if (
-							crypto.timingSafeEqual(
-								Buffer.from(user.access.activeTokens[j]),
-								Buffer.from(token)
-							)
-						)
-							valid = true
-					}
-
-					if (valid) {
-						// Pass the user that belongs to the token for next routes
-						user.timestamps.lastCall = new Date()
-						await user.save()
-						req.user = user
-						req.token = token
+				} else {
+					if (
 						// @ts-ignore: Object is possibly 'undefined'.
-						req.tokenExpiration = decoded.exp * 1000
-						req.permission = user.permission
-						if (user.settings.language) req.lang = user.settings.language
-
-						next()
-					} else {
+						decoded.exp * 1000 < Date.now() ||
+						// eslint-disable-next-line
+						!db.validateObjectID(decoded._id)
+					) {
+						console.log(
+							'Token expiration: ' +
+								// @ts-ignore: Object is possibly 'undefined'.
+								(decoded.exp * 1000).toString() +
+								' < ' +
+								Date.now().toString()
+						)
 						_setResponse(401, req, res, config.response('invalidToken', req), {
 							invalidToken: true,
 						})
+						return
 					}
-				}
-			}
-		} else {
-			// If there is no token, return an error
-			_setResponse(401, req, res, config.response('invalidToken', req), {
-				invalidToken: true,
-			})
-		}
-	},
-	optionalTokenMiddleware: async function (req: Request, res: Response, next: NextFunction) {
-		// Check header or URL parameters or POST parameters for token or cookie
-		const token: string =
-			req.query.token ||
-			req.headers['x-access-token'] ||
-			req.headers['token'] ||
-			req.cookies.token
 
-		// Decode token
-		if (token) {
-			// Verifies secret and checks if expired
-			let decoded: jwt.JwtPayload | undefined
-			let err: Error | undefined
-			try {
-				decoded = jwt.verify(token, config.jwtSecret) as jwt.JwtPayload
-			} catch (e) {
-				err = e as Error
-			}
-
-			if (err || !decoded) {
-				console.log('Token error: ' + (err ? err.message : "couldn't decode!"))
-				next()
-			} else {
-				if (
-					// @ts-ignore: Object is possibly 'undefined'.
-					decoded.exp * 1000 < Date.now() ||
-					!db.validateObjectID(decoded.data as string)
-				) {
-					console.log(
-						'Token expiration: ' +
-							// @ts-ignore: Object is possibly 'undefined'.
-							(decoded.exp * 1000).toString() +
-							' < ' +
-							Date.now().toString()
+					// Check if token belongs to a user
+					const user = await Client.findOne({ _id: decoded._id }).select(
+						'_id email permission flags timestamps.lastCall access.activeTokens settings.language' +
+							(extraClientSelect ? ' ' + extraClientSelect : '')
 					)
-					next()
-					return
-				}
-
-				// Check if token belongs to a user
-				const user = await Client.findOne({ _id: decoded.data }).select(
-					'_id email permission flags timestamps.lastCall access.activeTokens settings.language'
-				)
-
-				if (!user) {
-					next()
-				} else if (user.flags.includes('suspended')) {
-					next()
-				} else if (user) {
-					let valid = false
-					for (let j = user.access.activeTokens.length - 1; j >= 0; j--) {
-						if (
-							crypto.timingSafeEqual(
-								Buffer.from(user.access.activeTokens[j]),
-								Buffer.from(token)
-							)
+					if (!user) {
+						_setResponse(
+							401,
+							req,
+							res,
+							config.response('invalidToken', req, { invalidToken: true })
 						)
-							valid = true
-					}
+					} else if (user.flags.includes('suspended')) {
+						_setResponse(400, req, res, config.response('accountSuspended', req))
+					} else if (user) {
+						let valid = false
+						for (let j = user.access.activeTokens.length - 1; j >= 0; j--) {
+							if (
+								user.access.activeTokens[j].length === token.length &&
+								crypto.timingSafeEqual(
+									Buffer.from(user.access.activeTokens[j]),
+									Buffer.from(token)
+								)
+							)
+								valid = true
+						}
 
-					if (valid) {
-						// Pass the user that belongs to the token for next routes
-						user.timestamps.lastCall = new Date()
-						await user.save()
-						req.user = user
-						req.token = token
-						// @ts-ignore: Object is possibly 'undefined'.
-						req.tokenExpiration = decoded.exp * 1000
-						req.permission = user.permission
-						if (user.settings.language) req.lang = user.settings.language
+						if (valid) {
+							// Pass the user that belongs to the token for next routes
+							user.timestamps.lastCall = new Date()
+							await user.save()
+							req.user = user
+							req.token = token
+							// @ts-ignore: Object is possibly 'undefined'.
+							req.tokenExpiration = decoded.exp * 1000
+							req.permission = user.permission
+							if (user.settings.language) req.lang = user.settings.language
 
-						next()
-					} else {
-						next()
+							next()
+						} else {
+							_setResponse(401, req, res, config.response('invalidToken', req), {
+								invalidToken: true,
+							})
+						}
 					}
 				}
+			} else {
+				// If there is no token, return an error
+				_setResponse(401, req, res, config.response('invalidToken', req), {
+					invalidToken: true,
+				})
 			}
-		} else {
-			next()
 		}
+		return middleware
+	},
+	optionalTokenMiddleware: (extraClientSelect?: string) => {
+		async function middleware(req: Request, res: Response, next: NextFunction) {
+			// Check header or URL parameters or POST parameters for token or cookie
+			const token: string =
+				req.query.token ||
+				req.headers['x-access-token'] ||
+				req.headers['token'] ||
+				req.cookies.token
+
+			// Decode token
+			if (token) {
+				// Verifies secret and checks if expired
+				let decoded: JwtPayload | undefined
+				let err: Error | undefined
+				try {
+					decoded = jwt.verify(token, config.jwtSecret) as JwtPayload
+				} catch (e) {
+					err = e as Error
+				}
+
+				if (err || !decoded) {
+					console.log('Token error: ' + (err ? err.message : "couldn't decode!"))
+					next()
+				} else {
+					if (
+						// @ts-ignore: Object is possibly 'undefined'.
+						decoded.exp * 1000 < Date.now() ||
+						// eslint-disable-next-line
+						!db.validateObjectID(decoded._id)
+					) {
+						console.log(
+							'Token expiration: ' +
+								// @ts-ignore: Object is possibly 'undefined'.
+								(decoded.exp * 1000).toString() +
+								' < ' +
+								Date.now().toString()
+						)
+						next()
+						return
+					}
+
+					// Check if token belongs to a user
+					const user = await Client.findOne({ _id: decoded._id }).select(
+						'_id email permission flags timestamps.lastCall access.activeTokens settings.language' +
+							(extraClientSelect ? ' ' + extraClientSelect : '')
+					)
+
+					if (!user) {
+						next()
+					} else if (user.flags.includes('suspended')) {
+						next()
+					} else if (user) {
+						let valid = false
+						for (let j = user.access.activeTokens.length - 1; j >= 0; j--) {
+							if (
+								user.access.activeTokens[j].length === token.length &&
+								crypto.timingSafeEqual(
+									Buffer.from(user.access.activeTokens[j]),
+									Buffer.from(token)
+								)
+							)
+								valid = true
+						}
+
+						if (valid) {
+							// Pass the user that belongs to the token for next routes
+							user.timestamps.lastCall = new Date()
+							await user.save()
+							req.user = user
+							req.token = token
+							// @ts-ignore: Object is possibly 'undefined'.
+							req.tokenExpiration = decoded.exp * 1000
+							req.permission = user.permission
+							if (user.settings.language) req.lang = user.settings.language
+
+							next()
+						} else {
+							next()
+						}
+					}
+				}
+			} else {
+				next()
+			}
+		}
+		return middleware
 	},
 }

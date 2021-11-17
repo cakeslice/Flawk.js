@@ -7,7 +7,7 @@
 
 import config from 'core/config_'
 import db from 'core/functions/db'
-import { Obj, SocketUser } from 'flawk-types'
+import { JwtPayload, Obj, SocketUser } from 'flawk-types'
 import jwt from 'jsonwebtoken'
 import _ from 'lodash'
 import { Client } from 'project/database'
@@ -143,19 +143,21 @@ global.clientSockets.on('connection', (socket: Socket) => {
 		// Decode token
 		if (data.token) {
 			// Verifies secret and checks if expired
-			jwt.verify(data.token, config.jwtSecret, function (err, decoded) {
-				if (!err && decoded) {
+			jwt.verify(data.token, config.jwtSecret, function (err, dec) {
+				if (!err && dec) {
+					const decoded = dec as JwtPayload
+
 					if (
-						// @ts-ignore: Object is possibly 'undefined'.
 						decoded.exp * 1000 < Date.now() ||
-						!db.validateObjectID(decoded.data as string)
+						// eslint-disable-next-line
+						!db.validateObjectID(decoded._id)
 					) {
 						disconnectUnidentified(socket)
 						return next(new Error('Invalid token! Disconnecting...'))
 					}
 
 					// Check if token belongs to someone
-					Client.findOne({ _id: decoded.data as string })
+					Client.findOne({ _id: decoded._id })
 						.lean()
 						.select('_id email permission access.activeTokens')
 						.exec(function (err, user) {

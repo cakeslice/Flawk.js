@@ -32,6 +32,8 @@ module.exports = {
 	// Only add plugins to customize the rules
 	plugins: ['import', 'react', 'jsx-a11y', 'security', 'jest', 'no-secrets'],
 	rules: {
+		'jest/valid-describe': 'off',
+		//
 		'import/no-unresolved': 'off',
 		'import/no-anonymous-default-export': 'off',
 		//
@@ -167,8 +169,9 @@ module.exports = {
 			rules: {
 				'import/named': 'off',
 				'no-use-before-define': 'off',
-				'react/prop-types': 0,
+				'no-empty-function': 'off',
 				//
+				'@typescript-eslint/no-empty-function': ['warn'],
 				'@typescript-eslint/require-await': 'warn',
 				'@typescript-eslint/no-explicit-any': ['error'],
 				'@typescript-eslint/no-use-before-define': ['error'],

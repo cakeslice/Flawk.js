@@ -22,6 +22,33 @@ declare module 'flawk-types' {
 		numeral: string
 		date: string
 	}
+
+	export type GlamorProps = {
+		':active'?: React.CSSProperties
+		':hover'?: React.CSSProperties
+		':focus-visible'?: React.CSSProperties
+		':visited'?: React.CSSProperties
+		':link'?: React.CSSProperties
+		':focus'?: React.CSSProperties
+		':checked'?: React.CSSProperties
+		'::placeholder'?: React.CSSProperties
+	}
+
+	export type FormIKStruct = {
+		name: string
+		value?: unknown
+		error?: string | FormikErrors<any> | string[] | FormikErrors<any>[]
+		touch?: boolean | FormikTouched<any> | FormikTouched<any>[]
+		setFieldValue: (field: string, value: unknown, shouldValidate?: boolean | undefined) => void
+		setFieldTouched: (
+			field: string,
+			value: boolean,
+			shouldValidate?: boolean | undefined
+		) => void
+		handleBlur: (Event) => void
+		submitCount: number
+		changed: boolean
+	}
 }
 
 declare module 'react-reveal' {
@@ -33,7 +60,11 @@ declare module 'react-reveal' {
 		bottom?: boolean
 		right?: boolean
 	}> {}
-	//export const Fade: (props: any) => React.SFC<MyComponentProps>
+}
+declare module 'react-reveal/HeadShake' {
+	export default class HeadShake extends React.Component<{
+		spy: number | string
+	}> {}
 }
 
 declare module '@toolz/use-constructor' {

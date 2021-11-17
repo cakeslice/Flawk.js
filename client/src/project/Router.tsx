@@ -33,7 +33,7 @@ const Something = config.lazyWithPreload(() => import('something')))
 ...
 Something.preload()
 */
-const ComponentsViewer = React.lazy(() => import('core/components/ComponentsViewer'))
+const ComponentsViewer = React.lazy(() => import('core/components/viewer/ComponentsViewer'))
 const Dashboard = React.lazy(() => import('core/components/Dashboard'))
 const Settings = React.lazy(() => import('./pages/settings/Settings'))
 //
@@ -197,9 +197,10 @@ export default function Router(): JSX.Element {
 						>
 							<Avatar
 								src={
-									props.user &&
-									props.user.personal &&
-									props.user.personal.photoURL
+									(props.user &&
+										props.user.personal &&
+										props.user.personal.photoURL) ||
+									''
 								}
 								style={{
 									width: 30,
@@ -304,19 +305,7 @@ export default function Router(): JSX.Element {
 
 							{/* {!config.prod && !config.staging && ( */}
 							<Route /* exact */ path='/components'>
-								<ComponentsViewer
-									// Redux props
-									{...{
-										structures,
-										user,
-										fetchingUser,
-										authError,
-										//
-										fetchUser: async () => await fetchUser(dispatch),
-										fetchStructures: async () =>
-											await fetchStructures(dispatch),
-									}}
-								/>
+								<ComponentsViewer />
 							</Route>
 							{/* )} */}
 

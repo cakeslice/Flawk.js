@@ -22,7 +22,7 @@ type ParsedResponse = {
 	message?: string | null
 	noConnection?: boolean
 }
-type OutputResponse = {
+export type OutputResponse = {
 	ok: boolean
 	status?: number
 	headers?: Headers

@@ -115,9 +115,6 @@
 # Last but not least, make sure you have an image of the entire server after it's all setup!
 #     The image can be used on another Droplet, all you need to do is change the IP on CloudFlare
 
-# FOR CI/CD instead of building in CapRover or pushing a Docker image:
-#     https://caprover.com/docs/ci-cd-integration.html
-
 # To take advantage of multiple cores in Node.js you can use clusters but consider websocket support: https://socket.io/docs/using-multiple-nodes/
 #     HOWEVER, 4 CORES SEEMS TO BE VERY GOOD FOR MONGO + NODE
 #     For websites/apps with low/no MONGO usage, you should go with a server with better single-core performance
@@ -135,16 +132,6 @@ RUN npm ci --ignore-scripts
 # Install all dependencies including dev to compile TypeScript
 
 COPY . .
-
-# Add env vars for testing
-ARG production
-ENV production $production
-ARG staging
-ENV staging $staging
-ARG appName
-ENV appName $appName
-ARG frontendURL
-ENV frontendURL $frontendURL
 
 RUN npm run auditCI && npm run testCI
 

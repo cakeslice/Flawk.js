@@ -73,7 +73,7 @@ router.getAsync(config.path + '/client/data', async (req, res) => {
 		let token = undefined
 		// Refresh token if getting old...
 		if (moment(req.tokenExpiration).diff(moment(), 'days') < config.tokenDays / 2) {
-			token = jwt.sign({ data: user._id }, config.jwtSecret, {
+			token = jwt.sign({ _id: user._id }, config.jwtSecret, {
 				expiresIn: config.tokenDays.toString() + ' days',
 			})
 			userToken.access.activeTokens = _.filter(
@@ -144,7 +144,7 @@ router.postAsync(config.path + '/client/change_settings', async (req, res) => {
 			// Same password
 		} else {
 			console.log('Password change...')
-			token = jwt.sign({ data: requestUser._id }, config.jwtSecret, {
+			token = jwt.sign({ _id: requestUser._id }, config.jwtSecret, {
 				expiresIn: config.tokenDays.toString() + ' days',
 			})
 			const hash = await bcrypt.hash(body.password, config.saltRounds)

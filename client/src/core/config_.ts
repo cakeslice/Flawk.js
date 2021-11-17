@@ -227,6 +227,13 @@ export default {
 		superAdmin: 1,
 	},
 
+	setStateAsync: function (that: React.Component, statePart: Obj) {
+		return new Promise((resolve) => {
+			// @ts-ignore
+			that.setState(statePart, resolve)
+		})
+	},
+
 	capitalize: _capitalize,
 	numeral: (number: number, format: string) => {
 		const n = numeral(number).format(format)
@@ -292,8 +299,8 @@ export default {
 		)
 	},
 
-	replaceAlpha(color: string, amount: string) {
-		return color.replace(/[^,]+(?=\))/, amount)
+	replaceAlpha(color: string, amount: number) {
+		return color.replace(/[^,]+(?=\))/, amount.toString())
 	},
 
 	projectStyles: _projectStyles,

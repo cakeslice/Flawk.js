@@ -1,7 +1,7 @@
 version: 2.1
 
 jobs:
-  backend-checks:
+  backend:
     working_directory: ~/project/server
     docker:
       - image: cimg/node:14.15.0
@@ -34,7 +34,7 @@ jobs:
           command: npm run lintTypescriptCI
       - run:
           command: npm run testCI
-  frontend-checks:
+  frontend:
     working_directory: ~/project/client
     docker:
       - image: cimg/node:14.15.0
@@ -70,5 +70,5 @@ jobs:
 workflows:
   checks:
     jobs:
-      - backend-checks
-      - frontend-checks
+      - backend
+      - frontend

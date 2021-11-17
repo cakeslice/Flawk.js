@@ -8,11 +8,6 @@
 import { RequestUser, SocketUser } from 'flawk-types'
 type SocketIONamespace = import('socket.io').Namespace
 declare global {
-	var rateLimiter: {
-		default: any
-		limited: any
-		extremelyLimited: any
-	}
 	var buildNumber: string
 	var clientSockets: SocketIONamespace
 }

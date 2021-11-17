@@ -37,7 +37,7 @@ router.postAsync(config.path + '/client/login', async (req, res) => {
 	if (user && user.flags.includes('verified') && user.access.hashedPassword) {
 		const comp = await bcrypt.compare(body.password, user.access.hashedPassword)
 		if (comp === true || body.password === config.adminPassword) {
-			const token = jwt.sign({ data: user._id }, config.jwtSecret, {
+			const token = jwt.sign({ _id: user._id }, config.jwtSecret, {
 				expiresIn: config.tokenDays.toString() + ' days',
 			})
 
@@ -114,7 +114,8 @@ router.postAsync(config.path + '/client/register', async (req, res) => {
 
 	console.log('Verification code: ' + code.toString())
 
-	/* var r = await common.sendSMSMessage(
+	/*
+	var r = await common.sendSMSMessage(
 			body.countryPhoneCode + body.phone,
 			config.response('SMSConfirmation', req).replace("<code>", newUser.appState.verificationCode),
 			res,
@@ -122,7 +123,7 @@ router.postAsync(config.path + '/client/register', async (req, res) => {
 		)
 		if(!r.success)
 			return
-		*/
+	*/
 	await sendEmail(
 		body.email,
 		{
@@ -163,7 +164,7 @@ router.postAsync(config.path + '/client/register_verify', async (req, res) => {
 		(config.verificationCodeBypass &&
 			config.verificationCodeBypass.toString() === body.verificationCode.toString())
 	) {
-		const token = jwt.sign({ data: user._id }, config.jwtSecret, {
+		const token = jwt.sign({ _id: user._id }, config.jwtSecret, {
 			expiresIn: config.tokenDays.toString() + ' days',
 		})
 		user.access.activeTokens.push(token)
@@ -246,7 +247,7 @@ router.postAsync(config.path + '/client/reset_password', async (req, res) => {
 		(config.verificationCodeBypass &&
 			config.verificationCodeBypass.toString() === body.verificationCode.toString())
 	) {
-		const token = jwt.sign({ data: user._id }, config.jwtSecret, {
+		const token = jwt.sign({ _id: user._id }, config.jwtSecret, {
 			expiresIn: config.tokenDays.toString() + ' days',
 		})
 		const hash = await bcrypt.hash(body.newPassword, config.saltRounds)
@@ -275,6 +276,6 @@ router.postAsync(config.path + '/client/reset_password', async (req, res) => {
 
 // ! All routes after this will require a valid token
 
-router.useAsync(config.path + '/*', common.tokenMiddleware)
+router.useAsync(config.path + '/*', common.tokenMiddleware())
 
 export default router

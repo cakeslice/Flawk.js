@@ -51,14 +51,7 @@ class Settings extends Component {
 									setSubmitting(true)
 
 									if (values.photoFile) {
-										/**
-										 * @type {import('core/config_').FileUpload}
-										 */
-										var fileUpload = await upload.uploadFile(
-											values.photoFile,
-											this,
-											post
-										)
+										var fileUpload = await upload.uploadFile(values.photoFile)
 										if (fileUpload.success) {
 											var res = await post('client/change_settings', {
 												...values,

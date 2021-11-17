@@ -32,7 +32,7 @@ export default {
 
 	extraButtons: [
 		{
-			appearance: 'action',
+			buttonType: 'action',
 
 			color: 'black',
 			minWidth: 128,
@@ -97,7 +97,7 @@ export default {
 	*/
 	customDropdown: {
 		indicator: { background: 'none' },
-	},
+	} as { indicator?: { background: string }; menu?: React.CSSProperties },
 	/*
 	dashboardHeader: { marginBottom: 55, minHeight: 40 },
 	tableSelectedWrapper: {

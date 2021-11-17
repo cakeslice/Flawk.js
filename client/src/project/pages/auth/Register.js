@@ -13,6 +13,7 @@ import Field from 'core/components/Field'
 import config from 'core/config_'
 import styles from 'core/styles'
 import { Form, Formik } from 'formik'
+import { fetchUser } from 'project/redux/AppReducer'
 import React, { Component } from 'react'
 import ReCaptcha from 'react-google-recaptcha'
 import { Helmet } from 'react-helmet'
@@ -20,7 +21,6 @@ import { connect } from 'react-redux'
 import MediaQuery from 'react-responsive'
 import HeadShake from 'react-reveal/HeadShake'
 import { Link } from 'react-router-dom'
-import { fetchUser } from '../../redux/AppReducer'
 
 class Register extends Component {
 	state = {}
@@ -58,10 +58,11 @@ class Register extends Component {
 									)
 
 									if (res.ok) {
-										global.analytics.event({
-											category: 'User',
-											action: 'Verified account',
-										})
+										if (global.analytics)
+											global.analytics.event({
+												category: 'User',
+												action: 'Verified account',
+											})
 
 										await global.storage.setItem('token', res.body.token)
 										await fetchUser(this.props.dispatch)
@@ -154,10 +155,11 @@ class Register extends Component {
 									setFieldValue('captcha', undefined)
 
 									if (res.ok) {
-										global.analytics.event({
-											category: 'User',
-											action: 'Signed up',
-										})
+										if (global.analytics)
+											global.analytics.event({
+												category: 'User',
+												action: 'Signed up',
+											})
 
 										this.setState({ verifyingSignup: true })
 									} else if (res.status === 409)

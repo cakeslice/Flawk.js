@@ -44,6 +44,7 @@ export default {
 	// Input Config
 
 	invalidFontSize: 13,
+	inputFontWeight: undefined,
 
 	inputBorderFactorDay: 0.2,
 	inputBorderFactorNight: 0.15,
@@ -59,6 +60,9 @@ export default {
 
 	// Modal Config
 
+	modalWidth: undefined,
+	modalPadding: undefined,
+	modalBackground: undefined,
 	modalHeader: true,
 	modalButtonWrap: true,
 	modalHeaderStyle: {
@@ -69,6 +73,10 @@ export default {
 		/* textStyle: {
 			marginTop: 10,
 		}, */
+	} as React.CSSProperties & {
+		line: boolean
+		noCloseButton: boolean
+		textStyle: React.CSSProperties
 	},
 	modalButtonsStyle: {
 		line: true,
@@ -77,13 +85,36 @@ export default {
 		/* buttonStyle: {
 			width: '100%',
 		}, */
+	} as React.CSSProperties & {
+		line: boolean
+		buttonStyle: React.CSSProperties
 	},
+
+	// Dropdown Config
+
+	// @ts-ignore
+	customDropdown: undefined as
+		| { indicator?: { background: string }; menu?: React.CSSProperties }
+		| undefined,
+	dropdownFontWeight: undefined,
+
+	// Table Config
+	customTable: undefined as
+		| ({
+				headerWrapperStyle: React.CSSProperties
+				rowStyle: React.CSSProperties
+				wrapperStyle: React.CSSProperties
+				rowWrapperStyle: React.CSSProperties
+		  } & React.CSSProperties)
+		| undefined,
+
+	// Tooltip Config
+
+	// @ts-ignore
+	customTooltip: undefined as React.CSSProperties | undefined,
 
 	// Cards
 
-	/**
-	 * @type {import('react').CSSProperties}
-	 */
 	card: {
 		boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.05), 0 6px 20px 0 rgba(0, 0, 0, 0.05)',
 		borderStyle: 'solid',
@@ -94,10 +125,7 @@ export default {
 		background: _white,
 		noDarkMode: false,
 		borderColor: 'inherit',
-	},
-	/**
-	 * @type {import('react').CSSProperties}
-	 */
+	} as React.CSSProperties & { noDarkMode?: boolean },
 	outlineCard: {
 		borderStyle: 'solid',
 		borderWidth: '1px',
@@ -106,7 +134,7 @@ export default {
 		borderRadius: 10,
 		noDarkMode: false,
 		borderColor: 'inherit',
-	},
+	} as React.CSSProperties & { noDarkMode?: boolean },
 
 	// Helpers
 
@@ -114,7 +142,7 @@ export default {
 		textOverflow: 'ellipsis',
 		overflow: 'hidden',
 		whiteSpace: 'nowrap',
-	},
+	} as React.CSSProperties,
 	mediumShadow: '0 5px 20px 0 rgba(0, 0, 0, 0.05)',
 	shadowFilter: '2px 6px 8px rgba(0, 0, 0, 0.3)',
 	strongerShadow:
@@ -185,15 +213,15 @@ export default {
 		width: '100%',
 		borderRadius: 4,
 		border: '1px dashed ' + _black,
-	},
+	} as React.CSSProperties,
 	dropZoneActive: {
 		borderColor: _main,
-		background: config.replaceAlpha(_main, '.1'),
-	},
+		background: config.replaceAlpha(_main, 0.1),
+	} as React.CSSProperties,
 	dropZoneReject: {
 		borderColor: _red,
-		background: config.replaceAlpha(_red, '.1'),
-	},
+		background: config.replaceAlpha(_red, 0.1),
+	} as React.CSSProperties,
 
 	// Misc
 

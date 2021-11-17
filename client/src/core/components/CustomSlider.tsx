@@ -11,7 +11,14 @@ import { Range } from 'rc-slider'
 import 'rc-slider/assets/index.css'
 import React, { Component } from 'react'
 
-export default class CustomSlider extends Component {
+type Props = {
+	min: number
+	max: number
+	step?: number
+	defaultValue: [number, number]
+	width?: number
+}
+export default class CustomSlider extends Component<Props> {
 	state = {
 		value: this.props.defaultValue,
 	}
@@ -24,7 +31,9 @@ export default class CustomSlider extends Component {
 					width: this.props.width || 150,
 				}}
 			>
-				<p style={{ fontSize: styles.defaultFontSize }}>{this.state.value[0] + ' m'}</p>
+				<p style={{ fontSize: styles.defaultFontSize }}>
+					{this.state.value[0].toString() + ' m'}
+				</p>
 				<div style={{ minHeight: 5 }}></div>
 				<div style={{ marginLeft: 5 }}>
 					<Range
@@ -49,14 +58,19 @@ export default class CustomSlider extends Component {
 				</div>
 				<div style={{ minHeight: 5 }}></div>
 				<p style={{ fontSize: styles.defaultFontSize, alignSelf: 'flex-end' }}>
-					{this.state.value[1] + ' m'}
+					{this.state.value[1].toString() + ' m'}
 				</p>
 			</div>
 		)
 	}
 }
 
-const handleComponent = (props) => {
+const handleComponent = (props: {
+	value: number
+	dragging?: boolean
+	index: number
+	offset: number
+}) => {
 	const { value, dragging, index, ...restProps } = props
 	return <Handle key={index} dragging={dragging} {...restProps} />
 }
@@ -75,12 +89,12 @@ const activeHandle = {
 	boxSizing: 'content-box',
 	border: 'solid 3px ' + styles.colors.mainVeryLight,
 }
-class Handle extends React.Component {
+class Handle extends React.Component<{ dragging?: boolean; offset: number }> {
 	render() {
 		const handleStyle = Object.assign(
 			{ left: `${this.props.offset}%` },
 			this.props.dragging ? activeHandle : handle
-		)
+		) as React.CSSProperties
 
 		return (
 			<div style={handleStyle}>
@@ -89,7 +103,9 @@ class Handle extends React.Component {
 						width: '100%',
 						height: '100%',
 						borderRadius: '50%',
-						border: this.props.dragging && 'solid 1px ' + styles.colors.whiteDay,
+						border: this.props.dragging
+							? 'solid 1px ' + styles.colors.whiteDay
+							: undefined,
 						backgroundColor: styles.colors.main,
 					}}
 				></div>

@@ -1,11 +1,9 @@
 {
 	"compilerOptions": {
 		"target": "es5",
-		"lib": ["dom", "dom.iterable", "esnext"],
 		"allowJs": true,
 		"skipLibCheck": true,
 		"esModuleInterop": true,
-		"allowSyntheticDefaultImports": true,
 		"strict": true,
 		"forceConsistentCasingInFileNames": true,
 		"noFallthroughCasesInSwitch": true,
@@ -13,14 +11,18 @@
 		"moduleResolution": "node",
 		"resolveJsonModule": true,
 		"isolatedModules": true,
-		"noEmit": true,
-		"jsx": "react-jsx",
+		"removeComments": true,
 		//
 		"baseUrl": "src/",
 		"noImplicitAny": true,
 		"noImplicitReturns": true,
-		"noImplicitThis": true
+		"noImplicitThis": true,
 		//"noImplicitOverride": true // Disabled to avoid override in all React classes
+		//
+		"allowSyntheticDefaultImports": true,
+		"lib": ["dom", "dom.iterable", "esnext"],
+		"noEmit": true,
+		"jsx": "react-jsx"
 	},
 	"exclude": ["node_modules", "cypress"],
 	"include": ["src"]

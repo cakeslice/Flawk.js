@@ -8,7 +8,7 @@
 import { createAction, createReducer } from '@reduxjs/toolkit'
 import * as Sentry from '@sentry/react'
 import { get } from 'core/api'
-import { ArrayKeyObject } from 'flawk-types'
+import { KeyArrayKeyObject } from 'flawk-types'
 import { immerable } from 'immer'
 import { StoreDispatch } from './_store'
 
@@ -18,7 +18,7 @@ function withPayloadType<T>() {
 
 const structuresFetched = createAction(
 	'app/STRUCTURES_FETCHED',
-	withPayloadType<ArrayKeyObject | undefined>()
+	withPayloadType<KeyArrayKeyObject | undefined>()
 )
 const structuresFetching = createAction('app/STRUCTURES_FETCHING')
 const userFetched = createAction(
@@ -34,13 +34,14 @@ export type UserState = {
 	token?: string
 	personal?: {
 		firstName?: string
+		lastName?: string
 		photoURL?: string
 	}
 }
 export class AppState {
 	[immerable] = true
 
-	structures?: ArrayKeyObject
+	structures?: KeyArrayKeyObject
 	fetchingStructures = true
 
 	user?: UserState
@@ -71,14 +72,14 @@ export const fetchStructures = async (dispatch: StoreDispatch): Promise<void> =>
 	dispatch(structuresFetching())
 	const res = await get('structures', { noErrorFlag: 'all' })
 	if (res.ok && res.body) {
-		const structures = res.body.structures as ArrayKeyObject
+		const structures = res.body.structures as KeyArrayKeyObject
 
 		await global.storage.setItem('structures', JSON.stringify(structures))
 		dispatch(structuresFetched(structures))
 	} else {
 		const storedStructures = await global.storage.getItem('structures')
 		if (storedStructures) {
-			const offlineStructures = JSON.parse(storedStructures) as ArrayKeyObject
+			const offlineStructures = JSON.parse(storedStructures) as KeyArrayKeyObject
 			dispatch(structuresFetched(offlineStructures))
 		} else dispatch(structuresFetched(undefined))
 	}

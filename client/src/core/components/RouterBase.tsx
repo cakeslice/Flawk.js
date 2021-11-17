@@ -33,12 +33,14 @@ function addFlagFunction(
 		playSound?: boolean
 		closeAfter?: number
 		closeButton?: boolean
+		closeOnClick?: boolean
 	}
 ) {
-	const { customComponent, playSound, closeAfter, closeButton } = {
+	const { customComponent, playSound, closeAfter, closeOnClick, closeButton } = {
 		customComponent: undefined,
 		playSound: false,
 		closeAfter: 0,
+		closeOnClick: false,
 		closeButton: true,
 		...options,
 	}
@@ -95,9 +97,9 @@ function addFlagFunction(
 			position: 'bottom-right',
 			autoClose: closeAfter !== 0 ? closeAfter : false,
 			hideProgressBar: true, //closeAfter === 0,
-			closeOnClick: false,
+			closeOnClick: closeOnClick,
 			pauseOnHover: true,
-			pauseOnFocusLoss: false,
+			pauseOnFocusLoss: true,
 			draggable: false,
 			closeButton: closeButton
 				? ({ closeToast }) => (

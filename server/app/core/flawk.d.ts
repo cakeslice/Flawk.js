@@ -28,4 +28,9 @@ declare module 'flawk-types' {
 		email?: string
 		phone?: string
 	}
+
+	export type JwtPayload = {
+		_id: string
+		exp: number
+	}
 }

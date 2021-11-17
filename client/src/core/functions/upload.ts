@@ -253,20 +253,17 @@ export default {
 		})
 	},
 
-	uploadFile: async (
-		file: File,
-		{
-			postOptions = undefined,
-			onProgress = undefined,
-			maxResolution = undefined,
-			thumbnail = false,
-			nonImage = false,
-		}: UploadFileOptions
-	): Promise<FileUpload> => {
-		if (!maxResolution) {
-			if (thumbnail) maxResolution = 200
-			else maxResolution = 1920
+	uploadFile: async (file: File, options?: UploadFileOptions): Promise<FileUpload> => {
+		const { postOptions, onProgress, maxResolution, thumbnail, nonImage } = {
+			postOptions: undefined,
+			onProgress: undefined,
+			maxResolution: undefined,
+			thumbnail: false,
+			nonImage: false,
+			...options,
 		}
+
+		const maxR = maxResolution || (thumbnail ? 200 : 1920)
 
 		const isImage =
 			file.type === 'image/png' || file.type === 'image/jpeg' || file.type === 'image/jpg'
@@ -274,7 +271,7 @@ export default {
 		if (nonImage && !isImage) {
 			return await _uploadFileHelper(file, onProgress, postOptions)
 		} else {
-			const img = await _resizeImage(file, maxResolution)
+			const img = await _resizeImage(file, maxR)
 			if (img) return await _uploadFileHelper(img, onProgress, postOptions)
 			else return { success: false }
 		}

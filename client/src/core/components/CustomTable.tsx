@@ -8,6 +8,7 @@
 import config from 'core/config_'
 import styles from 'core/styles'
 import ReactQueryParams from 'core/utils/ReactQueryParams'
+import { GlamorProps, Obj } from 'flawk-types'
 import { css } from 'glamor'
 import _ from 'lodash'
 import React, { Component } from 'react'
@@ -15,27 +16,66 @@ import { UnmountClosed } from 'react-collapse'
 import MediaQuery from 'react-responsive'
 import { MetroSpinner } from 'react-spinners-kit'
 import VisibilitySensor from 'react-visibility-sensor'
+import * as uuid from 'uuid'
 
-var uuid = require('uuid')
+const tableID = uuid.v1()
 
-export default class CustomTable extends ReactQueryParams {
-	constructor() {
-		super()
-
-		var tableID = uuid.v1()
-		this.state = {
-			uuid: tableID,
-		}
+type Value = string | number | boolean | undefined
+type SpecialRow = {
+	key: string
+	selector: string
+	style?: React.CSSProperties
+	row: (value: Value, data: Obj) => JSX.Element
+}
+type Column = {
+	name?: string | JSX.Element
+	selector: string
+	cell?: (value: Value, data: Obj, isVisible: boolean, triggerUpdate: () => void) => JSX.Element
+	rowStyle?: React.CSSProperties
+	style?: React.CSSProperties
+	grow?: number
+	hide?: 'mobile'
+	alwaysVisible?: boolean
+	onClick?: () => void
+}
+type TableStyles = {
+	headerWrapperStyle?: React.CSSProperties
+	headerStyle?: React.CSSProperties
+	headerCellStyle?: React.CSSProperties
+	wrapperStyle?: React.CSSProperties
+	rowStyle?: React.CSSProperties
+	rowWrapperStyle?: React.CSSProperties
+	cellStyle?: React.CSSProperties
+}
+type TableProps = {
+	data?: (Obj & { specialRow?: string })[]
+	isLoading?: boolean
+	updateID?: string
+	children?: JSX.Element
+	style?: TableStyles
+	height?: number | string
+	hideHeader?: boolean
+	expandContent?: (object: Obj) => JSX.Element
+	columns?: Column[]
+	keySelector: string
+	specialRows?: SpecialRow[]
+}
+export default function CustomTable(props: TableProps) {
+	return <CT {...props} />
+}
+class CT extends ReactQueryParams {
+	state = {
+		uuid: tableID,
+		containment: undefined as undefined | HTMLElement | null,
 	}
-
-	updateID = undefined
-	shouldComponentUpdate(nextProps) {
-		var p = JSON.stringify({
+	updateID: string | undefined = undefined
+	shouldComponentUpdate(nextProps: TableProps) {
+		const p = JSON.stringify({
 			data: this.props.data,
 			isLoading: this.props.isLoading,
 			updateID: this.props.updateID,
 		})
-		var nP = JSON.stringify({
+		const nP = JSON.stringify({
 			data: nextProps.data,
 			isLoading: nextProps.isLoading,
 			updateID: nextProps.updateID,
@@ -54,11 +94,13 @@ export default class CustomTable extends ReactQueryParams {
 	}
 
 	render() {
-		var cellPadding = 10
-		var cellPaddingY = 5
-		var paddingX = 5
+		const props = this.props as TableProps
 
-		var headerCellStyle = {
+		const cellPadding = 10
+		const cellPaddingY = 5
+		const paddingX = 5
+
+		const headerCellStyle: React.CSSProperties = {
 			padding: cellPadding,
 			paddingTop: cellPaddingY,
 			paddingBottom: cellPaddingY,
@@ -70,7 +112,7 @@ export default class CustomTable extends ReactQueryParams {
 			overflow: 'hidden',
 		}
 
-		var headerRowStyle = {
+		const headerRowStyle: React.CSSProperties = {
 			padding: paddingX * 2,
 			paddingTop: 0,
 			paddingBottom: 0,
@@ -83,7 +125,7 @@ export default class CustomTable extends ReactQueryParams {
 			boxShadow: 'rgba(0, 0, 0, 0.1) 0px 1px 5px 0px',
 			zIndex: 1,
 		}
-		var rowStyle = {
+		const rowStyle: React.CSSProperties & GlamorProps = {
 			...styles.card,
 			borderStyle: 'none',
 			borderRadius: styles.defaultBorderRadius,
@@ -110,7 +152,7 @@ export default class CustomTable extends ReactQueryParams {
 			},
 		}
 
-		var wrapperStyle = {
+		const wrapperStyle = {
 			...styles.card,
 			padding: 0,
 			margin: 0,
@@ -118,18 +160,18 @@ export default class CustomTable extends ReactQueryParams {
 			background: 'transparent',
 			boxShadow: 'none',
 		}
-		var rowWrapperStyle = {
+		const rowWrapperStyle: React.CSSProperties = {
 			padding: paddingX,
 			paddingTop: 3,
 			paddingBottom: 3,
 			boxSizing: 'border-box',
 		}
 
-		var overrideStyle =
-			this.props.style || styles.customTable
+		const overrideStyle: TableStyles | undefined =
+			props.style || styles.customTable
 				? {
 						...styles.customTable,
-						...this.props.style,
+						...props.style,
 				  }
 				: undefined
 
@@ -147,7 +189,7 @@ export default class CustomTable extends ReactQueryParams {
 						overflowX: 'auto',
 						...(overrideStyle && overrideStyle.wrapperStyle),
 
-						...(this.props.children && {
+						...(props.children && {
 							borderBottom: 'none',
 							borderBottomLeftRadius: 0,
 							borderBottomRightRadius: 0,
@@ -164,10 +206,10 @@ export default class CustomTable extends ReactQueryParams {
 									width: 'fit-content',
 									minWidth: '100%',
 									minHeight: 250,
-									height: this.props.height || '100%',
+									height: props.height || '100%',
 								}}
 							>
-								{!this.props.hideHeader && (
+								{!props.hideHeader && (
 									<div
 										style={{
 											...headerRowStyle,
@@ -184,11 +226,11 @@ export default class CustomTable extends ReactQueryParams {
 												...(overrideStyle && overrideStyle.headerStyle),
 											}}
 										>
-											{this.props.expandContent && (
+											{props.expandContent && (
 												<div style={{ minWidth: expandButtonWidth }} />
 											)}
-											{this.props.columns &&
-												this.props.columns
+											{props.columns &&
+												props.columns
 													.filter((c) =>
 														desktop
 															? c
@@ -196,15 +238,16 @@ export default class CustomTable extends ReactQueryParams {
 															? false
 															: true
 													)
-													.map((c, i) => {
-														var s = {
+													.map((c, i: number) => {
+														const s: React.CSSProperties = {
 															...headerCellStyle,
 															width:
-																100 *
+																(
+																	100 *
 																	(c.grow !== undefined
 																		? c.grow
-																		: 1) +
-																'%',
+																		: 1)
+																).toString() + '%',
 															...(overrideStyle &&
 																overrideStyle.headerCellStyle),
 															...(c.onClick && {
@@ -217,7 +260,7 @@ export default class CustomTable extends ReactQueryParams {
 															return (
 																<button
 																	onClick={() => {
-																		var key = c.selector
+																		const key = c.selector
 																		this.setQueryParams({
 																			sort:
 																				this.queryParams
@@ -262,10 +305,13 @@ export default class CustomTable extends ReactQueryParams {
 																				0.75
 																			),
 																			this.queryParams
-																				.sort ===
-																				c.selector &&
-																				this.queryParams
-																					.order
+																				.sort === c.selector
+																				? (this.queryParams
+																						.order as
+																						| 'asc'
+																						| 'desc'
+																						| undefined)
+																				: undefined
 																		)}
 																		<div
 																			style={{ minHeight: 3 }}
@@ -284,7 +330,7 @@ export default class CustomTable extends ReactQueryParams {
 									</div>
 								)}
 
-								{this.props.isLoading && (
+								{props.isLoading && (
 									<div
 										style={{
 											position: 'relative',
@@ -316,22 +362,22 @@ export default class CustomTable extends ReactQueryParams {
 								<div
 									id={'custom-table-' + this.state.uuid}
 									style={{
-										opacity: this.props.isLoading && 0.5,
+										opacity: props.isLoading ? 0.5 : undefined,
 										overflow: 'auto',
 										flexGrow: 1,
 									}}
 								>
-									{this.props.data &&
-										this.props.data.map((d) => {
-											var k = _.get(d, this.props.keySelector)
-											var rS = {
+									{props.data &&
+										props.data.map((d) => {
+											const k = _.get(d, props.keySelector) as string
+											const rS = {
 												...rowStyle,
 												...(overrideStyle && overrideStyle.rowStyle),
 											}
 
-											var sR
+											let sR: undefined | SpecialRow
 											if (d.specialRow) {
-												sR = _.find(this.props.specialRows, {
+												sR = _.find(props.specialRows, {
 													key: d.specialRow,
 												})
 											}
@@ -361,16 +407,22 @@ export default class CustomTable extends ReactQueryParams {
 																		sR.style),
 																}}
 																expandContent={
-																	this.props.expandContent &&
-																	this.props.expandContent(d)
+																	props.expandContent &&
+																	props.expandContent(d)
 																}
 																cellPadding={cellPadding}
 																cellPaddingY={cellPaddingY}
 															>
 																{d.specialRow && sR
-																	? sR.row(d.value, d)
-																	: this.props.columns &&
-																	  this.props.columns
+																	? sR.row(
+																			_.get(
+																				d,
+																				sR.selector
+																			) as Value,
+																			d
+																	  )
+																	: props.columns &&
+																	  props.columns
 																			.filter((c) =>
 																				desktop
 																					? c
@@ -379,10 +431,12 @@ export default class CustomTable extends ReactQueryParams {
 																					? false
 																					: true
 																			)
-																			.map((c, i) => (
+																			.map((c, i: number) => (
 																				<div
 																					key={
-																						k + '_' + i
+																						k +
+																						'_' +
+																						i.toString()
 																					}
 																					style={{
 																						minWidth:
@@ -391,11 +445,13 @@ export default class CustomTable extends ReactQueryParams {
 																								.cellWidth ||
 																							50,
 																						width:
-																							100 *
+																							(
+																								100 *
 																								(c.grow !==
 																								undefined
 																									? c.grow
-																									: 1) +
+																									: 1)
+																							).toString() +
 																							'%',
 																						padding:
 																							cellPadding,
@@ -410,11 +466,13 @@ export default class CustomTable extends ReactQueryParams {
 																					<div
 																						style={{
 																							textOverflow:
-																								!c.cell &&
-																								'ellipsis',
+																								!c.cell
+																									? 'ellipsis'
+																									: undefined,
 																							overflow:
-																								!c.cell &&
-																								'hidden',
+																								!c.cell
+																									? 'hidden'
+																									: undefined,
 																							display:
 																								'inline-grid',
 																							...(overrideStyle &&
@@ -425,12 +483,12 @@ export default class CustomTable extends ReactQueryParams {
 																					>
 																						{(isVisible ||
 																							c.alwaysVisible) &&
-																							(c.cell
+																							((c.cell
 																								? c.cell(
 																										_.get(
 																											d,
 																											c.selector
-																										),
+																										) as Value,
 																										d,
 																										isVisible,
 																										this.triggerUpdate.bind(
@@ -440,7 +498,7 @@ export default class CustomTable extends ReactQueryParams {
 																								: _.get(
 																										d,
 																										c.selector
-																								  ))}
+																								  )) as Value)}
 																					</div>
 																				</div>
 																			))}
@@ -456,7 +514,7 @@ export default class CustomTable extends ReactQueryParams {
 					</MediaQuery>
 				</div>
 
-				{this.props.children && (
+				{props.children && (
 					<div
 						style={{
 							...wrapperStyle,
@@ -467,7 +525,7 @@ export default class CustomTable extends ReactQueryParams {
 							borderTopRightRadius: 0,
 						}}
 					>
-						{this.props.children}
+						{props.children}
 					</div>
 				)}
 			</div>
@@ -476,12 +534,23 @@ export default class CustomTable extends ReactQueryParams {
 }
 
 const expandButtonWidth = 10 + 12.5
-class Row extends Component {
-	state = {
+type RowProps = {
+	triggerUpdate: string
+	expandContent?: JSX.Element
+	rowStyle: React.CSSProperties & GlamorProps
+	style: React.CSSProperties
+	cellPadding: number
+	cellPaddingY: number
+}
+type RowState = {
+	isOpen: boolean
+}
+class Row extends Component<RowProps> {
+	state: RowState = {
 		isOpen: false,
 	}
 
-	shouldComponentUpdate(nextProps, nextState) {
+	shouldComponentUpdate(nextProps: RowProps, nextState: RowState) {
 		return (
 			this.props.triggerUpdate !== nextProps.triggerUpdate ||
 			this.state.isOpen !== nextState.isOpen
@@ -491,7 +560,12 @@ class Row extends Component {
 	render() {
 		return (
 			<div style={this.props.style}>
-				<div {...css(this.props.rowStyle)}>
+				<div
+					{
+						// eslint-disable-next-line
+						...css(this.props.rowStyle)
+					}
+				>
 					{this.props.expandContent && (
 						<button
 							onClick={() => {
@@ -517,7 +591,7 @@ class Row extends Component {
 								{arrow(
 									config.replaceAlpha(
 										styles.colors.black,
-										global.nightMode ? '0.15' : '.25'
+										global.nightMode ? 0.15 : 0.25
 									)
 								)}
 							</div>
@@ -546,13 +620,13 @@ class Row extends Component {
 	}
 }
 
-const arrow = (color) => (
+const arrow = (color: string) => (
 	<svg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'>
 		<path d='M21 21H3L12 3L21 21Z' fill={color} />
 	</svg>
 )
 
-const sorting = (color, colorActive, direction) => (
+const sorting = (color: string, colorActive: string, direction?: 'asc' | 'desc') => (
 	<svg width='6' height='8' viewBox='0 0 6 8' fill='none' xmlns='http://www.w3.org/2000/svg'>
 		<path
 			d='M3 0L5.46133 3H0.538664L3 0Z'

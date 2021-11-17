@@ -6,12 +6,17 @@
  */
 
 import { Component } from 'react'
-import { withRouter } from 'react-router'
+import { RouteComponentProps, withRouter } from 'react-router'
 
-class ScrollToTop extends Component {
-	constructor() {
-		super()
+type Props = {
+	location: Location
+}
 
+class ScrollToTop extends Component<Props & RouteComponentProps> {
+	constructor(props: Props & RouteComponentProps) {
+		super(props)
+
+		// eslint-disable-next-line @typescript-eslint/unbound-method
 		global.scrollToTop = this.scrollToTop
 	}
 
@@ -19,7 +24,7 @@ class ScrollToTop extends Component {
 		window.scrollTo(0, 0)
 	}
 
-	componentDidUpdate(prevProps) {
+	componentDidUpdate(prevProps: Props) {
 		if (this.props.location !== prevProps.location) {
 			this.scrollToTop()
 		}

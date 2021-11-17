@@ -1,5 +1,4 @@
 {
-	"ts-node": { "files": true },
 	"compilerOptions": {
 		"target": "es6",
 		"allowJs": true,
@@ -12,6 +11,7 @@
 		"moduleResolution": "node",
 		"resolveJsonModule": true,
 		"isolatedModules": true,
+		"removeComments": true,
 		//
 		"baseUrl": "app/",
 		"noImplicitAny": true,
@@ -23,5 +23,6 @@
 		"sourceMap": true
 	},
 	"exclude": ["node_modules", "dist"],
-	"include": ["app"]
+	"include": ["app"],
+	"ts-node": { "files": true }
 }

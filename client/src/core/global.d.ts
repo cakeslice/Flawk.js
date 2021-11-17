@@ -42,26 +42,29 @@ declare global {
 		description: string,
 		type: 'warning' | 'error' | 'success' | 'info',
 		options: {
-			customComponent?: React.ComponentType
+			customComponent?: React.ComponentType | ReactElement<any, any>
 			playSound?: boolean
 			closeAfter?: number
 			closeButton?: boolean
+			closeOnClick?: boolean
 		}
 	) => void
 	var routerHistory: () => History
 	// ! --------------------------------------------------
 	var lang: Lang
 	var scrollToTop: () => void
-	var analytics: {
-		set: (obj: { userId: string }) => void
-		event: (event: {
-			category: string
-			action: string
-			label?: string
-			value?: number
-			nonInteraction?: boolean
-		}) => void
-	}
+	var analytics:
+		| {
+				set: (obj: { userId: string }) => void
+				event: (event: {
+					category: string
+					action: string
+					label?: string
+					value?: number
+					nonInteraction?: boolean
+				}) => void
+		  }
+		| undefined
 	var startAnalytics: () => Promise<void>
 	var storage:
 		| StorageFallback

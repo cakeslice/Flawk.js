@@ -43,7 +43,7 @@ export default {
 	},
 	getStructure: async (
 		name: string,
-		structures: [StructureConfig]
+		structures: StructureConfig[]
 	): Promise<ArrayKeyObject | undefined> => {
 		for (let g = 0; structures.length; g++) {
 			const s = structures[g]

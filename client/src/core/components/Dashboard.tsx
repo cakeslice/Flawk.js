@@ -37,7 +37,7 @@ export type DashboardRoute = {
 	notRoute?: boolean
 	overrideHeader?: boolean
 	// eslint-disable-next-line
-	page?: Element | React.LazyExoticComponent<any>
+	page?: Element | React.LazyExoticComponent<any> | typeof React.Component
 	onClick?: () => void
 	tab?: (props: TabProps) => JSX.Element
 	notExact?: boolean
@@ -266,6 +266,9 @@ export default class Dashboard extends Component<
 																	: mobileHeightTop
 															}
 															textColor={textColor}
+															toggleOpen={(open) =>
+																this.toggleOpen(open)
+															}
 															{...this.props.pageProps}
 														></MobileDrawer>
 													</div>
@@ -498,7 +501,6 @@ class Menu extends Component<{
 				{this.props.routes.map((entry, i) => {
 					if (entry.notRoute && entry.tab)
 						return entry.tab({
-							...this.props,
 							toggleOpen: this.props.toggleOpen,
 							isOpen: this.props.isOpen,
 							key: i.toString(),
