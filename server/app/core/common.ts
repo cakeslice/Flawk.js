@@ -109,10 +109,6 @@ export default {
 		return +(Math.round(target * pow) / pow)
 	},
 
-	/**
-	 * @param {Date} birthday
-	 * @returns {number}
-	 */
 	calculateAge: function (birthday: Date): number {
 		const ageDifMs = Date.now() - birthday.getTime()
 		const ageDate = new Date(ageDifMs) // miliseconds from epoch

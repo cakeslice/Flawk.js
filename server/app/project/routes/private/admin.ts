@@ -7,7 +7,6 @@
 
 import { Router } from '@awaitjs/express'
 import common from 'core/common'
-import config from 'core/config_'
 import paginate from 'express-paginate'
 import { Obj, SocketUser } from 'flawk-types'
 import _ from 'lodash'
@@ -15,9 +14,9 @@ import { Client } from 'project/database'
 
 const router = Router()
 
-router.useAsync(config.path + '/admin/*', common.adminMiddleware)
+router.useAsync('/admin/*', common.adminMiddleware)
 
-router.getAsync(config.path + '/admin/online_users', async (req, res) => {
+router.getAsync('/admin/online_users', async (req, res) => {
 	const websockets: { clients: SocketUser[]; unknownClients: number } = {
 		clients: [],
 		unknownClients: 0,
@@ -33,13 +32,13 @@ router.getAsync(config.path + '/admin/online_users', async (req, res) => {
 		.values()
 		.map((group) => ({ ...group[0], amount: group.length }))
 
-	common.setResponse(200, req, res, '', {
+	res.do(200, '', {
 		unknownClients: websockets.unknownClients,
 		clients: groupedClients,
 	})
 })
 
-router.postAsync(config.path + '/admin/search_users', async (req, res) => {
+router.postAsync('/admin/search_users', async (req, res) => {
 	const body: {
 		search?: string
 		includeUnverified?: boolean
@@ -86,14 +85,14 @@ router.postAsync(config.path + '/admin/search_users', async (req, res) => {
 		console.log('Fetched: ' + items.length.toString())
 		console.log('Total: ' + itemCount.toString())
 
-		common.setResponse(200, req, res, '', {
+		res.do(200, '', {
 			items: items,
 
 			hasNext: paginate.hasNextPages(req)(pageCount),
 			pageCount: pageCount,
 			itemCount: itemCount,
 		})
-	} else common.setResponse(404, req, res, 'Invalid schema')
+	} else res.do(404, 'Invalid schema')
 })
 
 export default router

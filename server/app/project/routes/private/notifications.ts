@@ -79,7 +79,7 @@ async function outputNotification(
 	return output
 }
 
-router.getAsync(config.path + '/client/notifications', async (req, res) => {
+router.getAsync('/client/notifications', async (req, res) => {
 	const requestUser = req.user as RequestUser
 
 	const query = { _id: requestUser._id }
@@ -104,7 +104,7 @@ router.getAsync(config.path + '/client/notifications', async (req, res) => {
 	const pageCount = common.countPages(itemCount, req)
 
 	if (!client) {
-		common.setResponse(404, req, res, config.response('userNotFound', req))
+		res.do(404, res.response('userNotFound'))
 		return
 	}
 
@@ -115,7 +115,7 @@ router.getAsync(config.path + '/client/notifications', async (req, res) => {
 		notifications.push(await outputNotification(req.lang, client.arrays.notifications[i]))
 	}
 
-	common.setResponse(200, req, res, '', {
+	res.do(200, '', {
 		notifications: notifications,
 		unreadCount: unreadCount,
 
@@ -124,7 +124,7 @@ router.getAsync(config.path + '/client/notifications', async (req, res) => {
 	})
 })
 
-router.postAsync(config.path + '/client/read_notifications', async (req, res) => {
+router.postAsync('/client/read_notifications', async (req, res) => {
 	const body: { playerID: string; notificationID: string } = req.body
 	const requestUser = req.user as RequestUser
 
@@ -133,10 +133,10 @@ router.postAsync(config.path + '/client/read_notifications', async (req, res) =>
 		{ $set: { 'arrays.notifications.$.isRead': true } }
 	)
 
-	common.setResponse(200, req, res)
+	res.do(200)
 })
 
-router.postAsync(config.path + '/client/update_mobile_notification_id', async (req, res) => {
+router.postAsync('/client/update_mobile_notification_id', async (req, res) => {
 	const body: { playerID: string } = req.body
 	const requestUser = req.user as RequestUser
 
@@ -150,7 +150,7 @@ router.postAsync(config.path + '/client/update_mobile_notification_id', async (r
 
 		await user.save()
 	}
-	common.setResponse(200, req, res)
+	res.do(200)
 })
 
 export default router

@@ -28,6 +28,9 @@ declare module 'express-serve-static-core' {
 	}
 	interface Response {
 		sentry?: any
+		do: (status: number, message?: string, data?: Obj) => void
+		response: (key: string) => string
+		text: (key: string) => string
 	}
 }
 

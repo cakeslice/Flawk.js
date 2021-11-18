@@ -18,12 +18,12 @@ import { Client } from 'project/database'
 
 const router = Router()
 
-router.postAsync(config.path + '/client/logout', async (req, res) => {
+router.postAsync('/client/logout', async (req, res) => {
 	const requestUser = req.user as RequestUser
 
 	const user = await Client.findOne({ _id: requestUser._id }).select('access.activeTokens')
 
-	if (!user) common.setResponse(404, req, res, config.response('userNotFound', req))
+	if (!user) res.do(404, res.response('userNotFound'))
 	else {
 		for (let j = user.access.activeTokens.length - 1; j >= 0; j--) {
 			if (user.access.activeTokens[j] === req.token) user.access.activeTokens.splice(j, 1)
@@ -31,11 +31,11 @@ router.postAsync(config.path + '/client/logout', async (req, res) => {
 
 		await user.save()
 
-		common.setResponse(200, req, res)
+		res.do(200)
 	}
 })
 
-router.postAsync(config.path + '/client/upload_url/', async (req, res) => {
+router.postAsync('/client/upload_url/', async (req, res) => {
 	const requestUser = req.user as RequestUser
 
 	const body: {
@@ -50,7 +50,7 @@ router.postAsync(config.path + '/client/upload_url/', async (req, res) => {
 		return
 	}
 
-	common.setResponse(200, req, res, '', {
+	res.do(200, '', {
 		putURL: url.putURL,
 		getURL:
 			config.bucketCDNOriginal && config.bucketCDNTarget
@@ -59,7 +59,7 @@ router.postAsync(config.path + '/client/upload_url/', async (req, res) => {
 	})
 })
 
-router.getAsync(config.path + '/client/data', async (req, res) => {
+router.getAsync('/client/data', async (req, res) => {
 	const requestUser = req.user as RequestUser
 
 	const selection = '_id email phone permission flags personal settings'
@@ -86,21 +86,15 @@ router.getAsync(config.path + '/client/data', async (req, res) => {
 			res.cookie('token', token, config.cookieSettings)
 		}
 
-		common.setResponse(200, req, res, '', {
+		res.do(200, '', {
 			...user,
 			arrays: undefined,
 			token: token,
 		})
-	} else
-		common.setResponse(
-			500,
-			req,
-			res,
-			'No token found even though it was able to call client/data'
-		)
+	} else res.do(500, 'No token found even though it was able to call client/data')
 })
 
-router.postAsync(config.path + '/client/change_settings', async (req, res) => {
+router.postAsync('/client/change_settings', async (req, res) => {
 	const requestUser = req.user as RequestUser
 
 	const body: {
@@ -115,7 +109,7 @@ router.postAsync(config.path + '/client/change_settings', async (req, res) => {
 
 	const user = await Client.findOne({ _id: requestUser._id }).select(selection)
 	if (!user) {
-		common.setResponse(404, req, res, config.response('userNotFound', req))
+		res.do(404, res.response('userNotFound'))
 		return
 	}
 
@@ -125,7 +119,7 @@ router.postAsync(config.path + '/client/change_settings', async (req, res) => {
 		.select('_id')
 		.lean()
 	if (duplicate) {
-		common.setResponse(409, req, res, 'Duplicate')
+		res.do(409, 'Duplicate')
 		return
 	}
 
@@ -154,7 +148,7 @@ router.postAsync(config.path + '/client/change_settings', async (req, res) => {
 			await sendEmail(
 				user.email,
 				{
-					subject: config.text('passwordChanged', req),
+					subject: res.text('passwordChanged'),
 					substitutions: {
 						fullName:
 							(user.personal.firstName || '') + ' ' + (user.personal.lastName || ''),
@@ -169,7 +163,7 @@ router.postAsync(config.path + '/client/change_settings', async (req, res) => {
 	await user.save()
 
 	if (token) res.cookie('token', token, config.cookieSettings)
-	common.setResponse(200, req, res, undefined, {
+	res.do(200, undefined, {
 		token: token,
 	})
 })

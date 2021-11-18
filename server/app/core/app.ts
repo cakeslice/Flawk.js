@@ -21,7 +21,7 @@ import express, { ErrorRequestHandler, RequestHandler } from 'express'
 import mongoSanitize from 'express-mongo-sanitize'
 import * as OpenApiValidator from 'express-openapi-validator'
 import paginate from 'express-paginate'
-import { ArrayKeyObject, KeyArrayKeyObject } from 'flawk-types'
+import { ArrayKeyObject, KeyArrayKeyObject, Obj } from 'flawk-types'
 import fs from 'fs'
 import GitRepoInfo from 'git-repo-info'
 import helmet from 'helmet'
@@ -179,6 +179,16 @@ async function setup() {
 	app.use(express.json())
 	app.use(express.urlencoded({ extended: true }))
 	if (config.prod || config.staging) app.enable('trust proxy') // Only if you're behind a reverse proxy (Heroku, Bluemix, AWS ELB, Nginx, etc)
+
+	// Helper functions
+	app.all(config.path + '/*', function (req, res, next) {
+		res.do = (status: number, message?: string, data?: Obj) => {
+			common.setResponse(status, req, res, message, data)
+		}
+		res.response = (key: string) => config.response(key, req)
+		res.text = (key: string) => config.text(key, req)
+		next()
+	})
 
 	// Prevent mongo injection attacks
 	app.use(config.path + '/*', mongoSanitize())
@@ -390,7 +400,7 @@ async function setup() {
 		const route = require('project' + config.publicRoutes[i]).default
 		if (route) {
 			// eslint-disable-next-line
-			app.use('/', route)
+			app.use(config.path + '/', route)
 			console.log('Adding ' + '/project' + config.publicRoutes[i])
 		} else {
 			console.log('FAILED ' + '/project' + config.publicRoutes[i])
@@ -401,7 +411,7 @@ async function setup() {
 		const route = require('project' + config.routes[i]).default
 		if (route) {
 			// eslint-disable-next-line
-			app.use('/', route)
+			app.use(config.path + '/', route)
 			console.log('Adding ' + '/project' + config.routes[i])
 		} else {
 			console.log('FAILED ' + '/project' + config.routes[i])

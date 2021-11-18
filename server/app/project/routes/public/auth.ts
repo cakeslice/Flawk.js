@@ -16,7 +16,7 @@ import { Client } from 'project/database'
 
 const router = Router()
 
-router.postAsync(config.path + '/client/login', async (req, res) => {
+router.postAsync('/client/login', async (req, res) => {
 	const body: {
 		email: string
 		password: string
@@ -26,11 +26,11 @@ router.postAsync(config.path + '/client/login', async (req, res) => {
 	const user = await Client.findOne({ email: body.email }).select(selection)
 
 	if (!user) {
-		common.setResponse(401, req, res, config.response('authFailed', req))
+		res.do(401, res.response('authFailed'))
 		return
 	}
 	if (user.flags.includes('suspended')) {
-		common.setResponse(400, req, res, config.response('accountSuspended', req))
+		res.do(400, res.response('accountSuspended'))
 		return
 	}
 
@@ -49,14 +49,14 @@ router.postAsync(config.path + '/client/login', async (req, res) => {
 			await user.save()
 
 			res.cookie('token', token, config.cookieSettings)
-			common.setResponse(200, req, res, undefined, {
+			res.do(200, undefined, {
 				token: token,
 			})
-		} else common.setResponse(401, req, res, config.response('authFailed', req))
-	} else common.setResponse(401, req, res, config.response('authFailed', req))
+		} else res.do(401, res.response('authFailed'))
+	} else res.do(401, res.response('authFailed'))
 })
 
-router.postAsync(config.path + '/client/register', async (req, res) => {
+router.postAsync('/client/register', async (req, res) => {
 	const body: {
 		email: string
 		firstName: string
@@ -69,7 +69,7 @@ router.postAsync(config.path + '/client/register', async (req, res) => {
 	const selection = '_id flags access appState personal'
 	const user = await Client.findOne({ email: body.email }).select(selection)
 	if (user && user.flags.includes('verified')) {
-		common.setResponse(409, req, res, config.response('userTaken', req))
+		res.do(409, res.response('userTaken'))
 		return
 	}
 
@@ -117,9 +117,7 @@ router.postAsync(config.path + '/client/register', async (req, res) => {
 	/*
 	var r = await common.sendSMSMessage(
 			body.countryPhoneCode + body.phone,
-			config.response('SMSConfirmation', req).replace("<code>", newUser.appState.verificationCode),
-			res,
-			req
+			res.response('SMSConfirmation').replace("<code>", newUser.appState.verificationCode)
 		)
 		if(!r.success)
 			return
@@ -127,7 +125,7 @@ router.postAsync(config.path + '/client/register', async (req, res) => {
 	await sendEmail(
 		body.email,
 		{
-			subject: config.text('verifyAccount', req),
+			subject: res.text('verifyAccount'),
 			substitutions: {
 				firstName: newUser.personal.firstName,
 				verificationCode: newUser.appState.verificationCode,
@@ -136,10 +134,10 @@ router.postAsync(config.path + '/client/register', async (req, res) => {
 		'test'
 	)
 
-	common.setResponse(200, req, res)
+	res.do(200)
 })
 
-router.postAsync(config.path + '/client/register_verify', async (req, res) => {
+router.postAsync('/client/register_verify', async (req, res) => {
 	const body: {
 		email: string
 		verificationCode: string
@@ -149,12 +147,12 @@ router.postAsync(config.path + '/client/register_verify', async (req, res) => {
 	const user = await Client.findOne({ email: body.email }).select(selection)
 
 	if (!user) {
-		common.setResponse(404, req, res, config.response('userNotFound', req), undefined)
+		res.do(404, res.response('userNotFound'), undefined)
 		return
 	}
 
 	if (user.flags.includes('verified')) {
-		common.setResponse(400, req, res, config.response('userAlreadyVerified', req))
+		res.do(400, res.response('userAlreadyVerified'))
 		return
 	}
 
@@ -178,11 +176,11 @@ router.postAsync(config.path + '/client/register_verify', async (req, res) => {
 
 		res.cookie('token', token, config.cookieSettings)
 
-		common.setResponse(200, req, res, undefined, { token: token })
-	} else common.setResponse(401, req, res, config.response('wrongCode', req))
+		res.do(200, undefined, { token: token })
+	} else res.do(401, res.response('wrongCode'))
 })
 
-router.postAsync(config.path + '/client/forgot_password', async (req, res) => {
+router.postAsync('/client/forgot_password', async (req, res) => {
 	const body: {
 		email: string
 	} = req.body
@@ -193,7 +191,7 @@ router.postAsync(config.path + '/client/forgot_password', async (req, res) => {
 	const user = await Client.findOne({ email: body.email }).select(selection)
 
 	if (!user || !user.flags.includes('verified')) {
-		common.setResponse(404, req, res, config.response('userNotFound', req))
+		res.do(404, res.response('userNotFound'))
 		return
 	}
 
@@ -208,7 +206,7 @@ router.postAsync(config.path + '/client/forgot_password', async (req, res) => {
 	await sendEmail(
 		user.email,
 		{
-			subject: config.text('forgotVerify', req),
+			subject: res.text('forgotVerify'),
 			substitutions: {
 				email: user.email,
 				firstName: user.personal.firstName,
@@ -218,10 +216,10 @@ router.postAsync(config.path + '/client/forgot_password', async (req, res) => {
 		'test'
 	)
 
-	common.setResponse(200, req, res)
+	res.do(200)
 })
 
-router.postAsync(config.path + '/client/reset_password', async (req, res) => {
+router.postAsync('/client/reset_password', async (req, res) => {
 	const body: {
 		email: string
 		newPassword: string
@@ -232,12 +230,12 @@ router.postAsync(config.path + '/client/reset_password', async (req, res) => {
 	const user = await Client.findOne({ email: body.email }).select(selection)
 
 	if (config.prod) {
-		common.setResponse(400, req, res, 'Disabled in production')
+		res.do(400, 'Disabled in production')
 		return
 	}
 
 	if (!user || !user.flags.includes('verified')) {
-		common.setResponse(404, req, res, config.response('userNotFound', req))
+		res.do(404, res.response('userNotFound'))
 		return
 	}
 
@@ -259,7 +257,7 @@ router.postAsync(config.path + '/client/reset_password', async (req, res) => {
 		await sendEmail(
 			body.email,
 			{
-				subject: config.text('passwordChanged', req),
+				subject: res.text('passwordChanged'),
 				substitutions: {
 					fullName:
 						(user.personal.firstName || '') + ' ' + (user.personal.lastName || ''),
@@ -270,12 +268,12 @@ router.postAsync(config.path + '/client/reset_password', async (req, res) => {
 		)
 
 		res.cookie('token', token, config.cookieSettings)
-		common.setResponse(200, req, res, undefined, { token: token })
-	} else common.setResponse(401, req, res, config.response('wrongCode', req))
+		res.do(200, undefined, { token: token })
+	} else res.do(401, res.response('wrongCode'))
 })
 
 // ! All routes after this will require a valid token
 
-router.useAsync(config.path + '/*', common.tokenMiddleware())
+router.useAsync('/*', common.tokenMiddleware())
 
 export default router

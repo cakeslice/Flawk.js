@@ -122,6 +122,7 @@ module.exports = {
 				'import/named': 'off',
 				'no-use-before-define': 'off',
 				//
+				'@typescript-eslint/restrict-plus-operands': 'off',
 				'@typescript-eslint/require-await': 'warn',
 				'@typescript-eslint/no-explicit-any': ['error'],
 				'@typescript-eslint/no-use-before-define': ['error'],
