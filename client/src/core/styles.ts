@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import { GlamorProps } from 'flawk-types'
 import config from './config_'
 
 const _font = 'Roboto'
@@ -37,34 +38,55 @@ export default {
 	font: _font,
 	// @ts-ignore
 	fontAlt: _fontAlt,
+	// @ts-ignore
 	defaultBorderRadius: 6,
+	// @ts-ignore
 	defaultFontSize: 14,
+	// @ts-ignore
 	defaultFontBold: 700,
 
 	// Input Config
 
+	// @ts-ignore
 	invalidFontSize: 13,
+	// @ts-ignore
 	inputFontWeight: undefined,
 
+	// @ts-ignore
 	inputBorderFactorDay: 0.2,
+	// @ts-ignore
 	inputBorderFactorNight: 0.15,
 
+	// @ts-ignore
 	inputLabelOpacityNight: 0.66,
+	// @ts-ignore
 	inputLabelOpacityDay: 0.75,
 
+	// @ts-ignore
 	inputHeight: 31,
 
 	// Button Config
 
+	// @ts-ignore
 	buttonFontWeight: undefined,
+	// @ts-ignore
+	extraButtons: [] as ({
+		buttonType: string
+	} & GlamorProps &
+		React.CSSProperties)[],
 
 	// Modal Config
 
+	// @ts-ignore
 	modalWidth: undefined,
+	// @ts-ignore
 	modalPadding: undefined,
 	modalBackground: undefined,
+	// @ts-ignore
 	modalHeader: true,
+	// @ts-ignore
 	modalButtonWrap: true,
+	// @ts-ignore
 	modalHeaderStyle: {
 		line: true,
 		noCloseButton: false,
@@ -78,6 +100,7 @@ export default {
 		noCloseButton: boolean
 		textStyle: React.CSSProperties
 	},
+	// @ts-ignore
 	modalButtonsStyle: {
 		line: true,
 		//flexWrap: 'none',
@@ -96,15 +119,17 @@ export default {
 	customDropdown: undefined as
 		| { indicator?: { background: string }; menu?: React.CSSProperties }
 		| undefined,
+	// @ts-ignore
 	dropdownFontWeight: undefined,
 
 	// Table Config
+	// @ts-ignore
 	customTable: undefined as
 		| ({
-				headerWrapperStyle: React.CSSProperties
-				rowStyle: React.CSSProperties
-				wrapperStyle: React.CSSProperties
-				rowWrapperStyle: React.CSSProperties
+				headerWrapperStyle?: React.CSSProperties
+				rowStyle?: React.CSSProperties
+				wrapperStyle?: React.CSSProperties
+				rowWrapperStyle?: React.CSSProperties
 		  } & React.CSSProperties)
 		| undefined,
 
@@ -115,6 +140,7 @@ export default {
 
 	// Cards
 
+	// @ts-ignore
 	card: {
 		boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.05), 0 6px 20px 0 rgba(0, 0, 0, 0.05)',
 		borderStyle: 'solid',
@@ -172,14 +198,20 @@ export default {
 		borderColor: _borderColor,
 		borderColorDay: _borderColor,
 		borderColorNight: _borderColorNight,
+		// @ts-ignore
 		lineColor: _lineColor,
+		// @ts-ignore
 		lineColorDay: _lineColor,
+		// @ts-ignore
 		lineColorNight: _lineColorNight,
+		// @ts-ignore
 		green: _green,
 		blue: _blue,
+		// @ts-ignore
 		red: _red,
 		pink: _pink,
 		orange: _orange,
+		// @ts-ignore
 		yellow: _yellow,
 		...config.projectStyles.colorsOverride,
 	},
@@ -218,6 +250,7 @@ export default {
 		borderColor: _main,
 		background: config.replaceAlpha(_main, 0.1),
 	} as React.CSSProperties,
+	// @ts-ignore
 	dropZoneReject: {
 		borderColor: _red,
 		background: config.replaceAlpha(_red, 0.1),

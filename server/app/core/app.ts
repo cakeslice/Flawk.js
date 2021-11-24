@@ -31,7 +31,7 @@ import makeSynchronous from 'make-synchronous'
 import mongoose from 'mongoose'
 import openAPIDocument from 'project/api/api.json'
 import { Client, structures } from 'project/database'
-import { RateLimiterMongo } from 'rate-limiter-flexible'
+import { RateLimiterMemory } from 'rate-limiter-flexible'
 import responseTime from 'response-time'
 import { Server as SocketServer } from 'socket.io'
 import 'source-map-support/register'
@@ -177,6 +177,7 @@ function extractRouteTypes(file: string) {
 		let text = printer.printNode(ts.EmitHint.Unspecified, node, sourceFile) // eslint-disable-line
 		if (text.includes('call: "') && text.includes('method: "')) {
 			text = text.replace(/\/\*[\s\S]*?\*\/|\/\/.*/g, '') // Remove comments
+			text = text.substring(0, text.length - 1) // Remove last semicolon
 
 			text = text.split(' = ')[1]
 			text = text.replaceAll('{} as ', '')
@@ -185,9 +186,6 @@ function extractRouteTypes(file: string) {
 			text = text.replaceAll('",', ',')
 
 			text = text.replace(/(['"])?([a-z0-9A-Z_?]+)(['"])?:/g, '"$2": ') // Add quotes to keys
-
-			// Remove last trailing comma
-			text = text.substring(0, text.length - 1)
 
 			text = text.replaceAll(':  ', ': "')
 			text = text.replaceAll(',', '",')
@@ -201,9 +199,23 @@ function extractRouteTypes(file: string) {
 			// Support for object arrays
 			text = text.replaceAll('}[]', ',\n"isArray": "isArray"\n}')
 
-			//console.log(text)
-			const json: Obj = JSON.parse(text)
-			output.push(json)
+			try {
+				const json: Obj = JSON.parse(text)
+
+				let valid = true
+				if (json.pagination && json.pagination !== 'true') valid = false
+				if (json.multipart && json.multipart !== 'true') valid = false
+				if (json.recaptcha && json.recaptcha !== 'true') valid = false
+				if (json.description && typeof json.description !== 'string') valid = false
+				if (typeof json.method !== 'string') valid = false
+				if (typeof json.call !== 'string') valid = false
+
+				if (!valid) throw Error()
+
+				output.push(json)
+			} catch (e) {
+				throw Error('Path declaration not supported:\n' + text)
+			}
 		}
 	})
 
@@ -216,7 +228,9 @@ type Path = {
 	body?: Obj
 	responses?: { [key: string]: { description?: string; body?: Obj } }
 	description?: string
-	multipart?: boolean
+	multipart?: 'true'
+	pagination?: 'true'
+	recaptcha?: 'true'
 }
 function mapApiType(type: string): { type: string; format?: string; of?: string } {
 	if (
@@ -336,13 +350,24 @@ function addPath(path: Path, tag: string) {
 		in: 'query'
 		name: string
 		required?: boolean
-	}[] = []
+	}[] =
+		path.pagination === 'true'
+			? [
+					{ schema: { type: 'string' }, in: 'query', name: 'limit' },
+					{ schema: { type: 'string' }, in: 'query', name: 'page' },
+			  ]
+			: []
+	if (path.recaptcha === 'true')
+		query.push({ schema: { type: 'string' }, in: 'query', name: 'recaptchaToken' })
+
 	if (path.query) {
 		Object.keys(path.query).forEach((k) => {
 			if (path.query) {
 				const p = path.query[k] as string
 
 				const property = k.replace('?', '')
+				if (property === 'limit' || property === 'page')
+					throw new Error('Query parameter ' + property + ' is reserved')
 				query.push({
 					schema: mapApiType(p),
 					in: 'query',
@@ -444,30 +469,33 @@ function addPath(path: Path, tag: string) {
 			...(body !== undefined && {
 				requestBody: {
 					required: true,
-					content: path.multipart
-						? {
-								'multipart/form-data': {
-									schema: {
-										type: 'object',
-										properties: {
-											...body,
-											fileObject: {
-												type: 'string',
+					content:
+						path.multipart === 'true'
+							? {
+									'multipart/form-data': {
+										schema: {
+											type: 'object',
+											properties: {
+												...body,
+												fileObject: {
+													type: 'string',
+												},
 											},
+											required: [...requiredBody, 'fileObject'],
 										},
-										required: [...requiredBody, 'fileObject'],
 									},
-								},
-						  }
-						: {
-								'application/json': {
-									schema: {
-										type: 'object',
-										properties: body,
-										...(requiredBody.length > 0 && { required: requiredBody }),
+							  }
+							: {
+									'application/json': {
+										schema: {
+											type: 'object',
+											properties: body,
+											...(requiredBody.length > 0 && {
+												required: requiredBody,
+											}),
+										},
 									},
-								},
-						  },
+							  },
 				},
 			}),
 			parameters: query,
@@ -490,7 +518,14 @@ async function generateOpenApi() {
 					operationId: 'get-api',
 					responses: {
 						'200': {
-							description: 'OK',
+							description: 'Success',
+							content: {
+								'application/json': {
+									schema: {
+										type: 'object',
+									},
+								},
+							},
 						},
 					},
 					tags: ['public'],
@@ -502,7 +537,20 @@ async function generateOpenApi() {
 					operationId: 'get-build_number',
 					responses: {
 						'200': {
-							description: 'OK',
+							description: 'Success',
+							content: {
+								'application/json': {
+									schema: {
+										type: 'object',
+										properties: {
+											buildNumber: {
+												type: 'string',
+											},
+										},
+										required: ['buildNumber'],
+									},
+								},
+							},
 						},
 					},
 					tags: ['public'],
@@ -514,7 +562,20 @@ async function generateOpenApi() {
 					operationId: 'get-structures',
 					responses: {
 						'200': {
-							description: 'OK',
+							description: 'Success',
+							content: {
+								'application/json': {
+									schema: {
+										type: 'object',
+										properties: {
+											structures: {
+												type: 'object',
+											},
+										},
+										required: ['structures'],
+									},
+								},
+							},
 						},
 					},
 					tags: ['public'],
@@ -526,7 +587,7 @@ async function generateOpenApi() {
 					operationId: 'get-online',
 					responses: {
 						'200': {
-							description: 'OK',
+							description: 'Success',
 						},
 					},
 					tags: ['public'],
@@ -649,21 +710,15 @@ async function setup() {
 
 	if (!config.jest) {
 		const rateLimiter = {
-			default: new RateLimiterMongo({
-				storeClient: mongoose.connection,
-				keyPrefix: 'ratelimit_default',
+			default: new RateLimiterMemory({
 				points: 12, // X requests
 				duration: 1, // per X second by IP
 			}),
-			limited: new RateLimiterMongo({
-				storeClient: mongoose.connection,
-				keyPrefix: 'ratelimit_limited',
+			limited: new RateLimiterMemory({
 				points: 3, // X requests
 				duration: 10, // per X second by IP
 			}),
-			extremelyLimited: new RateLimiterMongo({
-				storeClient: mongoose.connection,
-				keyPrefix: 'ratelimit_extreme',
+			extremelyLimited: new RateLimiterMemory({
 				points: 10, // X requests
 				duration: 60 * 15, // per X second by IP
 			}),
@@ -756,11 +811,20 @@ async function setup() {
 				},
 			],
 
+			validateApiSec: true,
+			validateSecurity: true,
 			validateRequests: {
 				coerceTypes: false,
 				allowUnknownQueryParameters: false,
 			},
-			validateResponses: false,
+			validateResponses: {
+				onError: (error, body, req) => {
+					const msg: string = error + '\nPath: ' + req.originalUrl + '\nBody: ' + body
+
+					console.log(msg)
+					if (config.sentryID) Sentry.captureMessage(msg)
+				},
+			},
 			validateFormats: 'full',
 		})
 	)

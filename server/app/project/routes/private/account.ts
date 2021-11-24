@@ -10,13 +10,19 @@ import bcrypt from 'bcryptjs'
 import common from 'core/common'
 import config from 'core/config_'
 import { sendEmail } from 'core/functions/email'
+import { ObjectId } from 'flawk-types'
 import jwt from 'jsonwebtoken'
 import moment from 'moment'
 import { Client } from 'project/database'
 
 const router = Router()
 
-router.postAsync('/client/logout', async (req, res) => {
+const Logout = {
+	call: '/client/logout',
+	method: 'post',
+	description: 'Logout a user',
+}
+router.postAsync(Logout.call, async (req, res) => {
 	const user = await Client.findOne({ _id: req.user._id }).select('access.activeTokens')
 
 	if (!user) res.do(404, res.response('userNotFound'))
@@ -31,10 +37,24 @@ router.postAsync('/client/logout', async (req, res) => {
 	}
 })
 
-router.postAsync('/client/upload_url/', async (req, res) => {
-	const body: {
+const UploadURL = {
+	call: '/client/upload_url/',
+	method: 'post',
+	description: 'Get a S3 URL to upload a file to',
+	body: {} as {
 		contentType: string
-	} = req.body
+	},
+	responses: {
+		_200: {
+			body: {} as {
+				putURL: string
+				getURL: string
+			},
+		},
+	},
+}
+router.postAsync(UploadURL.call, async (req, res) => {
+	const body: typeof UploadURL.body = req.body
 	const folderPath = config.publicUploadsPath + '/client/' + req.user._id
 
 	const url = await common.getS3SignedURL(body.contentType, folderPath)
@@ -43,16 +63,42 @@ router.postAsync('/client/upload_url/', async (req, res) => {
 		return
 	}
 
-	res.do(200, '', {
+	const response: typeof UploadURL.responses._200.body = {
 		putURL: url.putURL,
 		getURL:
 			config.bucketCDNOriginal && config.bucketCDNTarget
 				? url.getURL.replace(config.bucketCDNOriginal, config.bucketCDNTarget)
 				: url.getURL,
-	})
+	}
+	res.do(200, '', response)
 })
 
-router.getAsync('/client/data', async (req, res) => {
+const Data = {
+	call: '/client/data',
+	method: 'get',
+	responses: {
+		_200: {
+			body: {} as {
+				_id: ObjectId
+				email?: string
+				phone?: string
+				permission: number
+				flags: string[]
+				personal: {
+					firstName?: string
+					lastName?: string
+					photoURL?: string
+				}
+				settings: {
+					language?: string
+				}
+				//
+				token?: string
+			},
+		},
+	},
+}
+router.getAsync(Data.call, async (req, res) => {
 	const selection = '_id email phone permission flags personal settings'
 	const user = await Client.findOne({ _id: req.user._id })
 		.lean({ virtuals: true })

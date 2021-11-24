@@ -17,11 +17,24 @@ import { Client } from 'project/database'
 
 const router = Router()
 
-router.postAsync('/client/login', async (req, res) => {
-	const body: {
+const Login = {
+	call: '/client/login',
+	method: 'post',
+	description: 'Login a user',
+	body: {} as {
 		email: string
 		password: string
-	} = req.body
+	},
+	responses: {
+		_200: {
+			body: {} as {
+				token: string
+			},
+		},
+	},
+}
+router.postAsync(Login.call, async (req, res) => {
+	const body: typeof Login.body = req.body
 
 	const selection = '_id email phone flags access'
 	const user = await Client.findOne({ email: body.email }).select(selection)
@@ -50,20 +63,28 @@ router.postAsync('/client/login', async (req, res) => {
 			await user.save()
 
 			res.cookie('token', token, config.cookieSettings)
-			res.do(200, undefined, {
+			const response: typeof Login.responses._200.body = {
 				token: token,
-			})
+			}
+			res.do(200, undefined, response)
 		} else res.do(401, res.response('authFailed'))
 	} else res.do(401, res.response('authFailed'))
 })
 
-router.postAsync('/client/register', async (req, res) => {
-	const body: {
+const Register = {
+	call: '/client/register',
+	method: 'post',
+	description: 'Register a user and send code to e-mail to use in /register_verify',
+	recaptcha: true,
+	body: {} as {
 		email: string
 		firstName: string
 		lastName: string
 		password: string
-	} = req.body
+	},
+}
+router.postAsync(Register.call, async (req, res) => {
+	const body: typeof Register.body = req.body
 
 	if (!(await common.checkRecaptcha(req, res))) return
 
@@ -136,11 +157,24 @@ router.postAsync('/client/register', async (req, res) => {
 	res.do(200)
 })
 
-router.postAsync('/client/register_verify', async (req, res) => {
-	const body: {
+const RegisterVerify = {
+	call: '/client/register_verify',
+	method: 'post',
+	description: "Verify user's registration with code from /register",
+	body: {} as {
 		email: string
-		verificationCode: string
-	} = req.body
+		verificationCode: number
+	},
+	responses: {
+		_200: {
+			body: {} as {
+				token: string
+			},
+		},
+	},
+}
+router.postAsync(RegisterVerify.call, async (req, res) => {
+	const body: typeof RegisterVerify.body = req.body
 
 	const selection = '_id flags access personal appState'
 	const user = await Client.findOne({ email: body.email }).select(selection)
@@ -175,14 +209,24 @@ router.postAsync('/client/register_verify', async (req, res) => {
 
 		res.cookie('token', token, config.cookieSettings)
 
-		res.do(200, undefined, { token: token })
+		const response: typeof RegisterVerify.responses._200.body = {
+			token: token,
+		}
+		res.do(200, undefined, response)
 	} else res.do(401, res.response('wrongCode'))
 })
 
-router.postAsync('/client/forgot_password', async (req, res) => {
-	const body: {
+const ForgotPassword = {
+	call: '/client/forgot_password',
+	method: 'post',
+	description: 'Sends an e-mail to the user with a verification code to /reset_password',
+	recaptcha: true,
+	body: {} as {
 		email: string
-	} = req.body
+	},
+}
+router.postAsync(ForgotPassword.call, async (req, res) => {
+	const body: typeof ForgotPassword.body = req.body
 
 	if (!(await common.checkRecaptcha(req, res))) return
 
@@ -218,12 +262,25 @@ router.postAsync('/client/forgot_password', async (req, res) => {
 	res.do(200)
 })
 
-router.postAsync('/client/reset_password', async (req, res) => {
-	const body: {
+const ResetPassword = {
+	call: '/client/reset_password',
+	method: 'post',
+	description: 'Set a new password and login with verification code from /forgot_password',
+	body: {} as {
 		email: string
 		newPassword: string
-		verificationCode: string
-	} = req.body
+		verificationCode: number
+	},
+	responses: {
+		_200: {
+			body: {} as {
+				token: string
+			},
+		},
+	},
+}
+router.postAsync(ResetPassword.call, async (req, res) => {
+	const body: typeof ResetPassword.body = req.body
 
 	const selection = '_id access flags appState personal'
 	const user = await Client.findOne({ email: body.email }).select(selection)
@@ -268,7 +325,10 @@ router.postAsync('/client/reset_password', async (req, res) => {
 		)
 
 		res.cookie('token', token, config.cookieSettings)
-		res.do(200, undefined, { token: token })
+		const response: typeof ResetPassword.responses._200.body = {
+			token: token,
+		}
+		res.do(200, undefined, response)
 	} else res.do(401, res.response('wrongCode'))
 })
 

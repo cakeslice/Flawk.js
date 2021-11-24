@@ -152,7 +152,7 @@ class CT extends ReactQueryParams {
 			},
 		}
 
-		const wrapperStyle = {
+		const wrapperStyle: React.CSSProperties = {
 			...styles.card,
 			padding: 0,
 			margin: 0,
