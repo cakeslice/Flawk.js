@@ -17,6 +17,16 @@ module.exports = {
 	extends: [
 		'react-app',
 		'react-app/jest',
+		// Already includes: (no need to install)
+		// eslint-plugin-react
+		// eslint-plugin-react-hooks
+		// eslint-plugin-jsx-a11y
+		// eslint-plugin-testing-library
+		// eslint-plugin-import
+		// eslint-plugin-jest
+		// @typescript-eslint/parser
+		// @typescript-eslint/eslint-plugin
+		//
 		'eslint:recommended',
 		'plugin:import/recommended',
 		'plugin:react-hooks/recommended',
