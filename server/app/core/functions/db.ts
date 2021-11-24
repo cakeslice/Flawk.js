@@ -14,6 +14,23 @@ import mongooseLeanVirtuals from 'mongoose-lean-virtuals'
 export const ObjectIdType = Schema.Types.ObjectId
 export const MixedType = Schema.Types.Mixed
 
+export type AggregationCount = {
+	count: number
+}[]
+
+export type ObjectId = mongoose.Types.ObjectId
+export function newObjectId() {
+	return new mongoose.Types.ObjectId()
+}
+// eslint-disable-next-line
+export async function getNextRef(model: Model<any>) {
+	const c = await model
+		.findOne({ reference: { $exists: true } })
+		.sort('-reference')
+		.select('reference')
+	return c && c.reference !== undefined ? (c.reference as number) : 0
+}
+
 export type StructureConfig = {
 	sendToFrontend: boolean
 	cache: boolean
@@ -30,7 +47,6 @@ export default {
 		return true
 	},
 	toObjectID: function (id: string) {
-		if (!mongoose.Types.ObjectId.isValid(id)) return undefined
 		return new mongoose.Types.ObjectId(id)
 	},
 	attachPlugins: function (schema: Schema) {
@@ -48,11 +64,7 @@ export default {
 		for (let g = 0; structures.length; g++) {
 			const s = structures[g]
 			if (s.schema.collection.name === name) {
-				let structure = (await s.schema
-					.find({})
-					.lean()
-					.sort(s.sortKey)
-					.exec()) as ArrayKeyObject
+				let structure = (await s.schema.find({}).lean().sort(s.sortKey)) as ArrayKeyObject
 
 				if (structure && s.postProcess) {
 					structure = await s.postProcess(structure)
@@ -90,7 +102,7 @@ export default {
 		id: mongoose.Types.ObjectId,
 		arrayName: string,
 		key: string,
-		keysArray: [string]
+		keysArray: (string | mongoose.Types.ObjectId)[]
 	) {
 		const o: { $pull: KeyObject } = { $pull: {} }
 		o['$pull'][arrayName] = {}

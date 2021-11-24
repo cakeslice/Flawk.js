@@ -9,6 +9,7 @@ import { Router } from '@awaitjs/express'
 import bcrypt from 'bcryptjs'
 import common from 'core/common'
 import config from 'core/config_'
+import { getNextRef } from 'core/functions/db'
 import { sendEmail } from 'core/functions/email'
 import crypto from 'crypto-extra'
 import jwt from 'jsonwebtoken'
@@ -79,13 +80,11 @@ router.postAsync('/client/register', async (req, res) => {
 		max: 99999,
 	})
 
-	const c = await Client.findOne({ reference: { $exists: true } })
-		.sort('-reference')
-		.select('reference')
+	const ref = await getNextRef(Client)
 	let newUser
 	if (!user) {
 		newUser = new Client({
-			reference: c ? c.reference + 1 : 0,
+			reference: ref,
 			email: body.email,
 			appState: {
 				verificationCode: code,
@@ -250,7 +249,8 @@ router.postAsync('/client/reset_password', async (req, res) => {
 		})
 		const hash = await bcrypt.hash(body.newPassword, config.saltRounds)
 		user.access.hashedPassword = hash
-		user.access.activeTokens = [token]
+		user.access.activeTokens.splice(0, user.access.activeTokens.length)
+		user.access.activeTokens.push(token)
 		user.appState.verificationCode = undefined
 		await user.save()
 

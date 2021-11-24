@@ -4,7 +4,7 @@ jobs:
   backend:
     working_directory: ~/project/server
     docker:
-      - image: cimg/node:14.15.0
+      - image: cimg/node:16.13.0
     steps:
       - checkout:
           path: ~/project
@@ -37,7 +37,7 @@ jobs:
   frontend:
     working_directory: ~/project/client
     docker:
-      - image: cimg/node:14.15.0
+      - image: cimg/node:16.13.0
     steps:
       - checkout:
           path: ~/project

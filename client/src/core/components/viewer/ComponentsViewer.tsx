@@ -6,7 +6,6 @@
  */
 
 import logo from 'core/assets/images/logo.svg'
-import 'core/assets/quill.snow.css'
 import Dashboard, { DashboardRoute } from 'core/components/Dashboard'
 import config from 'core/config_'
 import styles from 'core/styles'

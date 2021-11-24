@@ -102,6 +102,6 @@ describe('Login', () => {
 				email: '',
 				password: '',
 			})
-		expect(res.statusCode).toEqual(400)
+		expect(res.statusCode).toEqual(401)
 	})
 })

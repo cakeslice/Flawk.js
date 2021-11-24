@@ -7,10 +7,10 @@
 
 import { Router } from '@awaitjs/express'
 import common from 'core/common'
-import paginate from 'express-paginate'
+import { isOnline } from 'core/functions/sockets'
 import { Obj, SocketUser } from 'flawk-types'
 import _ from 'lodash'
-import { Client } from 'project/database'
+import { Client, IClient } from 'project/database'
 
 const router = Router()
 
@@ -71,26 +71,25 @@ router.postAsync('/admin/search_users', async (req, res) => {
 		sort[(req.query.sort && (req.query.sort as string)) || 'timestamps.lastCall'] =
 			req.query.order || 'desc'
 
-		const items = await Client.find(search)
+		const items = (await Client.find(search)
 			.lean({ virtuals: true })
 			.sort(sort)
 			.select('email phone _id personal')
-			.limit(Number(req.query.limit))
-			.skip(req.skip as number)
-			.exec()
+			.limit(req.limit)
+			.skip(req.skip)) as (IClient & { isOnline: boolean })[]
 		const itemCount = await Client.find(search).countDocuments({})
-
-		const pageCount = common.countPages(itemCount, req)
+		const pagination = res.countPages(itemCount)
 
 		console.log('Fetched: ' + items.length.toString())
-		console.log('Total: ' + itemCount.toString())
+		console.log('Total: ' + pagination.itemCount.toString())
+
+		items.forEach((c) => {
+			c.isOnline = isOnline(c._id.toString())
+		})
 
 		res.do(200, '', {
 			items: items,
-
-			hasNext: paginate.hasNextPages(req)(pageCount),
-			pageCount: pageCount,
-			itemCount: itemCount,
+			...pagination,
 		})
 	} else res.do(404, 'Invalid schema')
 })

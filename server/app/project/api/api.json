@@ -586,7 +586,8 @@
                 "type": "object",
                 "properties": {
                   "notificationID": {
-                    "type": "string"
+                    "type": "string",
+                    "format": "objectid"
                   }
                 },
                 "required": [
@@ -618,7 +619,8 @@
         "type": "object",
         "properties": {
           "_id": {
-            "type": "string"
+            "type": "string",
+            "format": "objectid"
           },
           "email": {
             "type": "string",
@@ -647,18 +649,6 @@
             "type": "string"
           },
           "code": {
-            "type": "string"
-          }
-        }
-      },
-      "Pagination": {
-        "title": "Pagination",
-        "type": "object",
-        "properties": {
-          "page": {
-            "type": "string"
-          },
-          "limit": {
             "type": "string"
           }
         }

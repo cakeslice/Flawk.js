@@ -19,7 +19,6 @@ module.exports = {
 		'react-app/jest',
 		'eslint:recommended',
 		'plugin:import/recommended',
-		'plugin:react/recommended',
 		'plugin:react-hooks/recommended',
 		'plugin:jsx-a11y/recommended',
 		'plugin:security/recommended',
@@ -30,17 +29,12 @@ module.exports = {
 		'prettier',
 	],
 	// Only add plugins to customize the rules
-	plugins: ['import', 'react', 'jsx-a11y', 'security', 'jest', 'no-secrets'],
+	plugins: ['import', 'jsx-a11y', 'security', 'jest', 'no-secrets'],
 	rules: {
 		'jest/valid-describe': 'off',
 		//
 		'import/no-unresolved': 'off',
 		'import/no-anonymous-default-export': 'off',
-		//
-		'react/display-name': 'off',
-		'react/no-direct-mutation-state': 'error',
-		'react/prop-types': 'warn',
-		'react/no-unknown-property': 'warn',
 		//
 		'jsx-a11y/accessible-emoji': 'warn',
 		'jsx-a11y/alt-text': 'warn',

@@ -8,12 +8,7 @@
 import mongoose, { Schema } from 'mongoose'
 import validator from 'validator'
 import db, { MixedType, ObjectIdType, StructureConfig } from '../core/functions/db'
-import {
-	Chat as IChatSchema,
-	Client as IClientSchema,
-	Country as ICountrySchema,
-	RemoteConfig as IRemoteConfigSchema,
-} from './database.gen'
+import { ChatDocument, ClientDocument, CountryDocument, RemoteConfigDocument } from './database.gen'
 
 const emailValidator = {
 	validator: (v: string) => (v ? validator.isEmail(v) : true),
@@ -22,9 +17,9 @@ const emailValidator = {
 
 ///////////////////////
 
-export type IClient = IClientSchema
+export type IClient = ClientDocument
 const ClientSchema = db.attachPlugins(
-	new Schema<IClientSchema>({
+	new Schema<ClientDocument>({
 		// _id
 
 		email: {
@@ -154,10 +149,10 @@ ClientSchema.virtual('personal.fullName').get(function (this: {
 // ClientSchema.methods.findSimilarType = function (cb) {
 //   return this.model('Animal').find({ type: this.type }, cb);
 // };
-export const Client = mongoose.model<IClientSchema>('Client', ClientSchema)
+export const Client = mongoose.model<ClientDocument>('Client', ClientSchema)
 
-export type IChat = IChatSchema
-export const Chat = mongoose.model<IChatSchema>(
+export type IChat = ChatDocument
+export const Chat = mongoose.model<ChatDocument>(
 	'Chat',
 	db.attachPlugins(
 		new Schema({
@@ -215,8 +210,8 @@ export const Chat = mongoose.model<IChatSchema>(
 
 // ------ Remote Data ------
 
-export type ICountry = ICountrySchema
-export const Country = mongoose.model<ICountrySchema>(
+export type ICountry = CountryDocument
+export const Country = mongoose.model<CountryDocument>(
 	'Country',
 	db.attachPlugins(
 		new Schema({
@@ -228,8 +223,8 @@ export const Country = mongoose.model<ICountrySchema>(
 	)
 )
 
-export type IRemoteConfig = IRemoteConfigSchema
-export const RemoteConfig = mongoose.model<IRemoteConfigSchema>(
+export type IRemoteConfig = RemoteConfigDocument
+export const RemoteConfig = mongoose.model<RemoteConfigDocument>(
 	'RemoteConfig',
 	db.attachPlugins(
 		new Schema({

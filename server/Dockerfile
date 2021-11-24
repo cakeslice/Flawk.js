@@ -124,7 +124,7 @@
 
 ########## COMPILE TYPESCRIPT
 
-FROM node:14.15.0 AS typescript-build
+FROM node:16.13.0 AS typescript-build
 WORKDIR /usr/src/typescript_build
 # Add package.json before rest of repo for caching
 COPY ./package*.json ./
@@ -139,7 +139,7 @@ RUN npm run buildCI && rm -rf /usr/src/typescript_build/node_modules && rm -rf /
 
 ########## NODE SERVER
 
-FROM node:14.15.0
+FROM node:16.13.0
 ENV NODE_ENV=production
 ENV NODE_PATH=app/
 ARG CAPROVER_GIT_COMMIT_SHA=${CAPROVER_GIT_COMMIT_SHA}

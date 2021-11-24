@@ -15,6 +15,7 @@ import compression from 'compression'
 import cookieParser from 'cookie-parser'
 import common from 'core/common'
 import config from 'core/config_'
+import db, { getNextRef } from 'core/functions/db'
 import HttpException from 'core/utils/HttpException'
 import cors from 'cors'
 import express, { ErrorRequestHandler, RequestHandler } from 'express'
@@ -25,6 +26,7 @@ import { ArrayKeyObject, KeyArrayKeyObject, Obj } from 'flawk-types'
 import fs from 'fs'
 import GitRepoInfo from 'git-repo-info'
 import helmet from 'helmet'
+import _ from 'lodash'
 import makeSynchronous from 'make-synchronous'
 import mongoose from 'mongoose'
 import openAPIDocument from 'project/api/api.json'
@@ -33,6 +35,8 @@ import { RateLimiterMongo } from 'rate-limiter-flexible'
 import responseTime from 'response-time'
 import { Server as SocketServer } from 'socket.io'
 import 'source-map-support/register'
+import * as ts from 'typescript'
+import validator from 'validator'
 import winston from 'winston'
 import { Loggly } from 'winston-loggly-bulk'
 
@@ -150,6 +154,448 @@ function initLogging() {
 	})
 }
 
+function extractRouteTypes(file: string) {
+	const output: Obj[] = []
+
+	const program = ts.createProgram([file], { allowJs: true })
+	const sourceFile = program.getSourceFile(file)
+	const printer = ts.createPrinter({ newLine: ts.NewLineKind.LineFeed })
+
+	// @ts-ignore
+	const foundNodes = []
+	// @ts-ignore
+	ts.forEachChild(sourceFile, (node) => {
+		if (ts.isVariableStatement(node)) {
+			foundNodes.push([node])
+		}
+	})
+
+	// @ts-ignore
+	foundNodes.map((f) => {
+		const [node] = f
+		// @ts-ignore
+		let text = printer.printNode(ts.EmitHint.Unspecified, node, sourceFile) // eslint-disable-line
+		if (text.includes('call: "') && text.includes('method: "')) {
+			text = text.replace(/\/\*[\s\S]*?\*\/|\/\/.*/g, '') // Remove comments
+
+			text = text.split(' = ')[1]
+			text = text.replaceAll('{} as ', '')
+			text = text.replaceAll(';', ',')
+			text = text.replaceAll(': "', ': ')
+			text = text.replaceAll('",', ',')
+
+			text = text.replace(/(['"])?([a-z0-9A-Z_?]+)(['"])?:/g, '"$2": ') // Add quotes to keys
+
+			// Remove last trailing comma
+			text = text.substring(0, text.length - 1)
+
+			text = text.replaceAll(':  ', ': "')
+			text = text.replaceAll(',', '",')
+			text = text.replaceAll(': "{', ': {')
+			text = text.replaceAll('}"', '}')
+			text = text.replaceAll('}[]"', '}[]')
+
+			// Remove trailing commas
+			text = text.replace(/\,(?=\s*?[\}\]])/g, '') // eslint-disable-line
+
+			// Support for object arrays
+			text = text.replaceAll('}[]', ',\n"isArray": "isArray"\n}')
+
+			//console.log(text)
+			const json: Obj = JSON.parse(text)
+			output.push(json)
+		}
+	})
+
+	return output
+}
+type Path = {
+	call: string
+	method: 'post' | 'get'
+	query?: Obj
+	body?: Obj
+	responses?: { [key: string]: { description?: string; body?: Obj } }
+	description?: string
+	multipart?: boolean
+}
+function mapApiType(type: string): { type: string; format?: string; of?: string } {
+	if (
+		!(
+			type === 'string' ||
+			type === 'string[]' ||
+			type === 'number' ||
+			type === 'number[]' ||
+			type === 'boolean' ||
+			type === 'boolean[]' ||
+			type === 'ObjectId' ||
+			type === 'ObjectId[]' ||
+			type === 'Date' ||
+			type === 'Date[]' ||
+			type === 'Obj' ||
+			type === 'Obj[]'
+		)
+	) {
+		throw Error('Type ' + type + ' is not supported')
+	}
+
+	if (type === 'ObjectId')
+		return {
+			type: 'string',
+			format: 'objectid',
+		}
+	else if (type === 'Date') {
+		return {
+			type: 'string',
+			format: 'date-time',
+		}
+	} else if (type.includes('[]')) {
+		const split = type.split('[]')
+		return {
+			type: 'array',
+			of: split[0] === 'Obj' ? undefined : split[0],
+		}
+	}
+
+	return {
+		type: type,
+	}
+}
+function parseObject(obj: Obj) {
+	const p = obj
+	const required: string[] = []
+	const newObject = {} as Obj
+
+	let isArray = false
+	if (_.find(Object.keys(p), (k) => p[k] === 'isArray')) isArray = true
+
+	Object.keys(p).map((k) => {
+		if (k === 'isArray') return
+
+		const property = k.replace('?', '')
+		if (!k.includes('?')) required.push(property)
+
+		if (typeof p[k] === 'string') {
+			newObject[property] = mapApiType(p[k] as string)
+		} else newObject[property] = parseObject(p[k] as Obj)
+	})
+
+	if (isArray)
+		return {
+			type: 'array',
+			items: {
+				type: 'object',
+				properties: { ...newObject },
+				...(required.length > 0 && { required: required }),
+			},
+		}
+	return {
+		type: 'object',
+		properties: { ...newObject },
+		...(required.length > 0 && { required: required }),
+	}
+}
+function addPath(path: Path, tag: string) {
+	const callSplit = path.call.split('/')
+
+	let body: Obj | undefined = undefined
+	const requiredBody: string[] = []
+	if (path.body) {
+		body = {}
+
+		Object.keys(path.body).forEach((k) => {
+			if (path.body && body) {
+				const p = path.body[k] as Obj | string
+
+				const property = k.replace('?', '')
+				if (!k.includes('?')) requiredBody.push(property)
+
+				if (typeof p === 'string') {
+					const map = mapApiType(p)
+					if (map.type === 'array') {
+						body[property] = {
+							type: 'array',
+							items: map.of
+								? {
+										type: map.of,
+								  }
+								: {},
+						}
+					} else body[property] = map
+				} else {
+					body[property] = parseObject(p)
+				}
+			}
+		})
+	}
+
+	const query: {
+		schema: {
+			type: string
+			format?: string
+		}
+		in: 'query'
+		name: string
+		required?: boolean
+	}[] = []
+	if (path.query) {
+		Object.keys(path.query).forEach((k) => {
+			if (path.query) {
+				const p = path.query[k] as string
+
+				const property = k.replace('?', '')
+				query.push({
+					schema: mapApiType(p),
+					in: 'query',
+					name: property,
+					...(!k.includes('?') && { required: true }),
+				})
+			}
+		})
+	}
+
+	const responses: { [key: string]: { description?: string; body?: Obj } } = {}
+	if (path.responses) {
+		Object.keys(path.responses).forEach((k) => {
+			if (path.responses && path.responses[k]) {
+				let responseBody: Obj | undefined = undefined
+				const requiredResponseBody: string[] = []
+
+				const b = path.responses[k].body
+
+				if (b) {
+					responseBody = {}
+
+					Object.keys(b).forEach((bodyKey) => {
+						const p = b[bodyKey] as Obj | string
+
+						const property = bodyKey.replace('?', '')
+						if (!bodyKey.includes('?')) requiredResponseBody.push(property)
+
+						if (typeof p === 'string') {
+							const map = mapApiType(p)
+							if (map.type === 'array') {
+								if (responseBody)
+									responseBody[property] = {
+										type: 'array',
+										items: map.of
+											? {
+													type: map.of,
+											  }
+											: {},
+									}
+							} else {
+								if (responseBody) responseBody[property] = map
+							}
+						} else {
+							if (responseBody) responseBody[property] = parseObject(p)
+						}
+					})
+				}
+
+				const code = k.split('_')[1]
+				responses[code] = {
+					description:
+						path.responses[k].description || (code === '200' ? 'OK' : undefined),
+					...(path.responses[k].body && {
+						content: {
+							'application/json': {
+								schema: {
+									type: 'object',
+									properties: responseBody,
+									...(requiredResponseBody.length > 0 && {
+										required: requiredResponseBody,
+									}),
+								},
+							},
+						},
+					}),
+				}
+			}
+		})
+	}
+
+	return {
+		[path.method]: {
+			description: path.description,
+			operationId: path.method + '-' + callSplit[callSplit.length - 1],
+			tags: [tag],
+			...(tag === 'private' && {
+				security: [
+					{
+						cookieAuth: [],
+					},
+					{
+						headerAuth: [],
+					},
+				],
+			}),
+			responses: {
+				'200': {
+					description: 'Success',
+				},
+				...(tag === 'private' && {
+					'401': {
+						description: 'Unauthorized',
+					},
+				}),
+				...responses,
+			},
+			//
+			...(body !== undefined && {
+				requestBody: {
+					required: true,
+					content: path.multipart
+						? {
+								'multipart/form-data': {
+									schema: {
+										type: 'object',
+										properties: {
+											...body,
+											fileObject: {
+												type: 'string',
+											},
+										},
+										required: [...requiredBody, 'fileObject'],
+									},
+								},
+						  }
+						: {
+								'application/json': {
+									schema: {
+										type: 'object',
+										properties: body,
+										...(requiredBody.length > 0 && { required: requiredBody }),
+									},
+								},
+						  },
+				},
+			}),
+			parameters: query,
+		},
+	}
+}
+async function generateOpenApi() {
+	console.log('Generating OpenAPI spec...')
+
+	const obj = {
+		openapi: '3.0.0',
+		info: {
+			version: '1.0.0',
+			title: 'REST API',
+		},
+		paths: {
+			'/api': {
+				get: {
+					description: "Get the server's API",
+					operationId: 'get-api',
+					responses: {
+						'200': {
+							description: 'OK',
+						},
+					},
+					tags: ['public'],
+				},
+			},
+			'/build_number': {
+				get: {
+					description: "Get the server's build version",
+					operationId: 'get-build_number',
+					responses: {
+						'200': {
+							description: 'OK',
+						},
+					},
+					tags: ['public'],
+				},
+			},
+			'/structures': {
+				get: {
+					description: "Get the application's remote data",
+					operationId: 'get-structures',
+					responses: {
+						'200': {
+							description: 'OK',
+						},
+					},
+					tags: ['public'],
+				},
+			},
+			'/online': {
+				get: {
+					description: 'Check if the server is online',
+					operationId: 'get-online',
+					responses: {
+						'200': {
+							description: 'OK',
+						},
+					},
+					tags: ['public'],
+				},
+			},
+		},
+		servers: [
+			{
+				url: 'http://localhost:' + config.port.toString() + config.path,
+				description: 'Localhost',
+			},
+		],
+		tags: [
+			{
+				name: 'public',
+			},
+			{
+				name: 'private',
+			},
+		],
+		components: {
+			securitySchemes: {
+				cookieAuth: {
+					type: 'apiKey',
+					in: 'cookie',
+					name: 'token',
+				},
+				queryAuth: {
+					type: 'apiKey',
+					in: 'query',
+					name: 'token',
+				},
+				headerAuth: {
+					type: 'apiKey',
+					in: 'header',
+					name: 'token',
+				},
+			},
+		},
+	}
+
+	for (let i = 0; i < config.publicRoutes.length; i++) {
+		const calls = extractRouteTypes('./app/project' + config.publicRoutes[i] + '.ts')
+
+		calls.forEach((c) => {
+			const path = c as Path
+			// @ts-ignore
+			obj.paths[path.call] = addPath(path, 'public')
+		})
+	}
+	for (let i = 0; i < config.routes.length; i++) {
+		const calls = extractRouteTypes('./app/project' + config.routes[i] + '.ts')
+
+		calls.forEach((c) => {
+			const path = c as Path
+			// @ts-ignore
+			obj.paths[path.call] = addPath(path, 'private')
+		})
+	}
+
+	const file = './app/project/api/api.json'
+	const src = fs.readFileSync(file).toString()
+	const newApi = JSON.stringify(obj, null, 2)
+	if (src !== newApi) {
+		console.log('Spec changed! Writing to file\n')
+		fs.writeFileSync(file, newApi)
+	} else console.log('No changes detected\n')
+}
+
 async function setup() {
 	initLogging()
 
@@ -180,13 +626,21 @@ async function setup() {
 	app.use(express.urlencoded({ extended: true }))
 	if (config.prod || config.staging) app.enable('trust proxy') // Only if you're behind a reverse proxy (Heroku, Bluemix, AWS ELB, Nginx, etc)
 
-	// Helper functions
+	// Helper functions and defaults
 	app.all(config.path + '/*', function (req, res, next) {
+		req.token = 'no-token' // To prevent comparing to undefined
+
 		res.do = (status: number, message?: string, data?: Obj) => {
 			common.setResponse(status, req, res, message, data)
 		}
 		res.response = (key: string) => config.response(key, req)
 		res.text = (key: string) => config.text(key, req)
+
+		res.countPages = (itemCount: number) => common.countPages(itemCount, req)
+		res.countAggregationPages = (
+			items: Obj[] | undefined,
+			itemCount: { count: number }[] | undefined
+		) => common.countAggregationPages(items, itemCount, req)
 		next()
 	})
 
@@ -204,44 +658,42 @@ async function setup() {
 			limited: new RateLimiterMongo({
 				storeClient: mongoose.connection,
 				keyPrefix: 'ratelimit_limited',
-				points: config.prod || config.staging ? 3 : 30, // X requests
+				points: 3, // X requests
 				duration: 10, // per X second by IP
 			}),
 			extremelyLimited: new RateLimiterMongo({
 				storeClient: mongoose.connection,
 				keyPrefix: 'ratelimit_extreme',
-				points: config.prod || config.staging ? 10 : 30, // X requests
+				points: 10, // X requests
 				duration: 60 * 15, // per X second by IP
 			}),
 		}
-		if (config.prod || config.staging) {
-			config.rateLimitedCalls.forEach((c) => {
-				app.use(c, (req, res, next) => {
-					rateLimiter.limited
-						.consume(req.ip)
-						.then(() => {
-							next()
-						})
-						.catch(() => {
-							console.log(req.baseUrl + ': Too many requests from ' + req.ip)
-							common.setResponse(429, req, res, 'Too many requests')
-						})
-				})
+		config.rateLimitedCalls.forEach((c) => {
+			app.use(c, (req, res, next) => {
+				rateLimiter.limited
+					.consume(req.ip)
+					.then(() => {
+						next()
+					})
+					.catch(() => {
+						console.log(req.baseUrl + ': Too many requests from ' + req.ip)
+						common.setResponse(429, req, res, 'Too many requests')
+					})
 			})
-			config.extremeRateLimitedCalls.forEach((c) => {
-				app.use(c, (req, res, next) => {
-					rateLimiter.extremelyLimited
-						.consume(req.ip)
-						.then(() => {
-							next()
-						})
-						.catch(() => {
-							console.log(req.baseUrl + ': Too many requests from ' + req.ip)
-							common.setResponse(429, req, res, 'Too many requests')
-						})
-				})
+		})
+		config.extremeRateLimitedCalls.forEach((c) => {
+			app.use(c, (req, res, next) => {
+				rateLimiter.extremelyLimited
+					.consume(req.ip)
+					.then(() => {
+						next()
+					})
+					.catch(() => {
+						console.log(req.baseUrl + ': Too many requests from ' + req.ip)
+						common.setResponse(429, req, res, 'Too many requests')
+					})
 			})
-		}
+		})
 		app.use(config.path + '/*', (req, res, next) => {
 			rateLimiter.default
 				.consume(req.ip)
@@ -273,7 +725,36 @@ async function setup() {
 			// ! For more info: https://www.npmjs.com/package/express-openapi-validate
 			// @ts-ignore
 			apiSpec: openAPIDocument,
-			unknownFormats: ['objectid', 'uuid', 'email'], // defaults: date-time, date, password, binary, byte
+
+			formats: [
+				{
+					name: 'objectid',
+					type: 'string',
+					validate: (v: string) => db.validateObjectID(v),
+				},
+				{
+					name: 'email',
+					type: 'string',
+					validate: (v: string) => (v ? validator.isEmail(v) : true),
+				},
+			],
+			serDes: [
+				{
+					format: 'objectid',
+					deserialize: (s: string) => db.toObjectID(s),
+					serialize: (o) => (o as mongoose.Types.ObjectId).toString(),
+				},
+				{
+					format: 'date',
+					deserialize: (s: string) => new Date(s),
+					serialize: (o) => (o as Date).toString(),
+				},
+				{
+					format: 'date-time',
+					deserialize: (s: string) => new Date(s),
+					serialize: (o) => (o as Date).toString(),
+				},
+			],
 
 			validateRequests: {
 				coerceTypes: false,
@@ -324,8 +805,10 @@ async function setup() {
 	app.all(config.path + '/*', function (req, res, next) {
 		// Minimum results to fetch (0 is all of them)
 		const limit = Number(req.query.limit)
-		if (limit <= 1) req.query.limit = '1'
-		if (limit > 100) req.query.limit = '100'
+		if (!limit || limit <= 1) req.query.limit = '1'
+		else if (limit > 100) req.query.limit = '100'
+		req.limit = Number(req.query.limit)
+
 		next()
 	})
 
@@ -362,14 +845,13 @@ async function setup() {
 							.lean()
 							.sort(s.sortKey)
 							// @ts-ignore
-							.cache(6 * 10 * 60) // 60 minute cache
-							.exec()
+							.cache(6 * 10 * 60)
+					// 60 minute cache
 					else
 						structure = (await s.schema
 							.find({})
 							.lean()
-							.sort(s.sortKey)
-							.exec()) as ArrayKeyObject
+							.sort(s.sortKey)) as ArrayKeyObject
 
 					if (structure && s.postProcess) {
 						structure = await s.postProcess(structure)
@@ -469,14 +951,9 @@ async function createDevUser() {
 			console.log('Creating dev_user...')
 			const hash = await bcrypt.hash(config.adminPassword, config.saltRounds)
 
-			const devRef = await Client.findOne({
-				reference: { $exists: true },
-			})
-				.sort('-reference')
-				.select('reference')
-
+			const ref = await getNextRef(Client)
 			const user = new Client({
-				reference: devRef ? devRef.reference + 1 : 0,
+				reference: ref,
 				email: 'dev_user@email.flawk',
 				phone: '+351910000000',
 				personal: {
@@ -552,6 +1029,8 @@ async function listen() {
 
 		await import('project/sockets')
 	}
+
+	if (!config.prod && !config.staging && !config.jest) await generateOpenApi()
 }
 
 export { app, listen, onDatabaseConnected }

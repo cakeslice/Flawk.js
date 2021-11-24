@@ -6,7 +6,6 @@
  */
 
 import logo from 'core/assets/images/logo.svg'
-import 'core/assets/quill.snow.css'
 import CustomButton from 'core/components/CustomButton'
 import CustomTooltip from 'core/components/CustomTooltip'
 import config from 'core/config_'

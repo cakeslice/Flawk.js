@@ -10,18 +10,14 @@ import bcrypt from 'bcryptjs'
 import common from 'core/common'
 import config from 'core/config_'
 import { sendEmail } from 'core/functions/email'
-import { RequestUser } from 'flawk-types'
 import jwt from 'jsonwebtoken'
-import _ from 'lodash'
 import moment from 'moment'
 import { Client } from 'project/database'
 
 const router = Router()
 
 router.postAsync('/client/logout', async (req, res) => {
-	const requestUser = req.user as RequestUser
-
-	const user = await Client.findOne({ _id: requestUser._id }).select('access.activeTokens')
+	const user = await Client.findOne({ _id: req.user._id }).select('access.activeTokens')
 
 	if (!user) res.do(404, res.response('userNotFound'))
 	else {
@@ -36,14 +32,11 @@ router.postAsync('/client/logout', async (req, res) => {
 })
 
 router.postAsync('/client/upload_url/', async (req, res) => {
-	const requestUser = req.user as RequestUser
-
 	const body: {
 		contentType: string
 	} = req.body
-	const folderPath = config.publicUploadsPath + '/client/' + requestUser._id
+	const folderPath = config.publicUploadsPath + '/client/' + req.user._id
 
-	/** @type {import('core/common').S3SignedURL} */
 	const url = await common.getS3SignedURL(body.contentType, folderPath)
 	if (!url || url.error) {
 		common.bucketError(req, res, url && url.error)
@@ -60,14 +53,12 @@ router.postAsync('/client/upload_url/', async (req, res) => {
 })
 
 router.getAsync('/client/data', async (req, res) => {
-	const requestUser = req.user as RequestUser
-
 	const selection = '_id email phone permission flags personal settings'
-	const user = await Client.findOne({ _id: requestUser._id })
+	const user = await Client.findOne({ _id: req.user._id })
 		.lean({ virtuals: true })
 		.select(selection)
 
-	const userToken = await Client.findOne({ _id: requestUser._id }).select('access.activeTokens')
+	const userToken = await Client.findOne({ _id: req.user._id }).select('access.activeTokens')
 
 	if (user && userToken) {
 		let token = undefined
@@ -76,10 +67,11 @@ router.getAsync('/client/data', async (req, res) => {
 			token = jwt.sign({ _id: user._id }, config.jwtSecret, {
 				expiresIn: config.tokenDays.toString() + ' days',
 			})
-			userToken.access.activeTokens = _.filter(
-				userToken.access.activeTokens,
-				(e) => e !== req.token
-			)
+			const tokens = userToken.access.activeTokens.filter((e) => e !== req.token)
+			user.access.activeTokens.splice(0, user.access.activeTokens.length)
+			tokens.forEach((t) => {
+				userToken.access.activeTokens.push(t)
+			})
 			userToken.access.activeTokens.push(token)
 			await userToken.save()
 
@@ -95,8 +87,6 @@ router.getAsync('/client/data', async (req, res) => {
 })
 
 router.postAsync('/client/change_settings', async (req, res) => {
-	const requestUser = req.user as RequestUser
-
 	const body: {
 		email: string
 		firstName: string
@@ -107,14 +97,14 @@ router.postAsync('/client/change_settings', async (req, res) => {
 
 	const selection = '_id email phone personal access'
 
-	const user = await Client.findOne({ _id: requestUser._id }).select(selection)
+	const user = await Client.findOne({ _id: req.user._id }).select(selection)
 	if (!user) {
 		res.do(404, res.response('userNotFound'))
 		return
 	}
 
 	const duplicate = await Client.findOne({
-		$and: [{ email: body.email }, { _id: { $ne: requestUser._id } }],
+		$and: [{ email: body.email }, { _id: { $ne: req.user._id } }],
 	})
 		.select('_id')
 		.lean()
@@ -138,12 +128,13 @@ router.postAsync('/client/change_settings', async (req, res) => {
 			// Same password
 		} else {
 			console.log('Password change...')
-			token = jwt.sign({ _id: requestUser._id }, config.jwtSecret, {
+			token = jwt.sign({ _id: req.user._id }, config.jwtSecret, {
 				expiresIn: config.tokenDays.toString() + ' days',
 			})
 			const hash = await bcrypt.hash(body.password, config.saltRounds)
 			user.access.hashedPassword = hash
-			user.access.activeTokens = [token]
+			user.access.activeTokens.splice(0, user.access.activeTokens.length)
+			user.access.activeTokens.push(token)
 
 			await sendEmail(
 				user.email,

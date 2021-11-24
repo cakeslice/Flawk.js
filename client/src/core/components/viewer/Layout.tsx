@@ -6,7 +6,6 @@
  */
 
 import { get } from 'core/api'
-import 'core/assets/quill.snow.css'
 import CustomButton from 'core/components/CustomButton'
 import CustomInput from 'core/components/CustomInput'
 import CustomTable from 'core/components/CustomTable'

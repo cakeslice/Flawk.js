@@ -6,7 +6,6 @@
  */
 
 import { post } from 'core/api'
-import 'core/assets/quill.snow.css'
 import Avatar from 'core/components/Avatar'
 import CustomButton from 'core/components/CustomButton'
 import CustomInput from 'core/components/CustomInput'

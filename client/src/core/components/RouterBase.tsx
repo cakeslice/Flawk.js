@@ -160,7 +160,7 @@ export default function RouterBase({ children }: { children: JSX.Element }) {
 				}
 
 				console.log(
-					'----- BUILD -----\n\n' +
+					'------ BUILD ------\n\n' +
 						buildEnv +
 						' | @' +
 						gitHash +
@@ -190,7 +190,7 @@ export default function RouterBase({ children }: { children: JSX.Element }) {
 				})
 			} else
 				console.log(
-					'----- BUILD -----\n\n' +
+					'------ BUILD ------\n\n' +
 						buildEnv +
 						' | @' +
 						gitHash +

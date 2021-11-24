@@ -6,6 +6,8 @@
  */
 
 declare module 'flawk-types' {
+	type ObjectId = import('mongoose').Types.ObjectId
+
 	export type Obj = Record<string, unknown>
 	export type ArrayObject = Array<Record<string, unknown>>
 	export type KeyObject = { [key: string]: Record<string, unknown> }
@@ -24,7 +26,7 @@ declare module 'flawk-types' {
 	}
 
 	export type RequestUser = {
-		_id: string
+		_id: ObjectId
 		email?: string
 		phone?: string
 	}

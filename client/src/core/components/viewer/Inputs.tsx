@@ -5,7 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import 'core/assets/quill.snow.css'
 import CustomButton from 'core/components/CustomButton'
 import CustomDropdown from 'core/components/CustomDropdown'
 import CustomInput from 'core/components/CustomInput'

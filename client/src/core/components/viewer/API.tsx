@@ -6,7 +6,6 @@
  */
 
 import { get } from 'core/api'
-import 'core/assets/quill.snow.css'
 import { Obj } from 'flawk-types'
 import React, { Component } from 'react'
 import ReactJson from 'react-json-view'

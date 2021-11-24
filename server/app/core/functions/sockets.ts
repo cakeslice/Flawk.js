@@ -129,137 +129,143 @@ export function clientSocketMessage(clientID: string, channel: string, data: Obj
 
 //
 
-global.clientSockets.on('connection', (socket: Socket) => {
-	if (config.debugSockets) console.log('[SOCKET.IO] New socket connection: ' + socket.id)
+export function init() {
+	global.clientSockets.on('connection', (socket: Socket) => {
+		if (config.debugSockets) console.log('[SOCKET.IO] New socket connection: ' + socket.id)
 
-	socket.use((packet, next) => {
-		const command: string = packet[0]
-		const data: {
-			token?: string
-		} = packet[1]
+		socket.use((packet, next) => {
+			const command: string = packet[0]
+			const data: {
+				token?: string
+			} = packet[1]
 
-		// TODO: Use await like in common.ts/tokenMiddleware
+			// TODO: Use await like in common.ts/tokenMiddleware
 
-		// Decode token
-		if (data.token) {
-			// Verifies secret and checks if expired
-			jwt.verify(data.token, config.jwtSecret, function (err, dec) {
-				if (!err && dec) {
-					const decoded = dec as JwtPayload
+			// Decode token
+			if (data.token) {
+				// Verifies secret and checks if expired
+				jwt.verify(data.token, config.jwtSecret, function (err, dec) {
+					if (!err && dec) {
+						const decoded = dec as JwtPayload
 
-					if (
-						decoded.exp * 1000 < Date.now() ||
-						// eslint-disable-next-line
-						!db.validateObjectID(decoded._id)
-					) {
-						disconnectUnidentified(socket)
-						return next(new Error('Invalid token! Disconnecting...'))
-					}
+						if (
+							decoded.exp * 1000 < Date.now() ||
+							// eslint-disable-next-line
+							!db.validateObjectID(decoded._id)
+						) {
+							disconnectUnidentified(socket)
+							return next(new Error('Invalid token! Disconnecting...'))
+						}
 
-					// Check if token belongs to someone
-					Client.findOne({ _id: decoded._id })
-						.lean()
-						.select('_id email permission access.activeTokens')
-						.exec(function (err, user) {
-							if (err || !user) {
-								disconnectUnidentified(socket)
-								return next(new Error('User not found! Disconnecting...'))
-							}
-
-							let valid = false
-							for (let j = user.access.activeTokens.length - 1; j >= 0; j--) {
-								if (user.access.activeTokens[j] === data.token) valid = true
-							}
-							if (valid) {
-								const client: SocketUser = {
-									id: user._id.toString(),
-									email: user.email,
-									phone: user.phone,
-									permission: user.permission,
+						// Check if token belongs to someone
+						Client.findOne({ _id: decoded._id })
+							.lean()
+							.select('_id email permission access.activeTokens')
+							.exec(function (err, user) {
+								if (err || !user) {
+									disconnectUnidentified(socket)
+									return next(new Error('User not found! Disconnecting...'))
 								}
 
-								// If user not assigned to socket yet
-								if (!socket._client) {
-									socket._client = client
-
-									let unknownUsers = 0
-									let onlineClients = 0
-									const alreadyCounted = []
-									// eslint-disable-next-line
-									for (const [s, socket] of global.clientSockets.sockets) {
-										if (socket._client) {
-											if (!_.find(alreadyCounted, (e) => e === client.id)) {
-												alreadyCounted.push(socket._client.id)
-												onlineClients++
-											}
-										} else unknownUsers++
+								let valid = false
+								for (let j = user.access.activeTokens.length - 1; j >= 0; j--) {
+									if (user.access.activeTokens[j] === data.token) valid = true
+								}
+								if (valid) {
+									const client: SocketUser = {
+										id: user._id.toString(),
+										email: user.email,
+										phone: user.phone,
+										permission: user.permission,
 									}
+
+									// If user not assigned to socket yet
+									if (!socket._client) {
+										socket._client = client
+
+										let unknownUsers = 0
+										let onlineClients = 0
+										const alreadyCounted = []
+										// eslint-disable-next-line
+										for (const [s, socket] of global.clientSockets.sockets) {
+											if (socket._client) {
+												if (
+													!_.find(alreadyCounted, (e) => e === client.id)
+												) {
+													alreadyCounted.push(socket._client.id)
+													onlineClients++
+												}
+											} else unknownUsers++
+										}
+										if (config.debugSockets) {
+											adminSocketNotification(
+												'Socket connection',
+												'Client ' + user.email + ' just connected!'
+											)
+											console.log(
+												'[SOCKET.IO] ' +
+													user.email +
+													' socket connected! (online: ' +
+													onlineClients.toString() +
+													' | unidentified: ' +
+													unknownUsers.toString() +
+													')'
+											)
+										}
+									}
+
 									if (config.debugSockets) {
-										adminSocketNotification(
-											'Socket connection',
-											'Client ' + user.email + ' just connected!'
-										)
+										const c: string = client.email || client.id
 										console.log(
-											'[SOCKET.IO] ' +
-												user.email +
-												' socket connected! (online: ' +
-												onlineClients.toString() +
-												' | unidentified: ' +
-												unknownUsers.toString() +
-												')'
+											'[SOCKET.IO] Socket: ' +
+												c +
+												': ' +
+												'client/' +
+												command +
+												' | ' +
+												JSON.stringify(data)
 										)
 									}
+									return next()
+								} else {
+									disconnectUnidentified(socket)
+									return next(new Error('Invalid token!'))
 								}
+							})
+					} else {
+						disconnectUnidentified(socket)
+						return next(new Error('Invalid token!'))
+					}
+				})
+			} else {
+				disconnectUnidentified(socket)
+				return next(new Error('No token provided!'))
+			}
+		})
 
-								if (config.debugSockets) {
-									const c: string = client.email || client.id
-									console.log(
-										'[SOCKET.IO] Socket: ' +
-											c +
-											': ' +
-											'client/' +
-											command +
-											' | ' +
-											JSON.stringify(data)
-									)
-								}
-								return next()
-							} else {
-								disconnectUnidentified(socket)
-								return next(new Error('Invalid token!'))
-							}
-						})
-				} else {
-					disconnectUnidentified(socket)
-					return next(new Error('Invalid token!'))
-				}
-			})
-		} else {
-			disconnectUnidentified(socket)
-			return next(new Error('No token provided!'))
-		}
+		socket.on('init', (data, res) => {
+			res({ success: true, buildNumber: global.buildNumber })
+		})
+		socket.on('disconnect', () => {
+			if (socket._client) {
+				if (config.debugSockets)
+					console.log(
+						'[SOCKET.IO] Client ' +
+							(socket._client.email || socket._client.id) +
+							' just disconnected!'
+					)
+				if (config.debugSockets)
+					adminSocketNotification(
+						'Socket connection',
+						'Client ' +
+							(socket._client.email || socket._client.id) +
+							' just disconnected!'
+					)
+				socket._client = undefined
+			} else {
+				//if(config.debugSockets)
+				//console.log('[SOCKET.IO] Unidentified client just disconnected!')
+			}
+		})
 	})
-
-	socket.on('init', (data, res) => {
-		res({ success: true, buildNumber: global.buildNumber })
-	})
-	socket.on('disconnect', () => {
-		if (socket._client) {
-			if (config.debugSockets)
-				console.log(
-					'[SOCKET.IO] Client ' +
-						(socket._client.email || socket._client.id) +
-						' just disconnected!'
-				)
-			if (config.debugSockets)
-				adminSocketNotification(
-					'Socket connection',
-					'Client ' + (socket._client.email || socket._client.id) + ' just disconnected!'
-				)
-			socket._client = undefined
-		} else {
-			//if(config.debugSockets)
-			//console.log('[SOCKET.IO] Unidentified client just disconnected!')
-		}
-	})
-})
+}

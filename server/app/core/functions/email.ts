@@ -103,6 +103,7 @@ export async function sendEmail(
 			return false
 		}
 	} else if (nodemailerClient) {
+		// @ts-ignore
 		const info = (await nodemailerClient.sendMail({
 			from: body.From,
 			replyTo: body.ReplyTo,
@@ -211,6 +212,7 @@ export async function sendAdminEmail(data: EmailData, template: string, develope
 			return false
 		}
 	} else if (nodemailerClient) {
+		// @ts-ignore
 		const info = (await nodemailerClient.sendMail({
 			from: body.From,
 			replyTo: body.ReplyTo,

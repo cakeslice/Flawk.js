@@ -5,8 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { RequestUser, SocketUser } from 'flawk-types'
+import { Obj, RequestUser, SocketUser } from 'flawk-types'
 type SocketIONamespace = import('socket.io').Namespace
+type DocumentArray = import('mongoose').DocumentArray
+
 declare global {
 	var buildNumber: string
 	var clientSockets: SocketIONamespace
@@ -20,17 +22,34 @@ declare module 'socket.io' {
 
 declare module 'express-serve-static-core' {
 	interface Request {
-		user?: RequestUser
-		token?: string
+		user: RequestUser
+		token: string
 		tokenExpiration?: number
 		permission?: number
-		lang?: string
+		lang: string
+		skip: number
+		limit: number
+		bodyFields?: any
+		files?: Express.Multer.File[]
 	}
 	interface Response {
 		sentry?: any
 		do: (status: number, message?: string, data?: Obj) => void
 		response: (key: string) => string
 		text: (key: string) => string
+		countPages: (itemCount: number) => {
+			hasNext: boolean
+			pageCount: number
+			itemCount: number
+		}
+		countAggregationPages: (
+			items: DocumentArray<unknown> | Obj[] | undefined,
+			itemCount: { count: number }[] | undefined
+		) => {
+			hasNext: boolean
+			pageCount: number
+			itemCount: number
+		}
 	}
 }
 

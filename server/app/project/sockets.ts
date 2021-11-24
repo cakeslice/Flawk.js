@@ -6,9 +6,11 @@
  */
 
 import db from 'core/functions/db'
-import { clientSocketNotification, socketNotification } from 'core/functions/sockets'
+import { clientSocketNotification, init, socketNotification } from 'core/functions/sockets'
 import { clientNotification } from 'project/routes/private/notifications'
 import { Socket } from 'socket.io'
+
+init()
 
 global.clientSockets.on('connection', (socket: Socket) => {
 	socket.on('test', () => {

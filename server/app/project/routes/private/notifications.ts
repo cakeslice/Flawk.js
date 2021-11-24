@@ -6,13 +6,11 @@
  */
 
 import { Router } from '@awaitjs/express'
-import common from 'core/common'
 import config from 'core/config_'
-import db from 'core/functions/db'
-import paginate from 'express-paginate'
-import { RequestUser } from 'flawk-types'
+import db, { AggregationCount, ObjectId } from 'core/functions/db'
 import mongoose from 'mongoose'
 import { Client } from 'project/database'
+
 const router = Router()
 
 type NotificationData = {
@@ -80,28 +78,24 @@ async function outputNotification(
 }
 
 router.getAsync('/client/notifications', async (req, res) => {
-	const requestUser = req.user as RequestUser
-
-	const query = { _id: requestUser._id }
+	const query = { _id: req.user._id }
 	const schema = Client
 	const client = await schema
 		.findOne(query)
 		.lean()
 		.select('arrays.notifications')
-		.slice('arrays.notifications', [req.skip as number, Number(req.query.limit)])
-		.exec()
-	const r = await schema
+		.slice('arrays.notifications', [req.skip, req.limit])
+	const r: AggregationCount = await schema
 		.aggregate()
 		.allowDiskUse(true)
 		.match(query)
 		.project({
-			notificationCount: { $size: '$arrays.notifications' },
+			count: { $size: '$arrays.notifications' },
 		})
-		.exec()
-	const itemCount = r[0].notificationCount as number
-	console.log('Array length: ' + itemCount.toString())
-
-	const pageCount = common.countPages(itemCount, req)
+	const pagination = res.countAggregationPages(
+		client ? client.arrays.notifications : undefined,
+		r
+	)
 
 	if (!client) {
 		res.do(404, res.response('userNotFound'))
@@ -118,18 +112,15 @@ router.getAsync('/client/notifications', async (req, res) => {
 	res.do(200, '', {
 		notifications: notifications,
 		unreadCount: unreadCount,
-
-		hasNext: paginate.hasNextPages(req)(pageCount),
-		pageCount: pageCount,
+		...pagination,
 	})
 })
 
 router.postAsync('/client/read_notifications', async (req, res) => {
-	const body: { playerID: string; notificationID: string } = req.body
-	const requestUser = req.user as RequestUser
+	const body: { playerID: string; notificationID: ObjectId } = req.body
 
 	await Client.updateOne(
-		{ _id: requestUser._id, 'arrays.notifications._id': body.notificationID },
+		{ _id: req.user._id, 'arrays.notifications._id': body.notificationID },
 		{ $set: { 'arrays.notifications.$.isRead': true } }
 	)
 
@@ -138,10 +129,9 @@ router.postAsync('/client/read_notifications', async (req, res) => {
 
 router.postAsync('/client/update_mobile_notification_id', async (req, res) => {
 	const body: { playerID: string } = req.body
-	const requestUser = req.user as RequestUser
 
 	const selection = '_id appState.mobileNotificationDevices'
-	const user = await Client.findOne({ _id: requestUser._id }).select(selection)
+	const user = await Client.findOne({ _id: req.user._id }).select(selection)
 	if (user) {
 		user.appState.mobileNotificationDevices.push(body.playerID)
 		while (user.appState.mobileNotificationDevices.length > config.maxTokens) {

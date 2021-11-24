@@ -13,6 +13,7 @@ import db from 'core/functions/db'
 import crypto from 'crypto-extra'
 import { toRegex } from 'diacritic-regex'
 import { NextFunction, Request, Response } from 'express'
+import paginate from 'express-paginate'
 import { JwtPayload, Obj } from 'flawk-types'
 import jwt from 'jsonwebtoken'
 import _ from 'lodash'
@@ -99,6 +100,16 @@ const _removeAccents = function (str: string) {
 	return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
 }
 
+const _countPages = function (itemCount: number, req: Request) {
+	const pageCount = req.limit ? Math.ceil(itemCount / req.limit) || 0 : 0
+	const output = {
+		hasNext: paginate.hasNextPages(req)(pageCount),
+		pageCount: pageCount,
+		itemCount: itemCount,
+	}
+	return output
+}
+
 export default {
 	///////////////////////////////////// HELPERS
 
@@ -114,8 +125,15 @@ export default {
 		const ageDate = new Date(ageDifMs) // miliseconds from epoch
 		return Math.abs(ageDate.getUTCFullYear() - 1970)
 	},
-	countPages: function (itemCount: number, req: Request): number {
-		return req.query.limit ? Math.ceil(itemCount / Number(req.query.limit)) || 0 : 0
+	countPages: _countPages,
+	countAggregationPages: function (
+		items: Obj[] | undefined,
+		itemCount: { count: number }[] | undefined,
+		req: Request
+	) {
+		let count: number = itemCount && itemCount[0] ? itemCount[0].count : 0
+		if (items && count < items.length) count = items.length // Cache protection
+		return _countPages(count, req)
 	},
 
 	sleep: function sleep(ms: number) {
@@ -178,19 +196,29 @@ export default {
 		}
 	},
 
-	getRemoteConfig: async function (key: keyof IRemoteConfig, code = 'default', lean = true) {
+	getRemoteConfig: async function (
+		key: keyof IRemoteConfig,
+		code = 'default',
+		lean = true
+	): Promise<Obj | string | number | boolean | undefined> {
 		const remoteConfig = await RemoteConfig.findOne({ code: code }).select(key).lean(lean)
 
+		// @ts-ignore
 		if (remoteConfig) return remoteConfig[key]
 		else return undefined
 	},
-	saveRemoteConfig: async function (key: keyof IRemoteConfig, value: string, code = 'default') {
+	saveRemoteConfig: async function (
+		key: keyof IRemoteConfig,
+		value: string | number | Obj | boolean,
+		code = 'default'
+	) {
 		let remoteConfig = await RemoteConfig.findOne({ code: code }).select(key)
 
 		if (!remoteConfig) {
 			remoteConfig = new RemoteConfig({})
 		}
 
+		// @ts-ignore
 		remoteConfig[key] = value
 
 		await remoteConfig.save()
