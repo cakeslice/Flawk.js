@@ -18,8 +18,6 @@ import { MetroSpinner } from 'react-spinners-kit'
 import VisibilitySensor from 'react-visibility-sensor'
 import * as uuid from 'uuid'
 
-const tableID = uuid.v1()
-
 type Value = string | number | boolean | undefined
 type SpecialRow = {
 	key: string
@@ -64,10 +62,16 @@ export default function CustomTable(props: TableProps) {
 	return <CT {...props} />
 }
 class CT extends ReactQueryParams {
-	state = {
-		uuid: tableID,
-		containment: undefined as undefined | HTMLElement | null,
+	// eslint-disable-next-line
+	constructor(props: any) {
+		super(props)
+
+		this.state = {
+			uuid: uuid.v1(),
+			containment: undefined as undefined | HTMLElement | null,
+		}
 	}
+
 	updateID: string | undefined = undefined
 	shouldComponentUpdate(nextProps: TableProps) {
 		const p = JSON.stringify({

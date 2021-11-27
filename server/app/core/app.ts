@@ -206,7 +206,7 @@ function extractRouteTypes(file: string) {
 				if (json.pagination && json.pagination !== 'true') valid = false
 				if (json.multipart && json.multipart !== 'true') valid = false
 				if (json.recaptcha && json.recaptcha !== 'true') valid = false
-				if (json.description && typeof json.description !== 'string') valid = false
+				if (typeof json.description !== 'string') valid = false
 				if (typeof json.method !== 'string') valid = false
 				if (typeof json.call !== 'string') valid = false
 

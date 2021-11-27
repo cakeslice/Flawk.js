@@ -443,6 +443,7 @@
     },
     "/client/data": {
       "get": {
+        "description": "Get a user's account data",
         "operationId": "get-data",
         "tags": [
           "private"
@@ -528,6 +529,7 @@
     },
     "/client/change_settings": {
       "post": {
+        "description": "Change a user's settings",
         "operationId": "post-change_settings",
         "tags": [
           "private"
@@ -600,6 +602,7 @@
     },
     "/client/notifications": {
       "get": {
+        "description": "Get the user's notifications",
         "operationId": "get-notifications",
         "tags": [
           "private"
@@ -701,9 +704,10 @@
         ]
       }
     },
-    "/client/read_notifications": {
+    "/client/read_notification": {
       "post": {
-        "operationId": "post-read_notifications",
+        "description": "Mark a notification as read",
+        "operationId": "post-read_notification",
         "tags": [
           "private"
         ],
@@ -745,9 +749,10 @@
         "parameters": []
       }
     },
-    "/client/update_mobile_notification_id": {
+    "/client/add_push_notification_id": {
       "post": {
-        "operationId": "post-update_mobile_notification_id",
+        "description": "Add the push notification ID of a mobile device",
+        "operationId": "post-add_push_notification_id",
         "tags": [
           "private"
         ],
@@ -790,6 +795,7 @@
     },
     "/admin/online_users": {
       "get": {
+        "description": "Get online users (connected with websockets)",
         "operationId": "get-online_users",
         "tags": [
           "private"
@@ -859,6 +865,7 @@
     },
     "/admin/search_users": {
       "post": {
+        "description": "Search the Clients collection",
         "operationId": "post-search_users",
         "tags": [
           "private"
@@ -916,14 +923,8 @@
                   },
                   "includeUnverified": {
                     "type": "boolean"
-                  },
-                  "schema": {
-                    "type": "string"
                   }
-                },
-                "required": [
-                  "schema"
-                ]
+                }
               }
             }
           }
@@ -942,6 +943,20 @@
             },
             "in": "query",
             "name": "page"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "sort"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "order"
           }
         ]
       }

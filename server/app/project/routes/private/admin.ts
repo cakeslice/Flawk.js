@@ -18,6 +18,7 @@ router.useAsync('/admin/*', common.adminMiddleware)
 
 const OnlineUsers = {
 	call: '/admin/online_users',
+	description: 'Get online users (connected with websockets)',
 	method: 'get',
 	responses: {
 		_200: {
@@ -58,11 +59,15 @@ router.getAsync(OnlineUsers.call, async (req, res) => {
 
 const SearchUsers = {
 	call: '/admin/search_users',
+	description: 'Search the Clients collection',
 	method: 'post',
+	query: {} as {
+		sort?: string
+		order?: string
+	},
 	body: {} as {
 		search?: string
 		includeUnverified?: boolean
-		schema: string
 	},
 	pagination: true,
 	responses: {
@@ -74,59 +79,51 @@ const SearchUsers = {
 	},
 }
 router.postAsync(SearchUsers.call, async (req, res) => {
-	const body: {
-		search?: string
-		includeUnverified?: boolean
-		schema: string
-	} = req.body
+	const body: typeof SearchUsers.body = req.body
+	const query: typeof SearchUsers.query = req.query
 
-	if (common.checkSchema(body.schema, req, res)) return
+	const search: Obj & { $and?: Obj[] } = {}
 
-	if (body.schema === 'Client') {
-		const search: Obj & { $and?: Obj[] } = {}
+	if (body.search)
+		search['$and'] = [
+			{
+				$or: [
+					{ email: common.searchRegex(body.search) },
+					{ phone: common.searchRegex(body.search) },
+					{ 'personal.firstName': common.searchRegex(body.search) },
+					{ 'personal.lastName': common.searchRegex(body.search) },
+				],
+			},
+		]
 
-		if (body.search)
-			search['$and'] = [
-				{
-					$or: [
-						{ email: common.searchRegex(body.search) },
-						{ phone: common.searchRegex(body.search) },
-						{ 'personal.firstName': common.searchRegex(body.search) },
-						{ 'personal.lastName': common.searchRegex(body.search) },
-					],
-				},
-			]
+	if (!body.includeUnverified) {
+		if (!search['$and']) search['$and'] = []
+		search['$and'].push({ flags: 'verified' })
+	}
 
-		if (!body.includeUnverified) {
-			if (!search['$and']) search['$and'] = []
-			search['$and'].push({ flags: 'verified' })
-		}
+	const sort: Obj = {}
+	sort[query.sort || 'timestamps.lastCall'] = query.order || 'desc'
 
-		const sort: Obj = {}
-		sort[(req.query.sort && (req.query.sort as string)) || 'timestamps.lastCall'] =
-			req.query.order || 'desc'
+	const items = (await Client.find(search)
+		.lean({ virtuals: true })
+		.sort(sort)
+		.select('email phone _id personal')
+		.limit(req.limit)
+		.skip(req.skip)) as (IClient & { isOnline: boolean })[]
+	const itemCount = await Client.find(search).countDocuments({})
+	const pagination = res.countPages(itemCount)
 
-		const items = (await Client.find(search)
-			.lean({ virtuals: true })
-			.sort(sort)
-			.select('email phone _id personal')
-			.limit(req.limit)
-			.skip(req.skip)) as (IClient & { isOnline: boolean })[]
-		const itemCount = await Client.find(search).countDocuments({})
-		const pagination = res.countPages(itemCount)
+	console.log('Fetched: ' + items.length.toString())
+	console.log('Total: ' + pagination.itemCount.toString())
 
-		console.log('Fetched: ' + items.length.toString())
-		console.log('Total: ' + pagination.itemCount.toString())
+	items.forEach((c) => {
+		c.isOnline = isOnline(c._id.toString())
+	})
 
-		items.forEach((c) => {
-			c.isOnline = isOnline(c._id.toString())
-		})
-
-		res.do(200, '', {
-			items: items,
-			...pagination,
-		})
-	} else res.do(404, 'Invalid schema')
+	res.do(200, '', {
+		items: items,
+		...pagination,
+	})
 })
 
 export default router

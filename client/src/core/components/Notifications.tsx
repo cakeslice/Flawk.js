@@ -45,7 +45,7 @@ export default class Notifications extends Component {
 			this.state.unreadNotifications > 0 &&
 			!this.state.readNotifications
 		) {
-			const res = await post('client/read_notifications', { notificationID: notificationID })
+			const res = await post('client/read_notification', { notificationID: notificationID })
 			if (res.ok) {
 				await this.fetchNotifications()
 			}

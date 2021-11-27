@@ -81,6 +81,7 @@ async function outputNotification(
 
 const Notifications = {
 	call: '/client/notifications',
+	description: "Get the user's notifications",
 	method: 'get',
 	pagination: true,
 	responses: {
@@ -139,13 +140,14 @@ router.getAsync(Notifications.call, async (req, res) => {
 	})
 })
 
-const ReadNotifications = {
-	call: '/client/read_notifications',
+const ReadNotification = {
+	call: '/client/read_notification',
+	description: 'Mark a notification as read',
 	method: 'post',
 	body: {} as { notificationID: ObjectId },
 }
-router.postAsync(ReadNotifications.call, async (req, res) => {
-	const body: typeof ReadNotifications.body = req.body
+router.postAsync(ReadNotification.call, async (req, res) => {
+	const body: typeof ReadNotification.body = req.body
 
 	await Client.updateOne(
 		{ _id: req.user._id, 'arrays.notifications._id': body.notificationID },
@@ -155,13 +157,14 @@ router.postAsync(ReadNotifications.call, async (req, res) => {
 	res.do(200)
 })
 
-const UpdateMobileNotificationID = {
-	call: '/client/update_mobile_notification_id',
+const AddPushNotificationID = {
+	call: '/client/add_push_notification_id',
+	description: 'Add the push notification ID of a mobile device',
 	method: 'post',
 	body: {} as { playerID: string },
 }
-router.postAsync(UpdateMobileNotificationID.call, async (req, res) => {
-	const body: typeof UpdateMobileNotificationID.body = req.body
+router.postAsync(AddPushNotificationID.call, async (req, res) => {
+	const body: typeof AddPushNotificationID.body = req.body
 
 	const selection = '_id appState.mobileNotificationDevices'
 	const user = await Client.findOne({ _id: req.user._id }).select(selection)

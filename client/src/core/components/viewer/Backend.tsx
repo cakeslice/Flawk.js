@@ -1098,7 +1098,6 @@ class Admin extends ReactQueryParams {
 				'admin/search_users?' + QueryString.stringify(q),
 				{
 					search: this.queryParams.search,
-					schema: 'Client',
 				},
 				{
 					signal: this.abortController.signal,

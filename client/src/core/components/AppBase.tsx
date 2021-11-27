@@ -181,7 +181,7 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 			}
 
 			const cookieNotice = await global.storage.getItem('cookie_notice')
-			if (cookieNotice) setCookieNotice(cookieNotice)
+			setCookieNotice(cookieNotice || 'false')
 		})()
 
 		if (config.websocketSupport) {
@@ -391,7 +391,7 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 											</Fade>
 										</div>
 									)}
-								{config.showCookieNotice && cookieNotice !== 'true' && (
+								{config.showCookieNotice && cookieNotice === 'false' && (
 									<div style={{ maxHeight: 0 }}>
 										<Fade delay={1000} duration={500} bottom>
 											<div

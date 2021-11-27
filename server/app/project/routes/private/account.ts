@@ -75,6 +75,7 @@ router.postAsync(UploadURL.call, async (req, res) => {
 
 const Data = {
 	call: '/client/data',
+	description: "Get a user's account data",
 	method: 'get',
 	responses: {
 		_200: {
@@ -134,6 +135,7 @@ router.getAsync(Data.call, async (req, res) => {
 
 const ChangeSettings = {
 	call: '/client/change_settings',
+	description: "Change a user's settings",
 	method: 'post',
 	body: {} as {
 		email: string
