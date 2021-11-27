@@ -132,14 +132,26 @@ router.getAsync(Data.call, async (req, res) => {
 	} else res.do(500, 'No token found even though it was able to call client/data')
 })
 
-router.postAsync('/client/change_settings', async (req, res) => {
-	const body: {
+const ChangeSettings = {
+	call: '/client/change_settings',
+	method: 'post',
+	body: {} as {
 		email: string
 		firstName: string
 		lastName: string
 		password?: string
 		photoURL?: string
-	} = req.body
+	},
+	responses: {
+		_200: {
+			body: {} as {
+				token: string
+			},
+		},
+	},
+}
+router.postAsync(ChangeSettings.call, async (req, res) => {
+	const body: typeof ChangeSettings.body = req.body
 
 	const selection = '_id email phone personal access'
 

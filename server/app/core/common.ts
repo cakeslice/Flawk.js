@@ -75,7 +75,10 @@ const _setResponse = function (
 		req.originalUrl + ' | ' + '' /*new Date().toISOString() + ": "*/ + user + ' (' + ip + ') - '
 
 	res.header('message', message)
-	res.status(code).json(data)
+
+	res.status(code)
+	res.setHeader('Content-Type', 'application/json')
+	res.end(JSON.stringify(data))
 	console.log(
 		'------ RES: ' +
 			str +

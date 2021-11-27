@@ -77,7 +77,30 @@ async function outputNotification(
 	return output
 }
 
-router.getAsync('/client/notifications', async (req, res) => {
+//
+
+const Notifications = {
+	call: '/client/notifications',
+	method: 'get',
+	pagination: true,
+	responses: {
+		_200: {
+			body: {} as {
+				notifications: {
+					_id: ObjectId
+					isRead: boolean
+					date: Date
+					notificationType: string
+					message: string
+					imageURL?: string
+					fullName?: string
+				}[]
+				unreadCount: number
+			},
+		},
+	},
+}
+router.getAsync(Notifications.call, async (req, res) => {
 	const query = { _id: req.user._id }
 	const schema = Client
 	const client = await schema
@@ -116,8 +139,13 @@ router.getAsync('/client/notifications', async (req, res) => {
 	})
 })
 
-router.postAsync('/client/read_notifications', async (req, res) => {
-	const body: { playerID: string; notificationID: ObjectId } = req.body
+const ReadNotifications = {
+	call: '/client/read_notifications',
+	method: 'post',
+	body: {} as { notificationID: ObjectId },
+}
+router.postAsync(ReadNotifications.call, async (req, res) => {
+	const body: typeof ReadNotifications.body = req.body
 
 	await Client.updateOne(
 		{ _id: req.user._id, 'arrays.notifications._id': body.notificationID },
@@ -127,8 +155,13 @@ router.postAsync('/client/read_notifications', async (req, res) => {
 	res.do(200)
 })
 
-router.postAsync('/client/update_mobile_notification_id', async (req, res) => {
-	const body: { playerID: string } = req.body
+const UpdateMobileNotificationID = {
+	call: '/client/update_mobile_notification_id',
+	method: 'post',
+	body: {} as { playerID: string },
+}
+router.postAsync(UpdateMobileNotificationID.call, async (req, res) => {
+	const body: typeof UpdateMobileNotificationID.body = req.body
 
 	const selection = '_id appState.mobileNotificationDevices'
 	const user = await Client.findOne({ _id: req.user._id }).select(selection)

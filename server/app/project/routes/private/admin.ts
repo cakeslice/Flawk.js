@@ -16,7 +16,25 @@ const router = Router()
 
 router.useAsync('/admin/*', common.adminMiddleware)
 
-router.getAsync('/admin/online_users', async (req, res) => {
+const OnlineUsers = {
+	call: '/admin/online_users',
+	method: 'get',
+	responses: {
+		_200: {
+			body: {} as {
+				unknownClients: number
+				clients: {
+					amount: number
+					id: string
+					email?: string
+					phone?: string
+					permission: number
+				}[]
+			},
+		},
+	},
+}
+router.getAsync(OnlineUsers.call, async (req, res) => {
 	const websockets: { clients: SocketUser[]; unknownClients: number } = {
 		clients: [],
 		unknownClients: 0,
@@ -38,7 +56,24 @@ router.getAsync('/admin/online_users', async (req, res) => {
 	})
 })
 
-router.postAsync('/admin/search_users', async (req, res) => {
+const SearchUsers = {
+	call: '/admin/search_users',
+	method: 'post',
+	body: {} as {
+		search?: string
+		includeUnverified?: boolean
+		schema: string
+	},
+	pagination: true,
+	responses: {
+		_200: {
+			body: {} as {
+				items: Obj[]
+			},
+		},
+	},
+}
+router.postAsync(SearchUsers.call, async (req, res) => {
 	const body: {
 		search?: string
 		includeUnverified?: boolean

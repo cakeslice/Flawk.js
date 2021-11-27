@@ -525,6 +525,426 @@
         },
         "parameters": []
       }
+    },
+    "/client/change_settings": {
+      "post": {
+        "operationId": "post-change_settings",
+        "tags": [
+          "private"
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          },
+          {
+            "headerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "token": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "token"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "firstName": {
+                    "type": "string"
+                  },
+                  "lastName": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  },
+                  "photoURL": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "email",
+                  "firstName",
+                  "lastName"
+                ]
+              }
+            }
+          }
+        },
+        "parameters": []
+      }
+    },
+    "/client/notifications": {
+      "get": {
+        "operationId": "get-notifications",
+        "tags": [
+          "private"
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          },
+          {
+            "headerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "notifications": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "_id": {
+                            "type": "string",
+                            "format": "objectid"
+                          },
+                          "isRead": {
+                            "type": "boolean"
+                          },
+                          "date": {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          "notificationType": {
+                            "type": "string"
+                          },
+                          "message": {
+                            "type": "string"
+                          },
+                          "imageURL": {
+                            "type": "string"
+                          },
+                          "fullName": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "_id",
+                          "isRead",
+                          "date",
+                          "notificationType",
+                          "message"
+                        ]
+                      }
+                    },
+                    "unreadCount": {
+                      "type": "number"
+                    },
+                    "hasNext": {
+                      "type": "boolean"
+                    },
+                    "pageCount": {
+                      "type": "number"
+                    },
+                    "itemCount": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "notifications",
+                    "unreadCount"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "number"
+            },
+            "in": "query",
+            "name": "limit"
+          },
+          {
+            "schema": {
+              "type": "number"
+            },
+            "in": "query",
+            "name": "page"
+          }
+        ]
+      }
+    },
+    "/client/read_notifications": {
+      "post": {
+        "operationId": "post-read_notifications",
+        "tags": [
+          "private"
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          },
+          {
+            "headerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "notificationID": {
+                    "type": "string",
+                    "format": "objectid"
+                  }
+                },
+                "required": [
+                  "notificationID"
+                ]
+              }
+            }
+          }
+        },
+        "parameters": []
+      }
+    },
+    "/client/update_mobile_notification_id": {
+      "post": {
+        "operationId": "post-update_mobile_notification_id",
+        "tags": [
+          "private"
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          },
+          {
+            "headerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "playerID": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "playerID"
+                ]
+              }
+            }
+          }
+        },
+        "parameters": []
+      }
+    },
+    "/admin/online_users": {
+      "get": {
+        "operationId": "get-online_users",
+        "tags": [
+          "private"
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          },
+          {
+            "headerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "unknownClients": {
+                      "type": "number"
+                    },
+                    "clients": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "amount": {
+                            "type": "number"
+                          },
+                          "id": {
+                            "type": "string"
+                          },
+                          "email": {
+                            "type": "string"
+                          },
+                          "phone": {
+                            "type": "string"
+                          },
+                          "permission": {
+                            "type": "number"
+                          }
+                        },
+                        "required": [
+                          "amount",
+                          "id",
+                          "permission"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "unknownClients",
+                    "clients"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "parameters": []
+      }
+    },
+    "/admin/search_users": {
+      "post": {
+        "operationId": "post-search_users",
+        "tags": [
+          "private"
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          },
+          {
+            "headerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {}
+                    },
+                    "hasNext": {
+                      "type": "boolean"
+                    },
+                    "pageCount": {
+                      "type": "number"
+                    },
+                    "itemCount": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "items"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "search": {
+                    "type": "string"
+                  },
+                  "includeUnverified": {
+                    "type": "boolean"
+                  },
+                  "schema": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "schema"
+                ]
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "number"
+            },
+            "in": "query",
+            "name": "limit"
+          },
+          {
+            "schema": {
+              "type": "number"
+            },
+            "in": "query",
+            "name": "page"
+          }
+        ]
+      }
     }
   },
   "servers": [

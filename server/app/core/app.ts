@@ -214,7 +214,7 @@ function extractRouteTypes(file: string) {
 
 				output.push(json)
 			} catch (e) {
-				throw Error('Path declaration not supported:\n' + text)
+				console.error('Path declaration not supported:\n' + text)
 			}
 		}
 	})
@@ -353,8 +353,8 @@ function addPath(path: Path, tag: string) {
 	}[] =
 		path.pagination === 'true'
 			? [
-					{ schema: { type: 'string' }, in: 'query', name: 'limit' },
-					{ schema: { type: 'string' }, in: 'query', name: 'page' },
+					{ schema: { type: 'number' }, in: 'query', name: 'limit' },
+					{ schema: { type: 'number' }, in: 'query', name: 'page' },
 			  ]
 			: []
 	if (path.recaptcha === 'true')
@@ -376,6 +376,18 @@ function addPath(path: Path, tag: string) {
 				})
 			}
 		})
+	}
+
+	const paginationResponse = {
+		hasNext: {
+			type: 'boolean',
+		},
+		pageCount: {
+			type: 'number',
+		},
+		itemCount: {
+			type: 'number',
+		},
 	}
 
 	const responses: { [key: string]: { description?: string; body?: Obj } } = {}
@@ -426,7 +438,10 @@ function addPath(path: Path, tag: string) {
 							'application/json': {
 								schema: {
 									type: 'object',
-									properties: responseBody,
+									properties:
+										code === '200' && path.pagination
+											? { ...responseBody, ...paginationResponse }
+											: responseBody,
 									...(requiredResponseBody.length > 0 && {
 										required: requiredResponseBody,
 									}),
@@ -457,6 +472,16 @@ function addPath(path: Path, tag: string) {
 			responses: {
 				'200': {
 					description: 'Success',
+					...(path.pagination === 'true' && {
+						content: {
+							'application/json': {
+								schema: {
+									type: 'object',
+									properties: paginationResponse,
+								},
+							},
+						},
+					}),
 				},
 				...(tag === 'private' && {
 					'401': {
@@ -634,8 +659,13 @@ async function generateOpenApi() {
 
 		calls.forEach((c) => {
 			const path = c as Path
-			// @ts-ignore
-			obj.paths[path.call] = addPath(path, 'public')
+			try {
+				// @ts-ignore
+				obj.paths[path.call] = addPath(path, 'public')
+			} catch (e) {
+				const error = e as Error
+				console.error(error.message + ':\n' + JSON.stringify(path, null, 2))
+			}
 		})
 	}
 	for (let i = 0; i < config.routes.length; i++) {
@@ -643,8 +673,13 @@ async function generateOpenApi() {
 
 		calls.forEach((c) => {
 			const path = c as Path
-			// @ts-ignore
-			obj.paths[path.call] = addPath(path, 'private')
+			try {
+				// @ts-ignore
+				obj.paths[path.call] = addPath(path, 'private')
+			} catch (e) {
+				const error = e as Error
+				console.error(error.message + ':\n' + JSON.stringify(path, null, 2))
+			}
 		})
 	}
 
@@ -793,33 +828,37 @@ async function setup() {
 					validate: (v: string) => (v ? validator.isEmail(v) : true),
 				},
 			],
+			// No need for serialization, it's just the stringified JSON
 			serDes: [
 				{
 					format: 'objectid',
 					deserialize: (s: string) => db.toObjectID(s),
-					serialize: (o) => (o as mongoose.Types.ObjectId).toString(),
 				},
 				{
 					format: 'date',
 					deserialize: (s: string) => new Date(s),
-					serialize: (o) => (o as Date).toString(),
 				},
 				{
 					format: 'date-time',
 					deserialize: (s: string) => new Date(s),
-					serialize: (o) => (o as Date).toString(),
 				},
 			],
 
 			validateApiSec: true,
 			validateSecurity: true,
 			validateRequests: {
-				coerceTypes: false,
+				coerceTypes: false, // Only for body, query and headers are coerced
 				allowUnknownQueryParameters: false,
 			},
 			validateResponses: {
+				coerceTypes: false,
 				onError: (error, body, req) => {
-					const msg: string = error + '\nPath: ' + req.originalUrl + '\nBody: ' + body
+					const msg: string =
+						error +
+						'\nPath: ' +
+						req.originalUrl +
+						'\nBody: ' +
+						JSON.stringify(body, null, 2)
 
 					console.log(msg)
 					if (config.sentryID) Sentry.captureMessage(msg)
@@ -868,10 +907,14 @@ async function setup() {
 	app.use(config.path + '/*', paginate.middleware(10, 50))
 	app.all(config.path + '/*', function (req, res, next) {
 		// Minimum results to fetch (0 is all of them)
-		const limit = Number(req.query.limit)
-		if (!limit || limit <= 1) req.query.limit = '1'
-		else if (limit > 100) req.query.limit = '100'
-		req.limit = Number(req.query.limit)
+		// @ts-ignore
+		const limit = req.query.limit as number
+		// @ts-ignore
+		if (!limit || limit <= 1) req.query.limit = 1
+		// @ts-ignore
+		else if (limit > 100) req.query.limit = 100
+		// @ts-ignore
+		req.limit = req.query.limit
 
 		next()
 	})
