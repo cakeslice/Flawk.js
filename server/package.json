@@ -13,7 +13,7 @@
 		"build_local": "npm run env:build npm run buildLocal",
 		"build_docker": "npm run env:build npm run buildPushDocker",
 		"- HELPER SCRIPTS -": "-----------------------------",
-		"startLocalJavascript": "cross-env NODE_PATH=dist/ node ./dist/server.js",
+		"startLocalJavascript": "cross-env NODE_PATH=dist/ node --inspect ./dist/server.js",
 		"startLocal": "npm run lintCI && tsc-watch --onSuccess \"npm run startLocalJavascript\"",
 		"buildCI": "tsc",
 		"buildLocal": "npm run auditCI && npm run testCI && npm run buildCI",

@@ -1,18 +1,65 @@
 // Place your settings in this file to overwrite default and user settings.
 {
 	"files.exclude": {
-		"yarn-lock.json": true,
 		"package-lock.json": true,
-		"client": true,
+		"yarn-lock.json": true,
 		"**/node_modules": true,
+		"node_modules": true,
 		"dist": true
 	},
+	"search.exclude": {
+		"**/node_modules": true,
+		"**/build": true,
+		"dist": true
+	},
+	"files.watcherExclude": {
+		"**/.git/objects/**": true,
+		"**/.git/subtree-cache/**": true,
+		"**/node_modules/**": true,
+		"dist": true
+	},
+	//
 	"editor.detectIndentation": false,
 	"editor.formatOnSave": true,
 	"editor.insertSpaces": false,
-	"eslint.run": "onSave",
 	"editor.codeActionsOnSave": {
 		"source.fixAll": true,
 		"source.organizeImports": true
-	}
+	},
+	//
+	"npm.enableRunFromFolder": true,
+	"typescript.updateImportsOnFileMove.enabled": "always",
+	//
+	"eslint.run": "onSave",
+	"eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
+	"[javascript]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode",
+		"editor.formatOnSave": true
+	},
+	"[javascriptreact]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode",
+		"editor.formatOnSave": true
+	},
+	"[typescript]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode",
+		"editor.formatOnSave": true
+	},
+	"[typescriptreact]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode",
+		"editor.formatOnSave": true
+	},
+	"[json]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"[jsonc]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"[html]": {
+		"editor.defaultFormatter": "vscode.html-language-features"
+	},
+	"[handlebars]": {
+		"editor.defaultFormatter": "vscode.html-language-features"
+	},
+	//
+	"jest.nodeEnv": { "JEST": "true" }
 }

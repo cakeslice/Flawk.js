@@ -199,22 +199,46 @@ function extractRouteTypes(file: string) {
 			// Support for object arrays
 			text = text.replaceAll('}[]', ',\n"isArray": "isArray"\n}')
 
+			let invalidMessage: string | undefined = undefined
 			try {
 				const json: Obj = JSON.parse(text)
 
 				let valid = true
-				if (json.pagination && json.pagination !== 'true') valid = false
-				if (json.multipart && json.multipart !== 'true') valid = false
-				if (json.recaptcha && json.recaptcha !== 'true') valid = false
-				if (typeof json.description !== 'string') valid = false
-				if (typeof json.method !== 'string') valid = false
-				if (typeof json.call !== 'string') valid = false
+				if (json.pagination && json.pagination !== 'true') {
+					valid = false
+					invalidMessage = '"pagination" must be true'
+				}
+				if (json.multipart && json.multipart !== 'true') {
+					valid = false
+					invalidMessage = '"multipart" must be true'
+				}
+				if (json.recaptcha && json.recaptcha !== 'true') {
+					valid = false
+					invalidMessage = '"recaptcha" must be true'
+				}
+				if (typeof json.description !== 'string') {
+					valid = false
+					invalidMessage = '"description" is required and must be a string'
+				}
+				if (typeof json.method !== 'string') {
+					valid = false
+					invalidMessage = '"method" is required and must be a string'
+				}
+				if (typeof json.call !== 'string') {
+					valid = false
+					invalidMessage = '"call" is required and must be a string'
+				}
 
 				if (!valid) throw Error()
 
 				output.push(json)
 			} catch (e) {
-				console.error('Path declaration not supported:\n' + text)
+				console.error(
+					'Path declaration not supported:\n' +
+						(invalidMessage ? invalidMessage + '\n' : '') +
+						text +
+						'\n'
+				)
 			}
 		}
 	})
@@ -528,7 +552,7 @@ function addPath(path: Path, tag: string) {
 	}
 }
 async function generateOpenApi() {
-	console.log('Generating OpenAPI spec...')
+	console.log('Generating OpenAPI spec...\n')
 
 	const obj = {
 		openapi: '3.0.0',
@@ -697,7 +721,8 @@ async function setup() {
 
 	if (config.jest) console.log('----- JEST TESTING -----\n')
 	console.log(
-		'Environment: ' + (config.prod ? 'production' : config.staging ? 'staging' : 'development')
+		'\nEnvironment: ' +
+			(config.prod ? 'production' : config.staging ? 'staging' : 'development')
 	)
 	console.log('Build: ' + '@' + global.buildNumber)
 	console.log('Running on NodeJS ' + process.version + '\n')
