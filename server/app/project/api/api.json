@@ -107,7 +107,7 @@
         ],
         "responses": {
           "200": {
-            "description": "OK",
+            "description": "Success",
             "content": {
               "application/json": {
                 "schema": {
@@ -212,7 +212,7 @@
         ],
         "responses": {
           "200": {
-            "description": "OK",
+            "description": "Success",
             "content": {
               "application/json": {
                 "schema": {
@@ -305,7 +305,7 @@
         ],
         "responses": {
           "200": {
-            "description": "OK",
+            "description": "Success",
             "content": {
               "application/json": {
                 "schema": {
@@ -395,7 +395,7 @@
         ],
         "responses": {
           "200": {
-            "description": "OK",
+            "description": "Success",
             "content": {
               "application/json": {
                 "schema": {
@@ -458,7 +458,7 @@
         ],
         "responses": {
           "200": {
-            "description": "OK",
+            "description": "Success",
             "content": {
               "application/json": {
                 "schema": {
@@ -544,7 +544,7 @@
         ],
         "responses": {
           "200": {
-            "description": "OK",
+            "description": "Success",
             "content": {
               "application/json": {
                 "schema": {
@@ -617,7 +617,7 @@
         ],
         "responses": {
           "200": {
-            "description": "OK",
+            "description": "Success",
             "content": {
               "application/json": {
                 "schema": {
@@ -798,7 +798,8 @@
         "description": "Get online users (connected with websockets)",
         "operationId": "get-online_users",
         "tags": [
-          "private"
+          "private",
+          "admin"
         ],
         "security": [
           {
@@ -810,7 +811,7 @@
         ],
         "responses": {
           "200": {
-            "description": "OK",
+            "description": "Success",
             "content": {
               "application/json": {
                 "schema": {
@@ -868,7 +869,8 @@
         "description": "Search the Clients collection",
         "operationId": "post-search_users",
         "tags": [
-          "private"
+          "private",
+          "admin"
         ],
         "security": [
           {
@@ -880,7 +882,7 @@
         ],
         "responses": {
           "200": {
-            "description": "OK",
+            "description": "Success",
             "content": {
               "application/json": {
                 "schema": {
@@ -974,6 +976,9 @@
     },
     {
       "name": "private"
+    },
+    {
+      "name": "admin"
     }
   ],
   "components": {

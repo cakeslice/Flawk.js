@@ -34,6 +34,7 @@ const OnlineUsers = {
 			},
 		},
 	},
+	tag: 'admin',
 }
 router.getAsync(OnlineUsers.call, async (req, res) => {
 	const websockets: { clients: SocketUser[]; unknownClients: number } = {
@@ -77,6 +78,7 @@ const SearchUsers = {
 			},
 		},
 	},
+	tag: 'admin',
 }
 router.postAsync(SearchUsers.call, async (req, res) => {
 	const body: typeof SearchUsers.body = req.body

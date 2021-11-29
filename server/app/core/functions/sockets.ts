@@ -13,8 +13,6 @@ import _ from 'lodash'
 import { Client } from 'project/database'
 import { Socket } from 'socket.io'
 
-console.log('Importing sockets...\n')
-
 function disconnectUnidentified(socket: Socket) {
 	socket.disconnect(true)
 	if (config.debugSockets)
@@ -130,6 +128,8 @@ export function clientSocketMessage(clientID: string, channel: string, data: Obj
 //
 
 export function init() {
+	console.log('Initializing sockets...\n')
+
 	global.clientSockets.on('connection', (socket: Socket) => {
 		if (config.debugSockets) console.log('[SOCKET.IO] New socket connection: ' + socket.id)
 

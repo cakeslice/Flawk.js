@@ -35,7 +35,6 @@ import { RateLimiterMemory } from 'rate-limiter-flexible'
 import responseTime from 'response-time'
 import { Server as SocketServer } from 'socket.io'
 import 'source-map-support/register'
-import * as ts from 'typescript'
 import validator from 'validator'
 import winston from 'winston'
 import { Loggly } from 'winston-loggly-bulk'
@@ -154,7 +153,9 @@ function initLogging() {
 	})
 }
 
-function extractRouteTypes(file: string) {
+async function extractRouteTypes(file: string) {
+	const ts = await import('typescript')
+
 	const output: Obj[] = []
 
 	const program = ts.createProgram([file], { allowJs: true })
@@ -204,6 +205,10 @@ function extractRouteTypes(file: string) {
 				const json: Obj = JSON.parse(text)
 
 				let valid = true
+				if (json.tag && typeof json.tag !== 'string') {
+					valid = false
+					invalidMessage = '"tag" must be a string'
+				}
 				if (json.pagination && json.pagination !== 'true') {
 					valid = false
 					invalidMessage = '"pagination" must be true'
@@ -255,6 +260,7 @@ type Path = {
 	multipart?: 'true'
 	pagination?: 'true'
 	recaptcha?: 'true'
+	tag?: string
 }
 function mapApiType(type: string): { type: string; format?: string; of?: string } {
 	if (
@@ -456,7 +462,7 @@ function addPath(path: Path, tag: string) {
 				const code = k.split('_')[1]
 				responses[code] = {
 					description:
-						path.responses[k].description || (code === '200' ? 'OK' : undefined),
+						path.responses[k].description || (code === '200' ? 'Success' : undefined),
 					...(path.responses[k].body && {
 						content: {
 							'application/json': {
@@ -478,11 +484,14 @@ function addPath(path: Path, tag: string) {
 		})
 	}
 
+	const tags = [tag]
+	if (path.tag) tags.push(path.tag)
+
 	return {
 		[path.method]: {
 			description: path.description,
 			operationId: path.method + '-' + callSplit[callSplit.length - 1],
-			tags: [tag],
+			tags: tags,
 			...(tag === 'private' && {
 				security: [
 					{
@@ -656,6 +665,9 @@ async function generateOpenApi() {
 			{
 				name: 'private',
 			},
+			{
+				name: 'admin',
+			},
 		],
 		components: {
 			securitySchemes: {
@@ -679,10 +691,27 @@ async function generateOpenApi() {
 	}
 
 	for (let i = 0; i < config.publicRoutes.length; i++) {
-		const calls = extractRouteTypes('./app/project' + config.publicRoutes[i] + '.ts')
+		const calls = await extractRouteTypes('./app/project' + config.publicRoutes[i] + '.ts')
 
 		calls.forEach((c) => {
 			const path = c as Path
+
+			if (path.tag && !_.find(obj.tags, (e) => e.name === path.tag))
+				obj.tags.push({ name: path.tag })
+
+			// @ts-ignore
+			if (obj.paths[path.call]) {
+				console.error(
+					'OpenAPI: Duplicate path found!' +
+						'\n' +
+						path.call +
+						' (' +
+						'./app/project' +
+						config.publicRoutes[i] +
+						'.ts' +
+						')'
+				)
+			}
 			try {
 				// @ts-ignore
 				obj.paths[path.call] = addPath(path, 'public')
@@ -693,10 +722,27 @@ async function generateOpenApi() {
 		})
 	}
 	for (let i = 0; i < config.routes.length; i++) {
-		const calls = extractRouteTypes('./app/project' + config.routes[i] + '.ts')
+		const calls = await extractRouteTypes('./app/project' + config.routes[i] + '.ts')
 
 		calls.forEach((c) => {
 			const path = c as Path
+
+			if (path.tag && !_.find(obj.tags, (e) => e.name === path.tag))
+				obj.tags.push({ name: path.tag })
+
+			// @ts-ignore
+			if (obj.paths[path.call]) {
+				console.error(
+					'OpenAPI: Duplicate path found!' +
+						'\n' +
+						path.call +
+						' (' +
+						'./app/project' +
+						config.routes[i] +
+						'.ts' +
+						')'
+				)
+			}
 			try {
 				// @ts-ignore
 				obj.paths[path.call] = addPath(path, 'private')
@@ -716,7 +762,7 @@ async function generateOpenApi() {
 	} else console.log('No changes detected\n')
 }
 
-async function setup() {
+function setup() {
 	initLogging()
 
 	if (config.jest) console.log('----- JEST TESTING -----\n')
@@ -1031,7 +1077,7 @@ async function setup() {
 			console.log('FAILED ' + '/project' + config.routes[i])
 		}
 	}
-	console.log('\n')
+	console.log('')
 
 	app.disable('x-powered-by')
 
@@ -1136,6 +1182,8 @@ async function onDatabaseConnected() {
 }
 
 async function listen() {
+	if (!config.prod && !config.staging && !config.jest) await generateOpenApi()
+
 	try {
 		await mongoose.connect(config.databaseURL as string)
 
@@ -1161,8 +1209,6 @@ async function listen() {
 
 		await import('project/sockets')
 	}
-
-	if (!config.prod && !config.staging && !config.jest) await generateOpenApi()
 }
 
 export { app, listen, onDatabaseConnected }
