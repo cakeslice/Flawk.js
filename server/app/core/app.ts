@@ -262,47 +262,55 @@ type Path = {
 	recaptcha?: 'true'
 	tag?: string
 }
-function mapApiType(type: string): { type: string; format?: string; of?: string } {
+function mapApiType(type: string): {
+	type: string
+	format?: string
+	of?: { type: string; format?: string }
+} {
+	let typeCheck = type
+	if (type.includes('[]')) {
+		typeCheck = type.split('[]')[0]
+	}
+
 	if (
 		!(
-			type === 'string' ||
-			type === 'string[]' ||
-			type === 'number' ||
-			type === 'number[]' ||
-			type === 'boolean' ||
-			type === 'boolean[]' ||
-			type === 'ObjectId' ||
-			type === 'ObjectId[]' ||
-			type === 'Date' ||
-			type === 'Date[]' ||
-			type === 'Obj' ||
-			type === 'Obj[]'
+			typeCheck === 'string' ||
+			typeCheck === 'number' ||
+			typeCheck === 'boolean' ||
+			typeCheck === 'ObjectId' ||
+			typeCheck === 'Date' ||
+			typeCheck === 'Obj'
 		)
 	) {
 		throw Error('Type ' + type + ' is not supported')
 	}
 
-	if (type === 'ObjectId')
-		return {
+	let output: { type: string; format?: string } = { type: typeCheck }
+
+	if (typeCheck === 'Obj')
+		output = {
+			type: 'object',
+		}
+	else if (typeCheck === 'ObjectId')
+		output = {
 			type: 'string',
 			format: 'objectid',
 		}
-	else if (type === 'Date') {
-		return {
+	else if (typeCheck === 'Date') {
+		output = {
 			type: 'string',
 			format: 'date-time',
 		}
-	} else if (type.includes('[]')) {
-		const split = type.split('[]')
+	}
+
+	if (type.includes('[]')) {
 		return {
 			type: 'array',
-			of: split[0] === 'Obj' ? undefined : split[0],
+			of: output,
 		}
 	}
 
-	return {
-		type: type,
-	}
+	return output
 }
 function parseObject(obj: Obj) {
 	const p = obj
@@ -358,11 +366,7 @@ function addPath(path: Path, tag: string) {
 					if (map.type === 'array') {
 						body[property] = {
 							type: 'array',
-							items: map.of
-								? {
-										type: map.of,
-								  }
-								: {},
+							items: map.of ? map.of : {},
 						}
 					} else body[property] = map
 				} else {
@@ -383,8 +387,8 @@ function addPath(path: Path, tag: string) {
 	}[] =
 		path.pagination === 'true'
 			? [
-					{ schema: { type: 'number' }, in: 'query', name: 'limit' },
-					{ schema: { type: 'number' }, in: 'query', name: 'page' },
+					{ schema: { type: 'string' }, in: 'query', name: 'limit' },
+					{ schema: { type: 'string' }, in: 'query', name: 'page' },
 			  ]
 			: []
 	if (path.recaptcha === 'true')
@@ -444,11 +448,7 @@ function addPath(path: Path, tag: string) {
 								if (responseBody)
 									responseBody[property] = {
 										type: 'array',
-										items: map.of
-											? {
-													type: map.of,
-											  }
-											: {},
+										items: map.of ? map.of : {},
 									}
 							} else {
 								if (responseBody) responseBody[property] = map
@@ -978,14 +978,11 @@ function setup() {
 	app.use(config.path + '/*', paginate.middleware(10, 50))
 	app.all(config.path + '/*', function (req, res, next) {
 		// Minimum results to fetch (0 is all of them)
-		// @ts-ignore
-		const limit = req.query.limit as number
-		// @ts-ignore
-		if (!limit || limit <= 1) req.query.limit = 1
-		// @ts-ignore
-		else if (limit > 100) req.query.limit = 100
-		// @ts-ignore
-		req.limit = req.query.limit
+
+		const limit = Number(req.query.limit)
+		if (!limit || limit <= 1) req.query.limit = '1'
+		else if (limit > 100) req.query.limit = '100'
+		req.limit = Number(req.query.limit)
 
 		next()
 	})

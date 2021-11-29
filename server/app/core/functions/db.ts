@@ -28,7 +28,7 @@ export async function getNextRef(model: Model<any>) {
 		.findOne({ reference: { $exists: true } })
 		.sort('-reference')
 		.select('reference')
-	return c && c.reference !== undefined ? (c.reference as number) : 0
+	return c && c.reference !== undefined ? (c.reference as number) + 1 : 0
 }
 
 export type StructureConfig = {

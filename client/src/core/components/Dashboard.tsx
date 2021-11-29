@@ -53,7 +53,7 @@ export default class Dashboard extends Component<
 		color: string
 		logo: string
 		routes: Array<DashboardRoute>
-		pageProps: unknown
+		pageProps?: Obj
 		alwaysOpen?: boolean
 		closedWidth?: number
 		openWidth?: number
@@ -138,7 +138,7 @@ export default class Dashboard extends Component<
 												}}
 											>
 												<Menu
-													{...this.props.pageProps} // To update on prop changes
+													pageProps={this.props.pageProps}
 													path={this.props.path}
 													logo={this.props.logo}
 													isOpen={this.state.open}
@@ -269,7 +269,7 @@ export default class Dashboard extends Component<
 															toggleOpen={(open) =>
 																this.toggleOpen(open)
 															}
-															{...this.props.pageProps}
+															pageProps={this.props.pageProps}
 														></MobileDrawer>
 													</div>
 												</Fade>
@@ -468,6 +468,7 @@ export default class Dashboard extends Component<
 }
 
 class Menu extends Component<{
+	pageProps?: Obj
 	path: string
 	logo: string
 	isOpen: boolean
@@ -501,6 +502,7 @@ class Menu extends Component<{
 				{this.props.routes.map((entry, i) => {
 					if (entry.notRoute && entry.tab)
 						return entry.tab({
+							...this.props.pageProps,
 							toggleOpen: this.props.toggleOpen,
 							isOpen: this.props.isOpen,
 							key: i.toString(),

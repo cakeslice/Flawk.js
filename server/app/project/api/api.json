@@ -689,14 +689,14 @@
         "parameters": [
           {
             "schema": {
-              "type": "number"
+              "type": "string"
             },
             "in": "query",
             "name": "limit"
           },
           {
             "schema": {
-              "type": "number"
+              "type": "string"
             },
             "in": "query",
             "name": "page"
@@ -890,7 +890,9 @@
                   "properties": {
                     "items": {
                       "type": "array",
-                      "items": {}
+                      "items": {
+                        "type": "object"
+                      }
                     },
                     "hasNext": {
                       "type": "boolean"
@@ -934,14 +936,14 @@
         "parameters": [
           {
             "schema": {
-              "type": "number"
+              "type": "string"
             },
             "in": "query",
             "name": "limit"
           },
           {
             "schema": {
-              "type": "number"
+              "type": "string"
             },
             "in": "query",
             "name": "page"

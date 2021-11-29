@@ -10,11 +10,13 @@ import Collapsible from 'core/components/Collapsible'
 import { DashboardRoute } from 'core/components/Dashboard'
 import config from 'core/config_'
 import styles from 'core/styles'
+import { Obj } from 'flawk-types'
 import { css } from 'glamor'
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 
 export default class MobileDrawer extends Component<{
+	pageProps?: Obj
 	style?: React.CSSProperties
 	textColor?: string
 	headerHeight: number
@@ -53,6 +55,7 @@ export default class MobileDrawer extends Component<{
 				{this.props.links.map((link, i, arr) => {
 					if (link.notRoute && link.tab)
 						return link.tab({
+							...this.props.pageProps,
 							isOpen: this.state.isOpen,
 							toggleOpen: this.props.toggleOpen,
 							key: i.toString(),
