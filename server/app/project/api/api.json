@@ -378,10 +378,10 @@
         "parameters": []
       }
     },
-    "/client/upload_url/": {
+    "/client/upload_url": {
       "post": {
         "description": "Get a S3 URL to upload a file to",
-        "operationId": "post-",
+        "operationId": "post-upload_url",
         "tags": [
           "private"
         ],
@@ -465,8 +465,7 @@
                   "type": "object",
                   "properties": {
                     "_id": {
-                      "type": "string",
-                      "format": "objectid"
+                      "$ref": "#/components/schemas/ObjectId"
                     },
                     "email": {
                       "type": "string"
@@ -629,15 +628,13 @@
                         "type": "object",
                         "properties": {
                           "_id": {
-                            "type": "string",
-                            "format": "objectid"
+                            "$ref": "#/components/schemas/ObjectId"
                           },
                           "isRead": {
                             "type": "boolean"
                           },
                           "date": {
-                            "type": "string",
-                            "format": "date-time"
+                            "$ref": "#/components/schemas/DateTime"
                           },
                           "notificationType": {
                             "type": "string"
@@ -735,8 +732,7 @@
                 "type": "object",
                 "properties": {
                   "notificationID": {
-                    "type": "string",
-                    "format": "objectid"
+                    "$ref": "#/components/schemas/ObjectId"
                   }
                 },
                 "required": [
@@ -999,6 +995,20 @@
         "type": "apiKey",
         "in": "header",
         "name": "token"
+      }
+    },
+    "schemas": {
+      "ObjectId": {
+        "type": "string",
+        "format": "objectid"
+      },
+      "DateTime": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "Date": {
+        "type": "string",
+        "format": "date"
       }
     }
   }

@@ -310,7 +310,6 @@ export default class Dashboard extends Component<
 														key={
 															this.props.path +
 															route.id +
-															'/' +
 															(route.params || '')
 														}
 														path={this.props.path + route.id}
@@ -326,7 +325,6 @@ export default class Dashboard extends Component<
 																		route.id +
 																		'/' +
 																		sub.id +
-																		'/' +
 																		(sub.params || '')
 																	}
 																	path={
@@ -411,13 +409,11 @@ export default class Dashboard extends Component<
 														key={
 															this.props.path +
 															route.id +
-															'/' +
 															(route.params || '')
 														}
 														path={
 															this.props.path +
 															route.id +
-															'/' +
 															(route.params || '')
 														}
 														exact={route.notExact ? false : true}
@@ -510,7 +506,7 @@ class Menu extends Component<{
 
 					const output = (
 						<div
-							key={entry.notRoute ? i : entry.id + '/' + (entry.params || '')}
+							key={entry.notRoute ? i : entry.id + (entry.params || '')}
 							style={{
 								marginTop:
 									this.props.entryStyle && this.props.entryStyle.marginTop
@@ -637,21 +633,13 @@ class Menu extends Component<{
 					if (entry.subRoutes)
 						return (
 							<Collapsible
-								key={entry.notRoute ? i : entry.id + '/' + (entry.params || '')}
+								key={entry.notRoute ? i : entry.id + (entry.params || '')}
 								controlled
 								controlledOpen={selectedRoute.includes('/' + entry.id)}
 								content={
 									<div>
 										{entry.subRoutes.map((sub, i) => (
-											<div
-												key={
-													entry.id +
-													'/' +
-													sub.id +
-													'/' +
-													(sub.params || '')
-												}
-											>
+											<div key={entry.id + '/' + sub.id + (sub.params || '')}>
 												<Link
 													{...css({
 														':focus-visible': {

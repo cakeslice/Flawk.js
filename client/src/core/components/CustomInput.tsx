@@ -164,6 +164,8 @@ export default class CustomInput extends Component<{
 				? e.target.value === ''
 					? undefined
 					: Number(e.target.value)
+				: e.target.value === ''
+				? undefined
 				: e.target.value
 		this.timer = setTimeout(this.triggerChange, this.props.bufferInterval || 250)
 	}
@@ -361,6 +363,8 @@ export default class CustomInput extends Component<{
 								? e.target.value === ''
 									? undefined
 									: Number(e.target.value)
+								: e.target.value === ''
+								? undefined
 								: e.target.value
 						)
 				}
@@ -372,6 +376,8 @@ export default class CustomInput extends Component<{
 							? e.target.value === ''
 								? undefined
 								: Number(e.target.value)
+							: e.target.value === ''
+							? undefined
 							: e.target.value
 					)
 			},
@@ -382,7 +388,8 @@ export default class CustomInput extends Component<{
 			onChange: (e: string | Moment) => {
 				this.props.onChange && this.props.onChange(e)
 
-				if (formIK && name && formIK.setFieldValue) formIK.setFieldValue(name, e)
+				if (formIK && name && formIK.setFieldValue)
+					formIK.setFieldValue(name, e === '' ? undefined : e)
 			},
 		}
 
@@ -470,7 +477,7 @@ export default class CustomInput extends Component<{
 										maxRows={this.props.maxRows}
 									/>
 								)
-							) : !this.props.mask ? (
+							) : !this.props.mask && !this.props.timeInput ? (
 								<Input
 									{...commonProps}
 									{...valueProps}
@@ -490,20 +497,23 @@ export default class CustomInput extends Component<{
 										...finalStyle,
 										width: finalStyle.width || defaultWidth(desktop),
 									}}
-									mask={this.props.mask}
-									formatChars={this.props.formatChars}
-									{...(this.props.timeInput && {
-										mask:
-											value && (value as string)[0] === '2'
-												? '23:59'
-												: '29:59',
-										formatChars: {
-											9: '[0-9]',
-											3: '[0-3]',
-											5: '[0-5]',
-											2: '[0-2]',
-										},
-									})}
+									{...(this.props.mask
+										? {
+												mask: this.props.mask,
+												formatChars: this.props.formatChars,
+										  }
+										: {
+												mask:
+													value && (value as string)[0] === '2'
+														? '23:59'
+														: '29:59',
+												formatChars: {
+													9: '[0-9]',
+													3: '[0-3]',
+													5: '[0-5]',
+													2: '[0-2]',
+												},
+										  })}
 								/>
 							)}
 

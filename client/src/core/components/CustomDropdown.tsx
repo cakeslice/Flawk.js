@@ -351,10 +351,15 @@ export default class CustomDropdown extends Component<{
 									const o = output as { value: string } | undefined
 
 									this.props.onChange &&
-										this.props.onChange(o ? o.value : undefined)
+										this.props.onChange(
+											o ? (o.value === '' ? undefined : o.value) : undefined
+										)
 
 									if (formIK && name && formIK.setFieldValue)
-										formIK.setFieldValue(name, o ? o.value : undefined)
+										formIK.setFieldValue(
+											name,
+											o ? (o.value === '' ? undefined : o.value) : undefined
+										)
 								}}
 								onBlur={(output) => {
 									const o = output as React.FocusEvent<HTMLInputElement, Element>
@@ -651,7 +656,7 @@ export default class CustomDropdown extends Component<{
 										: undefined
 								}
 								onInputChange={(value?: string) => {
-									this.handleChangeBuffered(value)
+									this.handleChangeBuffered(value === '' ? undefined : value)
 								}}
 								options={this.state.loadedOptions || this.props.options}
 							></Select>

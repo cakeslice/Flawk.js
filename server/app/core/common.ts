@@ -175,7 +175,7 @@ export default {
                 o.password = "*******";
             str += "\nheaders " + JSON.stringify(req.headers, null, 3);
         } */
-		console.log('-- CALL: ' + str)
+		console.log('-- ' + req.method + ': ' + str)
 	},
 
 	///////////////////////////////////// COMMON RESPONSES

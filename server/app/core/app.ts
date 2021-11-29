@@ -232,6 +232,12 @@ async function extractRouteTypes(file: string) {
 				if (typeof json.call !== 'string') {
 					valid = false
 					invalidMessage = '"call" is required and must be a string'
+				} else if (json.call.substring(json.call.length - 1) === '/') {
+					valid = false
+					invalidMessage = '"call" cannot end with /'
+				} else if (json.call.substring(0, 1) !== '/') {
+					valid = false
+					invalidMessage = '"call" needs to start with /'
 				}
 
 				if (!valid) throw Error()
@@ -263,9 +269,10 @@ type Path = {
 	tag?: string
 }
 function mapApiType(type: string): {
-	type: string
+	$ref?: string
+	type?: string
 	format?: string
-	of?: { type: string; format?: string }
+	of?: { $ref?: string; type?: string; format?: string }
 } {
 	let typeCheck = type
 	if (type.includes('[]')) {
@@ -285,7 +292,7 @@ function mapApiType(type: string): {
 		throw Error('Type ' + type + ' is not supported')
 	}
 
-	let output: { type: string; format?: string } = { type: typeCheck }
+	let output: { $ref?: string; type?: string; format?: string } = { type: typeCheck }
 
 	if (typeCheck === 'Obj')
 		output = {
@@ -293,13 +300,11 @@ function mapApiType(type: string): {
 		}
 	else if (typeCheck === 'ObjectId')
 		output = {
-			type: 'string',
-			format: 'objectid',
+			$ref: '#/components/schemas/ObjectId',
 		}
 	else if (typeCheck === 'Date') {
 		output = {
-			type: 'string',
-			format: 'date-time',
+			$ref: '#/components/schemas/DateTime',
 		}
 	}
 
@@ -378,8 +383,9 @@ function addPath(path: Path, tag: string) {
 
 	const query: {
 		schema: {
-			type: string
+			type?: string
 			format?: string
+			ref?: string
 		}
 		in: 'query'
 		name: string
@@ -685,6 +691,20 @@ async function generateOpenApi() {
 					type: 'apiKey',
 					in: 'header',
 					name: 'token',
+				},
+			},
+			schemas: {
+				ObjectId: {
+					type: 'string',
+					format: 'objectid',
+				},
+				DateTime: {
+					type: 'string',
+					format: 'date-time',
+				},
+				Date: {
+					type: 'string',
+					format: 'date',
 				},
 			},
 		},

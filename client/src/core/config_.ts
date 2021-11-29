@@ -269,7 +269,7 @@ export default {
 
 		if (typeof obj === 'string') output = obj
 		else {
-			const s = obj[lang || global.lang.text]
+			const s = obj && obj[lang || global.lang.text]
 			if (typeof s === 'string') output = s
 		}
 

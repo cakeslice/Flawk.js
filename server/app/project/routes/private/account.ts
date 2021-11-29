@@ -38,7 +38,7 @@ router.postAsync(Logout.call, async (req, res) => {
 })
 
 const UploadURL = {
-	call: '/client/upload_url/',
+	call: '/client/upload_url',
 	method: 'post',
 	description: 'Get a S3 URL to upload a file to',
 	body: {} as {
