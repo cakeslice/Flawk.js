@@ -155,7 +155,7 @@ export default {
 	},
 
 	handleFileChange: async (
-		e: ChangeEvent<HTMLInputElement>,
+		e: ChangeEvent<HTMLInputElement> | File[],
 		options?: {
 			nonImage?: boolean
 			maxSize?: number
@@ -172,9 +172,10 @@ export default {
 		}
 
 		return new Promise((resolve) => {
+			// @ts-ignore
+			const file: File = !e.target ? e[0] : e.target.files[0]
+			// @ts-ignore
 			if (e.preventDefault) e.preventDefault()
-
-			const file = e.target && e.target.files ? e.target.files[0] : undefined
 
 			if (file) {
 				const isImage =
