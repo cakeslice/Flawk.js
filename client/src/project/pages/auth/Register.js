@@ -11,6 +11,7 @@ import CustomInput from 'core/components/CustomInput'
 import ExitPrompt from 'core/components/ExitPrompt'
 import Field from 'core/components/Field'
 import config from 'core/config_'
+import navigation from 'core/functions/navigation'
 import styles from 'core/styles'
 import { Form, Formik } from 'formik'
 import { fetchUser } from 'project/redux/AppReducer'
@@ -26,8 +27,7 @@ class Register extends Component {
 	state = {}
 
 	render() {
-		if (!this.props.fetchingUser && this.props.user)
-			global.routerHistory().replace(config.loginRedirect)
+		if (!this.props.fetchingUser && this.props.user) navigation.loginRedirect()
 
 		return (
 			<MediaQuery minWidth={config.mobileWidthTrigger}>
@@ -67,7 +67,7 @@ class Register extends Component {
 										await global.storage.setItem('token', res.body.token)
 										await fetchUser(this.props.dispatch)
 
-										global.routerHistory().replace(config.loginRedirect)
+										navigation.loginRedirect()
 									} else if (res.status === 401)
 										this.setState({ wrongLogin: 'Wrong code' })
 

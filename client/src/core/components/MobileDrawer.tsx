@@ -10,7 +10,7 @@ import Collapsible from 'core/components/Collapsible'
 import { DashboardRoute } from 'core/components/Dashboard'
 import config from 'core/config_'
 import styles from 'core/styles'
-import { Obj } from 'flawk-types'
+import { GlamorProps, Obj } from 'flawk-types'
 import { css } from 'glamor'
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
@@ -62,67 +62,97 @@ export default class MobileDrawer extends Component<{
 						})
 					const last = arr.length - 1 === i
 
+					const outputCSS: React.CSSProperties & GlamorProps = {
+						':focus-visible': {
+							outline: 'none',
+							backgroundColor: 'rgba(127,127,127,.15)',
+						},
+						':hover': {
+							textDecoration: 'none',
+							backgroundColor: 'rgba(127,127,127,.15)',
+						},
+						':active': {
+							backgroundColor: 'rgba(127,127,127,.25)',
+						},
+					}
+					const outputStyle: React.CSSProperties = {
+						display: 'flex',
+						flexDirection: 'row',
+						justifyContent: 'space-between',
+						alignItems: 'center',
+						paddingLeft: 35,
+						paddingRight: 35,
+						width: '100%',
+						height: 59,
+
+						boxShadow: last ? '0 4px 4px 0 rgba(0, 0, 0, 0.075)' : '',
+						borderBottom: !last ? 'solid 1px ' + styles.colors.lineColor : undefined,
+					}
 					const output = (
 						<div key={link.notRoute ? i : link.id + (link.params || '')}>
-							<Link
-								{...css({
-									':focus-visible': {
-										outline: 'none',
-										backgroundColor: 'rgba(127,127,127,.15)',
-									},
-									':hover': {
-										textDecoration: 'none',
-										backgroundColor: 'rgba(127,127,127,.15)',
-									},
-									':active': {
-										backgroundColor: 'rgba(127,127,127,.25)',
-									},
-								})}
-								style={{
-									display: 'flex',
-									flexDirection: 'row',
-									justifyContent: 'space-between',
-									alignItems: 'center',
-									paddingLeft: 35,
-									paddingRight: 35,
-									width: '100%',
-									height: 59,
-
-									boxShadow: last ? '0 4px 4px 0 rgba(0, 0, 0, 0.075)' : '',
-									borderBottom: !last
-										? 'solid 1px ' + styles.colors.lineColor
-										: undefined,
-								}}
-								onClick={() => {
-									if (link.onClick) {
-										link.onClick()
+							{link.notRoute ? (
+								<Link
+									{...css(outputCSS)}
+									style={outputStyle}
+									onClick={() => {
+										if (link.onClick) {
+											link.onClick()
+										}
+										if (!link.subRoutes || link.subRoutes.length === 0)
+											this.changeState(false)
+										else this.changeState(true)
+									}}
+									to={
+										link.notRoute
+											? ''
+											: this.props.path
+											? this.props.path +
+											  link.id +
+											  (link.subRoutes ? '/' + link.subRoutes[0].id : '')
+											: link.id +
+											  (link.subRoutes ? '/' + link.subRoutes[0].id : '')
 									}
-									if (!link.subRoutes || link.subRoutes.length === 0)
-										this.changeState(false)
-									else this.changeState(true)
-								}}
-								to={
-									link.notRoute
-										? ''
-										: this.props.path
-										? this.props.path +
-										  link.id +
-										  (link.subRoutes ? '/' + link.subRoutes[0].id : '')
-										: link.id +
-										  (link.subRoutes ? '/' + link.subRoutes[0].id : '')
-								}
-							>
-								<div
-									style={{
-										fontSize: styles.defaultFontSize,
-										lineHeight: 1.64,
-										color: textColor,
-										opacity: selectedRoute.includes('/' + link.id) ? 1 : 0.5,
+								>
+									<div
+										style={{
+											fontSize: styles.defaultFontSize,
+											lineHeight: 1.64,
+											color: textColor,
+											opacity: selectedRoute.includes('/' + link.id)
+												? 1
+												: 0.5,
+										}}
+									>
+										{link.name ? config.localize(link.name) : ''}
+									</div>
+								</Link>
+							) : (
+								<a
+									{...css(outputCSS)}
+									style={outputStyle}
+									onClick={() => {
+										if (link.onClick) {
+											link.onClick()
+										}
+										if (!link.subRoutes || link.subRoutes.length === 0)
+											this.changeState(false)
+										else this.changeState(true)
 									}}
 								>
-									{link.name ? config.localize(link.name) : ''}
-								</div>
-							</Link>
+									<div
+										style={{
+											fontSize: styles.defaultFontSize,
+											lineHeight: 1.64,
+											color: textColor,
+											opacity: selectedRoute.includes('/' + link.id)
+												? 1
+												: 0.5,
+										}}
+									>
+										{link.name ? config.localize(link.name) : ''}
+									</div>
+								</a>
+							)}
 
 							{last ? (
 								''

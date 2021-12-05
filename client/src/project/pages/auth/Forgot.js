@@ -10,6 +10,7 @@ import CustomButton from 'core/components/CustomButton'
 import CustomInput from 'core/components/CustomInput'
 import Field from 'core/components/Field'
 import config from 'core/config_'
+import navigation from 'core/functions/navigation'
 import styles from 'core/styles'
 import { Form, Formik } from 'formik'
 import React, { Component } from 'react'
@@ -24,8 +25,7 @@ class Forgot extends Component {
 	state = {}
 
 	render() {
-		if (!this.props.fetchingUser && this.props.user)
-			global.routerHistory().replace(config.loginRedirect)
+		if (!this.props.fetchingUser && this.props.user) navigation.loginRedirect()
 
 		return (
 			<MediaQuery minWidth={config.mobileWidthTrigger}>
@@ -67,7 +67,7 @@ class Forgot extends Component {
 										await global.storage.setItem('token', res.body.token)
 
 										await fetchUser(this.props.dispatch)
-										global.routerHistory().replace(config.loginRedirect)
+										navigation.loginRedirect()
 									} else if (res.status === 401)
 										this.setState({ wrongLogin: 'Wrong code' })
 

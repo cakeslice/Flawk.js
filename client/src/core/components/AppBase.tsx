@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import { App } from '@capacitor/app'
 import { Capacitor } from '@capacitor/core'
 import { Storage } from '@capacitor/storage'
 import { useConstructor } from '@toolz/use-constructor'
@@ -12,6 +13,7 @@ import 'abortcontroller-polyfill'
 import { get } from 'core/api'
 import 'core/assets/react-toastify.css'
 import config from 'core/config_'
+import navigation from 'core/functions/navigation'
 import styles from 'core/styles'
 import { Lang } from 'flawk-types'
 import { CookieStorage, isSupported, MemoryStorage } from 'local-storage-fallback'
@@ -54,6 +56,10 @@ const capacitorStorage = {
 
 let storage: typeof global.storage
 if (Capacitor.isNativePlatform()) {
+	App.addListener('backButton', () => {
+		const have_stacks = window.history.length
+		have_stacks <= 1 ? App.exitApp() : window.history.back()
+	})
 	storage = capacitorStorage
 } else if (isSupported('localStorage')) {
 	// use localStorage
@@ -278,10 +284,7 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 
 	const cookieNotice = cookie
 
-	let inRestrictedRoute = false
-	config.restrictedRoutes.forEach((r) => {
-		if (window.location.href.includes(r)) inRestrictedRoute = true
-	})
+	const inRestrictedRoute = navigation.inRestrictedEndpoint()
 
 	const Child = component
 

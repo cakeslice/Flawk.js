@@ -18,7 +18,7 @@ import React, { Component, useEffect } from 'react'
 import { Helmet } from 'react-helmet'
 import MediaQuery from 'react-responsive'
 import { Fade } from 'react-reveal'
-import { Route, Switch, useHistory } from 'react-router-dom'
+import { Route, Switch } from 'react-router-dom'
 import './assets/fonts.css'
 import './assets/main.scss'
 //import notificationSound from './assets/sounds/notification.mp3'
@@ -44,8 +44,6 @@ const Register = React.lazy(() => import('./pages/auth/Register'))
 const Main = React.lazy(() => import('./pages/main/Main'))
 
 export default function Router(): JSX.Element {
-	const history = useHistory()
-
 	const { structures, user, fetchingUser, authError } = useStoreSelector((state) => ({
 		structures: state.app.structures,
 		user: state.app.user,
@@ -71,14 +69,6 @@ export default function Router(): JSX.Element {
 	function onUpdateData() {
 		fetchUser(dispatch)
 	}
-
-	useEffect(() => {
-		if (history) {
-			const selectedRoute = history.location.pathname.toString()
-			if (selectedRoute.includes('/dashboard') && !fetchingUser && !user && authError)
-				history.push(config.noTokenRedirect)
-		}
-	})
 
 	let permission = 1000
 	if (user) {
@@ -252,7 +242,6 @@ export default function Router(): JSX.Element {
 				const res = await post('client/logout', {})
 				if (res.ok) {
 					await fetchUser(dispatch)
-					global.routerHistory().push('/login')
 				}
 			},
 		},
@@ -280,26 +269,24 @@ export default function Router(): JSX.Element {
 										</title>
 									</Helmet>
 
-									{user && (
-										<Dashboard
-											wrapperComponent={DashboardWrapper}
-											path={'/dashboard/'}
-											color={styles.colors.white}
-											logo={logo}
-											routes={routes}
-											// Redux props
-											pageProps={{
-												structures,
-												user,
-												fetchingUser,
-												authError,
-												//
-												fetchUser: async () => await fetchUser(dispatch),
-												fetchStructures: async () =>
-													await fetchStructures(dispatch),
-											}}
-										></Dashboard>
-									)}
+									<Dashboard
+										wrapperComponent={DashboardWrapper}
+										path={'/dashboard/'}
+										color={styles.colors.white}
+										logo={logo}
+										routes={routes}
+										// Redux props
+										pageProps={{
+											structures,
+											user,
+											fetchingUser,
+											authError,
+											//
+											fetchUser: async () => await fetchUser(dispatch),
+											fetchStructures: async () =>
+												await fetchStructures(dispatch),
+										}}
+									></Dashboard>
 								</div>
 							</Route>
 

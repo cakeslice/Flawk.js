@@ -482,6 +482,33 @@ class Menu extends Component<{
 
 		const selectedRoute = global.routerHistory().location.pathname.toString()
 
+		const entryStyle = (entry: { id: string }) => {
+			return {
+				backgroundColor: selectedRoute.includes('/' + entry.id) && 'rgba(127,127,127,.15)',
+				':focus-visible': {
+					outline: 'none',
+					backgroundColor: 'rgba(127,127,127,.15)',
+				},
+				':hover': {
+					textDecoration: 'none',
+					backgroundColor: 'rgba(127,127,127,.15)',
+				},
+				':active': {
+					backgroundColor: 'rgba(127,127,127,.25)',
+				},
+				fontSize: fontSize,
+				padding: 0,
+				display: 'flex',
+				height: 40,
+				color: this.props.textColor,
+				alignItems: 'center',
+				width: '100%',
+				paddingLeft: 12,
+				justifyContent: 'flex-start',
+				...this.props.entryStyle,
+			}
+		}
+
 		return (
 			<div
 				className='flex-col justify-start'
@@ -524,109 +551,160 @@ class Menu extends Component<{
 									: undefined,
 							}}
 						>
-							<Link
-								{...css({
-									backgroundColor:
-										selectedRoute.includes('/' + entry.id) &&
-										'rgba(127,127,127,.15)',
-									':focus-visible': {
-										outline: 'none',
-										backgroundColor: 'rgba(127,127,127,.15)',
-									},
-									':hover': {
-										textDecoration: 'none',
-										backgroundColor: 'rgba(127,127,127,.15)',
-									},
-									':active': {
-										backgroundColor: 'rgba(127,127,127,.25)',
-									},
-									fontSize: fontSize,
-									padding: 0,
-									display: 'flex',
-									height: 40,
-									color: this.props.textColor,
-									alignItems: 'center',
-									width: '100%',
-									paddingLeft: 12,
-									justifyContent: 'flex-start',
-									...this.props.entryStyle,
-								})}
-								onClick={() => {
-									if (entry.onClick) {
-										entry.onClick()
-									}
-									if (!entry.subRoutes || entry.subRoutes.length === 0)
-										this.props.toggleOpen(false)
-									else this.props.toggleOpen(true)
-								}}
-								to={
-									entry.notRoute
-										? ''
-										: this.props.path +
-										  entry.id +
-										  (entry.subRoutes ? '/' + entry.subRoutes[0].id : '')
-								}
-							>
-								{entry.customIcon ? (
-									<div>
-										{entry.customIcon(selectedRoute.includes('/' + entry.id))}
-									</div>
-								) : (
-									<div
-										style={{
-											display: 'flex',
-											alignItems: 'center',
-											width: iconSize,
-										}}
-									>
-										{selectedRoute.includes('/' + entry.id) ? (
-											<img
-												src={entry.iconActive || entry.icon}
-												style={{
-													height: iconSize,
-													width: iconSize,
-												}}
-											></img>
-										) : (
-											<img
-												src={entry.icon}
-												style={{
-													opacity: 0.5,
-													filter: 'grayscale(100%)',
-													width: iconSize,
-													height: iconSize,
-												}}
-											></img>
-										)}
-									</div>
-								)}
-								<div>
-									{entry.name && (
-										<p
+							{entry.notRoute ? (
+								<a
+									{...css(entryStyle(entry))}
+									onClick={() => {
+										if (entry.onClick) {
+											entry.onClick()
+										}
+										if (!entry.subRoutes || entry.subRoutes.length === 0)
+											this.props.toggleOpen(false)
+										else this.props.toggleOpen(true)
+									}}
+								>
+									{entry.customIcon ? (
+										<div>
+											{entry.customIcon(
+												selectedRoute.includes('/' + entry.id)
+											)}
+										</div>
+									) : (
+										<div
 											style={{
-												whiteSpace: 'nowrap',
-												fontSize:
-													this.props.entryStyle &&
-													this.props.entryStyle.fontSize
-														? (this.props.entryStyle.fontSize as
-																| string
-																| number)
-														: fontSize,
-												transition: `opacity 500ms, margin-left 500ms, max-width 500ms`,
-												opacity: this.props.isOpen
-													? selectedRoute.includes('/' + entry.id)
-														? 1
-														: 0.5
-													: 0,
-												marginLeft: this.props.isOpen ? 10 : 0,
-												maxWidth: this.props.isOpen ? 'auto' : 0,
+												display: 'flex',
+												alignItems: 'center',
+												width: iconSize,
 											}}
 										>
-											{config.localize(entry.name)}
-										</p>
+											{selectedRoute.includes('/' + entry.id) ? (
+												<img
+													src={entry.iconActive || entry.icon}
+													style={{
+														height: iconSize,
+														width: iconSize,
+													}}
+												></img>
+											) : (
+												<img
+													src={entry.icon}
+													style={{
+														opacity: 0.5,
+														filter: 'grayscale(100%)',
+														width: iconSize,
+														height: iconSize,
+													}}
+												></img>
+											)}
+										</div>
 									)}
-								</div>
-							</Link>
+									<div>
+										{entry.name && (
+											<p
+												style={{
+													whiteSpace: 'nowrap',
+													fontSize:
+														this.props.entryStyle &&
+														this.props.entryStyle.fontSize
+															? (this.props.entryStyle.fontSize as
+																	| string
+																	| number)
+															: fontSize,
+													transition: `opacity 500ms, margin-left 500ms, max-width 500ms`,
+													opacity: this.props.isOpen
+														? selectedRoute.includes('/' + entry.id)
+															? 1
+															: 0.5
+														: 0,
+													marginLeft: this.props.isOpen ? 10 : 0,
+													maxWidth: this.props.isOpen ? 'auto' : 0,
+												}}
+											>
+												{config.localize(entry.name)}
+											</p>
+										)}
+									</div>
+								</a>
+							) : (
+								<Link
+									{...css(entryStyle(entry))}
+									onClick={() => {
+										if (entry.onClick) {
+											entry.onClick()
+										}
+										if (!entry.subRoutes || entry.subRoutes.length === 0)
+											this.props.toggleOpen(false)
+										else this.props.toggleOpen(true)
+									}}
+									to={
+										this.props.path +
+										entry.id +
+										(entry.subRoutes ? '/' + entry.subRoutes[0].id : '')
+									}
+								>
+									{entry.customIcon ? (
+										<div>
+											{entry.customIcon(
+												selectedRoute.includes('/' + entry.id)
+											)}
+										</div>
+									) : (
+										<div
+											style={{
+												display: 'flex',
+												alignItems: 'center',
+												width: iconSize,
+											}}
+										>
+											{selectedRoute.includes('/' + entry.id) ? (
+												<img
+													src={entry.iconActive || entry.icon}
+													style={{
+														height: iconSize,
+														width: iconSize,
+													}}
+												></img>
+											) : (
+												<img
+													src={entry.icon}
+													style={{
+														opacity: 0.5,
+														filter: 'grayscale(100%)',
+														width: iconSize,
+														height: iconSize,
+													}}
+												></img>
+											)}
+										</div>
+									)}
+									<div>
+										{entry.name && (
+											<p
+												style={{
+													whiteSpace: 'nowrap',
+													fontSize:
+														this.props.entryStyle &&
+														this.props.entryStyle.fontSize
+															? (this.props.entryStyle.fontSize as
+																	| string
+																	| number)
+															: fontSize,
+													transition: `opacity 500ms, margin-left 500ms, max-width 500ms`,
+													opacity: this.props.isOpen
+														? selectedRoute.includes('/' + entry.id)
+															? 1
+															: 0.5
+														: 0,
+													marginLeft: this.props.isOpen ? 10 : 0,
+													maxWidth: this.props.isOpen ? 'auto' : 0,
+												}}
+											>
+												{config.localize(entry.name)}
+											</p>
+										)}
+									</div>
+								</Link>
+							)}
 						</div>
 					)
 

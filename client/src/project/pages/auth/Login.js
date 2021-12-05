@@ -9,6 +9,7 @@ import { post } from 'core/api'
 import CustomButton from 'core/components/CustomButton'
 import CustomInput from 'core/components/CustomInput'
 import config from 'core/config_'
+import navigation from 'core/functions/navigation'
 import styles from 'core/styles'
 import { Field, Form, Formik } from 'formik'
 import { fetchUser } from 'project/redux/AppReducer'
@@ -18,13 +19,11 @@ import { connect } from 'react-redux'
 import MediaQuery from 'react-responsive'
 import HeadShake from 'react-reveal/HeadShake'
 import { Link } from 'react-router-dom'
-
 class Login extends Component {
 	state = {}
 
 	render() {
-		if (!this.props.fetchingUser && this.props.user)
-			global.routerHistory().replace(config.loginRedirect)
+		if (!this.props.fetchingUser && this.props.user) navigation.loginRedirect()
 
 		return (
 			<MediaQuery minWidth={config.mobileWidthTrigger}>
@@ -62,7 +61,7 @@ class Login extends Component {
 
 									await global.storage.setItem('token', res.body.token)
 									await fetchUser(this.props.dispatch)
-									global.routerHistory().replace(config.loginRedirect)
+									navigation.loginRedirect()
 								} else if (res.status === 401) {
 									this.setState({ wrongLogin: 'Authentication Failed' })
 								}

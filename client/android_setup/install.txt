@@ -22,3 +22,7 @@ Add to PATH environment variables:
 Then go to the tools and run
 sdkmanager "build-tools;29.0.3" // https://developer.android.com/studio/releases/build-tools
 sdkmanager "platforms;android-28" // https://cordova.apache.org/docs/en/latest/guide/platforms/android/
+
+----
+
+To connect to your device using Wi-Fi: https://developer.android.com/studio/command-line/adb#connect-to-a-device-over-wi-fi-android-11+

@@ -11,8 +11,10 @@ import { Integrations } from '@sentry/tracing'
 import { useConstructor } from '@toolz/use-constructor'
 import { get } from 'core/api'
 import config from 'core/config_'
+import navigation from 'core/functions/navigation'
 import styles from 'core/styles'
 import { createBrowserHistory } from 'history'
+import { useStoreSelector } from 'project/redux/_store'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import ReactGA from 'react-ga'
 import GitInfo from 'react-git-info/macro'
@@ -132,6 +134,12 @@ export const RouterBaseContext = React.createContext<{ addFlag: typeof addFlagFu
 export default function RouterBase({ children }: { children: JSX.Element }) {
 	const [history] = useState(createBrowserHistory())
 
+	const { user, fetchingUser, authError } = useStoreSelector((state) => ({
+		user: state.app.user,
+		fetchingUser: state.app.fetchingUser,
+		authError: state.app.authError,
+	}))
+
 	const addFlag = useCallback(addFlagFunction, [])
 	const routerHistory = useCallback(
 		function () {
@@ -142,6 +150,7 @@ export default function RouterBase({ children }: { children: JSX.Element }) {
 	const routerBaseContext = useMemo(() => ({ addFlag }), [addFlag])
 	global.addFlag = addFlag // ! DEPRECATED, still active to support class components
 	global.routerHistory = routerHistory // ! DEPRECATED, still active to support class components
+	// TODO: However, both of these cannot be used in Router.tsx because this is a child component
 
 	// Should be on top of your function after state is declared
 	useConstructor(() => {
@@ -227,6 +236,14 @@ export default function RouterBase({ children }: { children: JSX.Element }) {
 			})
 		}
 	})
+
+	useEffect(() => {
+		const unlisten = history.listen((location) => {
+			if (!config.prod && !config.staging) console.log(location.pathname)
+			if (!fetchingUser && !user && authError) navigation.invalidTokenRedirect()
+		})
+		return unlisten
+	}, [fetchingUser, user, authError])
 
 	useEffect(() => {
 		SplashScreen.hide()

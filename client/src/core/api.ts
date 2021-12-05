@@ -6,6 +6,7 @@
  */
 
 import config from 'core/config_'
+import navigation from 'core/functions/navigation'
 import { KeyUnknown } from 'flawk-types'
 import _ from 'lodash'
 
@@ -122,14 +123,7 @@ async function handleResponse(response: Response): Promise<ParsedResponse> {
 		? (JSON.parse(responseBody) as KeyUnknown)
 		: undefined
 
-	const h = global.routerHistory()
-	let inRestrictedEndpoint = false
-	config.restrictedRoutes.forEach((r) => {
-		if (h && h.location.pathname.includes(r)) inRestrictedEndpoint = true
-	})
-	if (body && body.invalidToken && inRestrictedEndpoint) {
-		h.push(config.noTokenRedirect)
-	}
+	if (body && body.invalidToken) navigation.invalidTokenRedirect()
 
 	return {
 		ok: response.status < 400,
