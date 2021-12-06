@@ -785,7 +785,7 @@ class Forgot extends Component<PropsFromRedux & { desktop?: boolean }> {
 							const errors: Partial<typeof values> = {}
 
 							if (
-								config.recaptchaBypass &&
+								!config.recaptchaBypass &&
 								config.recaptchaSiteKey &&
 								!values.captcha
 							)
