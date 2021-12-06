@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import Animated from 'core/components/Animated'
 import Collapsible from 'core/components/Collapsible'
 import MobileDrawer from 'core/components/MobileDrawer'
 import config from 'core/config_'
@@ -12,9 +13,7 @@ import styles from 'core/styles'
 import { Obj } from 'flawk-types'
 import { css } from 'glamor'
 import React, { Component, Suspense } from 'react'
-import { Animated } from 'react-animated-css'
 import MediaQuery from 'react-responsive'
-import { Fade } from 'react-reveal'
 import { Link, Redirect, Route, Switch } from 'react-router-dom'
 
 const mobileHeight = 55
@@ -116,344 +115,342 @@ export default class Dashboard extends Component<
 				{(desktop) => {
 					const headerHeight = desktop ? 90 : 50
 					return (
-						<Animated animationIn='fadeIn' animationOut='fadeOut' isVisible={true}>
-							<div className='flex-col justify-center'>
-								{desktop ? (
-									<div className='flex'>
-										<Fade delay={0} duration={750} left>
-											<div
-												onMouseEnter={() => this.toggleOpen(true)}
-												onMouseLeave={() => this.toggleOpen(false)}
-												style={{
-													height: '100vh',
-													width: this.state.entryMaxWidth,
+						<Animated
+							alwaysVisible
+							effects={['fade']}
+							duration={0.5}
+							//
+							className='flex-col justify-center'
+						>
+							{desktop ? (
+								<div
+									className='flex'
+									onMouseEnter={() => this.toggleOpen(true)}
+									onMouseLeave={() => this.toggleOpen(false)}
+								>
+									<Animated
+										alwaysVisible
+										effects={['left']}
+										distance={closedWidth}
+										duration={0.75}
+										//
+										style={{
+											height: '100vh',
+											width: this.state.entryMaxWidth,
 
-													transition: `width 500ms`,
-													position: 'fixed',
-													left: 0,
-													zIndex: 2,
+											transition: `width 500ms`,
+											position: 'fixed',
+											left: 0,
+											zIndex: 2,
 
-													minHeight: 850,
-													backgroundColor: this.props.color,
-												}}
-											>
-												<Menu
-													pageProps={this.props.pageProps}
-													path={this.props.path}
-													logo={this.props.logo}
-													isOpen={this.state.open}
-													entryStyle={this.props.entryStyle}
-													color={this.props.color}
-													textColor={textColor}
-													entryMaxWidth={this.state.entryMaxWidth}
-													headerHeight={headerHeight}
-													routes={this.props.routes.filter(
-														(e) => !e.mobileTab && !e.hidden
-													)}
-													toggleOpen={(open) => this.toggleOpen(open)}
-												/>
-											</div>
-										</Fade>
-									</div>
-								) : (
-									<div>
+											minHeight: 850,
+											backgroundColor: this.props.color,
+										}}
+									>
+										<Menu
+											pageProps={this.props.pageProps}
+											path={this.props.path}
+											logo={this.props.logo}
+											isOpen={this.state.open}
+											entryStyle={this.props.entryStyle}
+											color={this.props.color}
+											textColor={textColor}
+											entryMaxWidth={this.state.entryMaxWidth}
+											headerHeight={headerHeight}
+											routes={this.props.routes.filter(
+												(e) => !e.mobileTab && !e.hidden
+											)}
+											toggleOpen={(open) => this.toggleOpen(open)}
+										/>
+									</Animated>
+								</div>
+							) : (
+								<div>
+									<div
+										className='flex-col w-full'
+										style={{
+											minHeight: !this.props.dontFillSpace
+												? desktop
+													? desktopHeightTop
+													: mobileHeightTop
+												: 0,
+										}}
+									>
 										<div
-											className='flex-col w-full'
+											className='blur-background w-full flex-col items-center'
 											style={{
-												minHeight: !this.props.dontFillSpace
-													? desktop
-														? desktopHeightTop
-														: mobileHeightTop
-													: 0,
+												transition:
+													'border-width .5s, box-shadow .5s, backgroundColor .5s',
+												backgroundColor: this.props.color,
+												boxShadow: this.state.showHeaderBackground
+													? styles.mediumShadow
+													: undefined,
+												borderBottomStyle: 'solid',
+												borderWidth: 1,
+												borderColor: styles.colors.borderColor,
+
+												position: 'fixed',
+												top: 0,
+												zIndex: 30,
 											}}
 										>
-											<div
-												className='blur-background w-full flex-col items-center'
+											<Animated
+												alwaysVisible
+												effects={['down']}
+												distance={mobileHeight}
+												duration={0.75}
+												//
+												className='flex justify-between w-full'
 												style={{
-													transition:
-														'border-width .5s, box-shadow .5s, backgroundColor .5s',
-													backgroundColor: this.props.color,
-													boxShadow: this.state.showHeaderBackground
-														? styles.mediumShadow
-														: undefined,
-													borderBottomStyle: 'solid',
-													borderWidth: 1,
-													borderColor: styles.colors.borderColor,
-
-													position: 'fixed',
-													top: 0,
-													zIndex: 30,
+													maxWidth: maxWidth,
+													minHeight: desktop
+														? this.state.showHeaderBackground
+															? desktopHeight
+															: desktopHeightTop
+														: this.state.showHeaderBackground
+														? mobileHeight
+														: mobileHeightTop,
+													maxHeight: desktop
+														? this.state.showHeaderBackground
+															? desktopHeight
+															: desktopHeightTop
+														: this.state.showHeaderBackground
+														? mobileHeight
+														: mobileHeightTop,
+													transition: 'max-height .5s, min-height .5s',
+													paddingLeft: desktop ? 15 : 35,
+													paddingRight: desktop ? 15 : 35,
+													boxSizing: 'border-box',
 												}}
 											>
-												<Fade delay={0} duration={750} top>
-													<div
-														className='flex justify-between w-full'
+												<button
+													onClick={() => global.routerHistory().push('/')}
+													style={{
+														marginBottom: this.state
+															.showHeaderBackground
+															? 10
+															: 15,
+														marginTop: this.state.showHeaderBackground
+															? 10
+															: 15,
+														transition:
+															'margin-top .5s, margin-bottom .5s',
+													}}
+												>
+													<img
 														style={{
-															maxWidth: maxWidth,
-															minHeight: desktop
-																? this.state.showHeaderBackground
-																	? desktopHeight
-																	: desktopHeightTop
-																: this.state.showHeaderBackground
-																? mobileHeight
-																: mobileHeightTop,
-															maxHeight: desktop
-																? this.state.showHeaderBackground
-																	? desktopHeight
-																	: desktopHeightTop
-																: this.state.showHeaderBackground
-																? mobileHeight
-																: mobileHeightTop,
-															transition:
-																'max-height .5s, min-height .5s',
-															paddingLeft: desktop ? 15 : 35,
-															paddingRight: desktop ? 15 : 35,
-															boxSizing: 'border-box',
+															maxWidth: desktop ? 48 : 30,
+															minWidth: desktop ? 48 : 30,
+															objectFit: 'contain',
+															...this.props.logoStyle,
 														}}
-													>
-														<button
-															onClick={() =>
-																global.routerHistory().push('/')
-															}
-															style={{
-																marginBottom: this.state
-																	.showHeaderBackground
-																	? 10
-																	: 15,
-																marginTop: this.state
-																	.showHeaderBackground
-																	? 10
-																	: 15,
-																transition:
-																	'margin-top .5s, margin-bottom .5s',
-															}}
-														>
-															<img
-																style={{
-																	maxWidth: desktop ? 48 : 30,
-																	minWidth: desktop ? 48 : 30,
-																	objectFit: 'contain',
-																	...this.props.logoStyle,
-																}}
-																src={this.props.logo}
-															></img>
-														</button>
+														src={this.props.logo}
+													></img>
+												</button>
 
-														<MobileDrawer
-															style={{
-																display: 'flex',
-																alignItems: 'center',
-																minWidth: desktop ? 48 : 30,
-																marginBottom: this.state
-																	.showHeaderBackground
-																	? 10
-																	: 15,
-																marginTop: this.state
-																	.showHeaderBackground
-																	? 10
-																	: 15,
-																transition:
-																	'margin-top .5s, margin-bottom .5s',
-															}}
-															background={this.props.color}
-															links={this.props.routes.filter(
-																(e) => !e.desktopTab && !e.hidden
-															)}
-															path={this.props.path}
-															headerHeight={
-																this.state.showHeaderBackground
-																	? mobileHeight
-																	: mobileHeightTop
-															}
-															textColor={textColor}
-															toggleOpen={(open) =>
-																this.toggleOpen(open)
-															}
-															pageProps={this.props.pageProps}
-														></MobileDrawer>
-													</div>
-												</Fade>
-											</div>
+												<MobileDrawer
+													style={{
+														display: 'flex',
+														alignItems: 'center',
+														minWidth: desktop ? 48 : 30,
+														marginBottom: this.state
+															.showHeaderBackground
+															? 10
+															: 15,
+														marginTop: this.state.showHeaderBackground
+															? 10
+															: 15,
+														transition:
+															'margin-top .5s, margin-bottom .5s',
+													}}
+													background={this.props.color}
+													links={this.props.routes.filter(
+														(e) => !e.desktopTab && !e.hidden
+													)}
+													path={this.props.path}
+													headerHeight={
+														this.state.showHeaderBackground
+															? mobileHeight
+															: mobileHeightTop
+													}
+													textColor={textColor}
+													toggleOpen={(open) => this.toggleOpen(open)}
+													pageProps={this.props.pageProps}
+												></MobileDrawer>
+											</Animated>
 										</div>
 									</div>
-								)}
-
-								<div
-									style={
-										desktop
-											? {
-													marginLeft: closedWidth,
-													minHeight: '100vh',
-													height: 1,
-													maxWidth:
-														'calc(100vw - ' +
-														closedWidth.toString() +
-														'px)',
-											  }
-											: undefined
-									}
-								>
-									<Switch>
-										{this.props.routes
-											.filter((e) => e.subRoutes)
-											.map((route) => {
-												const foundDefaultSubroute = route.subRoutes
-													? route.subRoutes.find((e) => e.defaultRoute) ||
-													  route.subRoutes.find((e) => e.id)
-													: undefined
-												let defaultSubroute: string | undefined
-												if (foundDefaultSubroute)
-													defaultSubroute = foundDefaultSubroute.id
-
-												return (
-													<Route
-														key={
-															this.props.path +
-															route.id +
-															(route.params || '')
-														}
-														path={this.props.path + route.id}
-														exact={route.notExact ? false : true}
-													>
-														{(route.subRoutes || []).map((sub) => {
-															const Page = sub.page
-
-															return (
-																<Route
-																	key={
-																		this.props.path +
-																		route.id +
-																		'/' +
-																		sub.id +
-																		(sub.params || '')
-																	}
-																	path={
-																		this.props.path +
-																		route.id +
-																		'/' +
-																		sub.id +
-																		(sub.params || '')
-																	}
-																	exact={
-																		sub.notExact ? false : true
-																	}
-																	render={({ match }) => (
-																		<Suspense
-																			fallback={<div></div>}
-																		>
-																			{/* @ts-ignore */}
-																			<WrapperComponent
-																				parentTitle={
-																					route.name || ''
-																				}
-																				overrideHeader={
-																					sub.overrideHeader
-																				}
-																				title={sub.name}
-																			>
-																				{Page /* @ts-ignore */ ? (
-																					<Page
-																						params={
-																							match.params
-																						}
-																						path={
-																							this
-																								.props
-																								.path
-																						}
-																						{...this
-																							.props
-																							.pageProps}
-																						parentTitle={
-																							route.name
-																						}
-																						overrideHeader={
-																							sub.overrideHeader
-																						}
-																						title={
-																							sub.name
-																						}
-																					></Page>
-																				) : (
-																					<div></div>
-																				)}
-																			</WrapperComponent>
-																		</Suspense>
-																	)}
-																></Route>
-															)
-														})}
-
-														{/*//! Shouldn't be exact, but doesn't work without it... */}
-														{defaultSubroute && (
-															<Route exact path={'/'}>
-																<Redirect
-																	to={
-																		this.props.path +
-																		route.id +
-																		'/' +
-																		defaultSubroute
-																	}
-																/>
-															</Route>
-														)}
-													</Route>
-												)
-											})}
-										{this.props.routes
-											.filter((e) => !e.notRoute && !e.subRoutes)
-											.map((route) => {
-												const Page = route.page
-												return (
-													<Route
-														key={
-															this.props.path +
-															route.id +
-															(route.params || '')
-														}
-														path={
-															this.props.path +
-															route.id +
-															(route.params || '')
-														}
-														exact={route.notExact ? false : true}
-														render={({ match }) => (
-															<Suspense fallback={<div></div>}>
-																{' '}
-																{/* @ts-ignore */}
-																<WrapperComponent
-																	overrideHeader={
-																		route.overrideHeader
-																	}
-																	title={route.name}
-																>
-																	{Page /* @ts-ignore */ ? (
-																		<Page
-																			params={match.params}
-																			path={this.props.path}
-																			{...this.props
-																				.pageProps}
-																			overrideHeader={
-																				route.overrideHeader
-																			}
-																			title={route.name}
-																		></Page>
-																	) : (
-																		<div></div>
-																	)}
-																</WrapperComponent>
-															</Suspense>
-														)}
-													></Route>
-												)
-											})}
-										{defaultRoute && (
-											<Route path={'/'}>
-												<Redirect to={this.props.path + defaultRoute} />
-											</Route>
-										)}
-									</Switch>
 								</div>
+							)}
+
+							<div
+								style={
+									desktop
+										? {
+												marginLeft: closedWidth,
+												minHeight: '100vh',
+												height: 1,
+												maxWidth:
+													'calc(100vw - ' +
+													closedWidth.toString() +
+													'px)',
+										  }
+										: undefined
+								}
+							>
+								<Switch>
+									{this.props.routes
+										.filter((e) => e.subRoutes)
+										.map((route) => {
+											const foundDefaultSubroute = route.subRoutes
+												? route.subRoutes.find((e) => e.defaultRoute) ||
+												  route.subRoutes.find((e) => e.id)
+												: undefined
+											let defaultSubroute: string | undefined
+											if (foundDefaultSubroute)
+												defaultSubroute = foundDefaultSubroute.id
+
+											return (
+												<Route
+													key={
+														this.props.path +
+														route.id +
+														(route.params || '')
+													}
+													path={this.props.path + route.id}
+													exact={route.notExact ? false : true}
+												>
+													{(route.subRoutes || []).map((sub) => {
+														const Page = sub.page
+
+														return (
+															<Route
+																key={
+																	this.props.path +
+																	route.id +
+																	'/' +
+																	sub.id +
+																	(sub.params || '')
+																}
+																path={
+																	this.props.path +
+																	route.id +
+																	'/' +
+																	sub.id +
+																	(sub.params || '')
+																}
+																exact={sub.notExact ? false : true}
+																render={({ match }) => (
+																	<Suspense
+																		fallback={<div></div>}
+																	>
+																		{/* @ts-ignore */}
+																		<WrapperComponent
+																			parentTitle={
+																				route.name || ''
+																			}
+																			overrideHeader={
+																				sub.overrideHeader
+																			}
+																			title={sub.name}
+																		>
+																			{Page /* @ts-ignore */ ? (
+																				<Page
+																					params={
+																						match.params
+																					}
+																					path={
+																						this.props
+																							.path
+																					}
+																					{...this.props
+																						.pageProps}
+																					parentTitle={
+																						route.name
+																					}
+																					overrideHeader={
+																						sub.overrideHeader
+																					}
+																					title={sub.name}
+																				></Page>
+																			) : (
+																				<div></div>
+																			)}
+																		</WrapperComponent>
+																	</Suspense>
+																)}
+															></Route>
+														)
+													})}
+
+													{/*//! Shouldn't be exact, but doesn't work without it... */}
+													{defaultSubroute && (
+														<Route exact path={'/'}>
+															<Redirect
+																to={
+																	this.props.path +
+																	route.id +
+																	'/' +
+																	defaultSubroute
+																}
+															/>
+														</Route>
+													)}
+												</Route>
+											)
+										})}
+									{this.props.routes
+										.filter((e) => !e.notRoute && !e.subRoutes)
+										.map((route) => {
+											const Page = route.page
+											return (
+												<Route
+													key={
+														this.props.path +
+														route.id +
+														(route.params || '')
+													}
+													path={
+														this.props.path +
+														route.id +
+														(route.params || '')
+													}
+													exact={route.notExact ? false : true}
+													render={({ match }) => (
+														<Suspense fallback={<div></div>}>
+															{' '}
+															{/* @ts-ignore */}
+															<WrapperComponent
+																overrideHeader={
+																	route.overrideHeader
+																}
+																title={route.name}
+															>
+																{Page /* @ts-ignore */ ? (
+																	<Page
+																		params={match.params}
+																		path={this.props.path}
+																		{...this.props.pageProps}
+																		overrideHeader={
+																			route.overrideHeader
+																		}
+																		title={route.name}
+																	></Page>
+																) : (
+																	<div></div>
+																)}
+															</WrapperComponent>
+														</Suspense>
+													)}
+												></Route>
+											)
+										})}
+									{defaultRoute && (
+										<Route path={'/'}>
+											<Redirect to={this.props.path + defaultRoute} />
+										</Route>
+									)}
+								</Switch>
 							</div>
 						</Animated>
 					)

@@ -6,6 +6,7 @@
  */
 
 import { post } from 'core/api'
+import Animated from 'core/components/Animated'
 import CustomButton from 'core/components/CustomButton'
 import CustomInput from 'core/components/CustomInput'
 import config from 'core/config_'
@@ -17,7 +18,6 @@ import React, { Component } from 'react'
 import { Helmet } from 'react-helmet'
 import { connect } from 'react-redux'
 import MediaQuery from 'react-responsive'
-import HeadShake from 'react-reveal/HeadShake'
 import { Link } from 'react-router-dom'
 class Login extends Component {
 	state = {}
@@ -104,15 +104,17 @@ class Login extends Component {
 											</Link>
 										</div>
 										<sp />
-										<div className='flex-col items-center'>
-											<HeadShake spy={this.state.wrongLogin || 0}>
-												{this.state.wrongLogin && (
-													<div style={{ color: styles.colors.red }}>
-														{this.state.wrongLogin}
-														<sp></sp>
-													</div>
-												)}
-											</HeadShake>
+										<Animated
+											className='flex-col items-center'
+											effects={['shake']}
+											triggerID={this.state.wrongLogin}
+										>
+											{this.state.wrongLogin && (
+												<div style={{ color: styles.colors.red }}>
+													{this.state.wrongLogin}
+													<sp></sp>
+												</div>
+											)}
 
 											<CustomButton
 												type='submit'
@@ -121,7 +123,7 @@ class Login extends Component {
 											>
 												{'Login'}
 											</CustomButton>
-										</div>
+										</Animated>
 										<sp />
 										<sp />
 										<div

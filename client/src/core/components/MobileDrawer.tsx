@@ -90,7 +90,7 @@ export default class MobileDrawer extends Component<{
 					}
 					const output = (
 						<div key={link.notRoute ? i : link.id + (link.params || '')}>
-							{link.notRoute ? (
+							{!link.notRoute ? (
 								<Link
 									{...css(outputCSS)}
 									style={outputStyle}
@@ -103,9 +103,7 @@ export default class MobileDrawer extends Component<{
 										else this.changeState(true)
 									}}
 									to={
-										link.notRoute
-											? ''
-											: this.props.path
+										this.props.path
 											? this.props.path +
 											  link.id +
 											  (link.subRoutes ? '/' + link.subRoutes[0].id : '')

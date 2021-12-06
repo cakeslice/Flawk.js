@@ -51,22 +51,6 @@ declare module 'flawk-types' {
 	}
 }
 
-declare module 'react-reveal' {
-	export class Fade extends React.Component<{
-		delay: number
-		duration: number
-		left?: boolean
-		top?: boolean
-		bottom?: boolean
-		right?: boolean
-	}> {}
-}
-declare module 'react-reveal/HeadShake' {
-	export default class HeadShake extends React.Component<{
-		spy: number | string
-	}> {}
-}
-
 declare module '@toolz/use-constructor' {
 	export function useConstructor(f: () => void): void
 }

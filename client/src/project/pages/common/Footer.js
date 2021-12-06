@@ -5,11 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import Animated from 'core/components/Animated'
 import config from 'core/config_'
 import styles from 'core/styles'
 import React, { Component } from 'react'
 import MediaQuery from 'react-responsive'
-import { Fade } from 'react-reveal'
 
 export default class Footer extends Component {
 	state = {}
@@ -31,7 +31,12 @@ export default class Footer extends Component {
 						}}
 					>
 						<div style={{ overflow: 'hidden' }}>
-							<Fade delay={250} duration={750} distance={'10px'} bottom>
+							<Animated
+								effects={['fade up']}
+								distance={10}
+								duration={0.75}
+								delay={0.25}
+							>
 								<div>
 									<p
 										className='text-center'
@@ -58,7 +63,7 @@ export default class Footer extends Component {
 										</p>
 									</div>
 								</div>
-							</Fade>
+							</Animated>
 						</div>
 					</div>
 				)}

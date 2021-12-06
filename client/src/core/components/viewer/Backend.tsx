@@ -6,6 +6,7 @@
  */
 
 import { post } from 'core/api'
+import Animated from 'core/components/Animated'
 import Avatar from 'core/components/Avatar'
 import CustomButton from 'core/components/CustomButton'
 import CustomInput from 'core/components/CustomInput'
@@ -29,7 +30,6 @@ import ReCaptcha from 'react-google-recaptcha'
 import ReactJson from 'react-json-view'
 import { connect, ConnectedProps } from 'react-redux'
 import MediaQuery from 'react-responsive'
-import HeadShake from 'react-reveal/HeadShake'
 import { Link } from 'react-router-dom'
 import { header, lock } from './ComponentsViewer'
 
@@ -397,15 +397,17 @@ class Login extends Component<PropsFromRedux & { desktop?: boolean }> {
 									</Link>
 								</div>
 								<sp />
-								<div className='flex-col items-center'>
-									<HeadShake spy={this.state.wrongLogin || 0}>
-										{this.state.wrongLogin && (
-											<div style={{ color: styles.colors.red }}>
-												{this.state.wrongLogin}
-												<sp></sp>
-											</div>
-										)}
-									</HeadShake>
+								<Animated
+									className='flex-col items-center'
+									effects={['shake']}
+									triggerID={this.state.wrongLogin}
+								>
+									{this.state.wrongLogin && (
+										<div style={{ color: styles.colors.red }}>
+											{this.state.wrongLogin}
+											<sp></sp>
+										</div>
+									)}
 
 									<CustomButton
 										type='submit'
@@ -414,7 +416,7 @@ class Login extends Component<PropsFromRedux & { desktop?: boolean }> {
 									>
 										{'Login'}
 									</CustomButton>
-								</div>
+								</Animated>
 								<sp />
 								<sp />
 								<div
@@ -484,15 +486,17 @@ class Register extends Component<PropsFromRedux & { desktop?: boolean }> {
 										/>
 									</div>
 									<sp />
-									<div className='flex-col items-center'>
-										<HeadShake spy={this.state.wrongLogin || 0}>
-											{this.state.wrongLogin && (
-												<div style={{ color: styles.colors.red }}>
-													{this.state.wrongLogin}
-													<sp></sp>
-												</div>
-											)}
-										</HeadShake>
+									<Animated
+										className='flex-col items-center'
+										effects={['shake']}
+										triggerID={this.state.wrongLogin}
+									>
+										{this.state.wrongLogin && (
+											<div style={{ color: styles.colors.red }}>
+												{this.state.wrongLogin}
+												<sp></sp>
+											</div>
+										)}
 
 										<CustomButton
 											type='submit'
@@ -501,7 +505,7 @@ class Register extends Component<PropsFromRedux & { desktop?: boolean }> {
 										>
 											{'Verify'}
 										</CustomButton>
-									</div>
+									</Animated>
 								</Form>
 							)
 						}}
@@ -651,15 +655,17 @@ class Register extends Component<PropsFromRedux & { desktop?: boolean }> {
 											)}
 									</div>
 									<sp />
-									<div className='flex-col items-center'>
-										<HeadShake spy={this.state.wrongLogin || 0}>
-											{this.state.wrongLogin && (
-												<div style={{ color: styles.colors.red }}>
-													{this.state.wrongLogin}
-													<sp></sp>
-												</div>
-											)}
-										</HeadShake>
+									<Animated
+										className='flex-col items-center'
+										effects={['shake']}
+										triggerID={this.state.wrongLogin}
+									>
+										{this.state.wrongLogin && (
+											<div style={{ color: styles.colors.red }}>
+												{this.state.wrongLogin}
+												<sp></sp>
+											</div>
+										)}
 
 										<CustomButton
 											type='submit'
@@ -669,7 +675,7 @@ class Register extends Component<PropsFromRedux & { desktop?: boolean }> {
 										>
 											{'Sign up'}
 										</CustomButton>
-									</div>
+									</Animated>
 									<sp />
 									<sp />
 									<div
@@ -747,15 +753,17 @@ class Forgot extends Component<PropsFromRedux & { desktop?: boolean }> {
 										/>
 									</div>
 									<sp />
-									<div className='flex-col items-center'>
-										<HeadShake spy={this.state.wrongLogin || 0}>
-											{this.state.wrongLogin && (
-												<div style={{ color: styles.colors.red }}>
-													{this.state.wrongLogin}
-													<sp></sp>
-												</div>
-											)}
-										</HeadShake>
+									<Animated
+										className='flex-col items-center'
+										effects={['shake']}
+										triggerID={this.state.wrongLogin}
+									>
+										{this.state.wrongLogin && (
+											<div style={{ color: styles.colors.red }}>
+												{this.state.wrongLogin}
+												<sp></sp>
+											</div>
+										)}
 
 										<CustomButton
 											type='submit'
@@ -764,7 +772,7 @@ class Forgot extends Component<PropsFromRedux & { desktop?: boolean }> {
 										>
 											{'Change Password'}
 										</CustomButton>
-									</div>
+									</Animated>
 								</Form>
 							)
 						}}
@@ -885,15 +893,17 @@ class Forgot extends Component<PropsFromRedux & { desktop?: boolean }> {
 											)}
 									</div>
 									<sp />
-									<div className='flex-col items-center'>
-										<HeadShake spy={this.state.wrongLogin || 0}>
-											{this.state.wrongLogin && (
-												<div style={{ color: styles.colors.red }}>
-													{this.state.wrongLogin}
-													<sp></sp>
-												</div>
-											)}
-										</HeadShake>
+									<Animated
+										className='flex-col items-center'
+										effects={['shake']}
+										triggerID={this.state.wrongLogin}
+									>
+										{this.state.wrongLogin && (
+											<div style={{ color: styles.colors.red }}>
+												{this.state.wrongLogin}
+												<sp></sp>
+											</div>
+										)}
 
 										<CustomButton
 											type='submit'
@@ -903,8 +913,8 @@ class Forgot extends Component<PropsFromRedux & { desktop?: boolean }> {
 										>
 											{'Recover'}
 										</CustomButton>
-										<sp></sp>
-									</div>
+									</Animated>
+									<sp></sp>
 								</Form>
 							)
 						}}

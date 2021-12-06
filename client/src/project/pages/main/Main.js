@@ -5,10 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import Animated from 'core/components/Animated'
 import CustomButton from 'core/components/CustomButton'
 import config from 'core/config_'
 import React, { Component } from 'react'
-import { Animated } from 'react-animated-css'
 import MediaQuery from 'react-responsive'
 import scrollToElement from 'scroll-to-element'
 
@@ -30,7 +30,7 @@ export default class Main extends Component {
 
 	render() {
 		return (
-			<Animated animationIn='fadeIn'>
+			<Animated effects={['fade']} duration={0.5}>
 				<MediaQuery minWidth={config.mobileWidthTrigger}>
 					{(desktop) => (
 						<div

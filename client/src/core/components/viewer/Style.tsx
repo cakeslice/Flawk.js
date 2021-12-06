@@ -6,6 +6,7 @@
  */
 
 import logo from 'core/assets/images/logo.svg'
+import Animated from 'core/components/Animated'
 import CustomButton from 'core/components/CustomButton'
 import CustomTooltip from 'core/components/CustomTooltip'
 import config from 'core/config_'
@@ -13,7 +14,6 @@ import styles from 'core/styles'
 import { css } from 'glamor'
 import React, { Component } from 'react'
 import MediaQuery from 'react-responsive'
-import { Fade } from 'react-reveal'
 import { Link } from 'react-router-dom'
 import { header } from './ComponentsViewer'
 
@@ -270,18 +270,17 @@ export default class Style extends Component {
 							>
 								Basic
 							</div>
-							<Fade delay={0} duration={1000} bottom>
-								<div
-									style={{
-										...styles.card,
-										textAlign: 'center',
-										width: desktop ? 200 : '100%',
-										height: 200,
-									}}
-								>
-									Fade-in
-								</div>
-							</Fade>
+							<Animated
+								effects={['fade', 'down']}
+								style={{
+									...styles.card,
+									textAlign: 'center',
+									width: desktop ? 200 : '100%',
+									height: 200,
+								}}
+							>
+								Animated
+							</Animated>
 							<div
 								{...css({
 									...styles.card,

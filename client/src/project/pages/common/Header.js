@@ -5,14 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import logo from 'core/assets/images/logo.svg'
+import Animated from 'core/components/Animated'
 import MobileDrawer from 'core/components/MobileDrawer'
 import config from 'core/config_'
 import styles from 'core/styles'
 import React, { Component } from 'react'
 import MediaQuery from 'react-responsive'
-import { Fade } from 'react-reveal'
 import { Link } from 'react-router-dom'
-import logo from '../../../core/assets/images/logo.svg'
 
 const leftLinks = [
 	/* { name: 'About', id: '/#about' } */
@@ -97,133 +97,135 @@ export default class Header extends Component {
 								zIndex: 30,
 							}}
 						>
-							<Fade delay={0} duration={750} top>
-								<div
-									className='flex justify-between w-full'
-									style={{
-										maxWidth: maxWidth,
-										minHeight: desktop
-											? this.state.shrink
-												? desktopHeight
-												: desktopHeightTop
-											: this.state.shrink
-											? mobileHeight
-											: mobileHeightTop,
-										maxHeight: desktop
-											? this.state.shrink
-												? desktopHeight
-												: desktopHeightTop
-											: this.state.shrink
-											? mobileHeight
-											: mobileHeightTop,
-										transition: 'max-height .5s, min-height .5s',
-										paddingLeft: desktop ? 15 : 35,
-										paddingRight: desktop ? 15 : 35,
-										boxSizing: 'border-box',
-									}}
-								>
-									{desktop && <div style={{ minWidth: 175 }}></div>}
+							<Animated
+								effects={['fade', 'down']}
+								duration={0.5}
+								distance={desktop ? -desktopHeight : -mobileHeightTop}
+								//
+								className='flex justify-between w-full'
+								style={{
+									maxWidth: maxWidth,
+									minHeight: desktop
+										? this.state.shrink
+											? desktopHeight
+											: desktopHeightTop
+										: this.state.shrink
+										? mobileHeight
+										: mobileHeightTop,
+									maxHeight: desktop
+										? this.state.shrink
+											? desktopHeight
+											: desktopHeightTop
+										: this.state.shrink
+										? mobileHeight
+										: mobileHeightTop,
+									transition: 'max-height .5s, min-height .5s',
+									paddingLeft: desktop ? 15 : 35,
+									paddingRight: desktop ? 15 : 35,
+									boxSizing: 'border-box',
+								}}
+							>
+								{desktop && <div style={{ minWidth: 175 }}></div>}
 
-									{desktop &&
-										leftLinks.map((l) => {
-											var style = {
-												fontSize: 26,
-												minWidth: 150,
-												textAlign: 'center',
-												fontFamily: styles.fontAlt,
-												color: styles.colors.main,
-											}
+								{desktop &&
+									leftLinks.map((l) => {
+										var style = {
+											fontSize: 26,
+											minWidth: 150,
+											textAlign: 'center',
+											fontFamily: styles.fontAlt,
+											color: styles.colors.main,
+										}
 
-											return (
-												<Link
-													to={l.id}
-													style={{
-														alignSelf: 'center',
-														...style,
-													}}
-													key={l.id}
-												>
-													{l.name}
-												</Link>
-											)
-										})}
+										return (
+											<Link
+												to={l.id}
+												style={{
+													alignSelf: 'center',
+													...style,
+												}}
+												key={l.id}
+											>
+												{l.name}
+											</Link>
+										)
+									})}
 
-									{desktop && <div></div>}
+								{desktop && <div></div>}
 
-									<button onClick={() => global.routerHistory().push('/')}>
-										<img
-											style={{
-												minWidth: desktop ? 48 : 30,
-												maxWidth: desktop ? 48 : 30,
-												objectFit: 'contain',
-												paddingBottom: this.state.shrink ? 10 : 15,
-												paddingTop: this.state.shrink ? 10 : 15,
-												transition: 'padding-top .5s, padding-bottom .5s',
-												//filter: !global.nightMode ? 'invert(85%)' : '',
-											}}
-											src={logo}
-										></img>
-									</button>
+								<button onClick={() => global.routerHistory().push('/')}>
+									<img
+										style={{
+											minWidth: desktop ? 48 : 30,
+											maxWidth: desktop ? 48 : 30,
+											objectFit: 'contain',
+											paddingBottom: this.state.shrink ? 10 : 15,
+											paddingTop: this.state.shrink ? 10 : 15,
+											transition: 'padding-top .5s, padding-bottom .5s',
+											//filter: !global.nightMode ? 'invert(85%)' : '',
+										}}
+										src={logo}
+									></img>
+								</button>
 
-									{desktop && <div></div>}
+								{desktop && <div></div>}
 
-									{desktop &&
-										rightLinks.map((l) => {
-											var style = {
-												fontSize: 26,
-												minWidth: 150,
-												textAlign: 'center',
-												fontFamily: styles.fontAlt,
-												color: styles.colors.main,
-											}
+								{desktop &&
+									rightLinks.map((l) => {
+										var style = {
+											fontSize: 26,
+											minWidth: 150,
+											textAlign: 'center',
+											fontFamily: styles.fontAlt,
+											color: styles.colors.main,
+										}
 
-											return (
-												<Link
-													to={l.id}
-													style={{
-														alignSelf: 'center',
-														...style,
-													}}
-													key={l.id}
-												>
-													{l.name}
-												</Link>
-											)
-										})}
+										return (
+											<Link
+												to={l.id}
+												style={{
+													alignSelf: 'center',
+													...style,
+												}}
+												key={l.id}
+											>
+												{l.name}
+											</Link>
+										)
+									})}
 
-									{desktop && (
-										<div
-											className='flex items-center'
-											style={{
-												minWidth: 175,
-											}}
-										>
-											{/* <Link to={'/components'}>COMPONENTS</Link>
+								{desktop && (
+									<div
+										className='flex items-center'
+										style={{
+											minWidth: 175,
+										}}
+									>
+										{/* <Link to={'/components'}>COMPONENTS</Link>
 											<div style={{ minWidth: 10 }} /> */}
-											{/* <Link to={config.noTokenRedirect}>LOGIN</Link> */}
-											{/* <div style={{ minWidth: 10 }} />
+										{/* <Link to={config.noTokenRedirect}>LOGIN</Link> */}
+										{/* <div style={{ minWidth: 10 }} />
 											<LanguageSwitcher></LanguageSwitcher> */}
-										</div>
-									)}
+									</div>
+								)}
 
-									{!desktop && (
-										<MobileDrawer
-											className='flex items-center'
-											style={{
-												minWidth: desktop ? 48 : 30,
-												paddingBottom: this.state.shrink ? 10 : 15,
-												paddingTop: this.state.shrink ? 10 : 15,
-												transition: 'padding-top .5s, padding-bottom .5s',
-											}}
-											background={styles.colors.white}
-											links={mobileLinks}
-											headerHeight={
-												this.state.shrink ? mobileHeight : mobileHeightTop
-											}
-										></MobileDrawer>
-									)}
-								</div>
-							</Fade>
+								{!desktop && (
+									<MobileDrawer
+										className='flex items-center'
+										style={{
+											minWidth: desktop ? 48 : 30,
+											paddingBottom: this.state.shrink ? 10 : 15,
+											paddingTop: this.state.shrink ? 10 : 15,
+											transition: 'padding-top .5s, padding-bottom .5s',
+										}}
+										background={styles.colors.white}
+										links={mobileLinks}
+										headerHeight={
+											this.state.shrink ? mobileHeight : mobileHeightTop
+										}
+									></MobileDrawer>
+								)}
+							</Animated>
 						</div>
 					</div>
 				)}

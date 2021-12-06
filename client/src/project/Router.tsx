@@ -8,6 +8,7 @@
 import { useConstructor } from '@toolz/use-constructor'
 import { post } from 'core/api'
 import logo from 'core/assets/images/logo.svg'
+import Animated from 'core/components/Animated'
 import Avatar from 'core/components/Avatar'
 import { DashboardRoute, TabProps } from 'core/components/Dashboard'
 import RouterBase from 'core/components/RouterBase'
@@ -17,7 +18,6 @@ import styles from 'core/styles'
 import React, { Component, useEffect } from 'react'
 import { Helmet } from 'react-helmet'
 import MediaQuery from 'react-responsive'
-import { Fade } from 'react-reveal'
 import { Route, Switch } from 'react-router-dom'
 import './assets/fonts.css'
 import './assets/main.scss'
@@ -299,7 +299,12 @@ export default function Router(): JSX.Element {
 							<Route>
 								<div style={{ background: styles.colors.white }}>
 									<Header landingPage={landingPage} fillSpace />
-									<Fade delay={750} duration={500}>
+									<Animated
+										alwaysVisible
+										effects={['fade']}
+										duration={0.5}
+										delay={0.75}
+									>
 										<Switch>
 											<Route exact path='/login'>
 												<PublicWrapper desktop={desktop}>
@@ -323,7 +328,7 @@ export default function Router(): JSX.Element {
 												</PublicWrapper>
 											</Route>
 										</Switch>
-									</Fade>
+									</Animated>
 									<Footer />
 								</div>
 							</Route>

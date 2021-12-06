@@ -6,6 +6,7 @@
  */
 
 import { post } from 'core/api'
+import Animated from 'core/components/Animated'
 import CustomButton from 'core/components/CustomButton'
 import CustomInput from 'core/components/CustomInput'
 import Field from 'core/components/Field'
@@ -18,7 +19,6 @@ import ReCaptcha from 'react-google-recaptcha'
 import { Helmet } from 'react-helmet'
 import { connect } from 'react-redux'
 import MediaQuery from 'react-responsive'
-import HeadShake from 'react-reveal/HeadShake'
 import { fetchUser } from '../../redux/AppReducer'
 
 class Forgot extends Component {
@@ -107,15 +107,17 @@ class Forgot extends Component {
 												/>
 											</div>
 											<sp />
-											<div className='flex-col items-center'>
-												<HeadShake spy={this.state.wrongLogin || 0}>
-													{this.state.wrongLogin && (
-														<div style={{ color: styles.colors.red }}>
-															{this.state.wrongLogin}
-															<sp></sp>
-														</div>
-													)}
-												</HeadShake>
+											<Animated
+												className='flex-col items-center'
+												effects={['shake']}
+												triggerID={this.state.wrongLogin}
+											>
+												{this.state.wrongLogin && (
+													<div style={{ color: styles.colors.red }}>
+														{this.state.wrongLogin}
+														<sp></sp>
+													</div>
+												)}
 
 												<CustomButton
 													type='submit'
@@ -126,7 +128,7 @@ class Forgot extends Component {
 												>
 													{'Change Password'}
 												</CustomButton>
-											</div>
+											</Animated>
 										</Form>
 									)
 								}}
@@ -269,15 +271,17 @@ class Forgot extends Component {
 													)}
 											</div>
 											<sp />
-											<div className='flex-col items-center'>
-												<HeadShake spy={this.state.wrongLogin || 0}>
-													{this.state.wrongLogin && (
-														<div style={{ color: styles.colors.red }}>
-															{this.state.wrongLogin}
-															<sp></sp>
-														</div>
-													)}
-												</HeadShake>
+											<Animated
+												className='flex-col items-center'
+												effects={['shake']}
+												triggerID={this.state.wrongLogin}
+											>
+												{this.state.wrongLogin && (
+													<div style={{ color: styles.colors.red }}>
+														{this.state.wrongLogin}
+														<sp></sp>
+													</div>
+												)}
 
 												<CustomButton
 													type='submit'
@@ -289,7 +293,7 @@ class Forgot extends Component {
 													{'Recover'}
 												</CustomButton>
 												<sp></sp>
-											</div>
+											</Animated>
 										</Form>
 									)
 								}}

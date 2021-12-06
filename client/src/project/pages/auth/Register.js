@@ -6,6 +6,7 @@
  */
 
 import { post } from 'core/api'
+import Animated from 'core/components/Animated'
 import CustomButton from 'core/components/CustomButton'
 import CustomInput from 'core/components/CustomInput'
 import ExitPrompt from 'core/components/ExitPrompt'
@@ -20,7 +21,6 @@ import ReCaptcha from 'react-google-recaptcha'
 import { Helmet } from 'react-helmet'
 import { connect } from 'react-redux'
 import MediaQuery from 'react-responsive'
-import HeadShake from 'react-reveal/HeadShake'
 import { Link } from 'react-router-dom'
 
 class Register extends Component {
@@ -97,15 +97,17 @@ class Register extends Component {
 												/>
 											</div>
 											<sp />
-											<div className='flex-col items-center'>
-												<HeadShake spy={this.state.wrongLogin || 0}>
-													{this.state.wrongLogin && (
-														<div style={{ color: styles.colors.red }}>
-															{this.state.wrongLogin}
-															<sp></sp>
-														</div>
-													)}
-												</HeadShake>
+											<Animated
+												className='flex-col items-center'
+												effects={['shake']}
+												triggerID={this.state.wrongLogin}
+											>
+												{this.state.wrongLogin && (
+													<div style={{ color: styles.colors.red }}>
+														{this.state.wrongLogin}
+														<sp></sp>
+													</div>
+												)}
 
 												<CustomButton
 													type='submit'
@@ -116,7 +118,7 @@ class Register extends Component {
 												>
 													{'Verify'}
 												</CustomButton>
-											</div>
+											</Animated>
 										</Form>
 									)
 								}}
@@ -282,15 +284,17 @@ class Register extends Component {
 													)}
 											</div>
 											<sp />
-											<div className='flex-col items-center'>
-												<HeadShake spy={this.state.wrongLogin || 0}>
-													{this.state.wrongLogin && (
-														<div style={{ color: styles.colors.red }}>
-															{this.state.wrongLogin}
-															<sp></sp>
-														</div>
-													)}
-												</HeadShake>
+											<Animated
+												className='flex-col items-center'
+												effects={['shake']}
+												triggerID={this.state.wrongLogin}
+											>
+												{this.state.wrongLogin && (
+													<div style={{ color: styles.colors.red }}>
+														{this.state.wrongLogin}
+														<sp></sp>
+													</div>
+												)}
 
 												<CustomButton
 													type='submit'
@@ -301,7 +305,7 @@ class Register extends Component {
 												>
 													{'Sign up'}
 												</CustomButton>
-											</div>
+											</Animated>
 											<sp />
 											<sp />
 											<div

@@ -6,11 +6,11 @@
  */
 
 import { clearAllBodyScrollLocks, disableBodyScroll } from 'body-scroll-lock'
+import Animated from 'core/components/Animated'
 import config from 'core/config_'
 import styles from 'core/styles'
 import { Obj } from 'flawk-types'
 import React, { Component } from 'react'
-import { Animated } from 'react-animated-css'
 import { Portal } from 'react-portal'
 import CustomButton, { Appearance } from './CustomButton'
 
@@ -169,12 +169,7 @@ export default class GenericModal extends Component<{
 					{!this.props.noAutoFocus && (
 						<button autoFocus={true} style={{ maxWidth: 0, maxHeight: 0 }}></button>
 					)}
-					<Animated
-						isVisible
-						animationIn='fadeIn'
-						animationOut='fadeOut'
-						animationInDuration={500}
-					>
+					<Animated alwaysVisible effects={['fade']} duration={0.5}>
 						<div style={{ margin: 10 }}>
 							<div
 								className='scrollTarget'

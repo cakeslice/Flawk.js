@@ -12,6 +12,7 @@ import { useConstructor } from '@toolz/use-constructor'
 import 'abortcontroller-polyfill'
 import { get } from 'core/api'
 import 'core/assets/react-toastify.css'
+import Animated from 'core/components/Animated'
 import config from 'core/config_'
 import navigation from 'core/functions/navigation'
 import styles from 'core/styles'
@@ -24,7 +25,6 @@ import { ErrorBoundary, FallbackProps } from 'react-error-boundary'
 import GitInfo from 'react-git-info/macro'
 import { Helmet } from 'react-helmet'
 import MediaQuery from 'react-responsive'
-import { Fade } from 'react-reveal'
 import io from 'socket.io-client'
 import CustomButton from './CustomButton'
 
@@ -316,7 +316,12 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 
 								{inRestrictedRoute && oldBuild && (
 									<div style={{ maxHeight: 0 }}>
-										<Fade delay={1000} duration={500} bottom>
+										<Animated
+											alwaysVisible
+											effects={['up']}
+											distance={50}
+											duration={0.5}
+										>
 											<div
 												style={{
 													display: 'flex',
@@ -362,7 +367,7 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 
 												<div></div>
 											</div>
-										</Fade>
+										</Animated>
 									</div>
 								)}
 								{inRestrictedRoute &&
@@ -370,7 +375,12 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 									!global.socket.connected &&
 									socketConnectionDelay && (
 										<div style={{ maxHeight: 0 }}>
-											<Fade delay={1000} duration={500} bottom>
+											<Animated
+												alwaysVisible
+												effects={['up']}
+												distance={50}
+												duration={0.5}
+											>
 												<div
 													style={{
 														display: 'flex',
@@ -391,12 +401,18 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 														{config.text('extras.connectionLost')}
 													</p>
 												</div>
-											</Fade>
+											</Animated>
 										</div>
 									)}
 								{config.showCookieNotice && cookieNotice === 'false' && (
 									<div style={{ maxHeight: 0 }}>
-										<Fade delay={1000} duration={500} bottom>
+										<Animated
+											alwaysVisible
+											effects={['up']}
+											distance={50}
+											duration={0.5}
+											delay={1}
+										>
 											<div
 												style={{
 													display: 'flex',
@@ -448,7 +464,7 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 
 												<div></div>
 											</div>
-										</Fade>
+										</Animated>
 									</div>
 								)}
 								{/* @ts-ignore */}
