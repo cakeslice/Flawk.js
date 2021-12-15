@@ -8,6 +8,7 @@
 import { Router } from '@awaitjs/express'
 import config from 'core/config_'
 import db, { AggregationCount, ObjectId } from 'core/functions/db'
+import { clientSocketNotification } from 'core/functions/sockets'
 import mongoose from 'mongoose'
 import { Client } from 'project/database'
 
@@ -31,6 +32,11 @@ export const clientNotification = async (
 			data: data,
 		},
 	])
+	clientSocketNotification(
+		clientID.toString(),
+		data && data.message ? 'Notification' : 'You got a new notification!',
+		data && data.message ? data.message : ''
+	)
 }
 
 async function outputNotification(
@@ -153,6 +159,23 @@ router.postAsync(ReadNotification.call, async (req, res) => {
 		{ _id: req.user._id, 'arrays.notifications._id': body.notificationID },
 		{ $set: { 'arrays.notifications.$.isRead': true } }
 	)
+
+	res.do(200)
+})
+
+const CreateNotification = {
+	call: '/client/create_notification',
+	description: 'Create a notification',
+	method: 'post',
+	body: {} as { notificationType: string; message: string },
+}
+router.postAsync(CreateNotification.call, async (req, res) => {
+	const body: typeof CreateNotification.body = req.body
+
+	await clientNotification(body.notificationType, req.user._id, {
+		client: req.user._id,
+		message: body.message,
+	})
 
 	res.do(200)
 })

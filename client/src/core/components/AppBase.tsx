@@ -119,6 +119,7 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 	)
 	global.toggleNightMode = toggleNightMode // ! DEPRECATED, still active to support class components
 	//
+	const [socketConnected, setSocketConnected] = useState(false)
 	const [socketConnectionDelay, setSocketConnectionDelay] = useState(false)
 	const [oldBuild, setOldBuild] = useState(false)
 	const [build, setBuildNumber] = useState<string | undefined>(undefined)
@@ -195,8 +196,12 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 				global.socket.close()
 			}
 			global.socket = io(config.websocketURL, { autoConnect: false })
+			global.socket.on('reconnect_attempt', (attempt) => {
+				console.log('Socket.IO: Reconnect attempt #' + attempt)
+			})
 			global.socket.on('connect', function () {
 				console.log('Socket connected: ' + global.socket.id)
+				setSocketConnected(true)
 
 				void (async function () {
 					const token = await global.storage.getItem('token')
@@ -222,7 +227,11 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 					)
 				})()
 			})
+			global.socket.on('reconnect', (attempt) => {
+				setSocketConnected(true)
+			})
 			global.socket.on('disconnect', function () {
+				setSocketConnected(false)
 				console.warn('Websocket disconnected!')
 			})
 			setTimeout(function () {
@@ -321,9 +330,65 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 											effects={['up']}
 											distance={50}
 											duration={0.5}
+											style={{
+												borderTop: '1px solid rgba(255,255,255,.1)',
+												display: 'flex',
+												minWidth: '100vw',
+												minHeight: 50,
+												padding: 5,
+												position: 'fixed',
+												overflow: 'hidden',
+												bottom: 0,
+												zIndex: 8,
+												background: 'rgba(30,30,30,.9)',
+												textAlign: 'center',
+												alignItems: 'center',
+												justifyContent: 'center',
+											}}
 										>
-											<div
+											<div></div>
+
+											<p
 												style={{
+													fontSize: 12,
+													opacity: 0.75,
+													color: 'white',
+												}}
+											>
+												{config.text('extras.newUpdate')}
+											</p>
+
+											<CustomButton
+												appearance='primary'
+												style={{
+													marginLeft: 15,
+													minHeight: 30,
+													fontSize: 12,
+													minWidth: 0,
+												}}
+												onClick={() => {
+													window.location.reload()
+												}}
+											>
+												REFRESH
+											</CustomButton>
+
+											<div></div>
+										</Animated>
+									</div>
+								)}
+								{inRestrictedRoute &&
+									config.websocketSupport &&
+									!socketConnected &&
+									socketConnectionDelay && (
+										<div style={{ maxHeight: 0 }}>
+											<Animated
+												alwaysVisible
+												effects={['up']}
+												distance={50}
+												duration={0.5}
+												style={{
+													borderTop: '1px solid rgba(255,255,255,.1)',
 													display: 'flex',
 													minWidth: '100vw',
 													minHeight: 50,
@@ -332,75 +397,18 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 													overflow: 'hidden',
 													bottom: 0,
 													zIndex: 8,
-													background: 'rgba(30,30,30,.9)',
+													background: config.replaceAlpha(
+														styles.colors.red,
+														0.9
+													),
 													textAlign: 'center',
 													alignItems: 'center',
 													justifyContent: 'center',
 												}}
 											>
-												<div></div>
-
-												<p
-													style={{
-														fontSize: 12,
-														opacity: 0.75,
-														color: 'white',
-													}}
-												>
-													{config.text('extras.newUpdate')}
+												<p style={{ color: 'white' }}>
+													{config.text('extras.connectionLost')}
 												</p>
-
-												<CustomButton
-													appearance='primary'
-													style={{
-														marginLeft: 15,
-														minHeight: 30,
-														fontSize: 12,
-														minWidth: 0,
-													}}
-													onClick={() => {
-														window.location.reload()
-													}}
-												>
-													REFRESH
-												</CustomButton>
-
-												<div></div>
-											</div>
-										</Animated>
-									</div>
-								)}
-								{inRestrictedRoute &&
-									config.websocketSupport &&
-									!global.socket.connected &&
-									socketConnectionDelay && (
-										<div style={{ maxHeight: 0 }}>
-											<Animated
-												alwaysVisible
-												effects={['up']}
-												distance={50}
-												duration={0.5}
-											>
-												<div
-													style={{
-														display: 'flex',
-														minWidth: '100vw',
-														minHeight: 50,
-														padding: 5,
-														position: 'fixed',
-														overflow: 'hidden',
-														bottom: 0,
-														zIndex: 8,
-														background: styles.colors.red,
-														textAlign: 'center',
-														alignItems: 'center',
-														justifyContent: 'center',
-													}}
-												>
-													<p style={{ color: 'white' }}>
-														{config.text('extras.connectionLost')}
-													</p>
-												</div>
 											</Animated>
 										</div>
 									)}
@@ -411,59 +419,58 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 											effects={['up']}
 											distance={50}
 											duration={0.5}
-											delay={1}
+											delay={2}
+											//
+											style={{
+												borderTop: '1px solid rgba(255,255,255,.1)',
+												display: 'flex',
+												minWidth: '100vw',
+												minHeight: 50,
+												padding: desktop ? 5 : 15,
+												position: 'fixed',
+												overflow: 'hidden',
+												bottom: 0,
+												zIndex: 8,
+												background: 'rgba(30,30,30,.9)',
+												textAlign: 'center',
+												alignItems: 'center',
+												justifyContent: 'center',
+											}}
 										>
-											<div
+											<div></div>
+
+											<p
 												style={{
-													display: 'flex',
-													minWidth: '100vw',
-													minHeight: 50,
-													padding: desktop ? 5 : 15,
-													position: 'fixed',
-													overflow: 'hidden',
-													bottom: 0,
-													zIndex: 8,
-													background: 'rgba(30,30,30,.9)',
-													textAlign: 'center',
-													alignItems: 'center',
-													justifyContent: 'center',
+													fontSize: desktop ? 12 : 11,
+													opacity: 0.75,
+													color: 'white',
 												}}
 											>
-												<div></div>
+												{config.text('common.cookieWarning')}
+											</p>
 
-												<p
-													style={{
-														fontSize: desktop ? 12 : 11,
-														opacity: 0.75,
-														color: 'white',
-													}}
-												>
-													{config.text('common.cookieWarning')}
-												</p>
+											<CustomButton
+												appearance='primary'
+												style={{
+													marginLeft: 15,
+													minHeight: 30,
+													fontSize: 12,
+													minWidth: 0,
+												}}
+												onClick={async () => {
+													await global.storage.setItem(
+														'cookie_notice',
+														'true'
+													)
+													if (global.startAnalytics)
+														await global.startAnalytics()
+													setCookieNotice('true')
+												}}
+											>
+												I AGREE
+											</CustomButton>
 
-												<CustomButton
-													appearance='primary'
-													style={{
-														marginLeft: 15,
-														minHeight: 30,
-														fontSize: 12,
-														minWidth: 0,
-													}}
-													onClick={async () => {
-														await global.storage.setItem(
-															'cookie_notice',
-															'true'
-														)
-														if (global.startAnalytics)
-															await global.startAnalytics()
-														setCookieNotice('true')
-													}}
-												>
-													I AGREE
-												</CustomButton>
-
-												<div></div>
-											</div>
+											<div></div>
 										</Animated>
 									</div>
 								)}

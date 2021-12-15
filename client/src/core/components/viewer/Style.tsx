@@ -51,7 +51,15 @@ export default class Style extends Component {
 							<hr />
 							<sp />
 							<h2>
-								{'This a title '}
+								{'This a '}
+								<span
+									style={{
+										textDecoration: 'underline',
+										textDecorationColor: styles.colors.main,
+									}}
+								>
+									title
+								</span>{' '}
 								<tag>h2</tag>
 							</h2>
 							<hr />

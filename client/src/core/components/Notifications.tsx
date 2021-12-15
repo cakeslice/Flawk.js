@@ -20,7 +20,14 @@ type Notification = {
 	isRead: boolean
 }
 
-export default class Notifications extends Component {
+type Props = { children?: JSX.Element }
+
+export default class Notifications extends Component<Props> {
+	constructor(props: Props) {
+		super(props)
+
+		this.updateNotifications = this.updateNotifications.bind(this)
+	}
 	state: {
 		open: boolean
 		data: Notification[]
@@ -35,8 +42,23 @@ export default class Notifications extends Component {
 		readNotifications: false,
 	}
 
-	async componentDidMount() {
+	async updateNotifications() {
 		await this.fetchNotifications()
+	}
+
+	async componentDidMount() {
+		if (config.websocketSupport && global.socket) {
+			// eslint-disable-next-line
+			global.socket.on('notification', this.updateNotifications)
+		}
+
+		await this.fetchNotifications()
+	}
+	async componentWillUnmount() {
+		if (config.websocketSupport && global.socket) {
+			// eslint-disable-next-line
+			global.socket.off('notification', this.updateNotifications)
+		}
 	}
 
 	async readNotification(notificationID: string) {

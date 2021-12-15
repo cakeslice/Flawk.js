@@ -41,6 +41,8 @@ export function socketNotification(
 	description?: string,
 	type = 'info'
 ) {
+	if (!config.websocketSupport) return
+
 	const sockets: Socket[] = []
 	for (const [s, socket] of global.clientSockets.sockets) {
 		if (s.replace('#', '') === socketID) {
@@ -57,6 +59,8 @@ export function clientSocketNotification(
 	description?: string,
 	type = 'info'
 ) {
+	if (!config.websocketSupport) return
+
 	const sockets: Socket[] = []
 	// eslint-disable-next-line
 	for (const [s, socket] of global.clientSockets.sockets) {
@@ -69,6 +73,8 @@ export function clientSocketNotification(
 	notification(sockets, title, description, type)
 }
 export function adminSocketNotification(title: string, description?: string, type = 'info') {
+	if (!config.websocketSupport) return
+
 	const adminSockets: Socket[] = []
 	// eslint-disable-next-line
 	for (const [s, socket] of global.clientSockets.sockets) {
@@ -81,6 +87,8 @@ export function adminSocketNotification(title: string, description?: string, typ
 }
 
 export function isOnline(clientID: string) {
+	if (!config.websocketSupport) return false
+
 	let online = false
 	// eslint-disable-next-line
 	for (const [s, socket] of global.clientSockets.sockets) {
@@ -92,6 +100,8 @@ export function isOnline(clientID: string) {
 }
 
 export function socketMessage(socketID: string, channel: string, data: Obj) {
+	if (!config.websocketSupport) return
+
 	const sockets: Socket[] = []
 	for (const [s, socket] of global.clientSockets.sockets) {
 		if (s.replace('#', '') === socketID) {
@@ -103,6 +113,8 @@ export function socketMessage(socketID: string, channel: string, data: Obj) {
 	message(sockets, channel, data)
 }
 export function clientSocketMessage(clientID: string, channel: string, data: Obj) {
+	if (!config.websocketSupport) return
+
 	const sockets: Socket[] = []
 	// eslint-disable-next-line
 	for (const [s, socket] of global.clientSockets.sockets) {
@@ -128,6 +140,11 @@ export function clientSocketMessage(clientID: string, channel: string, data: Obj
 //
 
 export function init() {
+	if (!config.websocketSupport) {
+		console.log('Sockets are disabled...\n')
+		return
+	}
+
 	console.log('Initializing sockets...\n')
 
 	global.clientSockets.on('connection', (socket: Socket) => {

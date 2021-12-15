@@ -207,11 +207,10 @@ class Backend extends Component<PropsFromRedux> {
 								<sp />
 								<CustomButton
 									onClick={async () => {
-										const token = await global.storage.getItem('token')
-										if (config.websocketSupport)
-											global.socket.emit('notification_test', {
-												token: token,
-											})
+										const res = await post('client/create_notification', {
+											notificationType: 'test',
+											message: 'This is a test!',
+										})
 									}}
 								>
 									Test

@@ -745,6 +745,54 @@
         "parameters": []
       }
     },
+    "/client/create_notification": {
+      "post": {
+        "description": "Create a notification",
+        "operationId": "post-create_notification",
+        "tags": [
+          "private"
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          },
+          {
+            "headerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "notificationType": {
+                    "type": "string"
+                  },
+                  "message": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "notificationType",
+                  "message"
+                ]
+              }
+            }
+          }
+        },
+        "parameters": []
+      }
+    },
     "/client/add_push_notification_id": {
       "post": {
         "description": "Add the push notification ID of a mobile device",

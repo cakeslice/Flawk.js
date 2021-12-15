@@ -16,6 +16,7 @@ import cookieParser from 'cookie-parser'
 import common from 'core/common'
 import config from 'core/config_'
 import db, { getNextRef } from 'core/functions/db'
+import { init as socketInit } from 'core/functions/sockets'
 import HttpException from 'core/utils/HttpException'
 import cors from 'cors'
 import express, { ErrorRequestHandler, RequestHandler } from 'express'
@@ -1224,6 +1225,7 @@ async function listen() {
 		// SOCKET TEST: https://amritb.github.io/socketio-client-tool
 		global.clientSockets = socketServer.of(config.path + '/sockets')
 
+		socketInit()
 		await import('project/sockets')
 	}
 }
