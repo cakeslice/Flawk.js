@@ -33,15 +33,15 @@ function addFlagFunction(
 	options?: {
 		customComponent?: React.ComponentType
 		playSound?: boolean
-		closeAfter?: number
+		autoClose?: boolean
 		closeButton?: boolean
 		closeOnClick?: boolean
 	}
 ) {
-	const { customComponent, playSound, closeAfter, closeOnClick, closeButton } = {
+	const { customComponent, playSound, autoClose, closeOnClick, closeButton } = {
 		customComponent: undefined,
 		playSound: false,
-		closeAfter: 0,
+		autoClose: false,
 		closeOnClick: false,
 		closeButton: true,
 		...options,
@@ -97,8 +97,8 @@ function addFlagFunction(
 				amountToasts--
 			},
 			position: 'bottom-right',
-			autoClose: closeAfter !== 0 ? closeAfter : false,
-			hideProgressBar: true, //closeAfter === 0,
+			autoClose: autoClose ? config.toastCloseTime : false,
+			hideProgressBar: autoClose ? false : true,
 			closeOnClick: closeOnClick,
 			pauseOnHover: true,
 			pauseOnFocusLoss: true,
@@ -232,7 +232,7 @@ export default function RouterBase({ children }: { children: JSX.Element }) {
 		if (config.websocketSupport && global.socket) {
 			global.socket.off('notification')
 			global.socket.on('notification', (data: { title: string; description: string }) => {
-				addFlag(data.title, data.description, 'info', {})
+				addFlag(data.title, data.description, 'info', { autoClose: true })
 			})
 		}
 	})

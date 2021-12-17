@@ -213,6 +213,8 @@ export default {
 	darkModeOptIn: false,
 	darkModeForce: false,
 
+	toastCloseTime: 5000,
+
 	// @ts-ignore
 	mobileWidthTrigger: 700,
 
