@@ -32,7 +32,7 @@ export default class Footer extends Component {
 					>
 						<div style={{ overflow: 'hidden' }}>
 							<Animated
-								effects={['fade up']}
+								effects={['fade', 'up']}
 								distance={10}
 								duration={0.75}
 								delay={0.25}
