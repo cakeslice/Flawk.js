@@ -191,7 +191,7 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 			setCookieNotice(cookieNotice || 'false')
 		})()
 
-		if (config.websocketSupport) {
+		if (config.websocketSupport && config.websocketURL) {
 			if (global.socket) {
 				global.socket.close()
 			}

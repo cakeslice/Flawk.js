@@ -209,6 +209,11 @@ export default {
 	recaptchaBypass: _recaptchaBypass,
 
 	// @ts-ignore
+	backendURL: undefined as string | undefined,
+	// @ts-ignore
+	websocketURL: undefined as string | undefined,
+
+	// @ts-ignore
 	darkModeAvailable: false,
 	darkModeOptIn: false,
 	darkModeForce: false,

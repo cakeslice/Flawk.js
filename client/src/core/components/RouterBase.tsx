@@ -131,7 +131,7 @@ function addFlagFunction(
 export const RouterBaseContext = React.createContext<{ addFlag: typeof addFlagFunction } | null>(
 	null
 )
-export default function RouterBase({ children }: { children: JSX.Element }) {
+export default function RouterBase({ children }: { children: React.ReactNode }) {
 	const [history] = useState(createBrowserHistory())
 
 	const { user, fetchingUser, authError } = useStoreSelector((state) => ({
