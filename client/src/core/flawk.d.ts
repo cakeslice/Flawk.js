@@ -9,9 +9,9 @@ declare module 'flawk-types' {
 	export type Obj = Record<string, unknown>
 	export type ArrayObject = Array<Record<string, unknown>>
 	export type KeyObject = { [key: string]: Record<string, unknown> }
-	export type ArrayKeyObject = Array<{ [key: string]: Record<string, unknown> }>
+	export type ArrayKeyObject = Array<{ [key: string]: string | number | Obj }>
 	export type KeyArrayKeyObject = {
-		[key: string]: Array<{ [key: string]: Record<string, unknown> }>
+		[key: string]: Array<{ [key: string]: string | number | Obj }>
 	}
 	export type KeyUnknown = { [key: string]: unknown }
 	export type ArrayKeyUnknown = Array<{ [key: string]: unknown }>

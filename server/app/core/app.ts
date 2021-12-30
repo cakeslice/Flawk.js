@@ -1073,15 +1073,34 @@ function setup() {
 		})
 	})
 
+	fs.readdirSync('./app/project/routes/public').forEach((file) => {
+		if (
+			!_.find(config.publicRoutes, (e) => {
+				const split = e.split('/')
+				return split[split.length - 1] === file.replace('.ts', '').replace('.js', '')
+			})
+		)
+			console.log('--- MISSING ' + file + ' in routes configuration')
+	})
+	fs.readdirSync('./app/project/routes/private').forEach((file) => {
+		if (
+			!_.find(config.routes, (e) => {
+				const split = e.split('/')
+				return split[split.length - 1] === file.replace('.ts', '').replace('.js', '')
+			})
+		)
+			console.log('--- MISSING ' + file + ' in routes configuration')
+	})
+
 	for (let i = 0; i < config.publicRoutes.length; i++) {
 		// eslint-disable-next-line
 		const route = require('project' + config.publicRoutes[i]).default
 		if (route) {
 			// eslint-disable-next-line
 			app.use(config.path + '/', route)
-			console.log('Adding ' + '/project' + config.publicRoutes[i])
+			//console.log('Loading ' + '/project' + config.publicRoutes[i])
 		} else {
-			console.log('FAILED ' + '/project' + config.publicRoutes[i])
+			console.log('--- FAILED to load ' + '/project' + config.publicRoutes[i])
 		}
 	}
 	for (let i = 0; i < config.routes.length; i++) {
@@ -1090,9 +1109,9 @@ function setup() {
 		if (route) {
 			// eslint-disable-next-line
 			app.use(config.path + '/', route)
-			console.log('Adding ' + '/project' + config.routes[i])
+			//console.log('Loading ' + '/project' + config.routes[i])
 		} else {
-			console.log('FAILED ' + '/project' + config.routes[i])
+			console.log('--- FAILED to load ' + '/project' + config.routes[i])
 		}
 	}
 	console.log('')

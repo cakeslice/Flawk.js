@@ -7,9 +7,10 @@
 
 import config from 'core/config_'
 import db from 'core/functions/db'
-import { JwtPayload, Obj, SocketUser } from 'flawk-types'
+import { Obj } from 'flawk-types'
 import jwt from 'jsonwebtoken'
 import _ from 'lodash'
+import { JwtPayload, SocketUser } from 'project-types'
 import { Client } from 'project/database'
 import { Socket } from 'socket.io'
 
@@ -78,7 +79,11 @@ export function adminSocketNotification(title: string, description?: string, typ
 	const adminSockets: Socket[] = []
 	// eslint-disable-next-line
 	for (const [s, socket] of global.clientSockets.sockets) {
-		if (socket._client && socket._client.permission <= 10) {
+		if (
+			socket._client &&
+			socket._client.permission !== undefined &&
+			socket._client.permission <= 10
+		) {
 			// eslint-disable-next-line
 			adminSockets.push(socket)
 		}

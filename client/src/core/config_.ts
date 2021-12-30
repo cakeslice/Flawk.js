@@ -215,6 +215,7 @@ export default {
 
 	// @ts-ignore
 	darkModeAvailable: false,
+	// @ts-ignore
 	darkModeOptIn: false,
 	darkModeForce: false,
 

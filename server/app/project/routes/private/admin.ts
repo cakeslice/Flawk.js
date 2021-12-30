@@ -8,8 +8,9 @@
 import { Router } from '@awaitjs/express'
 import common from 'core/common'
 import { isOnline } from 'core/functions/sockets'
-import { Obj, SocketUser } from 'flawk-types'
+import { Obj } from 'flawk-types'
 import _ from 'lodash'
+import { SocketUser } from 'project-types'
 import { Client, IClient } from 'project/database'
 
 const router = Router()
