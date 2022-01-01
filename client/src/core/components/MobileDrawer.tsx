@@ -23,7 +23,7 @@ export default class MobileDrawer extends Component<{
 	background?: string
 	links: DashboardRoute[]
 	path?: string
-	toggleOpen: (open?: boolean) => void
+	toggleOpen?: (open?: boolean) => void
 }> {
 	state = {
 		isOpen: false,

@@ -81,6 +81,7 @@ export default {
 	modalWidth: undefined,
 	// @ts-ignore
 	modalPadding: undefined,
+	// @ts-ignore
 	modalBackground: undefined,
 	// @ts-ignore
 	modalHeader: true,
@@ -177,11 +178,17 @@ export default {
 	// Colors
 
 	colors: {
+		// @ts-ignore
 		black: _black,
+		// @ts-ignore
 		blackDay: _black,
+		// @ts-ignore
 		blackNight: _white,
+		// @ts-ignore
 		white: _white,
+		// @ts-ignore
 		whiteDay: _white,
+		// @ts-ignore
 		whiteNight: _black,
 		// @ts-ignore
 		main: _main,
@@ -209,6 +216,7 @@ export default {
 		blue: _blue,
 		// @ts-ignore
 		red: _red,
+		// @ts-ignore
 		pink: _pink,
 		orange: _orange,
 		// @ts-ignore

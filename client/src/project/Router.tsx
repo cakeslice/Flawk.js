@@ -183,7 +183,7 @@ export default function Router(): JSX.Element {
 								marginBottom: 30,
 								color: styles.colors.black,
 							}}
-							onClick={() => props.toggleOpen()}
+							onClick={() => props.toggleOpen && props.toggleOpen()}
 						>
 							<Avatar
 								src={

@@ -17,7 +17,7 @@ import Select, { components, CSSObjectWithLabel, DropdownIndicatorProps } from '
 
 export type Option = {
 	value: string
-	label: string
+	label: string | JSX.Element
 	isDisabled?: boolean
 	style?: CSSObjectWithLabel
 }
@@ -91,11 +91,12 @@ export default class CustomDropdown extends Component<{
 		callback: (options: Option[]) => void
 	) => Promise<void>
 	options?: Option[]
-	searchFunction?: (candidate: unknown, input: string) => boolean
+	searchFunction?: (candidate: { value: string }, input: string) => boolean
 	defaultValue?: string
 	noPortal?: boolean
 	erasable?: boolean
 	isSearchable?: boolean
+	menuPlacement?: 'top' | 'bottom' | 'auto'
 	//
 	field?: FieldInputProps<Obj>
 	form?: FormikProps<Obj>
@@ -346,6 +347,7 @@ export default class CustomDropdown extends Component<{
 								menuPortalTarget={!this.props.noPortal ? document.body : undefined}
 								isClearable={this.props.erasable}
 								isDisabled={this.props.isDisabled}
+								menuPlacement={this.props.menuPlacement}
 								isSearchable={this.props.isSearchable === true ? true : false}
 								onChange={(output) => {
 									const o = output as { value: string } | undefined

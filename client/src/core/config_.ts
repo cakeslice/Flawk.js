@@ -217,6 +217,7 @@ export default {
 	darkModeAvailable: false,
 	// @ts-ignore
 	darkModeOptIn: false,
+	// @ts-ignore
 	darkModeForce: false,
 
 	toastCloseTime: 5000,

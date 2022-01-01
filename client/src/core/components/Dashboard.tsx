@@ -21,7 +21,7 @@ const mobileHeightTop = 65
 const desktopHeight = 55
 const desktopHeightTop = 65
 
-export type TabProps = Obj & { toggleOpen: (open?: boolean) => void; key: string; isOpen: boolean }
+export type TabProps = Obj & { toggleOpen?: (open?: boolean) => void; key: string; isOpen: boolean }
 
 export type DashboardRoute = {
 	id: string
