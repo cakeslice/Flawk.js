@@ -17,7 +17,7 @@ import Select, { components, CSSObjectWithLabel, DropdownIndicatorProps } from '
 
 export type Option = {
 	value: string
-	label: string | JSX.Element
+	label: string | JSX.Element | JSX.Element[]
 	isDisabled?: boolean
 	style?: CSSObjectWithLabel
 }

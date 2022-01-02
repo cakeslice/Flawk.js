@@ -26,7 +26,7 @@ type SpecialRow = {
 	row: (value: Value, data: Obj) => JSX.Element
 }
 type Column = {
-	name?: string | JSX.Element
+	name?: string | JSX.Element | JSX.Element[]
 	selector: string
 	cell?: (value: Value, data: Obj, isVisible: boolean, triggerUpdate: () => void) => JSX.Element
 	rowStyle?: React.CSSProperties
