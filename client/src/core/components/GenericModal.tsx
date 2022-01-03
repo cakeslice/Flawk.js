@@ -12,34 +12,25 @@ import styles from 'core/styles'
 import { Obj } from 'flawk-types'
 import React, { Component } from 'react'
 import { Portal } from 'react-portal'
-import CustomButton, { Appearance } from './CustomButton'
-
-type Button = {
-	title?: string
-	override?: (onClose: () => void) => JSX.Element
-	cancel?: boolean
-	appearance?: Appearance
-	submit?: boolean
-	style?: React.CSSProperties
-	action?: (f: () => void) => void
-}
 
 export default class GenericModal extends Component<{
 	onClose?: () => void
 	title?: string
 	name?: string
 	parent?: Component
-	buttons?: Button[]
 	content?: (
 		close: () => void,
-		parentStyle: React.CSSProperties,
-		modalWrapper: React.CSSProperties,
-		buttons: () => JSX.Element
+		Content: React.FC,
+		Buttons: React.FC,
+		Parent: React.FC
 	) => JSX.Element
 	style?: React.CSSProperties & { lineColor?: string }
+	contentStyle?: React.CSSProperties
+	buttonsStyle?: React.CSSProperties & {
+		line: boolean
+	}
 	lineColor?: string
 	noAutoFocus?: boolean
-	noOverflow?: boolean
 }> {
 	componentDidMount() {
 		const target = document.querySelector('.scrollTarget')
@@ -59,10 +50,45 @@ export default class GenericModal extends Component<{
 		}
 	}
 
-	renderButtons() {
+	renderParent: React.FC = ({ children }) => {
+		return (
+			<div
+				style={{
+					display: 'contents',
+				}}
+			>
+				{children}
+			</div>
+		)
+	}
+	renderContent: React.FC = ({ children }) => {
+		const modalPadding = styles.modalPadding || 20
+		const modalWrapper: React.CSSProperties = {
+			padding: modalPadding,
+			paddingTop: styles.modalHeader || this.props.title ? modalPadding / 2 : modalPadding,
+			paddingBottom: modalPadding,
+			overflow: 'auto',
+		}
+
+		return (
+			<div
+				style={{
+					...modalWrapper,
+					display: 'flex',
+					flexDirection: 'column',
+					justifyContent: 'flex-start',
+					...(styles.modalContentStyle && styles.modalContentStyle),
+					...(this.props.contentStyle && this.props.contentStyle),
+				}}
+			>
+				{children}
+			</div>
+		)
+	}
+	renderButtons: React.FC = ({ children }) => {
 		const modalPadding = styles.modalPadding || 20
 
-		return this.props.buttons && this.props.buttons.length > 0 ? (
+		return (
 			<div>
 				{styles.modalButtonsStyle && styles.modalButtonsStyle.line && (
 					<div>
@@ -86,63 +112,17 @@ export default class GenericModal extends Component<{
 						flexWrap: 'wrap',
 						justifyContent: 'flex-end',
 						...(styles.modalButtonsStyle && styles.modalButtonsStyle),
+						...(this.props.buttonsStyle && this.props.buttonsStyle),
 					}}
 				>
-					{this.props.buttons.map((b, i) =>
-						b.override ? (
-							<div
-								style={{
-									...(styles.modalButtonsStyle &&
-										styles.modalButtonsStyle.buttonStyle),
-									...b.style,
-								}}
-							>
-								{b.override(this.onClose.bind(this))}
-							</div>
-						) : (
-							<CustomButton
-								key={i}
-								appearance={b.appearance || (!b.cancel ? 'primary' : undefined)}
-								type={b.submit ? 'submit' : undefined}
-								style={{
-									...(styles.modalButtonsStyle &&
-										styles.modalButtonsStyle.buttonStyle),
-									...b.style,
-								}}
-								isLoading={false}
-								onClick={
-									b.cancel
-										? () => {
-												b.action && b.action(this.onClose.bind(this))
-												this.onClose()
-										  }
-										: () => {
-												b.action && b.action(this.onClose.bind(this))
-										  }
-								}
-							>
-								{b.cancel ? (config.text('common.cancel') as string) : b.title}
-							</CustomButton>
-						)
-					)}
+					{children}
 				</div>
 			</div>
-		) : (
-			<div />
 		)
 	}
 
 	render() {
 		const modalPadding = styles.modalPadding || 20
-		const modalWrapper: React.CSSProperties = {
-			padding: modalPadding,
-			paddingTop: styles.modalHeader || this.props.title ? modalPadding / 2 : modalPadding,
-			paddingBottom:
-				this.props.buttons && this.props.buttons.length > 0
-					? modalPadding / 2
-					: modalPadding,
-			overflow: !this.props.noOverflow ? 'auto' : undefined,
-		}
 
 		return (
 			<Portal>
@@ -177,7 +157,6 @@ export default class GenericModal extends Component<{
 									...styles.card,
 									...{
 										boxShadow: styles.strongerShadow,
-										overflowY: this.props.noOverflow ? 'auto' : undefined,
 										margin: 0,
 										borderRadius: 5,
 										maxWidth: 'calc(100vw - 10px)',
@@ -188,6 +167,7 @@ export default class GenericModal extends Component<{
 										flexDirection: 'column',
 										justifyContent: 'space-between',
 										padding: 0,
+										...(styles.modalCard && styles.modalCard),
 										...this.props.style,
 									},
 								}}
@@ -201,28 +181,14 @@ export default class GenericModal extends Component<{
 									/>
 								)}
 
-								{this.props.title ||
-								(this.props.buttons && this.props.buttons.length > 0) ? (
-									this.props.content ? (
-										this.props.content(
+								{this.props.content
+									? this.props.content(
 											this.onClose.bind(this),
-											{ display: 'contents' },
-											modalWrapper,
-											this.renderButtons.bind(this)
-										)
-									) : undefined
-								) : (
-									<div style={{ ...modalWrapper }}>
-										{this.props.content
-											? this.props.content(
-													this.onClose.bind(this),
-													{ display: 'contents' },
-													modalWrapper,
-													this.renderButtons.bind(this)
-											  )
-											: undefined}
-									</div>
-								)}
+											this.renderContent.bind(this),
+											this.renderButtons.bind(this),
+											this.renderParent.bind(this)
+									  )
+									: undefined}
 							</div>
 						</div>
 					</Animated>
@@ -276,8 +242,12 @@ class ModalHeader extends Component<{
 					<div
 						style={{
 							height: 1,
-							background: this.props.lineColor || styles.colors.black,
-							opacity: this.props.lineColor ? 1 : 0.1,
+							background:
+								this.props.lineColor ||
+								styles.modalHeaderStyle.lineColor ||
+								styles.colors.black,
+							opacity:
+								this.props.lineColor || styles.modalHeaderStyle.lineColor ? 1 : 0.1,
 							width: '100%',
 						}}
 					></div>

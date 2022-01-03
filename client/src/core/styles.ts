@@ -88,6 +88,18 @@ export default {
 	// @ts-ignore
 	modalButtonWrap: true,
 	// @ts-ignore
+	modalCard: undefined as React.CSSProperties,
+	// @ts-ignore
+	modalContentStyle: undefined as React.CSSProperties,
+	// @ts-ignore
+	modalButtonsStyle: {
+		line: true,
+		//flexWrap: 'none',
+		//paddingBottom: 35 - 5,
+	} as React.CSSProperties & {
+		line: boolean
+	},
+	// @ts-ignore
 	modalHeaderStyle: {
 		line: true,
 		noCloseButton: false,
@@ -98,20 +110,9 @@ export default {
 		}, */
 	} as React.CSSProperties & {
 		line: boolean
+		lineColor: React.CSSProperties['background']
 		noCloseButton: boolean
 		textStyle: React.CSSProperties
-	},
-	// @ts-ignore
-	modalButtonsStyle: {
-		line: true,
-		//flexWrap: 'none',
-		//paddingBottom: 35 - 5,
-		/* buttonStyle: {
-			width: '100%',
-		}, */
-	} as React.CSSProperties & {
-		line: boolean
-		buttonStyle: React.CSSProperties
 	},
 
 	// Dropdown Config

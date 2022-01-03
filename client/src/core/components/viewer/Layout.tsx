@@ -107,30 +107,9 @@ export default class Layout extends ReactQueryParams {
 				name='exampleModal'
 				parent={this}
 				title={'Hello!'}
-				//color={color}
-				//title={title}
-				//style={style}
-				buttons={[
-					{
-						cancel: true,
-					},
-					{
-						title: 'OK!',
-						action: (close) => {
-							close()
-						},
-					},
-				]}
-				content={(close, parentStyle, modalWrapper, buttons) => (
-					<div style={parentStyle}>
-						<div
-							style={{
-								...modalWrapper,
-								display: 'flex',
-								flexDirection: 'column',
-								justifyContent: 'flex-start',
-							}}
-						>
+				content={(close, Content, Buttons, Parent) => (
+					<Parent>
+						<Content>
 							<CustomTable
 								isLoading={this.state.fetching}
 								height={'500px'}
@@ -201,9 +180,14 @@ export default class Layout extends ReactQueryParams {
 							>
 								Fetch
 							</CustomButton>
-						</div>
-						{buttons()}
-					</div>
+						</Content>
+						<Buttons>
+							<CustomButton onClick={close}>Cancel</CustomButton>
+							<CustomButton appearance='primary' onClick={close}>
+								OK
+							</CustomButton>
+						</Buttons>
+					</Parent>
 				)}
 			/>
 		)

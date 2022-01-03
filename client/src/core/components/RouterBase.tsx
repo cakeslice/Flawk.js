@@ -27,7 +27,7 @@ const gitHash = GitInfo().commit.shortHash
 
 let amountToasts = 0
 function addFlagFunction(
-	title: string,
+	title: string | JSX.Element | JSX.Element[],
 	description: string,
 	type: 'warning' | 'error' | 'success' | 'info',
 	options?: {
