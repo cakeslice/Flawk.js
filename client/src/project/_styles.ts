@@ -74,8 +74,7 @@ export default {
 	dropdownFontWeight: 700,
 
 	modalPadding: 35,
-	modalHeader: false,
-	modalButtonWrap: false,
+	modalButtonWrap: true,
 	modalWidth: 466,
 
 	dropZoneActive: {

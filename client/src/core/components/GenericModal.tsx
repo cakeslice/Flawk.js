@@ -15,14 +15,15 @@ import { Portal } from 'react-portal'
 
 export default class GenericModal extends Component<{
 	onClose?: () => void
-	title?: string
+	title?: string | JSX.Element | JSX.Element[]
 	name?: string
 	parent?: Component
 	content?: (
 		close: () => void,
 		Content: React.FC,
 		Buttons: React.FC,
-		Parent: React.FC
+		Parent: React.FC,
+		Header: React.FC
 	) => JSX.Element
 	style?: React.CSSProperties & { lineColor?: string }
 	contentStyle?: React.CSSProperties
@@ -50,6 +51,18 @@ export default class GenericModal extends Component<{
 		}
 	}
 
+	renderHeader: React.FC = ({ children }) => {
+		const modalPadding = styles.modalPadding || 20
+
+		return (
+			<ModalHeader
+				modalPadding={modalPadding}
+				lineColor={this.props.style && this.props.style.lineColor}
+				title={children}
+				onClose={this.onClose.bind(this)}
+			/>
+		)
+	}
 	renderParent: React.FC = ({ children }) => {
 		return (
 			<div
@@ -65,7 +78,7 @@ export default class GenericModal extends Component<{
 		const modalPadding = styles.modalPadding || 20
 		const modalWrapper: React.CSSProperties = {
 			padding: modalPadding,
-			paddingTop: styles.modalHeader || this.props.title ? modalPadding / 2 : modalPadding,
+			paddingTop: this.props.title ? modalPadding / 2 : modalPadding,
 			paddingBottom: modalPadding,
 			overflow: 'auto',
 		}
@@ -172,7 +185,7 @@ export default class GenericModal extends Component<{
 									},
 								}}
 							>
-								{(styles.modalHeader || this.props.title) && (
+								{this.props.title && (
 									<ModalHeader
 										modalPadding={modalPadding}
 										lineColor={this.props.style && this.props.style.lineColor}
@@ -186,7 +199,8 @@ export default class GenericModal extends Component<{
 											this.onClose.bind(this),
 											this.renderContent.bind(this),
 											this.renderButtons.bind(this),
-											this.renderParent.bind(this)
+											this.renderParent.bind(this),
+											this.renderHeader.bind(this)
 									  )
 									: undefined}
 							</div>
@@ -198,7 +212,7 @@ export default class GenericModal extends Component<{
 	}
 }
 class ModalHeader extends Component<{
-	title?: string
+	title?: string | JSX.Element | JSX.Element[] | React.ReactNode
 	lineColor?: string
 	modalPadding: number
 	onClose?: () => void

@@ -84,8 +84,6 @@ export default {
 	// @ts-ignore
 	modalBackground: undefined,
 	// @ts-ignore
-	modalHeader: true,
-	// @ts-ignore
 	modalButtonWrap: true,
 	// @ts-ignore
 	modalCard: undefined as React.CSSProperties,
