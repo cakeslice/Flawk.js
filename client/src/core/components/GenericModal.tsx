@@ -25,12 +25,17 @@ export default class GenericModal extends Component<{
 		Parent: React.FC,
 		Header: React.FC
 	) => JSX.Element
-	style?: React.CSSProperties & { lineColor?: string }
+	style?: React.CSSProperties
+	headerStyle?: React.CSSProperties & {
+		line: boolean
+		lineColor: React.CSSProperties['background']
+		noCloseButton: boolean
+		textStyle: React.CSSProperties
+	}
 	contentStyle?: React.CSSProperties
 	buttonsStyle?: React.CSSProperties & {
 		line: boolean
 	}
-	lineColor?: string
 	noAutoFocus?: boolean
 }> {
 	componentDidMount() {
@@ -57,7 +62,7 @@ export default class GenericModal extends Component<{
 		return (
 			<ModalHeader
 				modalPadding={modalPadding}
-				lineColor={this.props.style && this.props.style.lineColor}
+				headerStyle={this.props.headerStyle}
 				title={children}
 				onClose={this.onClose.bind(this)}
 			/>
@@ -103,13 +108,22 @@ export default class GenericModal extends Component<{
 
 		return (
 			<div>
-				{styles.modalButtonsStyle && styles.modalButtonsStyle.line && (
+				{((!this.props.buttonsStyle &&
+					styles.modalButtonsStyle &&
+					styles.modalButtonsStyle.line) ||
+					(this.props.buttonsStyle && this.props.buttonsStyle.line)) && (
 					<div>
 						<div
 							style={{
 								height: 1,
-								background: this.props.lineColor || styles.colors.black,
-								opacity: this.props.lineColor ? 1 : 0.1,
+								background:
+									(styles.modalButtonsStyle &&
+										styles.modalButtonsStyle.lineColor) ||
+									styles.colors.black,
+								opacity:
+									styles.modalButtonsStyle && styles.modalButtonsStyle.lineColor
+										? 1
+										: 0.1,
 								width: '100%',
 							}}
 						></div>
@@ -188,7 +202,7 @@ export default class GenericModal extends Component<{
 								{this.props.title && (
 									<ModalHeader
 										modalPadding={modalPadding}
-										lineColor={this.props.style && this.props.style.lineColor}
+										headerStyle={this.props.headerStyle}
 										title={this.props.title}
 										onClose={this.onClose.bind(this)}
 									/>
@@ -213,7 +227,12 @@ export default class GenericModal extends Component<{
 }
 class ModalHeader extends Component<{
 	title?: string | JSX.Element | JSX.Element[] | React.ReactNode
-	lineColor?: string
+	headerStyle?: React.CSSProperties & {
+		line: boolean
+		lineColor: React.CSSProperties['background']
+		noCloseButton: boolean
+		textStyle: React.CSSProperties
+	}
 	modalPadding: number
 	onClose?: () => void
 }> {
@@ -226,6 +245,7 @@ class ModalHeader extends Component<{
 						padding: this.props.modalPadding / 2,
 						paddingLeft: this.props.modalPadding,
 						...styles.modalHeaderStyle,
+						...this.props.headerStyle,
 					}}
 				>
 					<div
@@ -233,12 +253,16 @@ class ModalHeader extends Component<{
 							...{
 								letterSpacing: 0.4,
 								...(styles.modalHeaderStyle && styles.modalHeaderStyle.textStyle),
+								...(this.props.headerStyle && this.props.headerStyle.textStyle),
 							},
 						}}
 					>
 						{this.props.title}
 					</div>
-					{styles.modalHeaderStyle && !styles.modalHeaderStyle.noCloseButton && (
+					{((styles.modalHeaderStyle && !styles.modalHeaderStyle.noCloseButton) ||
+						(this.props.headerStyle &&
+							(this.props.headerStyle.noCloseButton === undefined ||
+								this.props.headerStyle.noCloseButton === false))) && (
 						<button
 							style={{
 								borderRadius: 5,
@@ -252,16 +276,22 @@ class ModalHeader extends Component<{
 						</button>
 					)}
 				</div>
-				{styles.modalHeaderStyle && styles.modalHeaderStyle.line && (
+				{((!this.props.headerStyle &&
+					styles.modalHeaderStyle &&
+					styles.modalHeaderStyle.line) ||
+					(this.props.headerStyle && this.props.headerStyle.line)) && (
 					<div
 						style={{
 							height: 1,
 							background:
-								this.props.lineColor ||
+								(this.props.headerStyle && this.props.headerStyle.lineColor) ||
 								styles.modalHeaderStyle.lineColor ||
 								styles.colors.black,
 							opacity:
-								this.props.lineColor || styles.modalHeaderStyle.lineColor ? 1 : 0.1,
+								(this.props.headerStyle && this.props.headerStyle.lineColor) ||
+								styles.modalHeaderStyle.lineColor
+									? 1
+									: 0.1,
 							width: '100%',
 						}}
 					></div>

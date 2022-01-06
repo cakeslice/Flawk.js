@@ -96,6 +96,7 @@ export default {
 		//paddingBottom: 35 - 5,
 	} as React.CSSProperties & {
 		line: boolean
+		lineColor: React.CSSProperties['background']
 	},
 	// @ts-ignore
 	modalHeaderStyle: {
