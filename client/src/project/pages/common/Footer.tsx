@@ -12,8 +12,6 @@ import React, { Component } from 'react'
 import MediaQuery from 'react-responsive'
 
 export default class Footer extends Component {
-	state = {}
-
 	render() {
 		return (
 			<MediaQuery minWidth={config.mobileWidthTrigger}>

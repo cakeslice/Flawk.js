@@ -132,8 +132,6 @@ export default class ComponentsViewer extends Component {
 				path={'/components/'}
 				color={styles.colors.white}
 				logo={logo}
-				// Redux props
-				pageProps={this.props}
 				wrapperComponent={Wrapper}
 				routes={routes}
 			></Dashboard>

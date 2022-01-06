@@ -14,15 +14,26 @@ import config from 'core/config_'
 import navigation from 'core/functions/navigation'
 import styles from 'core/styles'
 import { Form, Formik } from 'formik'
+import { StoreState } from 'project/redux/_store'
 import React, { Component } from 'react'
 import ReCaptcha from 'react-google-recaptcha'
 import { Helmet } from 'react-helmet'
-import { connect } from 'react-redux'
+import { connect, ConnectedProps } from 'react-redux'
 import MediaQuery from 'react-responsive'
 import { fetchUser } from '../../redux/AppReducer'
 
-class Forgot extends Component {
-	state = {}
+const connector = connect((state: StoreState) => ({
+	user: state.app.user,
+	structures: state.app.structures,
+	fetchingUser: state.app.fetchingUser,
+}))
+type PropsFromRedux = ConnectedProps<typeof connector>
+class Forgot extends Component<PropsFromRedux> {
+	state = {
+		wrongLogin: undefined,
+		verifyingRecover: undefined,
+		emailToRecover: undefined as undefined | string,
+	}
 
 	render() {
 		if (!this.props.fetchingUser && this.props.user) navigation.loginRedirect()
@@ -48,7 +59,7 @@ class Forgot extends Component {
 									this.setState({ wrongLogin: undefined })
 									setSubmitting(true)
 
-									var res = await post(
+									const res = await post(
 										'client/reset_password',
 										{
 											email: this.state.emailToRecover,
@@ -57,14 +68,17 @@ class Forgot extends Component {
 										{ noErrorFlag: [401] }
 									)
 
-									if (res.ok) {
+									if (res.ok && res.body) {
 										if (global.analytics)
 											global.analytics.event({
 												category: 'User',
 												action: 'Recovered account',
 											})
 
-										await global.storage.setItem('token', res.body.token)
+										await global.storage.setItem(
+											'token',
+											res.body.token as string
+										)
 
 										await fetchUser(this.props.dispatch)
 										navigation.loginRedirect()
@@ -138,7 +152,7 @@ class Forgot extends Component {
 								enableReinitialize
 								key={'forgot_password'}
 								validate={(values) => {
-									let errors = {}
+									const errors: Partial<typeof values> = {}
 
 									if (
 										!config.recaptchaBypass &&
@@ -149,15 +163,20 @@ class Forgot extends Component {
 
 									return errors
 								}}
-								initialValues={{
-									email: '',
-									captcha: undefined,
-								}}
+								initialValues={
+									{
+										email: undefined,
+										captcha: undefined,
+									} as {
+										email?: string
+										captcha?: string
+									}
+								}
 								onSubmit={async (values, { setSubmitting, setFieldValue }) => {
 									this.setState({ wrongLogin: '' })
 									setSubmitting(true)
 
-									var res = await post(
+									const res = await post(
 										'client/forgot_password?recaptchaToken=' + // eslint-disable-line
 											(config.recaptchaBypass || values.captcha),
 										{
@@ -225,8 +244,9 @@ class Forgot extends Component {
 															<sp />
 															<div
 																style={{
-																	transform:
-																		!desktop && 'scale(.85)',
+																	transform: !desktop
+																		? 'scale(.85)'
+																		: undefined,
 																}}
 															>
 																{config.recaptchaSiteKey && (
@@ -305,7 +325,4 @@ class Forgot extends Component {
 		)
 	}
 }
-export default connect((state) => ({
-	user: state.app.user,
-	fetchingUser: state.app.fetchingUser,
-}))(Forgot)
+export default connector(Forgot)

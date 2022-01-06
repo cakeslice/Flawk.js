@@ -5,4 +5,15 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-declare module 'project-types' {}
+declare module 'project-types' {
+	type UserState = import('project/redux/AppReducer').UserState
+
+	export type DashboardProps = {
+		structures?: KeyArrayKeyObject
+		fetchingStructures: boolean
+		user?: UserState
+		fetchingUser: boolean
+		fetchUser: () => Promise<void>
+		fetchStructures: () => Promise<void>
+	}
+}

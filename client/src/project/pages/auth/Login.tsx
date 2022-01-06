@@ -15,13 +15,23 @@ import navigation from 'core/functions/navigation'
 import styles from 'core/styles'
 import { Form, Formik } from 'formik'
 import { fetchUser } from 'project/redux/AppReducer'
+import { StoreState } from 'project/redux/_store'
 import React, { Component } from 'react'
 import { Helmet } from 'react-helmet'
-import { connect } from 'react-redux'
+import { connect, ConnectedProps } from 'react-redux'
 import MediaQuery from 'react-responsive'
 import { Link } from 'react-router-dom'
-class Login extends Component {
-	state = {}
+
+const connector = connect((state: StoreState) => ({
+	user: state.app.user,
+	structures: state.app.structures,
+	fetchingUser: state.app.fetchingUser,
+}))
+type PropsFromRedux = ConnectedProps<typeof connector>
+class Login extends Component<PropsFromRedux> {
+	state = {
+		wrongLogin: undefined,
+	}
 
 	render() {
 		if (!this.props.fetchingUser && this.props.user) navigation.loginRedirect()
@@ -45,7 +55,7 @@ class Login extends Component {
 								this.setState({ wrongLogin: undefined })
 								setSubmitting(true)
 
-								var res = await post(
+								const res = await post(
 									'client/login',
 									{
 										...values,
@@ -53,14 +63,14 @@ class Login extends Component {
 									{ noErrorFlag: [401] }
 								)
 
-								if (res.ok) {
+								if (res.ok && res.body) {
 									if (global.analytics)
 										global.analytics.event({
 											category: 'User',
 											action: 'Logged in',
 										})
 
-									await global.storage.setItem('token', res.body.token)
+									await global.storage.setItem('token', res.body.token as string)
 									await fetchUser(this.props.dispatch)
 									navigation.loginRedirect()
 								} else if (res.status === 401) {
@@ -148,7 +158,4 @@ class Login extends Component {
 		)
 	}
 }
-export default connect((state) => ({
-	user: state.app.user,
-	fetchingUser: state.app.fetchingUser,
-}))(Login)
+export default connector(Login)

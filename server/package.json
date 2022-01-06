@@ -109,7 +109,7 @@
 		"jest": "^27.3.1",
 		"lint-staged": "^12.1.2",
 		"mongodb-memory-server": "^8.0.2",
-		"mongoose-tsgen": "^8.4.6",
+		"mongoose-tsgen": "^8.4.7",
 		"nodemon": "^2.0.15",
 		"prettier": "^2.4.1",
 		"replace-in-file": "^6.3.2",

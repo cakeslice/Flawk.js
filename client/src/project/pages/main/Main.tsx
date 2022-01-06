@@ -106,7 +106,7 @@ export default class Main extends Component {
 								</CustomButton>
 							</div>
 
-							{/* <Fade delay={500} duration={750} bottom>
+							{/*<Animated effects={['fade', 'up']} delay={0.5} duration={0.75}>
 								<div
 									className='flex-col items-center justify-between'
 									id='about'
@@ -130,7 +130,7 @@ export default class Main extends Component {
 									</h3>
 									<sp />
 								</div>
-							</Fade> */}
+							</Animated> */}
 						</div>
 					)}
 				</MediaQuery>

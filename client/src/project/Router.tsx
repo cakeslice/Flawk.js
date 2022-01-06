@@ -44,12 +44,15 @@ const Register = React.lazy(() => import('./pages/auth/Register'))
 const Main = React.lazy(() => import('./pages/main/Main'))
 
 export default function Router(): JSX.Element {
-	const { structures, user, fetchingUser, authError } = useStoreSelector((state) => ({
-		structures: state.app.structures,
-		user: state.app.user,
-		fetchingUser: state.app.fetchingUser,
-		authError: state.app.authError,
-	}))
+	const { structures, fetchingStructures, user, fetchingUser, authError } = useStoreSelector(
+		(state) => ({
+			structures: state.app.structures,
+			fetchingStructures: state.app.fetchingStructures,
+			user: state.app.user,
+			fetchingUser: state.app.fetchingUser,
+			authError: state.app.authError,
+		})
+	)
 	const dispatch = useStoreDispatch()
 
 	useConstructor(() => {
@@ -278,6 +281,7 @@ export default function Router(): JSX.Element {
 										// Redux props
 										pageProps={{
 											structures,
+											fetchingStructures,
 											user,
 											fetchingUser,
 											authError,

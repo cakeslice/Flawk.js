@@ -16,15 +16,22 @@ import navigation from 'core/functions/navigation'
 import styles from 'core/styles'
 import { Form, Formik } from 'formik'
 import { fetchUser } from 'project/redux/AppReducer'
+import { StoreState } from 'project/redux/_store'
 import React, { Component } from 'react'
 import ReCaptcha from 'react-google-recaptcha'
 import { Helmet } from 'react-helmet'
-import { connect } from 'react-redux'
+import { connect, ConnectedProps } from 'react-redux'
 import MediaQuery from 'react-responsive'
 import { Link } from 'react-router-dom'
 
-class Register extends Component {
-	state = {}
+const connector = connect((state: StoreState) => ({
+	user: state.app.user,
+	structures: state.app.structures,
+	fetchingUser: state.app.fetchingUser,
+}))
+type PropsFromRedux = ConnectedProps<typeof connector>
+class Register extends Component<PropsFromRedux> {
+	state = { wrongLogin: undefined, verifyingSignup: undefined }
 
 	render() {
 		if (!this.props.fetchingUser && this.props.user) navigation.loginRedirect()
@@ -49,7 +56,7 @@ class Register extends Component {
 									this.setState({ wrongLogin: undefined })
 									setSubmitting(true)
 
-									var res = await post(
+									const res = await post(
 										'client/register_verify',
 										{
 											...values,
@@ -57,14 +64,17 @@ class Register extends Component {
 										{ noErrorFlag: [401] }
 									)
 
-									if (res.ok) {
+									if (res.ok && res.body) {
 										if (global.analytics)
 											global.analytics.event({
 												category: 'User',
 												action: 'Verified account',
 											})
 
-										await global.storage.setItem('token', res.body.token)
+										await global.storage.setItem(
+											'token',
+											res.body.token as string
+										)
 										await fetchUser(this.props.dispatch)
 
 										navigation.loginRedirect()
@@ -127,7 +137,7 @@ class Register extends Component {
 							<Formik
 								enableReinitialize
 								validate={(values) => {
-									let errors = {}
+									const errors: Partial<typeof values> = {}
 
 									if (
 										config.recaptchaSiteKey &&
@@ -138,14 +148,22 @@ class Register extends Component {
 
 									return errors
 								}}
-								initialValues={{
-									captcha: undefined,
-								}}
+								initialValues={
+									{
+										captcha: undefined,
+									} as {
+										captcha?: string
+										firstName?: string
+										lastName?: string
+										email?: string
+										password?: string
+									}
+								}
 								onSubmit={async (values, { setSubmitting, setFieldValue }) => {
 									this.setState({ wrongLogin: '' })
 									setSubmitting(true)
 
-									var res = await post(
+									const res = await post(
 										'client/register?recaptchaToken=' +
 											(config.recaptchaBypass || values.captcha),
 										{
@@ -238,8 +256,9 @@ class Register extends Component {
 															<sp />
 															<div
 																style={{
-																	transform:
-																		!desktop && 'scale(.85)',
+																	transform: !desktop
+																		? 'scale(.85)'
+																		: undefined,
 																}}
 															>
 																{config.recaptchaSiteKey && (
@@ -330,7 +349,4 @@ class Register extends Component {
 		)
 	}
 }
-export default connect((state) => ({
-	user: state.app.user,
-	fetchingUser: state.app.fetchingUser,
-}))(Register)
+export default connector(Register)

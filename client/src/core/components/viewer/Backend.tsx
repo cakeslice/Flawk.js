@@ -524,13 +524,21 @@ class Register extends Component<PropsFromRedux & { desktop?: boolean }> {
 
 							return errors
 						}}
-						initialValues={{
-							firstName: 'Dev',
-							lastName: 'User',
-							email: 'dev_user@email.flawk',
-							password: 'dev_user',
-							captcha: undefined as string | undefined,
-						}}
+						initialValues={
+							{
+								firstName: 'Dev',
+								lastName: 'User',
+								email: 'dev_user@email.flawk',
+								password: 'dev_user',
+								captcha: undefined,
+							} as {
+								firstName?: string
+								lastName?: string
+								email?: string
+								password?: string
+								captcha?: string
+							}
+						}
 						onSubmit={async (values, { setSubmitting, setFieldValue }) => {
 							this.setState({ wrongLogin: '' })
 							setSubmitting(true)
@@ -792,10 +800,15 @@ class Forgot extends Component<PropsFromRedux & { desktop?: boolean }> {
 
 							return errors
 						}}
-						initialValues={{
-							email: 'dev_user@email.flawk',
-							captcha: undefined as string | undefined,
-						}}
+						initialValues={
+							{
+								email: 'dev_user@email.flawk',
+								captcha: undefined,
+							} as {
+								email?: string
+								captcha?: string
+							}
+						}
 						onSubmit={async (values, { setSubmitting, setFieldValue }) => {
 							this.setState({ wrongLogin: '' })
 							setSubmitting(true)

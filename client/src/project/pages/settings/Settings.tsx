@@ -16,10 +16,11 @@ import upload from 'core/functions/upload'
 import styles from 'core/styles'
 import { Form, Formik } from 'formik'
 import { css } from 'glamor'
+import { DashboardProps } from 'project-types'
 import React, { Component } from 'react'
 import MediaQuery from 'react-responsive'
 
-class Settings extends Component {
+class Settings extends Component<DashboardProps> {
 	state = {}
 
 	render() {
@@ -30,20 +31,32 @@ class Settings extends Component {
 						<div
 							style={{
 								...styles.card,
-								alignSelf: desktop && 'center',
-								width: desktop && 'fit-content',
+								alignSelf: desktop ? 'center' : undefined,
+								width: desktop ? 'fit-content' : undefined,
 							}}
 						>
 							<Formik
 								enableReinitialize
-								initialValues={{
-									firstName: this.props.user.personal.firstName,
-									lastName: this.props.user.personal.lastName,
-									email: this.props.user.email,
-									photoURL: this.props.user.personal.photoURL,
-									photoFile: undefined,
-									password: undefined,
-								}}
+								initialValues={
+									{
+										...(this.props.user &&
+											this.props.user.personal && {
+												firstName: this.props.user.personal.firstName,
+												lastName: this.props.user.personal.lastName,
+												email: this.props.user.email,
+												photoURL: this.props.user.personal.photoURL,
+											}),
+										photoFile: undefined,
+										password: undefined,
+									} as {
+										firstName?: string
+										lastName?: string
+										email?: string
+										photoURL?: string
+										photoFile?: File
+										password?: string
+									}
+								}
 								onSubmit={async (
 									values,
 									{ setSubmitting, setFieldValue, resetForm }
@@ -51,19 +64,19 @@ class Settings extends Component {
 									setSubmitting(true)
 
 									if (values.photoFile) {
-										var fileUpload = await upload.uploadFile(values.photoFile)
+										const fileUpload = await upload.uploadFile(values.photoFile)
 										if (fileUpload.success) {
-											var res = await post('client/change_settings', {
+											const res = await post('client/change_settings', {
 												...values,
 												photoURL: fileUpload.imageURL,
 												photoFile: undefined,
 											})
 
-											if (res.ok) {
+											if (res.ok && res.body) {
 												if (res.body.token)
 													await global.storage.setItem(
 														'token',
-														res.body.token
+														res.body.token as string
 													)
 												await this.props.fetchUser()
 
@@ -75,15 +88,18 @@ class Settings extends Component {
 
 										setSubmitting(false)
 									} else {
-										var r = await post('client/change_settings', {
+										const r = await post('client/change_settings', {
 											...values,
 											photoURL: undefined,
 											photoFile: undefined,
 										})
 
-										if (r.ok) {
+										if (r.ok && r.body) {
 											if (r.body.token)
-												await global.storage.setItem('token', r.body.token)
+												await global.storage.setItem(
+													'token',
+													r.body.token as string
+												)
 											await this.props.fetchUser()
 
 											// Fix for password change not resetting form
@@ -155,9 +171,8 @@ class Settings extends Component {
 														}
 														accept='image/*;capture=camera'
 														onChange={async (e) => {
-															var img = await upload.handleFileChange(
-																e
-															)
+															const img =
+																await upload.handleFileChange(e)
 															if (img) {
 																setFieldValue('photoURL', img.url)
 																setFieldValue('photoFile', img.file)

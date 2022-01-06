@@ -34,4 +34,7 @@ export default {
 		const query = QueryString.parse(window.location.search) as { from?: string }
 		global.routerHistory().replace(query.from || config.loginRedirect)
 	},
+	resetCapacitorHistory() {
+		window.history.go(-(window.history.length - 1))
+	},
 }

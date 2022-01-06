@@ -14,13 +14,15 @@ import React, { Component } from 'react'
 import MediaQuery from 'react-responsive'
 import { Link } from 'react-router-dom'
 
-const leftLinks = [
+type Page = { name: string; id: string }
+
+const leftLinks: Page[] = [
 	/* { name: 'About', id: '/#about' } */
 ]
-const rightLinks = [
+const rightLinks: Page[] = [
 	/* { name: 'Contact', id: '/#contact' } */
 ]
-const mobileLinks = [
+const mobileLinks: Page[] = [
 	/* ...leftLinks,
 	...rightLinks,
 	{
@@ -37,7 +39,10 @@ const mobileHeightTop = 70
 const desktopHeight = 70
 const desktopHeightTop = 125
 
-export default class Header extends Component {
+export default class Header extends Component<{
+	fillSpace?: boolean
+	landingPage?: boolean
+}> {
 	state = {
 		shrink: false,
 	}
@@ -59,7 +64,7 @@ export default class Header extends Component {
 	}
 
 	render() {
-		var maxWidth = 850
+		const maxWidth = 850
 
 		return (
 			<MediaQuery minWidth={config.mobileWidthTrigger}>
@@ -83,9 +88,9 @@ export default class Header extends Component {
 								backgroundColor: !desktop
 									? styles.colors.white
 									: this.state.shrink
-									? config.replaceAlpha(styles.colors.background, '0.75')
+									? config.replaceAlpha(styles.colors.background, 0.75)
 									: 'transparent',
-								boxShadow: this.state.shrink && styles.mediumShadow,
+								boxShadow: this.state.shrink ? styles.mediumShadow : undefined,
 								borderBottomStyle: 'solid',
 								borderWidth: 1,
 								borderColor: this.state.shrink
@@ -129,7 +134,7 @@ export default class Header extends Component {
 
 								{desktop &&
 									leftLinks.map((l) => {
-										var style = {
+										const style: React.CSSProperties = {
 											fontSize: 26,
 											minWidth: 150,
 											textAlign: 'center',
@@ -172,7 +177,7 @@ export default class Header extends Component {
 
 								{desktop &&
 									rightLinks.map((l) => {
-										var style = {
+										const style: React.CSSProperties = {
 											fontSize: 26,
 											minWidth: 150,
 											textAlign: 'center',
@@ -201,11 +206,11 @@ export default class Header extends Component {
 											minWidth: 175,
 										}}
 									>
-										{/* <Link to={'/components'}>COMPONENTS</Link>
-											<div style={{ minWidth: 10 }} /> */}
-										{/* <Link to={config.noTokenRedirect}>LOGIN</Link> */}
-										{/* <div style={{ minWidth: 10 }} />
-											<LanguageSwitcher></LanguageSwitcher> */}
+										{/*
+										<Link to={'/components'}>COMPONENTS</Link>
+										<div style={{ minWidth: 10 }} />
+										<Link to={config.noTokenRedirect}>LOGIN</Link>
+										*/}
 									</div>
 								)}
 

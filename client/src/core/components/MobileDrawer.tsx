@@ -16,6 +16,7 @@ import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 
 export default class MobileDrawer extends Component<{
+	className?: string
 	pageProps?: Obj
 	style?: React.CSSProperties
 	textColor?: string
@@ -40,6 +41,7 @@ export default class MobileDrawer extends Component<{
 
 		return (
 			<div
+				className={this.props.className}
 				style={{
 					position: 'fixed',
 					left: 0,
