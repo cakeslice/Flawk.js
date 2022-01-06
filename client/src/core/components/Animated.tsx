@@ -79,7 +79,7 @@ export default class Animated extends Component<{
 					style={props.style}
 					//
 					initial='hidden'
-					animate={props.triggerID !== this.state.initialTrigger ? 'hidden' : 'show'}
+					animate={'show'}
 					variants={{
 						hidden: { ...finalOut, transition: transition },
 						show: {
@@ -104,13 +104,7 @@ export default class Animated extends Component<{
 					style={props.style}
 					//
 					initial='hidden'
-					animate={
-						props.triggerID !== this.state.initialTrigger
-							? 'hidden'
-							: this.state.visible
-							? 'show'
-							: 'hidden'
-					}
+					animate={this.state.visible ? 'show' : 'hidden'}
 					variants={{
 						hidden: { ...finalOut, transition: transition },
 						show: {

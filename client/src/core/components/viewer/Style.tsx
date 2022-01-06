@@ -15,9 +15,13 @@ import { css } from 'glamor'
 import React, { Component } from 'react'
 import MediaQuery from 'react-responsive'
 import { Link } from 'react-router-dom'
+import * as uuid from 'uuid'
 import { header } from './ComponentsViewer'
-
 export default class Style extends Component {
+	state = {
+		animationTrigger: undefined,
+	}
+
 	render() {
 		const colorStyle = {
 			margin: 10,
@@ -279,15 +283,29 @@ export default class Style extends Component {
 								Basic
 							</div>
 							<Animated
+								triggerID={this.state.animationTrigger}
 								effects={['fade', 'down']}
 								style={{
 									...styles.card,
+									display: 'flex',
+									flexDirection: 'column',
+									alignItems: 'center',
 									textAlign: 'center',
 									width: desktop ? 200 : '100%',
 									height: 200,
 								}}
 							>
-								Animated
+								<div>Animated</div>
+								<sp></sp>
+								<CustomButton
+									onClick={() =>
+										this.setState({
+											animationTrigger: uuid.v1(),
+										})
+									}
+								>
+									Trigger
+								</CustomButton>
 							</Animated>
 							<div
 								{...css({
