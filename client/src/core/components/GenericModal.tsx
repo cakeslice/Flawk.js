@@ -16,8 +16,6 @@ import { Portal } from 'react-portal'
 type Props = {
 	onClose?: () => void
 	title?: string | JSX.Element | JSX.Element[]
-	name: string
-	parent: Component
 	content: (
 		close: () => void,
 		Content: React.FC,
@@ -25,6 +23,10 @@ type Props = {
 		Parent: React.FC,
 		Header: React.FC
 	) => JSX.Element
+	// Props to set modal state on the parent component on close automatically
+	name?: string
+	parent?: Component
+	//
 	style?: React.CSSProperties
 	headerStyle?: React.CSSProperties & {
 		line: boolean
