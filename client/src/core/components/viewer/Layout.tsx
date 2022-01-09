@@ -14,7 +14,6 @@ import Paginate from 'core/components/Paginate'
 import config from 'core/config_'
 import styles from 'core/styles'
 import ReactQueryParams from 'core/utils/ReactQueryParams'
-import { Obj } from 'flawk-types'
 import React from 'react'
 import { UnmountClosed } from 'react-collapse'
 import MediaQuery from 'react-responsive'
@@ -24,6 +23,7 @@ export default class Layout extends ReactQueryParams {
 	state = {
 		data: undefined as
 			| {
+					totalItems: number
 					totalPages: number
 					items: [
 						{
@@ -39,11 +39,6 @@ export default class Layout extends ReactQueryParams {
 	}
 
 	abortController = new AbortController()
-	lockFetch = async (method: () => Promise<void>) => {
-		await config.setStateAsync(this, { fetching: true })
-		await method()
-		await config.setStateAsync(this, { fetching: false })
-	}
 	defaultQueryParams: {
 		page: number
 		limit: number
@@ -56,7 +51,7 @@ export default class Layout extends ReactQueryParams {
 	}
 	fetchData() {
 		// eslint-disable-next-line
-		this.lockFetch(async () => {
+		config.lockFetch(this, async () => {
 			const q: typeof this.defaultQueryParams = {
 				...this.queryParams,
 			}
@@ -90,7 +85,7 @@ export default class Layout extends ReactQueryParams {
 
 			if (res.ok)
 				this.setState({
-					data: { items: res.body, totalPages: 50 },
+					data: { items: res.body, totalItems: 200, totalPages: 40 },
 				})
 		})
 	}
@@ -311,13 +306,26 @@ export default class Layout extends ReactQueryParams {
 									},
 								]}
 								data={this.state.data && this.state.data.items}
+								pagination={{
+									onClick: (e) => {
+										this.setQueryParams({
+											page: e,
+										})
+										this.fetchData()
+									},
+									limit: this.queryParams.limit,
+									page: this.queryParams.page,
+									...(this.state.data && {
+										totalPages: this.state.data.totalPages,
+										totalItems: this.state.data.totalItems,
+									}),
+								}}
 							></CustomTable>
 							<div style={{ minHeight: 10 }}></div>
 							{this.state.data && desktop && (
 								<Paginate
 									onClick={(e) => {
 										this.setQueryParams({
-											...(this.queryParams as Obj),
 											page: e,
 										})
 										this.fetchData()

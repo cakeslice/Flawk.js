@@ -198,6 +198,13 @@ function _text(
 	else return 'STRING NOT FOUND! (' + key + ')'
 }
 
+function _setStateAsync(that: React.Component, statePart: Obj) {
+	return new Promise((resolve) => {
+		// @ts-ignore
+		that.setState(statePart, resolve)
+	})
+}
+
 export default {
 	prod: _prod,
 	staging: _staging,
@@ -236,12 +243,12 @@ export default {
 		superAdmin: 1,
 	},
 
-	setStateAsync: function (that: React.Component, statePart: Obj) {
-		return new Promise((resolve) => {
-			// @ts-ignore
-			that.setState(statePart, resolve)
-		})
+	lockFetch: async (ref: React.Component, method: () => Promise<void>, key?: string) => {
+		await _setStateAsync(ref, { [key || 'fetching']: true })
+		await method()
+		await _setStateAsync(ref, { [key || 'fetching']: false })
 	},
+	setStateAsync: _setStateAsync,
 
 	capitalize: _capitalize,
 	numeral: (number: number, format: string) => {

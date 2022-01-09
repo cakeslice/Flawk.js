@@ -15,7 +15,7 @@ import navigation from 'core/functions/navigation'
 import styles from 'core/styles'
 import { createBrowserHistory } from 'history'
 import { useStoreSelector } from 'project/redux/_store'
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import ReactGA from 'react-ga'
 import GitInfo from 'react-git-info/macro'
 import MediaQuery, { Context as ResponsiveContext } from 'react-responsive'
@@ -128,9 +128,6 @@ function addFlagFunction(
 	)
 }
 
-export const RouterBaseContext = React.createContext<{ addFlag: typeof addFlagFunction } | null>(
-	null
-)
 export default function RouterBase({ children }: { children: React.ReactNode }) {
 	const [history] = useState(createBrowserHistory())
 
@@ -147,10 +144,8 @@ export default function RouterBase({ children }: { children: React.ReactNode }) 
 		},
 		[history]
 	)
-	const routerBaseContext = useMemo(() => ({ addFlag }), [addFlag])
-	global.addFlag = addFlag // ! DEPRECATED, still active to support class components
-	global.routerHistory = routerHistory // ! DEPRECATED, still active to support class components
-	// TODO: However, both of these cannot be used in Router.tsx because this is a child component
+	global.addFlag = addFlag
+	global.routerHistory = routerHistory
 
 	// Should be on top of your function after state is declared
 	useConstructor(() => {
@@ -250,15 +245,13 @@ export default function RouterBase({ children }: { children: React.ReactNode }) 
 	}, [])
 
 	return (
-		<RouterBaseContext.Provider value={routerBaseContext}>
-			<MobileSimulator active={!config.prod && !config.staging}>
-				<div>
-					<Router history={history}>{children}</Router>
+		<MobileSimulator active={!config.prod && !config.staging}>
+			<div>
+				<Router history={history}>{children}</Router>
 
-					<ToastContainer />
-				</div>
-			</MobileSimulator>
-		</RouterBaseContext.Provider>
+				<ToastContainer />
+			</div>
+		</MobileSimulator>
 	)
 }
 

@@ -44,29 +44,36 @@ export type DashboardRoute = {
 	subRoutes?: DashboardRoute[]
 }
 
+type DashboardProps = {
+	// @ts-ignore
+	wrapperComponent: React.ReactNode
+	path: string
+	color: string
+	logo: string
+	routes: Array<DashboardRoute>
+	pageProps?: Obj
+	alwaysOpen?: boolean
+	closedWidth?: number
+	openWidth?: number
+	textColor?: string
+	entryStyle?: Obj
+	dontFillSpace?: boolean
+	logoStyle?: Obj
+}
 export default class Dashboard extends Component<
-	{
-		// @ts-ignore
-		wrapperComponent: React.ReactNode
-		path: string
-		color: string
-		logo: string
-		routes: Array<DashboardRoute>
-		pageProps?: Obj
-		alwaysOpen?: boolean
-		closedWidth?: number
-		openWidth?: number
-		textColor?: string
-		entryStyle?: Obj
-		dontFillSpace?: boolean
-		logoStyle?: Obj
-	},
+	DashboardProps,
 	{ open: boolean; entryMaxWidth: number; showHeaderBackground: boolean }
 > {
 	state = {
 		open: false,
 		entryMaxWidth: this.props.closedWidth || 60,
 		showHeaderBackground: false,
+	}
+
+	constructor(props: DashboardProps) {
+		super(props)
+
+		this.handleScroll = this.handleScroll.bind(this)
 	}
 
 	handleScroll() {
@@ -77,10 +84,10 @@ export default class Dashboard extends Component<
 		})
 	}
 	componentDidMount() {
-		window.addEventListener('scroll', this.handleScroll.bind(this))
+		window.addEventListener('scroll', this.handleScroll)
 	}
 	componentWillUnmount() {
-		window.removeEventListener('scroll', this.handleScroll.bind(this))
+		window.removeEventListener('scroll', this.handleScroll)
 	}
 
 	toggleOpen(open?: boolean) {

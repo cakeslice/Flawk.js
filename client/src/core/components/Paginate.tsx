@@ -56,12 +56,12 @@ export default function Paginate(props: {
 	}
 
 	function createPagination() {
-		const totalPages = props.totalPages && Number(props.totalPages)
-		let cP = props.currentPage && Number(props.currentPage)
+		const totalPages = props.totalPages
+		let cP = Number(props.currentPage)
 		if (cP > totalPages) cP = totalPages
 
 		const paginationModel = getPaginationModel({
-			currentPage,
+			currentPage: cP,
 			totalPages,
 			boundaryPagesRange,
 			siblingPagesRange,
@@ -75,8 +75,9 @@ export default function Paginate(props: {
 				return (
 					<li
 						style={{
-							opacity: data.isActive ? 0.75 : 0.5,
-							color: styles.colors.black,
+							color: data.isActive ? styles.colors.main : styles.colors.black,
+							opacity: data.isActive ? 1 : 0.5,
+							fontWeight: data.isActive ? 'bold' : 'normal',
 							...style,
 						}}
 						onClick={() => onClick(data.value)}
@@ -101,8 +102,8 @@ export default function Paginate(props: {
 		})
 	}
 
-	const totalPages = props.totalPages && Number(props.totalPages)
-	let cP = props.currentPage && Number(props.currentPage)
+	const totalPages = props.totalPages
+	let cP = Number(props.currentPage)
 	if (cP > totalPages) cP = totalPages
 
 	const isFirst = cP === 1
@@ -144,7 +145,7 @@ export default function Paginate(props: {
 						{/* link(cP - 1, previous) */}
 						<div
 							style={{
-								opacity: !isFirst ? 0.5 : 0.25,
+								opacity: !isFirst ? 0.5 : 0.15,
 								...style,
 							}}
 						>
@@ -166,7 +167,7 @@ export default function Paginate(props: {
 						<div
 							style={{
 								transform: 'scaleX(-1)',
-								opacity: !isLast ? 0.5 : 0.25,
+								opacity: !isLast ? 0.5 : 0.15,
 								...style,
 							}}
 						>

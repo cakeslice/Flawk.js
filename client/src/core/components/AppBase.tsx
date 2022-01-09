@@ -18,7 +18,7 @@ import navigation from 'core/functions/navigation'
 import styles from 'core/styles'
 import { Lang } from 'flawk-types'
 import { CookieStorage, isSupported, MemoryStorage } from 'local-storage-fallback'
-import React, { Suspense, useCallback, useMemo, useState } from 'react'
+import React, { Suspense, useCallback, useState } from 'react'
 import 'react-awesome-lightbox/build/style.css'
 import 'react-datetime/css/react-datetime.css'
 import { ErrorBoundary, FallbackProps } from 'react-error-boundary'
@@ -31,9 +31,6 @@ import CustomButton from './CustomButton'
 const gitHash = GitInfo().commit.shortHash
 
 let isReconnect = false
-export const AppBaseContext = React.createContext<{
-	toggleNightMode: (night: boolean | undefined) => Promise<void>
-} | null>(null)
 
 const capacitorStorage = {
 	getItem: async (key: string) => {
@@ -113,11 +110,8 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 	const applyNightMode = useCallback(applyNightModeFunction, [])
 	const toggleNightMode = useCallback(toggleNightModeFunction, [nightMode, applyNightMode])
 
-	const appBaseContext = useMemo(
-		() => ({ toggleNightMode, nightMode }),
-		[toggleNightMode, nightMode]
-	)
-	global.toggleNightMode = toggleNightMode // ! DEPRECATED, still active to support class components
+	global.toggleNightMode = toggleNightMode
+
 	//
 	const [socketConnected, setSocketConnected] = useState(false)
 	const [socketConnectionDelay, setSocketConnectionDelay] = useState(false)
@@ -250,7 +244,7 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 
 	function applyNightModeFunction(night: boolean, skipPageRefresh = false) {
 		setNightMode(night)
-		global.nightMode = night // ! DEPRECATED, still active to support class components
+		global.nightMode = night
 		if (!skipPageRefresh) window.location.reload()
 		else {
 			if (night) {
@@ -298,32 +292,86 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 	const Child = component
 
 	return (
-		<AppBaseContext.Provider value={appBaseContext}>
-			<ErrorBoundary FallbackComponent={ErrorFallback}>
-				<Suspense fallback={<div></div>}>
-					<MediaQuery minWidth={config.mobileWidthTrigger}>
-						{(desktop) => (
-							<div>
-								<Helmet>
-									<title>
-										{config.title() +
-											(config.phrase()
-												? config.separator + config.phrase()
-												: '')}
-									</title>
-									<meta name='description' content={config.description()} />
-									{/* Don't use canonical unless you have to and don't use redudant og tags like description and url */}
-									{/* Helmet replaces the title and meta tags so if you want to use the default description in other pages you don't have to declare it again */}
-									{config.preconnectURLs &&
-										config.preconnectURLs.map((p) => (
-											<link key={p} rel='preconnect' href={p}></link>
-										))}
-									{config.backendURL && (
-										<link rel='preconnect' href={config.backendURL}></link>
-									)}
-								</Helmet>
+		<ErrorBoundary FallbackComponent={ErrorFallback}>
+			<Suspense fallback={<div></div>}>
+				<MediaQuery minWidth={config.mobileWidthTrigger}>
+					{(desktop) => (
+						<div>
+							<Helmet>
+								<title>
+									{config.title() +
+										(config.phrase() ? config.separator + config.phrase() : '')}
+								</title>
+								<meta name='description' content={config.description()} />
+								{/* Don't use canonical unless you have to and don't use redudant og tags like description and url */}
+								{/* Helmet replaces the title and meta tags so if you want to use the default description in other pages you don't have to declare it again */}
+								{config.preconnectURLs &&
+									config.preconnectURLs.map((p) => (
+										<link key={p} rel='preconnect' href={p}></link>
+									))}
+								{config.backendURL && (
+									<link rel='preconnect' href={config.backendURL}></link>
+								)}
+							</Helmet>
 
-								{inRestrictedRoute && oldBuild && (
+							{inRestrictedRoute && oldBuild && (
+								<div style={{ maxHeight: 0 }}>
+									<Animated
+										alwaysVisible
+										effects={['up']}
+										distance={50}
+										duration={0.5}
+										style={{
+											borderTop: '1px solid rgba(255,255,255,.1)',
+											display: 'flex',
+											minWidth: '100vw',
+											minHeight: 50,
+											padding: 5,
+											position: 'fixed',
+											overflow: 'hidden',
+											bottom: 0,
+											zIndex: 8,
+											background: 'rgba(30,30,30,.9)',
+											textAlign: 'center',
+											alignItems: 'center',
+											justifyContent: 'center',
+										}}
+									>
+										<div></div>
+
+										<p
+											style={{
+												fontSize: 12,
+												opacity: 0.75,
+												color: 'white',
+											}}
+										>
+											{config.text('extras.newUpdate')}
+										</p>
+
+										<CustomButton
+											appearance='primary'
+											style={{
+												marginLeft: 15,
+												minHeight: 30,
+												fontSize: 12,
+												minWidth: 0,
+											}}
+											onClick={() => {
+												window.location.reload()
+											}}
+										>
+											REFRESH
+										</CustomButton>
+
+										<div></div>
+									</Animated>
+								</div>
+							)}
+							{inRestrictedRoute &&
+								config.websocketSupport &&
+								!socketConnected &&
+								socketConnectionDelay && (
 									<div style={{ maxHeight: 0 }}>
 										<Animated
 											alwaysVisible
@@ -340,162 +388,116 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 												overflow: 'hidden',
 												bottom: 0,
 												zIndex: 8,
-												background: 'rgba(30,30,30,.9)',
+												background: config.replaceAlpha(
+													styles.colors.red,
+													0.9
+												),
 												textAlign: 'center',
 												alignItems: 'center',
 												justifyContent: 'center',
 											}}
 										>
-											<div></div>
-
-											<p
-												style={{
-													fontSize: 12,
-													opacity: 0.75,
-													color: 'white',
-												}}
-											>
-												{config.text('extras.newUpdate')}
+											<p style={{ color: 'white' }}>
+												{config.text('extras.connectionLost')}
 											</p>
-
-											<CustomButton
-												appearance='primary'
-												style={{
-													marginLeft: 15,
-													minHeight: 30,
-													fontSize: 12,
-													minWidth: 0,
-												}}
-												onClick={() => {
-													window.location.reload()
-												}}
-											>
-												REFRESH
-											</CustomButton>
-
-											<div></div>
 										</Animated>
 									</div>
 								)}
-								{inRestrictedRoute &&
-									config.websocketSupport &&
-									!socketConnected &&
-									socketConnectionDelay && (
-										<div style={{ maxHeight: 0 }}>
-											<Animated
-												alwaysVisible
-												effects={['up']}
-												distance={50}
-												duration={0.5}
-												style={{
-													borderTop: '1px solid rgba(255,255,255,.1)',
-													display: 'flex',
-													minWidth: '100vw',
-													minHeight: 50,
-													padding: 5,
-													position: 'fixed',
-													overflow: 'hidden',
-													bottom: 0,
-													zIndex: 8,
-													background: config.replaceAlpha(
-														styles.colors.red,
-														0.9
-													),
-													textAlign: 'center',
-													alignItems: 'center',
-													justifyContent: 'center',
-												}}
-											>
-												<p style={{ color: 'white' }}>
-													{config.text('extras.connectionLost')}
-												</p>
-											</Animated>
-										</div>
-									)}
-								{config.showCookieNotice && cookieNotice === 'false' && (
-									<div style={{ maxHeight: 0 }}>
-										<Animated
-											alwaysVisible
-											effects={['up']}
-											distance={50}
-											duration={0.5}
-											delay={2}
-											//
-											style={{
-												borderTop: '1px solid rgba(255,255,255,.1)',
-												display: 'flex',
-												minWidth: '100vw',
-												minHeight: 50,
-												padding: desktop ? 5 : 15,
-												position: 'fixed',
-												overflow: 'hidden',
-												bottom: 0,
-												zIndex: 8,
-												background: 'rgba(30,30,30,.9)',
-												textAlign: 'center',
-												alignItems: 'center',
-												justifyContent: 'center',
-											}}
-										>
-											<div></div>
-
-											<p
-												style={{
-													fontSize: desktop ? 12 : 11,
-													opacity: 0.75,
-													color: 'white',
-												}}
-											>
-												{config.text('common.cookieWarning')}
-											</p>
-
-											<CustomButton
-												appearance='primary'
-												style={{
-													marginLeft: 15,
-													minHeight: 30,
-													fontSize: 12,
-													minWidth: 0,
-												}}
-												onClick={async () => {
-													await global.storage.setItem(
-														'cookie_notice',
-														'true'
-													)
-													if (global.startAnalytics)
-														await global.startAnalytics()
-													setCookieNotice('true')
-												}}
-											>
-												I AGREE
-											</CustomButton>
-
-											<div></div>
-										</Animated>
-									</div>
-								)}
-								{/* @ts-ignore */}
-								<Child></Child>
-								{!config.prod && (
-									<div
+							{config.showCookieNotice && cookieNotice === 'false' && (
+								<div style={{ maxHeight: 0 }}>
+									<Animated
+										alwaysVisible
+										effects={['up']}
+										distance={50}
+										duration={0.5}
+										delay={2}
+										//
 										style={{
-											position: 'fixed',
-											bottom: 0,
-											right: 20,
-											width: '100%',
+											borderTop: '1px solid rgba(255,255,255,.1)',
 											display: 'flex',
-											alignItems: 'flex-end',
-											marginBottom: 5,
-											zIndex: 100,
-											height: 45,
-											justifyContent: 'flex-end',
-											maxWidth: 355,
-											userSelect: 'none',
-											paddingLeft: 10,
-											opacity: 0.8,
+											minWidth: '100vw',
+											minHeight: 50,
+											padding: desktop ? 5 : 15,
+											position: 'fixed',
+											overflow: 'hidden',
+											bottom: 0,
+											zIndex: 8,
+											background: 'rgba(30,30,30,.9)',
+											textAlign: 'center',
+											alignItems: 'center',
+											justifyContent: 'center',
 										}}
 									>
-										<div>
+										<div></div>
+
+										<p
+											style={{
+												fontSize: desktop ? 12 : 11,
+												opacity: 0.75,
+												color: 'white',
+											}}
+										>
+											{config.text('common.cookieWarning')}
+										</p>
+
+										<CustomButton
+											appearance='primary'
+											style={{
+												marginLeft: 15,
+												minHeight: 30,
+												fontSize: 12,
+												minWidth: 0,
+											}}
+											onClick={async () => {
+												await global.storage.setItem(
+													'cookie_notice',
+													'true'
+												)
+												if (global.startAnalytics)
+													await global.startAnalytics()
+												setCookieNotice('true')
+											}}
+										>
+											I AGREE
+										</CustomButton>
+
+										<div></div>
+									</Animated>
+								</div>
+							)}
+							{/* @ts-ignore */}
+							<Child></Child>
+							{!config.prod && (
+								<div
+									style={{
+										position: 'fixed',
+										bottom: 0,
+										right: 20,
+										width: '100%',
+										display: 'flex',
+										alignItems: 'flex-end',
+										marginBottom: 5,
+										zIndex: 100,
+										height: 45,
+										justifyContent: 'flex-end',
+										maxWidth: 355,
+										userSelect: 'none',
+										paddingLeft: 10,
+										opacity: 0.8,
+									}}
+								>
+									<div>
+										<div
+											style={{
+												color: 'red',
+												fontSize: 12,
+												fontWeight: 'bold',
+												textShadow: '1px 1px 2px rgba(0,0,0,.5)',
+											}}
+										>
+											{(!config.staging ? 'DEV' : 'STAG') + '@' + gitHash}
+										</div>
+										{build && (
 											<div
 												style={{
 													color: 'red',
@@ -504,86 +506,74 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 													textShadow: '1px 1px 2px rgba(0,0,0,.5)',
 												}}
 											>
-												{(!config.staging ? 'DEV' : 'STAG') + '@' + gitHash}
+												{'SERV@' + build.split('_')[1]}
 											</div>
-											{build && (
-												<div
-													style={{
-														color: 'red',
-														fontSize: 12,
-														fontWeight: 'bold',
-														textShadow: '1px 1px 2px rgba(0,0,0,.5)',
-													}}
-												>
-													{'SERV@' + build.split('_')[1]}
-												</div>
-											)}
-										</div>
-
-										{!config.staging && config.darkModeAvailable && (
-											<b
-												style={{
-													fontSize: 13,
-													marginLeft: 20,
-													cursor: 'pointer',
-													textShadow: '1px 1px 2px rgba(0,0,0,.5)',
-													color: styles.colors.black,
-												}}
-												onClick={async () => {
-													await toggleNightMode()
-												}}
-											>
-												DARK
-											</b>
-										)}
-
-										{!config.staging && (
-											<div
-												style={{
-													fontSize: 13,
-													fontWeight: 'bold',
-													marginLeft: 20,
-													cursor: 'pointer',
-													color: styles.colors.black,
-													textShadow: '1px 1px 2px rgba(0,0,0,.5)',
-												}}
-												onClick={async () => {
-													config.changeLang()
-													await global.storage.setItem(
-														'lang',
-														JSON.stringify(global.lang)
-													)
-													window.location.reload()
-												}}
-											>
-												LANG-
-												{global.lang.text}
-											</div>
-										)}
-
-										{!config.staging && (
-											<b
-												onClick={() => {
-													window.open('/components', '_blank')
-												}}
-												style={{
-													fontSize: 13,
-													marginLeft: 20,
-													color: styles.colors.black,
-													cursor: 'pointer',
-													textShadow: '1px 1px 2px rgba(0,0,0,.5)',
-												}}
-											>
-												STYLE
-											</b>
 										)}
 									</div>
-								)}
-							</div>
-						)}
-					</MediaQuery>
-				</Suspense>
-			</ErrorBoundary>
-		</AppBaseContext.Provider>
+
+									{!config.staging && config.darkModeAvailable && (
+										<b
+											style={{
+												fontSize: 13,
+												marginLeft: 20,
+												cursor: 'pointer',
+												textShadow: '1px 1px 2px rgba(0,0,0,.5)',
+												color: styles.colors.black,
+											}}
+											onClick={async () => {
+												await toggleNightMode()
+											}}
+										>
+											DARK
+										</b>
+									)}
+
+									{!config.staging && (
+										<div
+											style={{
+												fontSize: 13,
+												fontWeight: 'bold',
+												marginLeft: 20,
+												cursor: 'pointer',
+												color: styles.colors.black,
+												textShadow: '1px 1px 2px rgba(0,0,0,.5)',
+											}}
+											onClick={async () => {
+												config.changeLang()
+												await global.storage.setItem(
+													'lang',
+													JSON.stringify(global.lang)
+												)
+												window.location.reload()
+											}}
+										>
+											LANG-
+											{global.lang.text}
+										</div>
+									)}
+
+									{!config.staging && (
+										<b
+											onClick={() => {
+												window.open('/components', '_blank')
+											}}
+											style={{
+												fontSize: 13,
+												marginLeft: 20,
+												color: styles.colors.black,
+												cursor: 'pointer',
+												textShadow: '1px 1px 2px rgba(0,0,0,.5)',
+											}}
+										>
+											STYLE
+										</b>
+									)}
+								</div>
+							)}
+						</div>
+					)}
+				</MediaQuery>
+			</Suspense>
+		</ErrorBoundary>
 	)
 }

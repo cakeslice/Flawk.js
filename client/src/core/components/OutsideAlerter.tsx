@@ -20,12 +20,10 @@ export default class OutsideAlerter extends Component<Props> {
 	wrapperRef: HTMLElement | null = null
 
 	componentDidMount() {
-		// eslint-disable-next-line @typescript-eslint/unbound-method
 		document.addEventListener('mousedown', this.handleClickOutside)
 	}
 
 	componentWillUnmount() {
-		// eslint-disable-next-line @typescript-eslint/unbound-method
 		document.removeEventListener('mousedown', this.handleClickOutside)
 	}
 
@@ -39,7 +37,6 @@ export default class OutsideAlerter extends Component<Props> {
 	}
 
 	render() {
-		// eslint-disable-next-line @typescript-eslint/unbound-method
 		return <div ref={this.setWrapperRef}>{this.props.children}</div>
 	}
 }

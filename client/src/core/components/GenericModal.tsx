@@ -13,12 +13,12 @@ import { Obj } from 'flawk-types'
 import React, { Component } from 'react'
 import { Portal } from 'react-portal'
 
-export default class GenericModal extends Component<{
+type Props = {
 	onClose?: () => void
 	title?: string | JSX.Element | JSX.Element[]
-	name?: string
-	parent?: Component
-	content?: (
+	name: string
+	parent: Component
+	content: (
 		close: () => void,
 		Content: React.FC,
 		Buttons: React.FC,
@@ -37,7 +37,18 @@ export default class GenericModal extends Component<{
 		line: boolean
 	}
 	noAutoFocus?: boolean
-}> {
+}
+export default class GenericModal extends Component<Props> {
+	constructor(props: Props) {
+		super(props)
+
+		this.onClose = this.onClose.bind(this)
+		this.renderContent = this.renderContent.bind(this)
+		this.renderButtons = this.renderButtons.bind(this)
+		this.renderParent = this.renderParent.bind(this)
+		this.renderHeader = this.renderHeader.bind(this)
+	}
+
 	componentDidMount() {
 		const target = document.querySelector('.scrollTarget')
 		if (target) disableBodyScroll(target)
@@ -64,7 +75,7 @@ export default class GenericModal extends Component<{
 				modalPadding={modalPadding}
 				headerStyle={this.props.headerStyle}
 				title={children}
-				onClose={this.onClose.bind(this)}
+				onClose={this.onClose}
 			/>
 		)
 	}
@@ -204,17 +215,17 @@ export default class GenericModal extends Component<{
 										modalPadding={modalPadding}
 										headerStyle={this.props.headerStyle}
 										title={this.props.title}
-										onClose={this.onClose.bind(this)}
+										onClose={this.onClose}
 									/>
 								)}
 
 								{this.props.content
 									? this.props.content(
-											this.onClose.bind(this),
-											this.renderContent.bind(this),
-											this.renderButtons.bind(this),
-											this.renderParent.bind(this),
-											this.renderHeader.bind(this)
+											this.onClose,
+											this.renderContent,
+											this.renderButtons,
+											this.renderParent,
+											this.renderHeader
 									  )
 									: undefined}
 							</div>

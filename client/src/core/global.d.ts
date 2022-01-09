@@ -34,7 +34,7 @@ declare global {
 			tag: any
 		}
 	}
-	// ! DEPRECATED, still active to support class components
+	//
 	var nightMode: boolean
 	var toggleNightMode: (night?: boolean) => Promise<void>
 	var addFlag: (
@@ -50,7 +50,7 @@ declare global {
 		}
 	) => void
 	var routerHistory: () => History
-	// ! --------------------------------------------------
+	//
 	var lang: Lang
 	var scrollToTop: () => void
 	var analytics:

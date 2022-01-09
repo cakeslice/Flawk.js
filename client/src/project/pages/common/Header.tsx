@@ -39,12 +39,19 @@ const mobileHeightTop = 70
 const desktopHeight = 70
 const desktopHeightTop = 125
 
-export default class Header extends Component<{
+type HeaderProps = {
 	fillSpace?: boolean
 	landingPage?: boolean
-}> {
+}
+export default class Header extends Component<HeaderProps> {
 	state = {
 		shrink: false,
+	}
+
+	constructor(props: HeaderProps) {
+		super(props)
+
+		this.handleScroll = this.handleScroll.bind(this)
 	}
 
 	handleScroll() {
@@ -56,11 +63,10 @@ export default class Header extends Component<{
 	}
 	componentDidMount() {
 		this.handleScroll()
-		if (this.props.landingPage) window.addEventListener('scroll', this.handleScroll.bind(this))
+		if (this.props.landingPage) window.addEventListener('scroll', this.handleScroll)
 	}
 	componentWillUnmount() {
-		if (this.props.landingPage)
-			window.removeEventListener('scroll', this.handleScroll.bind(this))
+		if (this.props.landingPage) window.removeEventListener('scroll', this.handleScroll)
 	}
 
 	render() {

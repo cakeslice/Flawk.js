@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import Paginate from 'core/components/Paginate'
 import config from 'core/config_'
 import styles from 'core/styles'
 import ReactQueryParams from 'core/utils/ReactQueryParams'
@@ -57,6 +58,13 @@ type TableProps = {
 	columns?: Column[]
 	keySelector: string
 	specialRows?: SpecialRow[]
+	pagination?: {
+		onClick: (page: number) => void
+		limit: string
+		page: string
+		totalPages?: number
+		totalItems?: number
+	}
 }
 export default function CustomTable(props: TableProps) {
 	return <CT {...props} />
@@ -180,30 +188,30 @@ class CT extends ReactQueryParams {
 				: undefined
 
 		return (
-			<div className='w-full h-full flex-col'>
-				<div
-					style={{
-						...wrapperStyle,
-						//
-						display: 'flex',
-						flexDirection: 'column',
-						width: '100%',
-						minHeight: 250,
-						overflowY: 'hidden',
-						overflowX: 'auto',
-						...(overrideStyle && overrideStyle.wrapperStyle),
+			<MediaQuery minWidth={config.mobileWidthTrigger}>
+				{(desktop) => (
+					<div className='w-full h-full flex-col'>
+						<div
+							style={{
+								...wrapperStyle,
+								//
+								display: 'flex',
+								flexDirection: 'column',
+								width: '100%',
+								minHeight: 250,
+								overflowY: 'hidden',
+								overflowX: 'auto',
+								...(overrideStyle && overrideStyle.wrapperStyle),
 
-						...(props.children && {
-							borderBottom: 'none',
-							borderBottomLeftRadius: 0,
-							borderBottomRightRadius: 0,
-						}),
-						maxHeight: '100%',
-						flexGrow: 1,
-					}}
-				>
-					<MediaQuery minWidth={config.mobileWidthTrigger}>
-						{(desktop) => (
+								...((props.children || props.pagination) && {
+									borderBottom: 'none',
+									borderBottomLeftRadius: 0,
+									borderBottomRightRadius: 0,
+								}),
+								maxHeight: '100%',
+								flexGrow: 1,
+							}}
+						>
 							<div
 								className='flex-col'
 								style={{
@@ -514,25 +522,32 @@ class CT extends ReactQueryParams {
 										})}
 								</div>
 							</div>
+						</div>
+
+						{(props.children || props.pagination) && (
+							<div
+								style={{
+									...wrapperStyle,
+									...(overrideStyle && overrideStyle.wrapperStyle),
+
+									//borderTop: 'none',
+									borderTopLeftRadius: 0,
+									borderTopRightRadius: 0,
+								}}
+							>
+								{props.pagination && (
+									<TablePagination
+										desktop={desktop}
+										items={props.data ? props.data.length : 0}
+										{...props.pagination}
+									/>
+								)}
+								{props.children}
+							</div>
 						)}
-					</MediaQuery>
-				</div>
-
-				{props.children && (
-					<div
-						style={{
-							...wrapperStyle,
-							...(overrideStyle && overrideStyle.wrapperStyle),
-
-							//borderTop: 'none',
-							borderTopLeftRadius: 0,
-							borderTopRightRadius: 0,
-						}}
-					>
-						{props.children}
 					</div>
 				)}
-			</div>
+			</MediaQuery>
 		)
 	}
 }
@@ -642,3 +657,70 @@ const sorting = (color: string, colorActive: string, direction?: 'asc' | 'desc')
 		/>
 	</svg>
 )
+
+export function TablePagination({
+	desktop,
+	items,
+	onClick,
+	limit,
+	page,
+	totalPages,
+	totalItems,
+}: {
+	desktop: boolean
+	items: number
+	onClick: (page: number) => void
+	limit: string
+	page: string
+	totalPages?: number
+	totalItems?: number
+}) {
+	const p = Number(page)
+	const l = Number(limit)
+
+	return (
+		<div
+			className='flex-col'
+			style={{
+				minHeight: 54,
+				flexGrow: 1,
+			}}
+		>
+			<div style={{ flexGrow: 1, minHeight: 10 }} />
+			<div
+				style={{
+					display: 'flex',
+					justifyContent: 'space-between',
+					alignItems: 'center',
+				}}
+			>
+				<div style={{ minWidth: 100, marginLeft: styles.card.padding }} />
+				{desktop && totalPages && (
+					<Paginate
+						onClick={onClick}
+						totalPages={totalPages || 1}
+						currentPage={p}
+					></Paginate>
+				)}
+				<div
+					style={{
+						minWidth: 100,
+						marginRight: styles.card.padding,
+					}}
+				>
+					{items > 0 && (
+						<div
+							style={{
+								color: config.replaceAlpha(styles.colors.black, 0.5),
+								display: 'flex',
+								justifyContent: 'flex-end',
+							}}
+						>
+							{(p - 1) * l}-{(p - 1) * l + items} of {totalItems}
+						</div>
+					)}
+				</div>
+			</div>
+		</div>
+	)
+}

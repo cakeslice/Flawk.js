@@ -175,6 +175,7 @@ module.exports = {
 				'no-use-before-define': 'off',
 				'no-empty-function': 'off',
 				//
+				'@typescript-eslint/unbound-method': 'warn',
 				'@typescript-eslint/restrict-plus-operands': 'off',
 				'@typescript-eslint/no-empty-function': ['warn'],
 				'@typescript-eslint/require-await': 'warn',

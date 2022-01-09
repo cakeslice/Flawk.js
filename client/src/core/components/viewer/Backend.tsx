@@ -20,7 +20,6 @@ import upload from 'core/functions/upload'
 import styles from 'core/styles'
 import QueryString from 'core/utils/queryString'
 import ReactQueryParams from 'core/utils/ReactQueryParams'
-import { Obj } from 'flawk-types'
 import { Form, Formik } from 'formik'
 import { css } from 'glamor'
 import { fetchUser } from 'project/redux/AppReducer'
@@ -1098,11 +1097,6 @@ class Admin extends ReactQueryParams {
 		data: undefined,
 	}
 	abortController = new AbortController()
-	lockFetch = async (method: () => Promise<void>) => {
-		await config.setStateAsync(this, { fetching: true })
-		await method()
-		await config.setStateAsync(this, { fetching: false })
-	}
 	defaultQueryParams = {
 		page: 1,
 		limit: 5,
@@ -1110,7 +1104,7 @@ class Admin extends ReactQueryParams {
 		order: 'asc', */
 	}
 	fetchData() {
-		this.lockFetch(async () => {
+		config.lockFetch(this, async () => {
 			const q = {
 				...this.queryParams,
 				search: undefined,
@@ -1194,7 +1188,6 @@ class Admin extends ReactQueryParams {
 								<Paginate
 									onClick={(e) => {
 										this.setQueryParams({
-											...(this.queryParams as Obj),
 											page: e,
 										})
 										this.fetchData()

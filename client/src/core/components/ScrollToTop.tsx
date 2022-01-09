@@ -16,8 +16,7 @@ class ScrollToTop extends Component<Props & RouteComponentProps> {
 	constructor(props: Props & RouteComponentProps) {
 		super(props)
 
-		// eslint-disable-next-line @typescript-eslint/unbound-method
-		global.scrollToTop = this.scrollToTop
+		global.scrollToTop = this.scrollToTop.bind(this)
 	}
 
 	scrollToTop() {
