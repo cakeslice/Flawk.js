@@ -98,14 +98,6 @@ export default {
 		indicator: { background: 'none' },
 	} as { indicator?: { background: string }; menu?: React.CSSProperties },
 	/*
-	dashboardHeader: { marginBottom: 55, minHeight: 40 },
-	tableSelectedWrapper: {
-		minHeight: 55,
-		paddingTop: 10,
-		display: 'flex',
-		alignItems: 'center',
-		justifyContent: 'space-between',
-	},
 	customTable: {
 		headerWrapperStyle: {
 			// ! Can't use _card here, causes error...
