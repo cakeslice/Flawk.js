@@ -32,9 +32,11 @@ export type OutputResponse = {
 	noConnection?: boolean
 }
 type Options = {
+	//signal: AbortSignal
+	// Not worth using: It's just a stub in iOS, requires aborting on unmount on every component and setting state after unmount doesn't seem to cause a memory leak
+	// Even if implemented sometimes it doesn't work: Examples include setting state even if request is not successful or making the request after the component is unmounted
 	noErrorFlag?: 'all' | Array<number>
 	internal?: boolean
-	signal?: AbortSignal
 	formData?: boolean
 }
 
@@ -108,7 +110,7 @@ async function sendRequest(method: string, path: string, options: Options, body?
 		method,
 		headers,
 		credentials: options.internal ? 'include' : undefined,
-		signal: options.signal,
+		//signal: options.signal,
 		...(body && { body: options.formData ? fD : JSON.stringify(body) }),
 	}
 	return fetch(endpoint, opts)

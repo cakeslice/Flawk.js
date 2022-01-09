@@ -38,7 +38,6 @@ export default class Layout extends ReactQueryParams {
 		exampleModal: false,
 	}
 
-	abortController = new AbortController()
 	defaultQueryParams: {
 		page: number
 		limit: number
@@ -80,7 +79,6 @@ export default class Layout extends ReactQueryParams {
 
 			const res = await get(link, {
 				internal: false,
-				signal: this.abortController.signal,
 			})
 
 			if (res.ok)
@@ -91,9 +89,6 @@ export default class Layout extends ReactQueryParams {
 	}
 	componentDidMount() {
 		this.fetchData()
-	}
-	componentWillUnmount() {
-		this.abortController.abort()
 	}
 
 	exampleModal() {

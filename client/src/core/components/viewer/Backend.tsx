@@ -1096,7 +1096,6 @@ class Admin extends ReactQueryParams {
 	} = {
 		data: undefined,
 	}
-	abortController = new AbortController()
 	defaultQueryParams = {
 		page: 1,
 		limit: 5,
@@ -1110,15 +1109,9 @@ class Admin extends ReactQueryParams {
 				search: undefined,
 			}
 
-			const res = await post(
-				'admin/search_users?' + QueryString.stringify(q),
-				{
-					search: this.queryParams.search,
-				},
-				{
-					signal: this.abortController.signal,
-				}
-			)
+			const res = await post('admin/search_users?' + QueryString.stringify(q), {
+				search: this.queryParams.search,
+			})
 
 			if (res.ok && res.body)
 				this.setState({
@@ -1132,9 +1125,6 @@ class Admin extends ReactQueryParams {
 	}
 	componentDidMount() {
 		this.fetchData()
-	}
-	componentWillUnmount() {
-		this.abortController.abort()
 	}
 
 	render() {
