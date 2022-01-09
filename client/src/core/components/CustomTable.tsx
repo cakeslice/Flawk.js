@@ -695,12 +695,14 @@ export function TablePagination({
 				}}
 			>
 				<div style={{ minWidth: 100, marginLeft: styles.card.padding }} />
-				{desktop && totalPages && (
+				{desktop && totalPages ? (
 					<Paginate
 						onClick={onClick}
 						totalPages={totalPages || 1}
 						currentPage={p}
 					></Paginate>
+				) : (
+					<div />
 				)}
 				<div
 					style={{
