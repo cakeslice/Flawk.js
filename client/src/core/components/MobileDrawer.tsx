@@ -41,7 +41,6 @@ export default class MobileDrawer extends Component<{
 
 		return (
 			<div
-				className={this.props.className}
 				style={{
 					position: 'fixed',
 					left: 0,
@@ -94,6 +93,7 @@ export default class MobileDrawer extends Component<{
 						<div key={link.notRoute ? i : link.id + (link.params || '')}>
 							{!link.notRoute ? (
 								<Link
+									className={this.props.className}
 									{...css(outputCSS)}
 									style={outputStyle}
 									onClick={() => {
@@ -128,6 +128,7 @@ export default class MobileDrawer extends Component<{
 								</Link>
 							) : (
 								<a
+									className={this.props.className}
 									{...css(outputCSS)}
 									style={outputStyle}
 									onClick={() => {

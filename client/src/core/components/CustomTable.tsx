@@ -694,7 +694,7 @@ export function TablePagination({
 					alignItems: 'center',
 				}}
 			>
-				<div style={{ minWidth: 100, marginLeft: styles.card.padding }} />
+				<div style={{ minHeight: 44, minWidth: 100, marginLeft: styles.card.padding }} />
 				{desktop && totalPages ? (
 					<Paginate
 						onClick={onClick}

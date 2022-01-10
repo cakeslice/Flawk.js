@@ -283,8 +283,6 @@ export default class Style extends Component {
 								Basic
 							</div>
 							<Animated
-								triggerID={this.state.animationTrigger}
-								effects={['fade', 'down']}
 								style={{
 									...styles.card,
 									display: 'flex',
@@ -294,6 +292,8 @@ export default class Style extends Component {
 									width: desktop ? 200 : '100%',
 									height: 200,
 								}}
+								triggerID={this.state.animationTrigger}
+								effects={['fade', 'down']}
 							>
 								<div>Animated</div>
 								<sp></sp>

@@ -93,28 +93,30 @@ export default class Animated extends Component<{
 			)
 
 		return (
-			<InView
-				key={props.triggerID}
-				onChange={(inView) => {
-					if (inView && !this.state.visible) this.setState({ visible: true })
+			<InView key={props.triggerID}>
+				{({ inView, ref, entry }) => {
+					if (inView && !this.state.visible) this.state.visible = true
+
+					return (
+						<motion.div
+							ref={ref}
+							className={props.className}
+							style={props.style}
+							//
+							initial='hidden'
+							animate={this.state.visible ? 'show' : 'hidden'}
+							variants={{
+								hidden: { ...finalOut, transition: transition },
+								show: {
+									...finalIn,
+									transition: transition,
+								},
+							}}
+						>
+							{props.children}
+						</motion.div>
+					)
 				}}
-			>
-				<motion.div
-					className={props.className}
-					style={props.style}
-					//
-					initial='hidden'
-					animate={this.state.visible ? 'show' : 'hidden'}
-					variants={{
-						hidden: { ...finalOut, transition: transition },
-						show: {
-							...finalIn,
-							transition: transition,
-						},
-					}}
-				>
-					{props.children}
-				</motion.div>
 			</InView>
 		)
 	}
