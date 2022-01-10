@@ -87,7 +87,8 @@ export default class Header extends Component<HeaderProps> {
 					>
 						<div
 							className={
-								'flex-col w-full items-center' + (desktop ? ' blur-background' : '')
+								'flex-col w-full items-center' +
+								(desktop && this.state.shrink ? ' blur-background' : '')
 							}
 							style={{
 								transition: 'border-color .5s, box-shadow .5s, backgroundColor .5s',
