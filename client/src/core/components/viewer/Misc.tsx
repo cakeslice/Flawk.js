@@ -10,7 +10,6 @@ import Avatar from 'core/components/Avatar'
 import CustomButton from 'core/components/CustomButton'
 import LanguageSwitcher from 'core/components/LanguageSwitcher'
 import Loading from 'core/components/Loading'
-import config from 'core/config_'
 import styles from 'core/styles'
 import ReactQueryParams from 'core/utils/ReactQueryParams'
 import Parser from 'html-react-parser'
@@ -26,30 +25,55 @@ export default class Misc extends ReactQueryParams {
 	render() {
 		return (
 			<div>
-				{header('Avatar', true)}
-				<Avatar></Avatar>
+				{header('Avatar', true)}{' '}
+				<div style={{ ...styles.card }}>
+					<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+						<Avatar name='José Guerreiro'></Avatar>
+						<sp />
+						<Avatar isOnline></Avatar>
+						<sp />
+						<Avatar></Avatar>
+						<sp />
+						<Avatar style={{ width: 40, height: 40 }}></Avatar>
+					</div>
+				</div>
 				{header('Loading')}
-				<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
-					<Loading large />
-					<sp />
-					<Loading /> <sp />
-					<Loading small />
+				<div style={{ ...styles.card }}>
+					<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+						<Loading large />
+						<sp />
+						<Loading />
+						<sp />
+						<Loading small />
+					</div>
 				</div>
 				{header('Query parameters')}
-				<div>
+				<div style={{ ...styles.card }}>
 					<p>
-						Parameter {'"test"'}: {this.queryParams.test}
+						Parameter {'"test"'}: <b>{this.queryParams.test}</b>
 					</p>
 					<br />
-					<CustomButton
-						onClick={() => {
-							this.setQueryParams({
-								test: 'Hello!',
-							})
-						}}
-					>
-						Add test=Hello!
-					</CustomButton>
+					<div className='flex'>
+						<CustomButton
+							onClick={() => {
+								this.setQueryParams({
+									test: 'Hello!',
+								})
+							}}
+						>
+							Add test=Hello!
+						</CustomButton>
+						<sp></sp>
+						<CustomButton
+							onClick={() => {
+								this.setQueryParams({
+									test: undefined,
+								})
+							}}
+						>
+							Remove test
+						</CustomButton>
+					</div>
 				</div>
 				{header('Toasts')}
 				<div>
@@ -90,13 +114,16 @@ export default class Misc extends ReactQueryParams {
 				</CopyToClipboard>
 				{header('Language switcher')}
 				<LanguageSwitcher></LanguageSwitcher>
+				{header('Scroll to top')}
+				<CustomButton onClick={() => global.scrollToTop()}>Scroll</CustomButton>
 				{header('Text editor')}
 				<ReactQuill
 					style={{
+						background: styles.colors.white,
 						borderWidth: 1,
 						borderStyle: 'solid',
 						borderRadius: styles.defaultBorderRadius,
-						borderColor: config.replaceAlpha(styles.colors.black, 0.1),
+						borderColor: styles.colors.borderColor,
 					}}
 					// A lot more options here: https://www.npmjs.com/package/react-quill
 					theme='snow'

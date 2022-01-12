@@ -261,7 +261,7 @@ export default class CustomInput extends Component<{
 					borderColor: invalid ? styles.colors.red : styles.colors.mainLight,
 				},
 			}),
-			background: 'transparent', // styles.colors.white,
+			background: styles.colors.white,
 			transition: 'background 200ms, border-color 200ms, box-shadow 200ms',
 		}
 

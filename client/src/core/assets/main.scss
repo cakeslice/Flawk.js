@@ -157,9 +157,10 @@ hr {
 }
 
 tag {
-	padding: 0.2em 0.4em;
+	opacity: 0.66;
+	padding: 3px 6px;
 	font-size: 13px;
-	font-weight: 400;
+	font-weight: bold;
 	border-radius: 6px;
 	background: rgba(127, 127, 127, 0.15);
 }
@@ -252,6 +253,9 @@ form {
 .flex-wrap {
 	flex-wrap: wrap;
 }
+.grow {
+	flex-grow: 1;
+}
 .items-start {
 	align-items: flex-start;
 }
@@ -337,8 +341,8 @@ form {
 .Toastify__toast--dark {
 	background: #1e1e1e;
 	border-radius: 6px;
-	border-color: rgba(51, 108, 251, 0.5);
-	border-width: 1px;
+	border-color: rgba(120, 120, 120);
+	border-width: 3px;
 	border-style: solid;
 	box-shadow: 0 20px 32px -8px rgba(0, 0, 0, 0.1), 0 4px 8px 0 rgba(0, 0, 0, 0.05),
 		0 6px 20px 0 rgba(0, 0, 0, 0.05);
@@ -347,8 +351,8 @@ form {
 .Toastify__toast--default {
 	background: #fff;
 	border-radius: 6px;
-	border-color: rgba(51, 108, 251, 0.5);
-	border-width: 1px;
+	border-color: rgba(190, 190, 190);
+	border-width: 3px;
 	border-style: solid;
 	box-shadow: 0 20px 32px -8px rgba(0, 0, 0, 0.1), 0 4px 8px 0 rgba(0, 0, 0, 0.05),
 		0 6px 20px 0 rgba(0, 0, 0, 0.05);

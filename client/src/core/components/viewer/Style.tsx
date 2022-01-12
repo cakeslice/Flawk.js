@@ -148,7 +148,7 @@ export default class Style extends Component {
 							<code>int var = 1</code>
 							<sp /> <sp /> <sp />
 						</div>
-						{header('Buttons')}
+						{header('Buttons', false, ['<button/>', '<CustomButton/>'])}
 						<div
 							className='wrapMarginTopLeft flex flex-wrap justify-start'
 							style={{
@@ -210,6 +210,16 @@ export default class Style extends Component {
 								Secondary Disabled
 							</CustomButton>
 							<CustomButton
+								appearance='secondary'
+								isDisabled
+								simpleDisabled
+								style={{
+									minWidth: 50,
+								}}
+							>
+								Simple Disabled
+							</CustomButton>
+							<CustomButton
 								style={{
 									minWidth: 50,
 								}}
@@ -219,7 +229,7 @@ export default class Style extends Component {
 							</CustomButton>
 							<button>Basic</button>
 						</div>
-						{header('Colors')}
+						{header('Colors', false, ['styles.colors'])}
 						<div
 							className='wrapMarginTopLeft flex flex-wrap justify-start'
 							style={{
@@ -270,7 +280,7 @@ export default class Style extends Component {
 								}}
 							></div>
 						</div>
-						{header('Cards')}
+						{header('Cards', false, ['styles.card', 'styles.outlineCard'])}
 						<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
 							<div
 								style={{

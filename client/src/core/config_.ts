@@ -319,6 +319,17 @@ export default {
 		return color.replace(/[^,]+(?=\))/, amount.toString())
 	},
 
+	prettierConfig: {
+		trailingComma: 'es5' as 'es5' | 'none' | 'all',
+		tabWidth: 3,
+		semi: false,
+		useTabs: true,
+		singleQuote: true,
+		printWidth: 100,
+		jsxSingleQuote: true,
+		endOfLine: 'lf' as 'auto' | 'lf' | 'crlf' | 'cr',
+	},
+
 	projectStyles: _projectStyles,
 	..._projectConfig,
 }

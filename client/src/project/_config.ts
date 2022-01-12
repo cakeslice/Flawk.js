@@ -18,7 +18,7 @@ const _websocketSupport = true
 const _preconnectURLs = ['https://fonts.googleapis.com']
 
 export default {
-	supportedLanguages: ['en'],
+	supportedLanguages: ['en', 'pt'],
 	preconnectURLs: _preconnectURLs,
 	backendURL: _backendURL + '/backend',
 	websocketURL: _backendURL + '/backend/sockets',

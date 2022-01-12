@@ -7,20 +7,26 @@
 
 import config from 'core/config_'
 import React from 'react'
+import CustomDropdown from './CustomDropdown'
 
 export default function LanguageSwitcher() {
 	const lang = global.lang.text
-	const res = lang && lang.toUpperCase()
 
 	return (
-		<button
-			onClick={async () => {
-				config.changeLang()
+		<CustomDropdown
+			style={{ menu: { minWidth: 65, width: 65 } }}
+			onChange={async (e) => {
+				config.setLang(e as string)
 				await global.storage.setItem('lang', JSON.stringify(global.lang))
 				window.location.reload()
 			}}
-		>
-			{res}
-		</button>
+			value={lang}
+			options={config.supportedLanguages.map((l) => {
+				return {
+					value: l,
+					label: l.toUpperCase(),
+				}
+			})}
+		></CustomDropdown>
 	)
 }

@@ -7,7 +7,6 @@
 
 import logo from 'core/assets/images/logo.svg'
 import Animated from 'core/components/Animated'
-import MobileDrawer from 'core/components/MobileDrawer'
 import config from 'core/config_'
 import styles from 'core/styles'
 import React, { Component } from 'react'
@@ -88,13 +87,11 @@ export default class Header extends Component<HeaderProps> {
 						<div
 							className={
 								'flex-col w-full items-center' +
-								(desktop && this.state.shrink ? ' blur-background' : '')
+								(this.state.shrink ? ' blur-background' : '')
 							}
 							style={{
 								transition: 'border-color .5s, box-shadow .5s, backgroundColor .5s',
-								backgroundColor: !desktop
-									? styles.colors.white
-									: this.state.shrink
+								backgroundColor: this.state.shrink
 									? config.replaceAlpha(styles.colors.background, 0.75)
 									: 'transparent',
 								boxShadow: this.state.shrink ? styles.mediumShadow : undefined,
@@ -222,7 +219,7 @@ export default class Header extends Component<HeaderProps> {
 									</div>
 								)}
 
-								{!desktop && (
+								{/* !desktop && (
 									<MobileDrawer
 										className='flex items-center'
 										style={{
@@ -237,7 +234,7 @@ export default class Header extends Component<HeaderProps> {
 											this.state.shrink ? mobileHeight : mobileHeightTop
 										}
 									></MobileDrawer>
-								)}
+								) */}
 							</Animated>
 						</div>
 					</div>

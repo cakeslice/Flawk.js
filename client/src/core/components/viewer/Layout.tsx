@@ -17,6 +17,8 @@ import ReactQueryParams from 'core/utils/ReactQueryParams'
 import React from 'react'
 import { UnmountClosed } from 'react-collapse'
 import MediaQuery from 'react-responsive'
+import Collapsible from '../Collapsible'
+import CodeCollapse from './common/CodeCollapse'
 import { arrow, header } from './ComponentsViewer'
 
 export default class Layout extends ReactQueryParams {
@@ -184,11 +186,15 @@ export default class Layout extends ReactQueryParams {
 	}
 
 	render() {
-		const wrapExample = {
+		const fixedExample = {
 			minWidth: 200,
 			minHeight: 50,
 			opacity: 0.1,
 			backgroundColor: styles.colors.black,
+		}
+		const growExample = {
+			flexGrow: 1,
+			...fixedExample,
 		}
 
 		return (
@@ -198,125 +204,135 @@ export default class Layout extends ReactQueryParams {
 						<div>
 							{this.state.exampleModal && this.exampleModal()}
 							{header('Flex grid', true)}
-							<div className='wrapMargin flex flex-wrap justify-around'>
-								<div style={wrapExample}></div>
-								<div style={wrapExample}></div>
-								<div style={wrapExample}></div>
-								<div style={wrapExample}></div>
-								<div style={wrapExample}></div>
-								<div style={wrapExample}></div>
-								<div style={wrapExample}></div>
-								<div style={wrapExample}></div>
-								<div style={wrapExample}></div>
-								<div style={wrapExample}></div>
-								<div style={wrapExample}></div>
-								<div style={wrapExample}></div>
+							<div style={{ ...styles.card, overflow: 'auto' }}>
+								<div className='wrapMargin flex flex-wrap'>
+									<div style={fixedExample}></div>
+									<div style={growExample}></div>
+									<div style={fixedExample}></div>
+									<div style={growExample}></div>
+									<div style={growExample}></div>
+									<div style={fixedExample}></div>
+									<div style={growExample}></div>
+									<div style={fixedExample}></div>
+								</div>
 							</div>
-							{header('Table')}
-							<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
-								<CustomInput
-									defaultValue={this.queryParams.search}
-									bufferedInput
-									onChange={(e) => {
-										this.setQueryParams({ search: e || undefined })
-										this.fetchData()
-									}}
-									placeholder={'Buffered Search'}
-								></CustomInput>
-								<CustomInput
-									style={{ width: 210 }}
-									defaultValue={this.queryParams.search}
-									onChange={(e) => {
-										this.setQueryParams({ search: e || undefined })
-									}}
-									onKeyPress={(e) => {
-										if (e.key === 'Enter') this.fetchData()
-									}}
-									onBlur={(e) => {
-										this.fetchData()
-									}}
-									placeholder={'Manual Search (Press Enter)'}
-								></CustomInput>
-							</div>
-							<div style={{ minHeight: 10 }}></div>
-							<CustomTable
-								isLoading={this.state.fetching}
-								height={'500px'}
-								expandContent={(data) => (
-									<div>
-										<b>Expanded:</b> {data.title}
+							{header('Table', false, ['<CustomTable/>'])}
+							<div className='flex'>
+								<div className='grow flex-col' style={{ width: '50%' }}>
+									<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+										<CustomInput
+											defaultValue={this.queryParams.search}
+											bufferedInput
+											onChange={(e) => {
+												this.setQueryParams({ search: e || undefined })
+												this.fetchData()
+											}}
+											placeholder={'Buffered Search'}
+										></CustomInput>
+										<CustomInput
+											style={{ width: 210 }}
+											defaultValue={this.queryParams.search}
+											onChange={(e) => {
+												this.setQueryParams({ search: e || undefined })
+											}}
+											onKeyPress={(e) => {
+												if (e.key === 'Enter') this.fetchData()
+											}}
+											onBlur={(e) => {
+												this.fetchData()
+											}}
+											placeholder={'Manual Search (Press Enter)'}
+										></CustomInput>
 									</div>
-								)}
-								keySelector={'_id'}
-								columns={[
-									{
-										name: 'ID',
-										selector: 'id',
+									<div style={{ minHeight: 10 }}></div>
+									<CustomTable
+										isLoading={this.state.fetching}
+										height={'500px'}
+										expandContent={(data) => (
+											<div>
+												<b>Expanded:</b> {data.title}
+											</div>
+										)}
+										keySelector={'_id'}
+										columns={[
+											{
+												name: 'ID',
+												selector: 'id',
 
-										style: {
-											color: styles.colors.main,
-										},
-									},
-									{
-										name: 'Title',
-										selector: 'title',
-										grow: 4,
-									},
-									{
-										name: 'Custom Cell',
-										selector: 'completed',
-										grow: 2,
-										cell: (value) => <div>{value === true ? 'Yes' : 'No'}</div>,
-									},
-									{
-										name: 'Fat (g)',
-										grow: 2,
-										selector: 'fat',
-										hide: 'mobile',
-									},
-									{
-										name: 'Carbs (g)',
-										selector: 'carbs',
-										hide: 'mobile',
-									},
-									{
-										name: 'Protein (g)',
-										selector: 'protein',
-										hide: 'mobile',
-									},
-									{
-										name: 'Sodium (mg)',
-										selector: 'sodium',
-										hide: 'mobile',
-									},
-									{
-										name: 'Calcium (%)',
-										selector: 'calcium',
-										hide: 'mobile',
-									},
-									{
-										name: <div style={styles.textEllipsis}>Custom Head</div>,
-										selector: 'action',
-										hide: 'mobile',
-									},
-								]}
-								data={this.state.data && this.state.data.items}
-								pagination={{
-									onClick: (e) => {
-										this.setQueryParams({
-											page: e,
-										})
-										this.fetchData()
-									},
-									limit: this.queryParams.limit,
-									page: this.queryParams.page,
-									...(this.state.data && {
-										totalPages: this.state.data.totalPages,
-										totalItems: this.state.data.totalItems,
-									}),
-								}}
-							></CustomTable>
-							<div style={{ minHeight: 10 }}></div>
+												style: {
+													color: styles.colors.main,
+												},
+											},
+											{
+												name: 'Title',
+												selector: 'title',
+												grow: 4,
+											},
+											{
+												name: 'Custom Cell',
+												selector: 'completed',
+												grow: 2,
+												cell: (value) => (
+													<div>{value === true ? 'Yes' : 'No'}</div>
+												),
+											},
+											{
+												name: 'Fat (g)',
+												grow: 2,
+												selector: 'fat',
+												hide: 'mobile',
+											},
+											{
+												name: 'Carbs (g)',
+												selector: 'carbs',
+												hide: 'mobile',
+											},
+											{
+												name: 'Protein (g)',
+												selector: 'protein',
+												hide: 'mobile',
+											},
+											{
+												name: 'Sodium (mg)',
+												selector: 'sodium',
+												hide: 'mobile',
+											},
+											{
+												name: 'Calcium (%)',
+												selector: 'calcium',
+												hide: 'mobile',
+											},
+											{
+												name: (
+													<div style={styles.textEllipsis}>
+														Custom Head
+													</div>
+												),
+												selector: 'action',
+												hide: 'mobile',
+											},
+										]}
+										data={this.state.data && this.state.data.items}
+										pagination={{
+											onClick: (e) => {
+												this.setQueryParams({
+													page: e,
+												})
+												this.fetchData()
+											},
+											limit: this.queryParams.limit,
+											page: this.queryParams.page,
+											...(this.state.data && {
+												totalPages: this.state.data.totalPages,
+												totalItems: this.state.data.totalItems,
+											}),
+										}}
+									></CustomTable>
+								</div>
+								<div style={{ minWidth: 10 }}></div>
+								<CodeCollapse data={codeTable} lang='tsx'></CodeCollapse>
+							</div>
+							{header('Pagination', false, ['<Paginate/>'])}
 							{this.state.data && desktop && (
 								<Paginate
 									onClick={(e) => {
@@ -335,13 +351,15 @@ export default class Layout extends ReactQueryParams {
 								Open
 							</CustomButton>
 							{header('Collapse')}
+							<Collapsible
+								content={<div style={{ ...styles.outlineCard }}>Content</div>}
+							></Collapsible>
 							<div style={{ ...styles.card }}>
-								<div
+								<button
 									onClick={() => {
 										this.setState({ isOpen: !this.state.isOpen })
 									}}
 									style={{
-										cursor: 'pointer',
 										display: 'flex',
 										alignItems: 'center',
 									}}
@@ -366,7 +384,7 @@ export default class Layout extends ReactQueryParams {
 										)}
 									</div>{' '}
 									Something
-								</div>
+								</button>
 								<UnmountClosed isOpened={this.state.isOpen}>
 									<div
 										style={{
@@ -386,3 +404,38 @@ export default class Layout extends ReactQueryParams {
 		)
 	}
 }
+
+const codeTable = `import CustomTable from 'core/components/CustomTable'
+
+<CustomTable
+	isLoading={this.state.fetching}
+	height={'500px'}
+	expandContent={(data) => (
+		<div>
+			<b>Expanded:</b> {data.title}
+		</div>
+	)}
+	keySelector={'_id'}
+	columns={[
+		{
+			name: 'Title',
+			selector: 'title',
+		},
+		...
+	]}
+	data={this.state.data && this.state.data.items}
+	pagination={{
+		onClick: (e) => {
+			this.setQueryParams({
+				page: e,
+			})
+			this.fetchData()
+		},
+		limit: this.queryParams.limit,
+		page: this.queryParams.page,
+		...(this.state.data && {
+			totalPages: this.state.data.totalPages,
+			totalItems: this.state.data.totalItems,
+		}),
+	}}
+></CustomTable>`

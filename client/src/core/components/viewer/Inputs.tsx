@@ -62,6 +62,13 @@ export default class Inputs extends Component {
 									label='Disabled'
 									placeholder={'Long placeholder really long...'}
 								></CustomInput>
+								<CustomInput
+									isDisabled
+									simpleDisabled
+									name='input'
+									label='Simple Disabled'
+									placeholder={'...'}
+								></CustomInput>
 
 								<CustomInput
 									name='input'
@@ -111,6 +118,12 @@ export default class Inputs extends Component {
 									checked={this.state.checked}
 									isDisabled
 									checkbox={'Disabled'}
+								></CustomButton>
+								<CustomButton
+									checked={this.state.checked}
+									isDisabled
+									simpleDisabled
+									checkbox={'Simple Disabled'}
 								></CustomButton>
 							</div>
 						</div>
@@ -392,6 +405,7 @@ export default class Inputs extends Component {
 						{header('Slider')}
 						<div
 							style={{
+								...styles.card,
 								display: 'flex',
 								justifyContent: desktop ? 'flex-start' : 'center',
 							}}

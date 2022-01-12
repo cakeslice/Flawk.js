@@ -8,13 +8,13 @@
 import { post } from 'core/api'
 import Animated from 'core/components/Animated'
 import Avatar from 'core/components/Avatar'
+import CodeBlock from 'core/components/CodeBlock'
 import CustomButton from 'core/components/CustomButton'
 import CustomInput from 'core/components/CustomInput'
 import CustomTable from 'core/components/CustomTable'
 import ExitPrompt from 'core/components/ExitPrompt'
 import Field from 'core/components/Field'
 import Notifications from 'core/components/Notifications'
-import Paginate from 'core/components/Paginate'
 import config from 'core/config_'
 import upload from 'core/functions/upload'
 import styles from 'core/styles'
@@ -26,7 +26,6 @@ import { fetchUser } from 'project/redux/AppReducer'
 import { StoreState } from 'project/redux/_store'
 import React, { Component } from 'react'
 import ReCaptcha from 'react-google-recaptcha'
-import ReactJson from 'react-json-view'
 import { connect, ConnectedProps } from 'react-redux'
 import MediaQuery from 'react-responsive'
 import { Link } from 'react-router-dom'
@@ -65,20 +64,20 @@ class Backend extends Component<PropsFromRedux> {
 							}
 						>
 							<div>
-								<div>Login</div>
+								<tag>Login</tag>
 								<sp />
 								<Login {...this.props} desktop={desktop}></Login>
 							</div>
 							{!desktop && <sp />}
 							<div>
-								<div>Register</div>
+								<tag>Register</tag>
 								<sp />
 								<Register {...this.props} desktop={desktop}></Register>
 							</div>
 							{!desktop && <sp />}
 							{!config.prod && (
 								<div>
-									<div>Forgot password</div>
+									<tag>Forgot password</tag>
 									<sp />
 									<Forgot {...this.props} desktop={desktop}></Forgot>
 								</div>
@@ -201,7 +200,7 @@ class Backend extends Component<PropsFromRedux> {
 						)}
 						{header('Notifications')}
 						{this.props.user ? (
-							<div style={{ display: 'flex' }}>
+							<div className='flex' style={{ ...styles.card }}>
 								<Notifications></Notifications>
 								<sp />
 								<CustomButton
@@ -258,22 +257,20 @@ class Backend extends Component<PropsFromRedux> {
 							{this.props.structures &&
 								Object.keys(this.props.structures).map((result: string, j) => (
 									<div key={result}>
-										<b>{result}</b>
-										<div style={{ minHeight: 10 }} />
+										<tag>{result}</tag>
+										<sp />
 										<CustomTable
 											height={'250px'}
 											hideHeader
 											keySelector={'_id'}
 											expandContent={(data) => (
-												<ReactJson
-													name={false}
-													style={{
-														background: 'transparent',
-													}}
-													theme={
-														global.nightMode ? 'monokai' : 'rjv-default'
-													}
-													src={data}
+												<CodeBlock
+													lang='json'
+													data={JSON.stringify({
+														...data,
+														id: undefined,
+														__v: undefined,
+													})}
 												/>
 											)}
 											columns={[
@@ -1091,7 +1088,11 @@ class Settings extends Component<PropsFromRedux & { desktop?: boolean }> {
 }
 class Admin extends ReactQueryParams {
 	state: {
-		data?: { items: { email: string; firstName: string }[]; totalPages: number }
+		data?: {
+			items: { email: string; firstName: string }[]
+			totalPages: number
+			totalItems: number
+		}
 		fetching?: boolean
 	} = {
 		data: undefined,
@@ -1133,7 +1134,7 @@ class Admin extends ReactQueryParams {
 				{(desktop) => (
 					<div>
 						<div>
-							<div>Users</div>
+							<tag>Users</tag>
 							<sp />
 							<CustomInput
 								style={{
@@ -1172,20 +1173,21 @@ class Admin extends ReactQueryParams {
 									},
 								]}
 								data={this.state.data && this.state.data.items}
-							></CustomTable>
-							<div style={{ minHeight: 10 }}></div>
-							{this.state.data && desktop && (
-								<Paginate
-									onClick={(e) => {
+								pagination={{
+									onClick: (e) => {
 										this.setQueryParams({
 											page: e,
 										})
 										this.fetchData()
-									}}
-									totalPages={this.state.data && this.state.data.totalPages}
-									currentPage={this.queryParams.page}
-								></Paginate>
-							)}
+									},
+									limit: this.queryParams.limit,
+									page: this.queryParams.page,
+									...(this.state.data && {
+										totalPages: this.state.data.totalPages,
+										totalItems: this.state.data.totalItems,
+									}),
+								}}
+							></CustomTable>
 						</div>
 					</div>
 				)}

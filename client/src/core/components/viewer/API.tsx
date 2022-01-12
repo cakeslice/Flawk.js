@@ -6,10 +6,11 @@
  */
 
 import { get } from 'core/api'
+import CodeBlock from 'core/components/CodeBlock'
 import { Obj } from 'flawk-types'
 import React, { Component } from 'react'
-import ReactJson from 'react-json-view'
 import { header } from './ComponentsViewer'
+
 export default class API extends Component {
 	state: {
 		api?: Obj
@@ -24,16 +25,7 @@ export default class API extends Component {
 		return (
 			<div>
 				{header('API', true)}
-				{this.state.api && (
-					<ReactJson
-						name={false}
-						style={{
-							background: 'transparent',
-						}}
-						theme={global.nightMode ? 'monokai' : 'rjv-default'}
-						src={this.state.api}
-					/>
-				)}
+				{this.state.api && <CodeBlock lang='json' data={JSON.stringify(this.state.api)} />}
 			</div>
 		)
 	}

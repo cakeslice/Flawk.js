@@ -38,8 +38,8 @@ declare global {
 	var nightMode: boolean
 	var toggleNightMode: (night?: boolean) => Promise<void>
 	var addFlag: (
-		title: string,
-		description: string,
+		title: string | JSX.Element | JSX.Element[],
+		description: string | JSX.Element | JSX.Element[],
 		type: 'warning' | 'error' | 'success' | 'info',
 		options: {
 			customComponent?: React.ComponentType | ReactElement<any, any>
@@ -47,6 +47,7 @@ declare global {
 			closeAfter?: number
 			closeButton?: boolean
 			closeOnClick?: boolean
+			autoClose?: boolean
 		}
 	) => void
 	var routerHistory: () => History

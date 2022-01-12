@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import Animated from 'core/components/Animated'
 import styles from 'core/styles'
 import React from 'react'
 import TooltipTrigger, { TooltipTriggerProps } from 'react-popper-tooltip'
@@ -14,7 +15,7 @@ export default function CustomTooltip(props: {
 	content: JSX.Element | string
 	tooltipProps?: Partial<TooltipTriggerProps>
 	offset?: number
-	showArrow?: boolean
+	offsetAlt?: number
 	contentStyle?: React.CSSProperties
 }) {
 	return (
@@ -25,39 +26,35 @@ export default function CustomTooltip(props: {
 				{
 					name: 'offset',
 					options: {
-						offset: [0, props.offset === undefined ? 5 : props.offset],
+						offset: [
+							props.offsetAlt === undefined ? 0 : props.offsetAlt,
+							props.offset === undefined ? 5 : props.offset,
+						],
 					},
 				},
 			]}
 			trigger={['hover']}
 			{...props.tooltipProps}
-			tooltip={({ arrowRef, tooltipRef, getArrowProps, getTooltipProps, placement }) => (
+			tooltip={({ tooltipRef, getTooltipProps }) => (
 				<div
 					{...getTooltipProps({
 						ref: tooltipRef,
 						className: 'tooltip-container',
 					})}
 				>
-					{props.showArrow && (
+					<Animated effects={['fade', 'up']} distance={5} delay={0} duration={0.2}>
 						<div
-							{...getArrowProps({
-								ref: arrowRef,
-								className: 'tooltip-arrow',
-								'data-placement': placement,
-							})}
-						/>
-					)}
-					<div
-						style={{
-							...styles.card,
-							padding: 7.5,
-							fontSize: 13,
-							...styles.customTooltip,
-							...props.contentStyle,
-						}}
-					>
-						{props.content}
-					</div>
+							style={{
+								...styles.card,
+								padding: 7.5,
+								fontSize: 13,
+								...styles.customTooltip,
+								...props.contentStyle,
+							}}
+						>
+							{props.content}
+						</div>
+					</Animated>
 				</div>
 			)}
 		>

@@ -15,6 +15,7 @@ import _ from 'lodash'
 import React, { Component } from 'react'
 import { UnmountClosed } from 'react-collapse'
 import MediaQuery from 'react-responsive'
+import { SizeMe } from 'react-sizeme'
 import { MetroSpinner } from 'react-spinners-kit'
 import VisibilitySensor from 'react-visibility-sensor'
 import * as uuid from 'uuid'
@@ -125,6 +126,7 @@ class CT extends ReactQueryParams {
 		}
 
 		const headerRowStyle: React.CSSProperties = {
+			background: styles.colors.white,
 			padding: paddingX * 2,
 			paddingTop: 0,
 			paddingBottom: 0,
@@ -528,6 +530,7 @@ class CT extends ReactQueryParams {
 							<div
 								style={{
 									...wrapperStyle,
+									background: styles.colors.white,
 									...(overrideStyle && overrideStyle.wrapperStyle),
 
 									//borderTop: 'none',
@@ -679,50 +682,73 @@ export function TablePagination({
 	const l = Number(limit)
 
 	return (
-		<div
-			className='flex-col'
-			style={{
-				minHeight: 54,
-				flexGrow: 1,
-			}}
-		>
-			<div style={{ flexGrow: 1, minHeight: 10 }} />
-			<div
-				style={{
-					display: 'flex',
-					justifyContent: 'space-between',
-					alignItems: 'center',
-				}}
-			>
-				<div style={{ minHeight: 44, minWidth: 100, marginLeft: styles.card.padding }} />
-				{desktop && totalPages ? (
-					<Paginate
-						onClick={onClick}
-						totalPages={totalPages || 1}
-						currentPage={p}
-					></Paginate>
-				) : (
-					<div />
-				)}
-				<div
-					style={{
-						minWidth: 100,
-						marginRight: styles.card.padding,
-					}}
-				>
-					{items > 0 && (
+		<SizeMe>
+			{({ size }) => {
+				const smaller = size && size.width && size.width < 550 ? true : false
+				const mini = size && size.width && size.width < 350 ? true : false
+
+				return (
+					<div
+						className='flex-col'
+						style={{
+							minHeight: 54,
+							flexGrow: 1,
+						}}
+					>
+						<div style={{ flexGrow: 1, minHeight: 10 }} />
 						<div
 							style={{
-								color: config.replaceAlpha(styles.colors.black, 0.5),
 								display: 'flex',
-								justifyContent: 'flex-end',
+								justifyContent: !smaller ? 'space-between' : 'center',
+								alignItems: 'center',
 							}}
 						>
-							{(p - 1) * l}-{(p - 1) * l + items} of {totalItems}
+							{!smaller && (
+								<div
+									style={{
+										minHeight: 44,
+										minWidth: 100,
+										marginLeft: styles.card.padding,
+									}}
+								/>
+							)}
+							{totalPages ? (
+								<Paginate
+									mini={mini}
+									onClick={onClick}
+									totalPages={totalPages || 1}
+									currentPage={p}
+								></Paginate>
+							) : (
+								<div />
+							)}
+							{!smaller && (
+								<div
+									style={{
+										minWidth: 100,
+										marginRight: styles.card.padding,
+									}}
+								>
+									{items > 0 && (
+										<div
+											style={{
+												color: config.replaceAlpha(
+													styles.colors.black,
+													0.5
+												),
+												display: 'flex',
+												justifyContent: 'flex-end',
+											}}
+										>
+											{(p - 1) * l}-{(p - 1) * l + items} of {totalItems}
+										</div>
+									)}
+								</div>
+							)}
 						</div>
-					)}
-				</div>
-			</div>
-		</div>
+					</div>
+				)
+			}}
+		</SizeMe>
 	)
 }

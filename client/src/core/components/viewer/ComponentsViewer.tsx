@@ -169,13 +169,23 @@ class Wrapper extends Component {
 	}
 }
 
-export const header = (title: string, top?: boolean) => (
+export const header = (title: string, top?: boolean, tags?: string[]) => (
 	<div>
 		{!top && <sp />}
 		{!top && <sp />}
 		{!top && <sp />}
-		<h3>{title}</h3>
-		<sp />
+		<div className='flex'>
+			<h3>{title}</h3>
+			{tags && <div style={{ minWidth: 15 }} />}
+			{tags && (
+				<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+					{tags.map((tag) => (
+						<tag style={{ position: 'relative', top: -3, marginLeft: 5 }}>{tag}</tag>
+					))}
+				</div>
+			)}
+		</div>
+		{!tags && <sp />}
 		<sp />
 	</div>
 )

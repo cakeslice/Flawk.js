@@ -184,11 +184,11 @@ export default class CustomDropdown extends Component<{
 			},
 			activeBorderColor: styles.colors.mainLight,
 			activeShadowColor: styles.colors.mainVeryLight,
-			activeBackground: 'transparent', // styles.colors.mainVeryLight,
+			activeBackground: styles.colors.white,
 
 			//
 
-			background: 'transparent', // styles.colors.white,
+			background: styles.colors.white,
 		}
 		const defaultMenuStyle: CSSObjectWithLabel = {
 			background: styles.colors.white,
@@ -206,24 +206,12 @@ export default class CustomDropdown extends Component<{
 			paddingBottom: 0,
 			color: global.nightMode ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)',
 			':hover': {
-				paddingLeft: 4,
-				paddingRight: 3,
-				paddingTop: 0,
-				paddingBottom: 0,
 				color: global.nightMode ? 'rgba(255, 255, 255, 0.35)' : 'rgba(0, 0, 0, 0.35)',
 			},
 			':focus': {
-				paddingLeft: 4,
-				paddingRight: 3,
-				paddingTop: 0,
-				paddingBottom: 0,
 				color: global.nightMode ? 'rgba(255, 255, 255, 0.25)' : 'rgba(0, 0, 0, 0.25)',
 			},
 			':active': {
-				paddingLeft: 4,
-				paddingRight: 3,
-				paddingTop: 0,
-				paddingBottom: 0,
 				color: global.nightMode ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)',
 			},
 		}
@@ -412,6 +400,7 @@ export default class CustomDropdown extends Component<{
 									valueContainer: (styles): CSSObjectWithLabel => {
 										return {
 											...styles,
+											paddingRight: 0,
 											...(this.props.button && {
 												display: 'flex',
 												justifyContent: 'center',
@@ -437,6 +426,7 @@ export default class CustomDropdown extends Component<{
 										return {
 											...styles,
 											...indicatorStyle,
+											paddingLeft: 0,
 										}
 									},
 									dropdownIndicator: (s): CSSObjectWithLabel => {

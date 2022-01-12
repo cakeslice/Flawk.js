@@ -28,7 +28,7 @@ const gitHash = GitInfo().commit.shortHash
 let amountToasts = 0
 function addFlagFunction(
 	title: string | JSX.Element | JSX.Element[],
-	description: string,
+	description: string | JSX.Element | JSX.Element[],
 	type: 'warning' | 'error' | 'success' | 'info',
 	options?: {
 		customComponent?: React.ComponentType
@@ -36,9 +36,10 @@ function addFlagFunction(
 		autoClose?: boolean
 		closeButton?: boolean
 		closeOnClick?: boolean
+		closeAfter?: number
 	}
 ) {
-	const { customComponent, playSound, autoClose, closeOnClick, closeButton } = {
+	const { customComponent, playSound, autoClose, closeAfter, closeOnClick, closeButton } = {
 		customComponent: undefined,
 		playSound: false,
 		autoClose: false,
@@ -77,19 +78,21 @@ function addFlagFunction(
 				>
 					{title}
 				</b>
-				<div style={{ minHeight: 10 }} />
-				<p
-					style={{
-						fontFamily: styles.font,
-						fontSize: styles.defaultFontSize,
-						color: styles.colors.black,
-						overflow: 'hidden',
-						textOverflow: 'ellipsis',
-					}}
-				>
-					{description}
-				</p>
-				<div style={{ minHeight: 5 }} />
+				{description && <div style={{ minHeight: 10 }} />}
+				{description && (
+					<p
+						style={{
+							fontFamily: styles.font,
+							fontSize: styles.defaultFontSize,
+							color: styles.colors.black,
+							overflow: 'hidden',
+							textOverflow: 'ellipsis',
+						}}
+					>
+						{description}
+					</p>
+				)}
+				{(autoClose || closeAfter) && <div style={{ minHeight: 3 }} />}
 			</div>
 		),
 		{
@@ -97,8 +100,8 @@ function addFlagFunction(
 				amountToasts--
 			},
 			position: 'bottom-right',
-			autoClose: autoClose ? config.toastCloseTime : false,
-			hideProgressBar: autoClose ? false : true,
+			autoClose: autoClose || closeAfter ? closeAfter || config.toastCloseTime : false,
+			hideProgressBar: autoClose || closeAfter ? false : true,
 			closeOnClick: closeOnClick,
 			pauseOnHover: true,
 			pauseOnFocusLoss: true,
@@ -107,8 +110,8 @@ function addFlagFunction(
 				? ({ closeToast }) => (
 						<div
 							style={{
-								height: 15,
-								width: 15,
+								height: 17,
+								width: 17,
 								display: 'flex',
 								alignItems: 'center',
 								opacity: 0.5,
@@ -122,7 +125,10 @@ function addFlagFunction(
 				: false,
 			transition: Bounce,
 			progressStyle: {
-				background: styles.colors.mainLight,
+				background: config.replaceAlpha(
+					styles.colors.black,
+					global.nightMode ? 0.15 : 0.25
+				),
 			},
 		}
 	)

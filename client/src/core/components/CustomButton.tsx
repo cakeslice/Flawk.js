@@ -106,7 +106,7 @@ export default class CustomButton extends Component<{
 
 			//
 
-			background: 'transparent',
+			background: styles.colors.white,
 			':hover': {},
 			':active': {},
 			':checked': {},
@@ -217,6 +217,9 @@ export default class CustomButton extends Component<{
 			...finalStyle,
 
 			...this.props.style,
+			...(this.props.isDisabled && {
+				cursor: 'default',
+			}),
 			...(this.props.isDisabled &&
 				!this.props.simpleDisabled && {
 					background: config.replaceAlpha(
@@ -228,8 +231,6 @@ export default class CustomButton extends Component<{
 						styles.colors.black,
 						global.nightMode ? 0.05 : 0.1
 					),
-					opacity: 0.75,
-					cursor: 'default',
 				}),
 			...(!this.props.isDisabled &&
 				invalid && {
