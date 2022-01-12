@@ -6,7 +6,7 @@
  */
 
 import Animated from 'core/components/Animated'
-import CustomButton from 'core/components/CustomButton'
+import FButton from 'core/components/FButton'
 import config from 'core/config_'
 import React, { Component } from 'react'
 import MediaQuery from 'react-responsive'
@@ -85,15 +85,15 @@ export default class Main extends Component {
 							<br />
 
 							<div className='wrapMargin flex flex-wrap justify-center'>
-								<CustomButton
+								<FButton
 									onClick={() => {
 										global.routerHistory().push('/components')
 									}}
 									appearance={'primary'}
 								>
 									Components
-								</CustomButton>
-								<CustomButton
+								</FButton>
+								<FButton
 									onClick={() => {
 										window.open(
 											'https://github.com/cakeslice/flawk.js',
@@ -103,7 +103,7 @@ export default class Main extends Component {
 									appearance={'secondary'}
 								>
 									GitHub
-								</CustomButton>
+								</FButton>
 							</div>
 
 							{/*<Animated effects={['fade', 'up']} delay={0.5} duration={0.75}>

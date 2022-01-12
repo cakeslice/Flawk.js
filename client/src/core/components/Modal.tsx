@@ -40,7 +40,7 @@ type Props = {
 	}
 	noAutoFocus?: boolean
 }
-export default class GenericModal extends Component<Props> {
+export default class Modal extends Component<Props> {
 	constructor(props: Props) {
 		super(props)
 

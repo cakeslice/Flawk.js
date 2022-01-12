@@ -6,10 +6,10 @@
  */
 
 import { get } from 'core/api'
-import CustomButton from 'core/components/CustomButton'
-import CustomInput from 'core/components/CustomInput'
-import CustomTable from 'core/components/CustomTable'
-import GenericModal from 'core/components/GenericModal'
+import FButton from 'core/components/FButton'
+import FInput from 'core/components/FInput'
+import FTable from 'core/components/FTable'
+import Modal from 'core/components/Modal'
 import Paginate from 'core/components/Paginate'
 import config from 'core/config_'
 import styles from 'core/styles'
@@ -96,7 +96,7 @@ export default class Layout extends ReactQueryParams {
 
 	confirmModal() {
 		return (
-			<GenericModal
+			<Modal
 				name='confirmModal'
 				parent={this}
 				title={
@@ -116,14 +116,14 @@ export default class Layout extends ReactQueryParams {
 							</b>
 						</Content>
 						<Buttons>
-							<CustomButton onClick={close}>Cancel</CustomButton>
-							<CustomButton
+							<FButton onClick={close}>Cancel</FButton>
+							<FButton
 								style={{ background: styles.colors.red }}
 								appearance='primary'
 								onClick={close}
 							>
 								Delete
-							</CustomButton>
+							</FButton>
 						</Buttons>
 					</Parent>
 				)}
@@ -132,14 +132,14 @@ export default class Layout extends ReactQueryParams {
 	}
 	exampleModal() {
 		return (
-			<GenericModal
+			<Modal
 				name='exampleModal'
 				parent={this}
 				title={'Hello!'}
 				content={(close, Content, Buttons, Parent) => (
 					<Parent>
 						<Content>
-							<CustomTable
+							<FTable
 								isLoading={this.state.fetching}
 								height={'500px'}
 								expandContent={(data) => (
@@ -200,20 +200,20 @@ export default class Layout extends ReactQueryParams {
 									},
 								]}
 								data={this.state.data && this.state.data.items}
-							></CustomTable>
+							></FTable>
 							<sp />
-							<CustomButton
+							<FButton
 								onClick={() => {
 									this.fetchData()
 								}}
 							>
 								Fetch
-							</CustomButton>
+							</FButton>
 						</Content>
 						<Buttons>
-							<CustomButton appearance='primary' onClick={close}>
+							<FButton appearance='primary' onClick={close}>
 								Done
-							</CustomButton>
+							</FButton>
 						</Buttons>
 					</Parent>
 				)}
@@ -253,11 +253,11 @@ export default class Layout extends ReactQueryParams {
 									<div style={fixedExample}></div>
 								</div>
 							</div>
-							{header('Table', false, ['<CustomTable/>'])}
+							{header('Table', false, ['<FTable/>'])}
 							<div className='flex'>
 								<div className='grow flex-col' style={{ width: '50%' }}>
 									<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
-										<CustomInput
+										<FInput
 											defaultValue={this.queryParams.search}
 											bufferedInput
 											onChange={(e) => {
@@ -265,8 +265,8 @@ export default class Layout extends ReactQueryParams {
 												this.fetchData()
 											}}
 											placeholder={'Buffered Search'}
-										></CustomInput>
-										<CustomInput
+										></FInput>
+										<FInput
 											style={{ width: 210 }}
 											defaultValue={this.queryParams.search}
 											onChange={(e) => {
@@ -279,10 +279,10 @@ export default class Layout extends ReactQueryParams {
 												this.fetchData()
 											}}
 											placeholder={'Manual Search (Press Enter)'}
-										></CustomInput>
+										></FInput>
 									</div>
 									<div style={{ minHeight: 10 }}></div>
-									<CustomTable
+									<FTable
 										isLoading={this.state.fetching}
 										height={'500px'}
 										expandContent={(data) => (
@@ -364,7 +364,7 @@ export default class Layout extends ReactQueryParams {
 												totalItems: this.state.data.totalItems,
 											}),
 										}}
-									></CustomTable>
+									></FTable>
 								</div>
 								<div style={{ minWidth: 10 }}></div>
 								<CodeCollapse data={codeTable} lang='tsx'></CodeCollapse>
@@ -383,74 +383,73 @@ export default class Layout extends ReactQueryParams {
 								></Paginate>
 							)}
 							<div id='anchor' />
-							{header('Modal')}
+							{header('Modal', false, ['<Modal/>'])}
 							<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
-								<CustomButton onClick={() => this.setState({ exampleModal: true })}>
+								<FButton onClick={() => this.setState({ exampleModal: true })}>
 									View
-								</CustomButton>
-								<CustomButton
+								</FButton>
+								<FButton
 									style={{ color: styles.colors.red }}
 									onClick={() => this.setState({ confirmModal: true })}
 								>
 									Delete
-								</CustomButton>
+								</FButton>
 							</div>
 							{header('Collapse', false, ['<Collapsible/>', '<UnmountClosed/>'])}
 							<div style={{ ...styles.card }}>
-								<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
-									<Collapsible
-										trigger={(isOpen, set) => (
-											<b
-												style={{
-													color: isOpen ? styles.colors.main : undefined,
-												}}
-											>
-												What is this component for?
-											</b>
-										)}
-										content={(set) => (
+								<Collapsible
+									customTrigger
+									trigger={(isOpen, set) => (
+										<FButton onClick={() => set(!isOpen)}>
+											{isOpen ? 'Close' : 'Expand'}
+										</FButton>
+									)}
+									content={(set) => (
+										<div
+											style={{
+												// ! Collapse doesn't support vertical margins!
+												paddingTop: 15,
+												paddingLeft: 0,
+											}}
+										>
 											<div
-												style={{
-													// ! Collapse doesn't support vertical margins!
-													paddingTop: 15,
-													paddingRight: 15,
-													paddingLeft: 25,
-												}}
+												className='flex-col'
+												style={{ ...styles.outlineCard }}
 											>
-												<div style={{ ...styles.outlineCard }}>
-													It expands and shows hidden content
-												</div>
-											</div>
-										)}
-									></Collapsible>
-									<sp />
-									<Collapsible
-										customTrigger
-										trigger={(isOpen, set) => (
-											<CustomButton onClick={() => set(!isOpen)}>
-												{isOpen ? 'Close' : 'Open'}
-											</CustomButton>
-										)}
-										content={(set) => (
-											<div
-												style={{
-													// ! Collapse doesn't support vertical margins!
-													paddingTop: 15,
-													paddingRight: 15,
-													paddingLeft: 0,
-												}}
-											>
-												<div style={{ ...styles.outlineCard }}>
-													<p>Content</p>
-													<sp />
-													<CustomButton onClick={() => set(false)}>
+												<p>Content</p>
+												<sp />
+												<div style={{ alignSelf: 'flex-end' }}>
+													<FButton onClick={() => set(false)}>
 														{'Close'}
-													</CustomButton>
+													</FButton>
 												</div>
 											</div>
-										)}
-									></Collapsible>
-								</div>
+										</div>
+									)}
+								></Collapsible>
+								<sp />
+								<Collapsible
+									trigger={(isOpen, set) => (
+										<b
+											style={{
+												color: isOpen ? styles.colors.main : undefined,
+											}}
+										>
+											What is this component for?
+										</b>
+									)}
+									content={(set) => (
+										<div
+											style={{
+												// ! Collapse doesn't support vertical margins!
+												paddingTop: 15,
+												paddingLeft: 25,
+											}}
+										>
+											It expands and shows hidden content
+										</div>
+									)}
+								></Collapsible>
 							</div>
 						</div>
 					)
@@ -460,9 +459,9 @@ export default class Layout extends ReactQueryParams {
 	}
 }
 
-const codeTable = `import CustomTable from 'core/components/CustomTable'
+const codeTable = `import FTable from 'core/components/FTable'
 
-<CustomTable
+<FTable
 	isLoading={this.state.fetching}
 	height={'500px'}
 	expandContent={(data) => (
@@ -493,4 +492,4 @@ const codeTable = `import CustomTable from 'core/components/CustomTable'
 			totalItems: this.state.data.totalItems,
 		}),
 	}}
-></CustomTable>`
+></FTable>`

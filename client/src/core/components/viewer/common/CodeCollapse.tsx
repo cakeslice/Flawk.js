@@ -6,7 +6,7 @@
  */
 
 import CodeBlock from 'core/components/CodeBlock'
-import CustomTooltip from 'core/components/CustomTooltip'
+import Tooltip from 'core/components/Tooltip'
 import config from 'core/config_'
 import styles from 'core/styles'
 import React from 'react'
@@ -44,7 +44,7 @@ export default class CodeCollapse extends React.Component<{
 				className={this.props.className}
 			>
 				<div className={'flex-col items-end'}>
-					<CustomTooltip tooltipProps={{ placement: 'left' }} content='Show code'>
+					<Tooltip tooltipProps={{ placement: 'left' }} content='Show code'>
 						<button
 							onClick={() => {
 								this.setState({ isOpen: !this.state.isOpen })
@@ -71,7 +71,7 @@ export default class CodeCollapse extends React.Component<{
 								</div>
 							</tag>
 						</button>
-					</CustomTooltip>
+					</Tooltip>
 					<div style={{ alignSelf: 'center', width: '100%', maxWidth: 600 }}>
 						<UnmountClosed isOpened={this.state.isOpen}>
 							<div style={{ minHeight: 5 }}></div>

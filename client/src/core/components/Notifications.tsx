@@ -145,61 +145,75 @@ export default class Notifications extends Component<Props> {
 										<div
 											style={{
 												width: '100%',
-												height: 400,
+												height:
+													this.state.data && this.state.data.length > 0
+														? 400
+														: undefined,
 												overflow: 'scroll',
 											}}
 										>
-											<div>
-												{this.state.data &&
-													this.state.data.map((n) => (
+											{this.state.data && this.state.data.length > 0 ? (
+												this.state.data.map((n) => (
+													<div
+														key={n._id}
+														style={{ cursor: 'pointer' }}
+														onClick={async () => {
+															await this.readNotification(n._id)
+														}}
+													>
 														<div
-															key={n._id}
-															style={{ cursor: 'pointer' }}
-															onClick={async () => {
-																await this.readNotification(n._id)
+															style={{
+																padding: 10,
+																marginBottom: 3,
+																display: 'flex',
+																minHeight: 60,
+																alignItems: 'center',
 															}}
 														>
 															<div
 																style={{
-																	padding: 10,
-																	marginBottom: 3,
-																	display: 'flex',
-																	minHeight: 60,
-																	alignItems: 'center',
+																	minWidth: 7.5,
+																	minHeight: 7.5,
+																	marginRight: 7.5,
+																	borderRadius: '50%',
+																	background: !n.isRead
+																		? styles.colors.main
+																		: undefined,
 																}}
-															>
-																<div
+															></div>
+															{n.imageURL && (
+																<Avatar
 																	style={{
-																		minWidth: 7.5,
-																		minHeight: 7.5,
-																		marginRight: 7.5,
-																		borderRadius: '50%',
-																		background: !n.isRead
-																			? styles.colors.main
-																			: undefined,
+																		width: 30,
+																		height: 30,
 																	}}
-																></div>
-																{n.imageURL && (
-																	<Avatar
-																		style={{
-																			width: 30,
-																			height: 30,
-																		}}
-																		src={n.imageURL}
-																	></Avatar>
-																)}
+																	src={n.imageURL}
+																></Avatar>
+															)}
 
-																{Parser(
-																	n
-																		? '<p style="max-width: 230px; margin-left:10px">' +
-																				n.message +
-																				'</p>'
-																		: '<p>N/A</p>'
-																)}
-															</div>
+															{Parser(
+																n
+																	? '<p style="max-width: 230px; margin-left:10px">' +
+																			n.message +
+																			'</p>'
+																	: '<p>N/A</p>'
+															)}
 														</div>
-													))}
-											</div>
+													</div>
+												))
+											) : (
+												<div
+													className='flex justify-center items-center'
+													style={{
+														opacity: 0.5,
+														padding: 20,
+														width: '100%',
+														height: '100%',
+													}}
+												>
+													No notifications
+												</div>
+											)}
 										</div>
 									</div>
 								</div>

@@ -108,7 +108,7 @@ const DatePicker = (props: {
 	/>
 )
 
-export default class CustomInput extends Component<{
+export default class FInput extends Component<{
 	style?: React.CSSProperties
 	flex?: 'none' | 'flex-grow' | 'flex-shrink' | 'flex-basis'
 	center?: boolean

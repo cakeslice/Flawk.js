@@ -86,7 +86,7 @@ export default {
 	*/
 
 	/*
-	customTooltip: {
+	tooltip: {
 		background: 'rgba(54,55,64,0.95)',
 		maxWidth: 200,
 		fontSize: 10,
@@ -94,11 +94,11 @@ export default {
 		color: 'rgba(255,255,255,1)',
 	},
 	*/
-	customDropdown: {
+	dropdown: {
 		indicator: { background: 'none' },
 	} as { indicator?: { background: string }; menu?: React.CSSProperties },
 	/*
-	customTable: {
+	table: {
 		headerWrapperStyle: {
 			// ! Can't use _card here, causes error...
 			borderWidth: 1,

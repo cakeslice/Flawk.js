@@ -7,10 +7,10 @@
 
 import { post } from 'core/api'
 import Animated from 'core/components/Animated'
-import CustomButton from 'core/components/CustomButton'
-import CustomInput from 'core/components/CustomInput'
 import ExitPrompt from 'core/components/ExitPrompt'
+import FButton from 'core/components/FButton'
 import Field from 'core/components/Field'
+import FInput from 'core/components/FInput'
 import config from 'core/config_'
 import navigation from 'core/functions/navigation'
 import styles from 'core/styles'
@@ -97,7 +97,7 @@ class Register extends Component<PropsFromRedux> {
 											<ExitPrompt dirty={dirty} />
 											<div className='flex-col items-center justify-center'>
 												<Field
-													component={CustomInput}
+													component={FInput}
 													required
 													autoFocus
 													label={'Verification code'}
@@ -119,7 +119,7 @@ class Register extends Component<PropsFromRedux> {
 													</div>
 												)}
 
-												<CustomButton
+												<FButton
 													type='submit'
 													isLoading={
 														isSubmitting || this.props.fetchingUser
@@ -127,7 +127,7 @@ class Register extends Component<PropsFromRedux> {
 													appearance='primary'
 												>
 													{'Verify'}
-												</CustomButton>
+												</FButton>
 											</Animated>
 										</Form>
 									)
@@ -207,14 +207,14 @@ class Register extends Component<PropsFromRedux> {
 										>
 											<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
 												<Field
-													component={CustomInput}
+													component={FInput}
 													required
 													autoFocus
 													label={'First name'}
 													name='firstName'
 												/>
 												<Field
-													component={CustomInput}
+													component={FInput}
 													required
 													label={'Last name'}
 													name='lastName'
@@ -222,7 +222,7 @@ class Register extends Component<PropsFromRedux> {
 											</div>
 											<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
 												<Field
-													component={CustomInput}
+													component={FInput}
 													required
 													autoFocus
 													label={'E-mail'}
@@ -231,7 +231,7 @@ class Register extends Component<PropsFromRedux> {
 													name='email'
 												/>
 												<Field
-													component={CustomInput}
+													component={FInput}
 													required
 													label={'Password'}
 													name='password'
@@ -315,7 +315,7 @@ class Register extends Component<PropsFromRedux> {
 													</div>
 												)}
 
-												<CustomButton
+												<FButton
 													type='submit'
 													isLoading={
 														isSubmitting || this.props.fetchingUser
@@ -323,7 +323,7 @@ class Register extends Component<PropsFromRedux> {
 													appearance='primary'
 												>
 													{'Sign up'}
-												</CustomButton>
+												</FButton>
 											</Animated>
 											<sp />
 											<sp />

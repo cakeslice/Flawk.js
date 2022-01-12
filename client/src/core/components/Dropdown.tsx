@@ -63,7 +63,7 @@ const DropdownIndicator = ({ children, ...rest }: DropdownIndicatorProps<unknown
 	)
 }
 
-export default class CustomDropdown extends Component<{
+export default class Dropdown extends Component<{
 	style?: CSSObjectWithLabel & {
 		input?: CSSObjectWithLabel
 		menu?: CSSObjectWithLabel
@@ -439,8 +439,7 @@ export default class CustomDropdown extends Component<{
 										return {
 											...s,
 											background: indicatorStyle.color,
-											...(styles.customDropdown &&
-												styles.customDropdown.indicator),
+											...(styles.dropdown && styles.dropdown.indicator),
 										}
 									},
 									placeholder: (s): CSSObjectWithLabel => {
@@ -526,8 +525,7 @@ export default class CustomDropdown extends Component<{
 										return {
 											...internalStyle,
 											...defaultMenuStyle,
-											...(styles.customDropdown &&
-												styles.customDropdown.menu),
+											...(styles.dropdown && styles.dropdown.menu),
 											...(this.props.style && this.props.style.menu),
 										}
 									},
@@ -628,8 +626,7 @@ export default class CustomDropdown extends Component<{
 											return {
 												...internalStyles,
 												...defaultMenuStyle,
-												...(styles.customDropdown &&
-													styles.customDropdown.menu),
+												...(styles.dropdown && styles.dropdown.menu),
 												width: 150,
 												left: -137,
 												top: -10,

@@ -18,7 +18,7 @@ type Props = {
 	defaultValue: [number, number]
 	width?: number
 }
-export default class CustomSlider extends Component<Props> {
+export default class Slider extends Component<Props> {
 	state = {
 		value: this.props.defaultValue,
 	}

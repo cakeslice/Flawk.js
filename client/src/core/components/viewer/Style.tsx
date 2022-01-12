@@ -7,8 +7,8 @@
 
 import logo from 'core/assets/images/logo.svg'
 import Animated from 'core/components/Animated'
-import CustomButton from 'core/components/CustomButton'
-import CustomTooltip from 'core/components/CustomTooltip'
+import FButton from 'core/components/FButton'
+import Tooltip from 'core/components/Tooltip'
 import config from 'core/config_'
 import styles from 'core/styles'
 import { css } from 'glamor'
@@ -74,12 +74,12 @@ export default class Style extends Component {
 							<sp />
 							<i>
 								Italic ipsum dolor sit amet,{' '}
-								<CustomTooltip
+								<Tooltip
 									tooltipProps={{ placement: 'top' }}
 									content={<div>Hello World!</div>}
 								>
 									<b style={{ color: styles.colors.main }}>tooltip</b>
-								</CustomTooltip>{' '}
+								</Tooltip>{' '}
 								adipiscing elit, sed do{' '}
 								<span style={{ color: styles.colors.red }}>colorized</span> tempor
 								incididunt ut <u>underline</u> et dolore magna{' '}
@@ -139,8 +139,11 @@ export default class Style extends Component {
 							<code>int code = 1</code>
 							<sp /> <sp /> <sp />
 						</div>
-						{header('Dark mode')}
-						<CustomButton
+						{header('Dark mode', false, [
+							'global.nightMode',
+							'global.toggleNightMode()',
+						])}
+						<FButton
 							onClick={async () => {
 								await global.toggleNightMode()
 							}}
@@ -148,9 +151,9 @@ export default class Style extends Component {
 								minWidth: 50,
 							}}
 						>
-							Toggle
-						</CustomButton>
-						{header('Buttons', false, ['<button/>', '<CustomButton/>'])}
+							{global.nightMode ? 'Light' : 'Dark'}
+						</FButton>
+						{header('Buttons', false, ['<button/>', '<FButton/>'])}
 						<div
 							className='wrapMarginTopLeft flex flex-wrap justify-start'
 							style={{
@@ -159,43 +162,43 @@ export default class Style extends Component {
 								paddingRight: 10,
 							}}
 						>
-							<CustomButton isLoading style={{ minWidth: 50 }}></CustomButton>
-							<CustomButton
+							<FButton isLoading style={{ minWidth: 50 }}></FButton>
+							<FButton
 								isLoading
 								appearance='primary'
 								style={{ minWidth: 50 }}
-							></CustomButton>
-							<CustomButton
+							></FButton>
+							<FButton
 								isLoading
 								appearance='secondary'
 								style={{ minWidth: 50 }}
-							></CustomButton>
-							<CustomButton style={{ minWidth: 50 }}>Default</CustomButton>
-							<CustomButton
+							></FButton>
+							<FButton style={{ minWidth: 50 }}>Default</FButton>
+							<FButton
 								appearance='primary'
 								style={{
 									minWidth: 50,
 								}}
 							>
 								Primary
-							</CustomButton>
-							<CustomButton
+							</FButton>
+							<FButton
 								appearance='secondary'
 								style={{
 									minWidth: 50,
 								}}
 							>
 								Secondary
-							</CustomButton>
-							<CustomButton
+							</FButton>
+							<FButton
 								isDisabled
 								style={{
 									minWidth: 50,
 								}}
 							>
 								Default Disabled
-							</CustomButton>
-							<CustomButton
+							</FButton>
+							<FButton
 								appearance='primary'
 								isDisabled
 								style={{
@@ -203,8 +206,8 @@ export default class Style extends Component {
 								}}
 							>
 								Primary Disabled
-							</CustomButton>
-							<CustomButton
+							</FButton>
+							<FButton
 								appearance='secondary'
 								isDisabled
 								style={{
@@ -212,8 +215,8 @@ export default class Style extends Component {
 								}}
 							>
 								Secondary Disabled
-							</CustomButton>
-							<CustomButton
+							</FButton>
+							<FButton
 								appearance='secondary'
 								isDisabled
 								simpleDisabled
@@ -222,15 +225,15 @@ export default class Style extends Component {
 								}}
 							>
 								Simple Disabled
-							</CustomButton>
-							<CustomButton
+							</FButton>
+							<FButton
 								style={{
 									minWidth: 50,
 								}}
 							>
 								<img style={{ maxHeight: 15, marginRight: 7.5 }} src={logo}></img>
 								<div>Icon</div>
-							</CustomButton>
+							</FButton>
 							<button>Basic</button>
 						</div>
 						{header('Colors', false, ['styles.colors'])}
@@ -294,7 +297,7 @@ export default class Style extends Component {
 									height: 200,
 								}}
 							>
-								Basic
+								<tag>Basic</tag>
 							</div>
 							<Animated
 								style={{
@@ -309,9 +312,9 @@ export default class Style extends Component {
 								triggerID={this.state.animationTrigger}
 								effects={['fade', 'down']}
 							>
-								<div>Animated</div>
+								<tag>Animated</tag>
 								<sp></sp>
-								<CustomButton
+								<FButton
 									onClick={() =>
 										this.setState({
 											animationTrigger: uuid.v1(),
@@ -319,7 +322,7 @@ export default class Style extends Component {
 									}
 								>
 									Trigger
-								</CustomButton>
+								</FButton>
 							</Animated>
 							<div
 								{...css({
@@ -340,7 +343,7 @@ export default class Style extends Component {
 									textAlign: 'center',
 								})}
 							>
-								Hover
+								<tag>Hover</tag>
 							</div>
 							<div
 								style={{
@@ -350,7 +353,7 @@ export default class Style extends Component {
 									height: 200,
 								}}
 							>
-								Outline
+								<tag>Outline</tag>
 							</div>
 							<div
 								{...css({
@@ -364,8 +367,19 @@ export default class Style extends Component {
 									textAlign: 'center',
 								})}
 							>
-								Muted
+								<tag>Muted</tag>
 							</div>
+						</div>
+						{header('Tooltip', false, ['<Tooltip/>'])}
+						<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+							<Tooltip
+								tooltipProps={{ placement: 'right' }}
+								content={<div>Hello World!</div>}
+							>
+								<div style={styles.card}>
+									<b>Hover me</b>
+								</div>
+							</Tooltip>
 						</div>
 					</div>
 				)}

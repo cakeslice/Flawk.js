@@ -10,7 +10,7 @@ import styles from 'core/styles'
 import React from 'react'
 import TooltipTrigger, { TooltipTriggerProps } from 'react-popper-tooltip'
 
-export default function CustomTooltip(props: {
+export default function Tooltip(props: {
 	children: JSX.Element
 	content: JSX.Element | string
 	tooltipProps?: Partial<TooltipTriggerProps>
@@ -48,7 +48,7 @@ export default function CustomTooltip(props: {
 								...styles.card,
 								padding: 7.5,
 								fontSize: 13,
-								...styles.customTooltip,
+								...styles.tooltip,
 								...props.contentStyle,
 							}}
 						>

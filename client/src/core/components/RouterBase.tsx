@@ -21,7 +21,7 @@ import GitInfo from 'react-git-info/macro'
 import MediaQuery, { Context as ResponsiveContext } from 'react-responsive'
 import { Router } from 'react-router-dom'
 import { Bounce, toast, ToastContainer } from 'react-toastify'
-import CustomButton from './CustomButton'
+import FButton from './FButton'
 
 const gitHash = GitInfo().commit.shortHash
 
@@ -338,7 +338,7 @@ function MobileSimulator({ children, active }: { children: React.ReactNode; acti
 													zIndex: 99999,
 												}}
 											>
-												<CustomButton
+												<FButton
 													appearance='primary'
 													onClick={async () => {
 														await global.storage.setItem(
@@ -349,20 +349,20 @@ function MobileSimulator({ children, active }: { children: React.ReactNode; acti
 													}}
 												>
 													Close
-												</CustomButton>
+												</FButton>
 											</div>
 										</div>
 									</div>
 								</ResponsiveContext.Provider>
 							) : (
-								<CustomButton
+								<FButton
 									onClick={async () => {
 										await global.storage.setItem('mobile_viewer', 'true')
 										setMobileViewer('true')
 									}}
 								>
 									Mobile
-								</CustomButton>
+								</FButton>
 							)}
 						</div>
 					)}

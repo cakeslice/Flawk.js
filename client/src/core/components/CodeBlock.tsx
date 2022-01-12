@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import CustomTooltip from 'core/components/CustomTooltip'
+import Tooltip from 'core/components/Tooltip'
 import config from 'core/config_'
 import styles from 'core/styles'
 import prettierParser from 'prettier/parser-babel'
@@ -72,7 +72,7 @@ export default function CodeBlock(props: {
 			</SyntaxHighlighter>
 			<div style={{ width: 0 }}>
 				<div style={{ position: 'relative', right: 50, top: 25 }}>
-					<CustomTooltip
+					<Tooltip
 						tooltipProps={{ placement: 'left' }}
 						offsetAlt={13}
 						content='Copy code'
@@ -113,7 +113,7 @@ export default function CodeBlock(props: {
 								</tag>
 							</button>
 						</CopyToClipboard>
-					</CustomTooltip>
+					</Tooltip>
 				</div>
 			</div>
 		</div>

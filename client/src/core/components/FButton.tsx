@@ -15,9 +15,9 @@ import MediaQuery from 'react-responsive'
 import { MetroSpinner } from 'react-spinners-kit'
 
 export type Appearance = 'primary' | 'secondary' | string // We need to support string for custom appearances declared in styles.extraButtons
-export default class CustomButton extends Component<{
+export default class FButton extends Component<{
 	style?: React.CSSProperties
-	children?: JSX.Element | string | JSX.Element[]
+	children?: React.ReactNode
 	appearance?: Appearance
 	isDisabled?: boolean
 	simpleDisabled?: boolean

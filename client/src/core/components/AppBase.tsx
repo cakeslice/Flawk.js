@@ -26,7 +26,7 @@ import GitInfo from 'react-git-info/macro'
 import { Helmet } from 'react-helmet'
 import MediaQuery from 'react-responsive'
 import io from 'socket.io-client'
-import CustomButton from './CustomButton'
+import FButton from './FButton'
 
 const gitHash = GitInfo().commit.shortHash
 
@@ -349,7 +349,7 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 											{config.text('extras.newUpdate')}
 										</p>
 
-										<CustomButton
+										<FButton
 											appearance='primary'
 											style={{
 												marginLeft: 15,
@@ -362,7 +362,7 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 											}}
 										>
 											REFRESH
-										</CustomButton>
+										</FButton>
 
 										<div></div>
 									</Animated>
@@ -440,7 +440,7 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 											{config.text('common.cookieWarning')}
 										</p>
 
-										<CustomButton
+										<FButton
 											appearance='primary'
 											style={{
 												marginLeft: 15,
@@ -459,7 +459,7 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 											}}
 										>
 											I AGREE
-										</CustomButton>
+										</FButton>
 
 										<div></div>
 									</Animated>

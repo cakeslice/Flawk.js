@@ -119,7 +119,7 @@ export default {
 	// Dropdown Config
 
 	// @ts-ignore
-	customDropdown: undefined as
+	dropdown: undefined as
 		| { indicator?: { background: string }; menu?: React.CSSProperties }
 		| undefined,
 	// @ts-ignore
@@ -127,7 +127,7 @@ export default {
 
 	// Table Config
 	// @ts-ignore
-	customTable: undefined as
+	table: undefined as
 		| ({
 				headerWrapperStyle?: React.CSSProperties
 				rowStyle?: React.CSSProperties
@@ -139,7 +139,7 @@ export default {
 	// Tooltip Config
 
 	// @ts-ignore
-	customTooltip: undefined as React.CSSProperties | undefined,
+	tooltip: undefined as React.CSSProperties | undefined,
 
 	// Cards
 

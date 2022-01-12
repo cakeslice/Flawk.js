@@ -67,7 +67,7 @@ type TableProps = {
 		totalItems?: number
 	}
 }
-export default function CustomTable(props: TableProps) {
+export default function FTable(props: TableProps) {
 	return <CT {...props} />
 }
 class CT extends ReactQueryParams {
@@ -183,9 +183,9 @@ class CT extends ReactQueryParams {
 		}
 
 		const overrideStyle: TableStyles | undefined =
-			props.style || styles.customTable
+			props.style || styles.table
 				? {
-						...styles.customTable,
+						...styles.table,
 						...props.style,
 				  }
 				: undefined

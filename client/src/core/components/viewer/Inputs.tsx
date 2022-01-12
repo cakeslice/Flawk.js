@@ -5,12 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import CustomButton from 'core/components/CustomButton'
-import CustomDropdown from 'core/components/CustomDropdown'
-import CustomInput from 'core/components/CustomInput'
-import CustomSlider from 'core/components/CustomSlider'
+import Dropdown from 'core/components/Dropdown'
 import ExitPrompt from 'core/components/ExitPrompt'
+import FButton from 'core/components/FButton'
 import Field from 'core/components/Field'
+import FInput from 'core/components/FInput'
+import Slider from 'core/components/Slider'
 import config from 'core/config_'
 import styles from 'core/styles'
 import { Form, Formik } from 'formik'
@@ -26,64 +26,64 @@ export default class Inputs extends Component {
 			<MediaQuery minWidth={config.mobileWidthTrigger}>
 				{(desktop) => (
 					<div>
-						{header('Input fields', true)}
+						{header('Input fields', true, ['<input>', '<FInput/>'])}
 						<div style={{ ...styles.card, maxWidth: 783 }}>
 							<div className='wrapMarginTopLeft flex flex-wrap justify-start items-end'>
-								<CustomInput
+								<FInput
 									type='email'
 									label={'E-mail'}
 									autoComplete='new-email'
 									defaultValue={'someone@gmail.com'}
 									placeholder={'you@gmail.com'}
-								></CustomInput>
-								<CustomInput
+								></FInput>
+								<FInput
 									type='password'
 									autoComplete='new-password'
 									label={'Password'}
 									placeholder={'******'}
-								></CustomInput>
-								<CustomInput
+								></FInput>
+								<FInput
 									type='number'
 									label={'Number'}
 									placeholder={'1337'}
-								></CustomInput>
+								></FInput>
 
-								<CustomInput
+								<FInput
 									label='Invalid Label'
 									invalid={'*'}
 									name='input'
 									placeholder={'someone@gmail'}
-								></CustomInput>
+								></FInput>
 							</div>
 							<sp />
 							<div className='wrapMarginTopLeft flex flex-wrap justify-start items-start'>
-								<CustomInput
+								<FInput
 									isDisabled
 									label='Disabled'
 									placeholder={'Long placeholder really long...'}
-								></CustomInput>
-								<CustomInput
+								></FInput>
+								<FInput
 									isDisabled
 									simpleDisabled
 									name='input'
 									label='Simple Disabled'
 									placeholder={'...'}
-								></CustomInput>
+								></FInput>
 
-								<CustomInput
+								<FInput
 									name='input'
 									emptyLabel
 									invalidType='bottom'
 									invalid={'Wrong format'}
 									placeholder={'Invalid Bottom'}
-								></CustomInput>
-								<CustomInput
+								></FInput>
+								<FInput
 									emptyLabel
 									invalid={'*'}
 									name='input'
 									invalidType={'right'}
 									placeholder={'Invalid Right'}
-								></CustomInput>
+								></FInput>
 							</div>
 							<sp />
 							<div>
@@ -93,44 +93,40 @@ export default class Inputs extends Component {
 								</span>
 							</div>
 							<sp />
-							<CustomInput
-								style={{ width: '100%' }}
-								label={'Text Area'}
-								textArea
-							></CustomInput>
+							<FInput style={{ width: '100%' }} label={'Text Area'} textArea></FInput>
 							<sp />
 							<sp />
 							<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
-								<CustomButton
+								<FButton
 									defaultChecked={true}
 									onChange={(e) => {}}
 									checkbox={'Checkbox'}
-								></CustomButton>
-								<CustomButton
+								></FButton>
+								<FButton
 									appearance={'primary'}
 									checked={this.state.checked}
 									onChange={(e) => {
 										this.setState({ checked: e })
 									}}
 									checkbox={'Primary'}
-								></CustomButton>
-								<CustomButton
+								></FButton>
+								<FButton
 									checked={this.state.checked}
 									isDisabled
 									checkbox={'Disabled'}
-								></CustomButton>
-								<CustomButton
+								></FButton>
+								<FButton
 									checked={this.state.checked}
 									isDisabled
 									simpleDisabled
 									checkbox={'Simple Disabled'}
-								></CustomButton>
+								></FButton>
 							</div>
 						</div>
-						{header('Dropdown')}
+						{header('Dropdown', false, ['<Dropdown/>'])}
 						<div style={{ ...styles.card, maxWidth: 783 }}>
 							<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
-								<CustomDropdown
+								<Dropdown
 									label='Active'
 									placeholder={'Long placeholder really long'}
 									erasable
@@ -158,7 +154,7 @@ export default class Inputs extends Component {
 									})()}
 								/>
 
-								<CustomDropdown
+								<Dropdown
 									isDisabled
 									label={'Disabled'}
 									defaultValue={'accept'}
@@ -174,7 +170,7 @@ export default class Inputs extends Component {
 										},
 									]}
 								/>
-								<CustomDropdown
+								<Dropdown
 									label={'Invalid Label'}
 									placeholder={'#123'}
 									erasable
@@ -193,7 +189,7 @@ export default class Inputs extends Component {
 							</div>
 							<sp />
 							<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
-								<CustomDropdown
+								<Dropdown
 									defaultValue={'accept'}
 									placeholder={'Invalid Bottom'}
 									erasable
@@ -211,7 +207,7 @@ export default class Inputs extends Component {
 									]}
 								/>
 
-								<CustomDropdown
+								<Dropdown
 									placeholder={'Invalid Right'}
 									erasable
 									invalid={'*'}
@@ -228,7 +224,7 @@ export default class Inputs extends Component {
 									]}
 								/>
 
-								<CustomDropdown
+								<Dropdown
 									customInput
 									style={{ menu: { left: 0 } }}
 									options={[
@@ -245,7 +241,7 @@ export default class Inputs extends Component {
 								/>
 							</div>
 							<sp />
-							<CustomDropdown
+							<Dropdown
 								dropdownIndicator={<div>😄</div>}
 								style={{ width: '100%' }}
 								label={'Full width'}
@@ -263,7 +259,7 @@ export default class Inputs extends Component {
 								]}
 							/>
 						</div>
-						{header('Form')}
+						{header('Form', false, ['<Formik/>', '<Form/>', '<Field/>'])}
 						<div style={{ ...styles.card, width: 'auto', maxWidth: 600 }}>
 							<Formik
 								enableReinitialize
@@ -300,14 +296,14 @@ export default class Inputs extends Component {
 											<ExitPrompt dirty={dirty} />
 											<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
 												<Field
-													component={CustomInput}
+													component={FInput}
 													required
 													type={'text'}
 													name='firstName'
 													label={config.text('auth.firstName')}
 												/>
 												<Field
-													component={CustomInput}
+													component={FInput}
 													required
 													type={'text'}
 													name='lastName'
@@ -317,7 +313,7 @@ export default class Inputs extends Component {
 
 											<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
 												<Field
-													component={CustomInput}
+													component={FInput}
 													required
 													invalidMessage={'Invalid e-mail'}
 													type={'email'}
@@ -326,7 +322,7 @@ export default class Inputs extends Component {
 													label={'E-mail'}
 												/>
 												<Field
-													component={CustomInput}
+													component={FInput}
 													required
 													type={'number'}
 													name='phone'
@@ -337,7 +333,7 @@ export default class Inputs extends Component {
 											</div>
 											<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
 												<Field
-													component={CustomInput}
+													component={FInput}
 													required
 													invalidType='bottom'
 													invalidMessage='Min. 12 characters'
@@ -350,7 +346,7 @@ export default class Inputs extends Component {
 													label={'Password'}
 												/>
 												<Field
-													component={CustomDropdown}
+													component={Dropdown}
 													required
 													name='dropdown'
 													invalidType='bottom'
@@ -375,7 +371,7 @@ export default class Inputs extends Component {
 
 											<div className='flex justify-center items-center'>
 												<Field
-													component={CustomButton}
+													component={FButton}
 													required='Please accept the terms'
 													name='checkbox'
 													checkbox={'I accept the Terms and Conditions'}
@@ -383,26 +379,26 @@ export default class Inputs extends Component {
 											</div>
 
 											<div className='wrapMarginBottomRight flex flex-wrap justify-end'>
-												<CustomButton
+												<FButton
 													appearance={'secondary'}
 													type='submit'
 													isLoading={isSubmitting}
 												>
 													{config.text('common.save')}
-												</CustomButton>
-												<CustomButton
+												</FButton>
+												<FButton
 													onClick={handleReset}
 													isDisabled={isSubmitting}
 												>
 													{'Clear'}
-												</CustomButton>
+												</FButton>
 											</div>
 										</Form>
 									)
 								}}
 							</Formik>
 						</div>
-						{header('Slider')}
+						{header('Slider', false, ['<Slider/>'])}
 						<div
 							style={{
 								...styles.card,
@@ -410,7 +406,7 @@ export default class Inputs extends Component {
 								justifyContent: desktop ? 'flex-start' : 'center',
 							}}
 						>
-							<CustomSlider defaultValue={[0, 900]} min={0} max={900} />
+							<Slider defaultValue={[0, 900]} min={0} max={900} />
 						</div>
 					</div>
 				)}

@@ -7,9 +7,9 @@
 
 import { post } from 'core/api'
 import Animated from 'core/components/Animated'
-import CustomButton from 'core/components/CustomButton'
-import CustomInput from 'core/components/CustomInput'
+import FButton from 'core/components/FButton'
 import Field from 'core/components/Field'
+import FInput from 'core/components/FInput'
 import config from 'core/config_'
 import navigation from 'core/functions/navigation'
 import styles from 'core/styles'
@@ -92,7 +92,7 @@ class Login extends Component<PropsFromRedux> {
 									>
 										<div className='flex-col items-center justify-center'>
 											<Field
-												component={CustomInput}
+												component={FInput}
 												required
 												autoFocus
 												label={'E-mail'}
@@ -101,7 +101,7 @@ class Login extends Component<PropsFromRedux> {
 											/>
 											<div style={{ minHeight: 10 }} />
 											<Field
-												component={CustomInput}
+												component={FInput}
 												required
 												label={'Password'}
 												name='password'
@@ -127,13 +127,13 @@ class Login extends Component<PropsFromRedux> {
 												</div>
 											)}
 
-											<CustomButton
+											<FButton
 												type='submit'
 												isLoading={isSubmitting || this.props.fetchingUser}
 												appearance='primary'
 											>
 												{'Login'}
-											</CustomButton>
+											</FButton>
 										</Animated>
 										<sp />
 										<sp />

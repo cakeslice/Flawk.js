@@ -7,10 +7,10 @@
 
 import { post } from 'core/api'
 import Avatar from 'core/components/Avatar'
-import CustomButton from 'core/components/CustomButton'
-import CustomInput from 'core/components/CustomInput'
 import ExitPrompt from 'core/components/ExitPrompt'
+import FButton from 'core/components/FButton'
 import Field from 'core/components/Field'
+import FInput from 'core/components/FInput'
 import config from 'core/config_'
 import upload from 'core/functions/upload'
 import styles from 'core/styles'
@@ -117,13 +117,13 @@ class Settings extends Component<DashboardProps> {
 											<ExitPrompt dirty={dirty} />
 											<div className='wrapMargin flex flex-wrap justify-around'>
 												<Field
-													component={CustomInput}
+													component={FInput}
 													required
 													label={'First name'}
 													name='firstName'
 												/>
 												<Field
-													component={CustomInput}
+													component={FInput}
 													required
 													label={'Last name'}
 													name='lastName'
@@ -131,7 +131,7 @@ class Settings extends Component<DashboardProps> {
 											</div>
 											<div className='wrapMargin flex flex-wrap justify-around'>
 												<Field
-													component={CustomInput}
+													component={FInput}
 													required
 													label={'E-mail'}
 													type={'email'}
@@ -139,7 +139,7 @@ class Settings extends Component<DashboardProps> {
 													autoComplete='new-email'
 												/>
 												<Field
-													component={CustomInput}
+													component={FInput}
 													label={'Password'}
 													name='password'
 													autoComplete='new-password'
@@ -195,7 +195,7 @@ class Settings extends Component<DashboardProps> {
 											</div>
 											<sp />
 											<div className='flex-col items-center'>
-												<CustomButton
+												<FButton
 													type='submit'
 													isDisabled={!dirty}
 													isLoading={
@@ -204,7 +204,7 @@ class Settings extends Component<DashboardProps> {
 													appearance='primary'
 												>
 													{'Save'}
-												</CustomButton>
+												</FButton>
 											</div>
 										</Form>
 									)

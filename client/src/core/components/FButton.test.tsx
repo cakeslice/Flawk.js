@@ -7,10 +7,10 @@
 
 import { render, screen } from '@testing-library/react'
 import React from 'react'
-import CustomButton from './CustomButton'
+import FButton from './FButton'
 
 beforeEach(() => {
-	render(<CustomButton />)
+	render(<FButton />)
 })
 
 it('exists', () => {

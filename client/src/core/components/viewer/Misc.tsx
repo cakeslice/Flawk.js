@@ -7,7 +7,7 @@
 
 import 'core/assets/quill.snow.css'
 import Avatar from 'core/components/Avatar'
-import CustomButton from 'core/components/CustomButton'
+import FButton from 'core/components/FButton'
 import LanguageSwitcher from 'core/components/LanguageSwitcher'
 import Loading from 'core/components/Loading'
 import styles from 'core/styles'
@@ -24,7 +24,7 @@ export default class Misc extends ReactQueryParams {
 	render() {
 		return (
 			<div>
-				{header('Avatar', true)}{' '}
+				{header('Avatar', true, ['<Avatar/>'])}{' '}
 				<div style={{ ...styles.card }}>
 					<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
 						<Avatar name='José Guerreiro'></Avatar>
@@ -36,7 +36,7 @@ export default class Misc extends ReactQueryParams {
 						<Avatar style={{ width: 40, height: 40 }}></Avatar>
 					</div>
 				</div>
-				{header('Loading')}
+				{header('Loading', false, ['<Loading/>'])}
 				<div style={{ ...styles.card }}>
 					<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
 						<Loading large />
@@ -46,14 +46,14 @@ export default class Misc extends ReactQueryParams {
 						<Loading small />
 					</div>
 				</div>
-				{header('Query parameters')}
+				{header('Query parameters', false, ['extends ReactQueryParams'])}
 				<div style={{ ...styles.card }}>
 					<p>
 						Parameter {'"test"'}: <b>{this.queryParams.test}</b>
 					</p>
 					<br />
 					<div className='flex'>
-						<CustomButton
+						<FButton
 							onClick={() => {
 								this.setQueryParams({
 									test: 'Hello!',
@@ -61,9 +61,9 @@ export default class Misc extends ReactQueryParams {
 							}}
 						>
 							Add test=Hello!
-						</CustomButton>
+						</FButton>
 						<sp></sp>
-						<CustomButton
+						<FButton
 							onClick={() => {
 								this.setQueryParams({
 									test: undefined,
@@ -71,12 +71,12 @@ export default class Misc extends ReactQueryParams {
 							}}
 						>
 							Remove test
-						</CustomButton>
+						</FButton>
 					</div>
 				</div>
-				{header('Toasts')}
+				{header('Toasts', false, ['global.addFlag()'])}
 				<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
-					<CustomButton
+					<FButton
 						onClick={() =>
 							global.addFlag(
 								'New message',
@@ -85,7 +85,7 @@ export default class Misc extends ReactQueryParams {
 										<b>Chris:</b> Have you heard about the new Tesla?
 									</div>
 									<div className='flex justify-end'>
-										<CustomButton>Reply</CustomButton>
+										<FButton>Reply</FButton>
 									</div>
 								</div>,
 								'info',
@@ -96,8 +96,8 @@ export default class Misc extends ReactQueryParams {
 						}
 					>
 						Info
-					</CustomButton>
-					<CustomButton
+					</FButton>
+					<FButton
 						onClick={() =>
 							global.addFlag('Your changes were saved', undefined, 'success', {
 								closeAfter: 2000,
@@ -106,8 +106,8 @@ export default class Misc extends ReactQueryParams {
 						}
 					>
 						Success
-					</CustomButton>
-					<CustomButton
+					</FButton>
+					<FButton
 						onClick={() =>
 							global.addFlag(
 								'Warning',
@@ -121,8 +121,8 @@ export default class Misc extends ReactQueryParams {
 						}
 					>
 						Warning
-					</CustomButton>
-					<CustomButton
+					</FButton>
+					<FButton
 						onClick={() =>
 							global.addFlag('Error', 'File upload failed', 'error', {
 								playSound: true,
@@ -130,20 +130,20 @@ export default class Misc extends ReactQueryParams {
 						}
 					>
 						Error
-					</CustomButton>
+					</FButton>
 				</div>
-				{header('Copy to clipboard')}
+				{header('Copy to clipboard', false, ['<CopyToClipboard/>'])}
 				<CopyToClipboard
 					text={'https://github.com/cakeslice'}
 					onCopy={() => global.addFlag('Copied!', '', 'default', { autoClose: true })}
 				>
-					<CustomButton>Copy Link</CustomButton>
+					<FButton>Copy Link</FButton>
 				</CopyToClipboard>
-				{header('Language switcher')}
+				{header('Language switcher', false, ['<LanguageSwitcher/>'])}
 				<LanguageSwitcher></LanguageSwitcher>
-				{header('Scroll to top')}
-				<CustomButton onClick={() => global.scrollToTop()}>Scroll</CustomButton>
-				{header('Text editor')}
+				{header('Scroll to top', false, ['global.scrollToTop()'])}
+				<FButton onClick={() => global.scrollToTop()}>Scroll</FButton>
+				{header('Text editor', false, ['<ReactQuill/>'])}
 				<ReactQuill
 					style={{
 						background: styles.colors.white,

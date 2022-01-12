@@ -5,9 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import CustomButton from 'core/components/CustomButton'
-import CustomDropdown from 'core/components/CustomDropdown'
-import CustomInput from 'core/components/CustomInput'
+import Dropdown from 'core/components/Dropdown'
+import FButton from 'core/components/FButton'
+import FInput from 'core/components/FInput'
 import { FastField as FormFastField, Field as FormField } from 'formik'
 import React from 'react'
 import validator from 'validator'
@@ -21,7 +21,7 @@ export default function Field(
 		validate?: (value: string | number | boolean | undefined) => boolean
 		fastField?: boolean
 		type?: string
-	} & (CustomInput['props'] | CustomDropdown['props'] | CustomButton['props'])
+	} & (FInput['props'] | Dropdown['props'] | FButton['props'])
 ) {
 	function validate(value: string | number | boolean | undefined) {
 		let error

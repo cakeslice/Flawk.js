@@ -9,11 +9,11 @@ import { post } from 'core/api'
 import Animated from 'core/components/Animated'
 import Avatar from 'core/components/Avatar'
 import CodeBlock from 'core/components/CodeBlock'
-import CustomButton from 'core/components/CustomButton'
-import CustomInput from 'core/components/CustomInput'
-import CustomTable from 'core/components/CustomTable'
 import ExitPrompt from 'core/components/ExitPrompt'
+import FButton from 'core/components/FButton'
 import Field from 'core/components/Field'
+import FInput from 'core/components/FInput'
+import FTable from 'core/components/FTable'
 import Notifications from 'core/components/Notifications'
 import config from 'core/config_'
 import upload from 'core/functions/upload'
@@ -148,7 +148,7 @@ class Backend extends Component<PropsFromRedux> {
 														)}
 													</button>
 													{this.props.user && (
-														<CustomButton
+														<FButton
 															type='submit'
 															isLoading={
 																isSubmitting ||
@@ -157,7 +157,7 @@ class Backend extends Component<PropsFromRedux> {
 															appearance='secondary'
 														>
 															{'Logout'}
-														</CustomButton>
+														</FButton>
 													)}
 												</div>
 											</Form>
@@ -203,7 +203,7 @@ class Backend extends Component<PropsFromRedux> {
 							<div className='flex' style={{ ...styles.card }}>
 								<Notifications></Notifications>
 								<sp />
-								<CustomButton
+								<FButton
 									onClick={async () => {
 										const res = await post('client/create_notification', {
 											notificationType: 'test',
@@ -212,7 +212,7 @@ class Backend extends Component<PropsFromRedux> {
 									}}
 								>
 									Test
-								</CustomButton>
+								</FButton>
 							</div>
 						) : (
 							<div>
@@ -259,7 +259,7 @@ class Backend extends Component<PropsFromRedux> {
 									<div key={result}>
 										<tag>{result}</tag>
 										<sp />
-										<CustomTable
+										<FTable
 											height={'250px'}
 											hideHeader
 											keySelector={'_id'}
@@ -293,15 +293,15 @@ class Backend extends Component<PropsFromRedux> {
 												this.props.structures &&
 												this.props.structures[result]
 											}
-										></CustomTable>
+										></FTable>
 										<sp />
 									</div>
 								))}
 						</div>
-						{header('Websockets')}
+						{header('Websockets', false, ['global.socket.emit()'])}
 						{this.props.user ? (
 							<div className='wrapMarginTopLeft flex flex-wrap justify-start items-center'>
-								<CustomButton
+								<FButton
 									onClick={async () => {
 										const token = await global.storage.getItem('token')
 										if (config.websocketSupport)
@@ -309,7 +309,7 @@ class Backend extends Component<PropsFromRedux> {
 									}}
 								>
 									Test
-								</CustomButton>
+								</FButton>
 							</div>
 						) : (
 							<div>
@@ -372,7 +372,7 @@ class Login extends Component<PropsFromRedux & { desktop?: boolean }> {
 							<Form noValidate>
 								<div className='flex-col items-center justify-center'>
 									<Field
-										component={CustomInput}
+										component={FInput}
 										required
 										autoFocus
 										label={'E-mail'}
@@ -381,7 +381,7 @@ class Login extends Component<PropsFromRedux & { desktop?: boolean }> {
 									/>
 									<div style={{ minHeight: 10 }} />
 									<Field
-										component={CustomInput}
+										component={FInput}
 										required
 										label={'Password'}
 										name='password'
@@ -404,13 +404,13 @@ class Login extends Component<PropsFromRedux & { desktop?: boolean }> {
 										</div>
 									)}
 
-									<CustomButton
+									<FButton
 										type='submit'
 										isLoading={isSubmitting || this.props.fetchingUser}
 										appearance='primary'
 									>
 										{'Login'}
-									</CustomButton>
+									</FButton>
 								</Animated>
 								<sp />
 								<sp />
@@ -471,7 +471,7 @@ class Register extends Component<PropsFromRedux & { desktop?: boolean }> {
 									<ExitPrompt dirty={dirty} />
 									<div className='flex-col items-center justify-center'>
 										<Field
-											component={CustomInput}
+											component={FInput}
 											required
 											autoFocus
 											label={'Verification code'}
@@ -493,13 +493,13 @@ class Register extends Component<PropsFromRedux & { desktop?: boolean }> {
 											</div>
 										)}
 
-										<CustomButton
+										<FButton
 											type='submit'
 											isLoading={isSubmitting || this.props.fetchingUser}
 											appearance='primary'
 										>
 											{'Verify'}
-										</CustomButton>
+										</FButton>
 									</Animated>
 								</Form>
 							)
@@ -571,14 +571,14 @@ class Register extends Component<PropsFromRedux & { desktop?: boolean }> {
 									<div className='flex-col items-center justify-center'>
 										<div className='wrapMargin flex flex-wrap justify-around'>
 											<Field
-												component={CustomInput}
+												component={FInput}
 												required
 												autoFocus
 												label={'First name'}
 												name='firstName'
 											/>
 											<Field
-												component={CustomInput}
+												component={FInput}
 												required
 												label={'Last name'}
 												name='lastName'
@@ -586,7 +586,7 @@ class Register extends Component<PropsFromRedux & { desktop?: boolean }> {
 										</div>
 										<div className='wrapMargin flex flex-wrap justify-around'>
 											<Field
-												component={CustomInput}
+												component={FInput}
 												required
 												autoFocus
 												label={'E-mail'}
@@ -595,7 +595,7 @@ class Register extends Component<PropsFromRedux & { desktop?: boolean }> {
 												name='email'
 											/>
 											<Field
-												component={CustomInput}
+												component={FInput}
 												required
 												label={'Password'}
 												name='password'
@@ -670,14 +670,14 @@ class Register extends Component<PropsFromRedux & { desktop?: boolean }> {
 											</div>
 										)}
 
-										<CustomButton
+										<FButton
 											type='submit'
 											onClick={() => setFieldTouched('captcha', true)}
 											isLoading={isSubmitting || this.props.fetchingUser}
 											appearance='primary'
 										>
 											{'Sign up'}
-										</CustomButton>
+										</FButton>
 									</Animated>
 									<sp />
 									<sp />
@@ -738,7 +738,7 @@ class Forgot extends Component<PropsFromRedux & { desktop?: boolean }> {
 								<Form noValidate>
 									<div className='flex-col justify-center items-center'>
 										<Field
-											component={CustomInput}
+											component={FInput}
 											required
 											autoFocus
 											label={'New password'}
@@ -748,7 +748,7 @@ class Forgot extends Component<PropsFromRedux & { desktop?: boolean }> {
 										/>
 										<div style={{ minHeight: 10 }} />
 										<Field
-											component={CustomInput}
+											component={FInput}
 											required
 											label={'Verification code'}
 											type={'number'}
@@ -768,13 +768,13 @@ class Forgot extends Component<PropsFromRedux & { desktop?: boolean }> {
 											</div>
 										)}
 
-										<CustomButton
+										<FButton
 											type='submit'
 											isLoading={isSubmitting || this.props.fetchingUser}
 											appearance='primary'
 										>
 											{'Change Password'}
-										</CustomButton>
+										</FButton>
 									</Animated>
 								</Form>
 							)
@@ -843,7 +843,7 @@ class Forgot extends Component<PropsFromRedux & { desktop?: boolean }> {
 								<Form noValidate>
 									<div className='flex-col justify-center items-center'>
 										<Field
-											component={CustomInput}
+											component={FInput}
 											required
 											autoFocus
 											label={'E-mail'}
@@ -913,14 +913,14 @@ class Forgot extends Component<PropsFromRedux & { desktop?: boolean }> {
 											</div>
 										)}
 
-										<CustomButton
+										<FButton
 											type='submit'
 											onClick={() => setFieldTouched('captcha', true)}
 											isLoading={isSubmitting || this.props.fetchingUser}
 											appearance='primary'
 										>
 											{'Recover'}
-										</CustomButton>
+										</FButton>
 									</Animated>
 									<sp></sp>
 								</Form>
@@ -997,13 +997,13 @@ class Settings extends Component<PropsFromRedux & { desktop?: boolean }> {
 							<Form noValidate>
 								<div className='wrapMargin flex justify-around flex-wrap'>
 									<Field
-										component={CustomInput}
+										component={FInput}
 										required
 										label={'First name'}
 										name='firstName'
 									/>
 									<Field
-										component={CustomInput}
+										component={FInput}
 										required
 										label={'Last name'}
 										name='lastName'
@@ -1011,7 +1011,7 @@ class Settings extends Component<PropsFromRedux & { desktop?: boolean }> {
 								</div>
 								<div className='wrapMargin flex flex-wrap justify-around'>
 									<Field
-										component={CustomInput}
+										component={FInput}
 										required
 										label={'E-mail'}
 										type={'email'}
@@ -1019,7 +1019,7 @@ class Settings extends Component<PropsFromRedux & { desktop?: boolean }> {
 										autoComplete='new-email'
 									/>
 									<Field
-										component={CustomInput}
+										component={FInput}
 										label={'Password'}
 										name='password'
 										autoComplete='new-password'
@@ -1069,14 +1069,14 @@ class Settings extends Component<PropsFromRedux & { desktop?: boolean }> {
 								<sp />
 								<sp />
 								<div className='flex-col items-center'>
-									<CustomButton
+									<FButton
 										type='submit'
 										isDisabled={!dirty}
 										isLoading={isSubmitting || this.props.fetchingUser}
 										appearance='primary'
 									>
 										{'Save'}
-									</CustomButton>
+									</FButton>
 								</div>
 							</Form>
 						)
@@ -1136,7 +1136,7 @@ class Admin extends ReactQueryParams {
 						<div>
 							<tag>Users</tag>
 							<sp />
-							<CustomInput
+							<FInput
 								style={{
 									width: 250,
 								}}
@@ -1147,9 +1147,9 @@ class Admin extends ReactQueryParams {
 									this.fetchData()
 								}}
 								placeholder={'Search'}
-							></CustomInput>
+							></FInput>
 							<div style={{ minHeight: 10 }}></div>
-							<CustomTable
+							<FTable
 								isLoading={this.state.fetching}
 								height={'500px'}
 								expandContent={(data) => (
@@ -1187,7 +1187,7 @@ class Admin extends ReactQueryParams {
 										totalItems: this.state.data.totalItems,
 									}),
 								}}
-							></CustomTable>
+							></FTable>
 						</div>
 					</div>
 				)}
