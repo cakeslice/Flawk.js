@@ -72,7 +72,7 @@ function addFlagFunction(
 								: type === 'error'
 								? styles.colors.red
 								: type === 'warning'
-								? styles.colors.yellow
+								? styles.colors.orange
 								: type === 'info'
 								? styles.colors.main
 								: styles.colors.black,

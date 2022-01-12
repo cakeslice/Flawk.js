@@ -153,7 +153,7 @@ export default class Style extends Component {
 						>
 							{global.nightMode ? 'Light' : 'Dark'}
 						</FButton>
-						{header('Buttons', false, ['<button/>', '<FButton/>'])}
+						{header('Button', false, ['<button/>', '<FButton/>'])}
 						<div
 							className='wrapMarginTopLeft flex flex-wrap justify-start'
 							style={{
@@ -236,7 +236,7 @@ export default class Style extends Component {
 							</FButton>
 							<button>Basic</button>
 						</div>
-						{header('Colors', false, ['styles.colors'])}
+						{header('Color', false, ['styles.colors'])}
 						<div
 							className='wrapMarginTopLeft flex flex-wrap justify-start'
 							style={{
@@ -284,6 +284,24 @@ export default class Style extends Component {
 								style={{
 									...colorStyle,
 									background: styles.colors.green,
+								}}
+							></div>
+							<div
+								style={{
+									...colorStyle,
+									background: styles.colors.orange,
+								}}
+							></div>
+							<div
+								style={{
+									...colorStyle,
+									background: styles.colors.yellow,
+								}}
+							></div>
+							<div
+								style={{
+									...colorStyle,
+									background: styles.colors.blue,
 								}}
 							></div>
 						</div>

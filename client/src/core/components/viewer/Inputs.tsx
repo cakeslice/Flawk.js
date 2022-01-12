@@ -26,7 +26,11 @@ export default class Inputs extends Component {
 			<MediaQuery minWidth={config.mobileWidthTrigger}>
 				{(desktop) => (
 					<div>
-						{header('Input fields', true, ['<input>', '<FInput/>'])}
+						{header('Input field', true, [
+							'<input>',
+							'<FInput/>',
+							'<FButton checkbox/>',
+						])}
 						<div style={{ ...styles.card, maxWidth: 783 }}>
 							<div className='wrapMarginTopLeft flex flex-wrap justify-start items-end'>
 								<FInput

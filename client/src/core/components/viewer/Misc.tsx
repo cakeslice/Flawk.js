@@ -146,6 +146,8 @@ export default class Misc extends ReactQueryParams {
 				{header('Text editor', false, ['<ReactQuill/>'])}
 				<ReactQuill
 					style={{
+						maxWidth: 700,
+						minHeight: 300,
 						background: styles.colors.white,
 						borderWidth: 1,
 						borderStyle: 'solid',
@@ -185,7 +187,7 @@ export default class Misc extends ReactQueryParams {
 					}}
 				/>
 				<sp></sp>
-				<div>{this.state.quill && Parser(this.state.quill)}</div>
+				<div style={{ maxWidth: 700 }}>{this.state.quill && Parser(this.state.quill)}</div>
 			</div>
 		)
 	}

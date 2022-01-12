@@ -253,7 +253,7 @@ class Backend extends Component<PropsFromRedux> {
 							</div>
 						)}
 						{header('Remote data')}
-						<div className='flex-col justify-center'>
+						<div style={{ maxWidth: 700 }} className='flex-col justify-center'>
 							{this.props.structures &&
 								Object.keys(this.props.structures).map((result: string, j) => (
 									<div key={result}>
@@ -1132,7 +1132,7 @@ class Admin extends ReactQueryParams {
 		return (
 			<MediaQuery minWidth={config.mobileWidthTrigger}>
 				{(desktop) => (
-					<div>
+					<div style={{ maxWidth: 700 }}>
 						<div>
 							<tag>Users</tag>
 							<sp />
