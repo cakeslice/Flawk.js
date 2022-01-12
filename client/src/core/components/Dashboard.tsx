@@ -116,7 +116,7 @@ export default class Dashboard extends Component<
 		let defaultRoute: string | undefined
 		if (foundDefaultRoute) defaultRoute = foundDefaultRoute.id
 
-		const textColor = this.props.textColor || styles.colors.black
+		const textColor = this.props.textColor
 
 		return (
 			<MediaQuery minWidth={this.props.bigScreenWidth || 1450}>
@@ -558,7 +558,7 @@ class Menu extends Component<{
 	isOpen: boolean
 	entryStyle?: Obj
 	color: string
-	textColor: string
+	textColor?: string
 	entryMaxWidth: number
 	headerHeight: number
 	routes: Array<DashboardRoute>
@@ -588,7 +588,7 @@ class Menu extends Component<{
 				padding: 0,
 				display: 'flex',
 				height: 40,
-				color: this.props.textColor,
+				color: this.props.textColor || styles.colors.black,
 				alignItems: 'center',
 				width: '100%',
 				paddingLeft: 12,
@@ -602,7 +602,7 @@ class Menu extends Component<{
 				className='flex-col justify-start'
 				style={{
 					minHeight: '100vh',
-					color: this.props.textColor,
+					color: this.props.textColor || styles.colors.black,
 					background: this.props.color,
 					borderRightStyle: 'solid',
 					borderWidth: 1,
@@ -853,7 +853,9 @@ class Menu extends Component<{
 														display: 'flex',
 														// @ts-ignore
 														height: 35,
-														color: this.props.textColor,
+														color:
+															this.props.textColor ||
+															styles.colors.black,
 														alignItems: 'center',
 														width: '100%',
 														paddingLeft: 12,

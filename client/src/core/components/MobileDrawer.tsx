@@ -37,8 +37,6 @@ export default class MobileDrawer extends Component<{
 	renderList = () => {
 		const selectedRoute = global.routerHistory().location.pathname.toString()
 
-		const textColor = this.props.textColor || styles.colors.black
-
 		return (
 			<div
 				style={{
@@ -77,6 +75,7 @@ export default class MobileDrawer extends Component<{
 						},
 					}
 					const outputStyle: React.CSSProperties = {
+						color: this.props.textColor || styles.colors.black,
 						display: 'flex',
 						flexDirection: 'row',
 						justifyContent: 'space-between',
@@ -117,7 +116,12 @@ export default class MobileDrawer extends Component<{
 										style={{
 											fontSize: styles.defaultFontSize,
 											lineHeight: 1.64,
-											color: textColor,
+											fontWeight: selectedRoute.includes('/' + link.id)
+												? 'bold'
+												: undefined,
+											color: selectedRoute.includes('/' + link.id)
+												? this.props.textColor || styles.colors.main
+												: undefined,
 											opacity: selectedRoute.includes('/' + link.id)
 												? 1
 												: 0.5,
@@ -144,7 +148,12 @@ export default class MobileDrawer extends Component<{
 										style={{
 											fontSize: styles.defaultFontSize,
 											lineHeight: 1.64,
-											color: textColor,
+											fontWeight: selectedRoute.includes('/' + link.id)
+												? 'bold'
+												: undefined,
+											color: selectedRoute.includes('/' + link.id)
+												? this.props.textColor || styles.colors.main
+												: this.props.textColor,
 											opacity: selectedRoute.includes('/' + link.id)
 												? 1
 												: 0.5,
@@ -229,15 +238,22 @@ export default class MobileDrawer extends Component<{
 												>
 													<div
 														style={{
-															fontSize: styles.defaultFontSize - 2,
+															fontSize: styles.defaultFontSize - 1,
 															lineHeight: 1.64,
-															color: textColor,
+															color:
+																this.props.textColor ||
+																styles.colors.black,
 															marginLeft: 20,
 															opacity: selectedRoute.includes(
 																'/' + link.id + '/' + sub.id
 															)
 																? 1
 																: 0.5,
+															fontWeight: selectedRoute.includes(
+																'/' + link.id + '/' + sub.id
+															)
+																? 'bold'
+																: undefined,
 														}}
 													>
 														{sub.name ? config.localize(sub.name) : ''}
