@@ -29,6 +29,7 @@ export default class CustomSlider extends Component<Props> {
 				className='flex-col'
 				style={{
 					width: this.props.width || 150,
+					marginRight: 5,
 				}}
 			>
 				<p style={{ fontSize: styles.defaultFontSize }}>
@@ -109,7 +110,6 @@ class Handle extends React.Component<{ dragging?: boolean; offset: number }> {
 						backgroundColor: styles.colors.main,
 					}}
 				></div>
-				{/* <div>{this.props.value}</div> */}
 			</div>
 		)
 	}

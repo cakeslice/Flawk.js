@@ -102,16 +102,23 @@ export default class ComponentsViewer extends Component {
 				page: Misc,
 			},
 			{
+				icon: logo,
 				name: 'Backend',
-				icon: logo,
 				id: 'backend',
-				page: Backend,
-			},
-			{
-				name: 'API',
-				icon: logo,
-				id: 'api',
-				page: API,
+				notExact: true, // Support for routes inside the component
+				subRoutes: [
+					{
+						name: 'Auth',
+						id: 'auth',
+						page: Backend,
+						defaultRoute: true,
+					},
+					{
+						name: 'API',
+						id: 'api',
+						page: API,
+					},
+				],
 			},
 			{
 				id: 'mobile_space',

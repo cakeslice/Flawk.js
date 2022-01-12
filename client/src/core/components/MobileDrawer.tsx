@@ -6,13 +6,13 @@
  */
 
 import { clearAllBodyScrollLocks, disableBodyScroll, enableBodyScroll } from 'body-scroll-lock'
-import Collapsible from 'core/components/Collapsible'
 import { DashboardRoute } from 'core/components/Dashboard'
 import config from 'core/config_'
 import styles from 'core/styles'
 import { GlamorProps, Obj } from 'flawk-types'
 import { css } from 'glamor'
 import React, { Component } from 'react'
+import { UnmountClosed } from 'react-collapse'
 import { Link } from 'react-router-dom'
 
 export default class MobileDrawer extends Component<{
@@ -170,13 +170,11 @@ export default class MobileDrawer extends Component<{
 
 					if (link.subRoutes)
 						return (
-							<Collapsible
-								key={link.notRoute ? i : link.id + (link.params || '')}
-								controlled
-								controlledOpen={selectedRoute.includes('/' + link.id)}
-								content={
-									<div>
-										{link.subRoutes.map((sub, i) => (
+							<div key={link.notRoute ? i : link.id + (link.params || '')}>
+								{output}
+								<UnmountClosed isOpened={selectedRoute.includes('/' + link.id)}>
+									{link.subRoutes &&
+										link.subRoutes.map((sub, i) => (
 											<div key={link.id + '/' + sub.id + (sub.params || '')}>
 												<Link
 													{...css({
@@ -247,11 +245,8 @@ export default class MobileDrawer extends Component<{
 												</Link>
 											</div>
 										))}
-									</div>
-								}
-							>
-								{output}
-							</Collapsible>
+								</UnmountClosed>
+							</div>
 						)
 					else return output
 				})}

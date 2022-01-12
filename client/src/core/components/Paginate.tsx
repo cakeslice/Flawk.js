@@ -7,7 +7,13 @@
 
 import styles from 'core/styles'
 import React from 'react'
+import { SizeMe } from 'react-sizeme'
 import { getPaginationModel } from 'ultimate-pagination'
+
+const buttonStyle = {
+	padding: 12,
+	fontSize: styles.defaultFontSize,
+}
 
 type Props = {
 	onClick: (totalPages: number) => void
@@ -19,7 +25,6 @@ type Props = {
 	hideInactive?: boolean
 	hideEllipsis?: boolean
 	style?: React.CSSProperties
-	mini?: boolean
 }
 export default function Paginate(props: Props) {
 	const {
@@ -31,7 +36,6 @@ export default function Paginate(props: Props) {
 		hideInactive,
 		hideEllipsis,
 		style,
-		mini,
 	} = {
 		// @ts-ignore
 		currentPage: 1,
@@ -40,12 +44,10 @@ export default function Paginate(props: Props) {
 		siblingPagesRange: 1,
 		hideInactive: false,
 		hideEllipsis: false,
-		mini: false,
-		...(props.mini && { boundaryPagesRange: 0, siblingPagesRange: 1 }),
 		...props,
 	} as Props & { mini: boolean }
 
-	function createPagination(noDelimiter: boolean) {
+	function createPagination(bPR?: number, sPR?: number, noDelimiter?: boolean) {
 		const totalPages = props.totalPages
 		let cP = Number(currentPage)
 		if (cP > totalPages) cP = totalPages
@@ -53,8 +55,8 @@ export default function Paginate(props: Props) {
 		const paginationModel = getPaginationModel({
 			currentPage: cP,
 			totalPages,
-			boundaryPagesRange,
-			siblingPagesRange,
+			boundaryPagesRange: bPR,
+			siblingPagesRange: sPR,
 			hideEllipsis,
 			hidePreviousAndNextPageLinks: true,
 			hideFirstAndLastPageLinks: true,
@@ -65,31 +67,34 @@ export default function Paginate(props: Props) {
 		).map((data, key) => {
 			if (data.type === 'PAGE') {
 				return (
-					<li
+					<button
+						disabled={data.isActive}
 						style={{
 							color: data.isActive ? styles.colors.main : styles.colors.black,
-							opacity: data.isActive ? 1 : 0.5,
+							opacity: data.isActive ? 1 : global.nightMode ? 0.5 : 0.75,
 							fontWeight: data.isActive ? 'bold' : 'normal',
+							...buttonStyle,
 							...style,
 						}}
 						onClick={() => onClick(data.value)}
-						className={`PaginateXPage ${
-							data.isActive ? 'PaginateXCurrent' : 'PaginateXLink'
-						}`}
-						key={`PaginateX${data.key}`}
+						key={`Paginate${data.key}`}
 					>
 						{data.value}
-					</li>
+					</button>
 				)
 			}
 			return (
-				<li
-					style={{ opacity: 0.75, color: styles.colors.black, ...style }}
-					className='PaginateXBreak'
-					key={`PaginateX${data.key}`}
+				<div
+					style={{
+						alignSelf: 'center',
+						opacity: global.nightMode ? 0.25 : 0.5,
+						color: styles.colors.black,
+						...style,
+					}}
+					key={`Paginate${data.key}`}
 				>
 					{breakDelimiter}
-				</li>
+				</div>
 			)
 		})
 	}
@@ -105,84 +110,73 @@ export default function Paginate(props: Props) {
 		return <div style={{ minHeight: 44 }}></div>
 
 	return (
-		<div
-			className='flex justify-center items-center'
-			style={{
-				alignSelf: 'stretch',
-				...style,
+		<SizeMe>
+			{({ size }) => {
+				const mini = size && size.width && size.width < 300 ? true : false
+
+				const bPR = mini ? 0 : boundaryPagesRange
+				const sPR = mini ? 1 : siblingPagesRange
+
+				return (
+					<div
+						className='flex grow justify-center items-center'
+						style={{
+							alignSelf: 'stretch',
+							...style,
+						}}
+					>
+						<div className='flex flex-wrap'>
+							{(!hideInactive || !isFirst) && (
+								<button
+									disabled={isFirst}
+									style={{ ...buttonStyle }}
+									onClick={() => {
+										if (!isFirst) {
+											onClick(mini ? 1 : cP - 1)
+										}
+									}}
+								>
+									<div
+										style={{
+											opacity: !isFirst ? 0.5 : 0.15,
+											...style,
+										}}
+									>
+										{mini
+											? pageDoubleArrow(styles.colors.black)
+											: pageArrow(styles.colors.black)}
+									</div>
+								</button>
+							)}
+							{createPagination(bPR, sPR, mini)}
+							{(!hideInactive || !isLast) && (
+								<button
+									disabled={isLast}
+									style={{ ...buttonStyle }}
+									onClick={() => {
+										if (!isLast) {
+											onClick(mini ? totalPages : cP + 1)
+										}
+									}}
+								>
+									<div
+										style={{
+											transform: 'scaleX(-1)',
+											opacity: !isLast ? 0.5 : 0.15,
+											...style,
+										}}
+									>
+										{mini
+											? pageDoubleArrow(styles.colors.black)
+											: pageArrow(styles.colors.black)}
+									</div>
+								</button>
+							)}
+						</div>
+					</div>
+				)
 			}}
-		>
-			<ul className='PaginateX'>
-				{(!hideInactive || !isFirst) && (
-					<li
-						className={`PaginateXPrev ${isFirst ? '' : 'PaginateXLink'}`}
-						onClick={() => {
-							if (!isFirst) {
-								onClick(mini ? 1 : cP - 1)
-							}
-						}}
-					>
-						<div
-							style={{
-								opacity: !isFirst ? 0.5 : 0.15,
-								...style,
-							}}
-						>
-							{mini
-								? pageDoubleArrow(styles.colors.black)
-								: pageArrow(styles.colors.black)}
-						</div>
-					</li>
-				)}
-				{createPagination(mini)}
-				{(!hideInactive || !isLast) && (
-					<li
-						className={`PaginateXNext ${isLast ? '' : 'PaginateXLink'}`}
-						onClick={() => {
-							if (!isLast) {
-								onClick(mini ? totalPages : cP + 1)
-							}
-						}}
-					>
-						<div
-							style={{
-								transform: 'scaleX(-1)',
-								opacity: !isLast ? 0.5 : 0.15,
-								...style,
-							}}
-						>
-							{mini
-								? pageDoubleArrow(styles.colors.black)
-								: pageArrow(styles.colors.black)}
-						</div>
-					</li>
-				)}
-				<style
-					dangerouslySetInnerHTML={{
-						__html: `
-					.PaginateX{
-						list-style-type: none;
-						margin: 0;
-						padding: 0;
-						user-select: none;
-					}
-					.PaginateX li{
-						display: inline-block;
-						padding: 12px;
-					}
-					.PaginateXLink{
-						cursor: pointer;
-						font-size: ${14}px;
-					}
-					.PaginateXCurrent{
-						color: ${styles.colors.main};
-						font-size: ${14}px;
-					}
-				`,
-					}}
-				/>
-			</ul>
-		</div>
+		</SizeMe>
 	)
 }
 

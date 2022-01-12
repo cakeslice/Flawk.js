@@ -15,11 +15,10 @@ import config from 'core/config_'
 import styles from 'core/styles'
 import ReactQueryParams from 'core/utils/ReactQueryParams'
 import React from 'react'
-import { UnmountClosed } from 'react-collapse'
 import MediaQuery from 'react-responsive'
 import Collapsible from '../Collapsible'
 import CodeCollapse from './common/CodeCollapse'
-import { arrow, header } from './ComponentsViewer'
+import { header } from './ComponentsViewer'
 
 export default class Layout extends ReactQueryParams {
 	state = {
@@ -37,7 +36,9 @@ export default class Layout extends ReactQueryParams {
 			| undefined,
 		isOpen: false,
 		fetching: false,
+		//
 		exampleModal: false,
+		confirmModal: false,
 	}
 
 	defaultQueryParams: {
@@ -93,6 +94,42 @@ export default class Layout extends ReactQueryParams {
 		this.fetchData()
 	}
 
+	confirmModal() {
+		return (
+			<GenericModal
+				name='confirmModal'
+				parent={this}
+				title={
+					<div>
+						Delete <b>Chris</b>
+					</div>
+				}
+				content={(close, Content, Buttons, Parent) => (
+					<Parent>
+						<Content>
+							<p>
+								Are you sure you want to delete user <b>Chris</b>?
+							</p>
+							<sp />
+							<b style={{ color: styles.colors.red }}>
+								This action cannot be reverted
+							</b>
+						</Content>
+						<Buttons>
+							<CustomButton onClick={close}>Cancel</CustomButton>
+							<CustomButton
+								style={{ background: styles.colors.red }}
+								appearance='primary'
+								onClick={close}
+							>
+								Delete
+							</CustomButton>
+						</Buttons>
+					</Parent>
+				)}
+			/>
+		)
+	}
 	exampleModal() {
 		return (
 			<GenericModal
@@ -174,9 +211,8 @@ export default class Layout extends ReactQueryParams {
 							</CustomButton>
 						</Content>
 						<Buttons>
-							<CustomButton onClick={close}>Cancel</CustomButton>
 							<CustomButton appearance='primary' onClick={close}>
-								OK
+								Done
 							</CustomButton>
 						</Buttons>
 					</Parent>
@@ -203,6 +239,7 @@ export default class Layout extends ReactQueryParams {
 					return (
 						<div>
 							{this.state.exampleModal && this.exampleModal()}
+							{this.state.confirmModal && this.confirmModal()}
 							{header('Flex grid', true)}
 							<div style={{ ...styles.card, overflow: 'auto' }}>
 								<div className='wrapMargin flex flex-wrap'>
@@ -347,55 +384,73 @@ export default class Layout extends ReactQueryParams {
 							)}
 							<div id='anchor' />
 							{header('Modal')}
-							<CustomButton onClick={() => this.setState({ exampleModal: true })}>
-								Open
-							</CustomButton>
-							{header('Collapse')}
-							<Collapsible
-								content={<div style={{ ...styles.outlineCard }}>Content</div>}
-							></Collapsible>
-							<div style={{ ...styles.card }}>
-								<button
-									onClick={() => {
-										this.setState({ isOpen: !this.state.isOpen })
-									}}
-									style={{
-										display: 'flex',
-										alignItems: 'center',
-									}}
+							<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+								<CustomButton onClick={() => this.setState({ exampleModal: true })}>
+									View
+								</CustomButton>
+								<CustomButton
+									style={{ color: styles.colors.red }}
+									onClick={() => this.setState({ confirmModal: true })}
 								>
-									<div
-										style={{
-											display: 'flex',
-											alignItems: 'center',
-											width: 12.5,
-											marginRight: 10,
-											transition: 'transform 200ms',
-											transform: this.state.isOpen
-												? 'rotate(180deg)'
-												: 'rotate(90deg)',
-										}}
-									>
-										{arrow(
-											config.replaceAlpha(
-												styles.colors.black,
-												global.nightMode ? 0.15 : 0.25
-											)
+									Delete
+								</CustomButton>
+							</div>
+							{header('Collapse', false, ['<Collapsible/>', '<UnmountClosed/>'])}
+							<div style={{ ...styles.card }}>
+								<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+									<Collapsible
+										trigger={(isOpen, set) => (
+											<b
+												style={{
+													color: isOpen ? styles.colors.main : undefined,
+												}}
+											>
+												What is this component for?
+											</b>
 										)}
-									</div>{' '}
-									Something
-								</button>
-								<UnmountClosed isOpened={this.state.isOpen}>
-									<div
-										style={{
-											// ! Collapse doesn't support vertical margins!
-											padding: 15,
-											paddingLeft: 25,
-										}}
-									>
-										<div style={{ ...styles.outlineCard }}>Content</div>
-									</div>
-								</UnmountClosed>
+										content={(set) => (
+											<div
+												style={{
+													// ! Collapse doesn't support vertical margins!
+													paddingTop: 15,
+													paddingRight: 15,
+													paddingLeft: 25,
+												}}
+											>
+												<div style={{ ...styles.outlineCard }}>
+													It expands and shows hidden content
+												</div>
+											</div>
+										)}
+									></Collapsible>
+									<sp />
+									<Collapsible
+										customTrigger
+										trigger={(isOpen, set) => (
+											<CustomButton onClick={() => set(!isOpen)}>
+												{isOpen ? 'Close' : 'Open'}
+											</CustomButton>
+										)}
+										content={(set) => (
+											<div
+												style={{
+													// ! Collapse doesn't support vertical margins!
+													paddingTop: 15,
+													paddingRight: 15,
+													paddingLeft: 0,
+												}}
+											>
+												<div style={{ ...styles.outlineCard }}>
+													<p>Content</p>
+													<sp />
+													<CustomButton onClick={() => set(false)}>
+														{'Close'}
+													</CustomButton>
+												</div>
+											</div>
+										)}
+									></Collapsible>
+								</div>
 							</div>
 						</div>
 					)

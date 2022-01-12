@@ -96,7 +96,7 @@ export default class GenericModal extends Component<Props> {
 		const modalPadding = styles.modalPadding || 20
 		const modalWrapper: React.CSSProperties = {
 			padding: modalPadding,
-			paddingTop: this.props.title ? modalPadding / 2 : modalPadding,
+			paddingTop: modalPadding,
 			paddingBottom: modalPadding,
 			overflow: 'auto',
 		}
@@ -280,12 +280,17 @@ class ModalHeader extends Component<{
 							style={{
 								borderRadius: 5,
 								height: 24,
-								opacity: 0.5,
 								background: 'transparent',
 							}}
 							onClick={this.props.onClose}
 						>
-							{close(styles.colors.black)}
+							<div
+								style={{
+									opacity: 0.5,
+								}}
+							>
+								{close(styles.colors.black)}
+							</div>
 						</button>
 					)}
 				</div>
@@ -295,7 +300,7 @@ class ModalHeader extends Component<{
 					(this.props.headerStyle && this.props.headerStyle.line)) && (
 					<div
 						style={{
-							height: 1,
+							height: 2,
 							background:
 								(this.props.headerStyle && this.props.headerStyle.lineColor) ||
 								styles.modalHeaderStyle.lineColor ||

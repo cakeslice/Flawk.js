@@ -211,6 +211,9 @@ button {
 	font-family: inherit;
 	background: none;
 }
+button:disabled {
+	cursor: default;
+}
 button:focus-visible {
 	outline: 1px dashed var(--main);
 	outline-offset: 3px;

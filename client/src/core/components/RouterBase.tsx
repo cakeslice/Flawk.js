@@ -28,8 +28,8 @@ const gitHash = GitInfo().commit.shortHash
 let amountToasts = 0
 function addFlagFunction(
 	title: string | JSX.Element | JSX.Element[],
-	description: string | JSX.Element | JSX.Element[],
-	type: 'warning' | 'error' | 'success' | 'info',
+	description: string | JSX.Element | JSX.Element[] | undefined,
+	type: 'warning' | 'error' | 'success' | 'info' | 'default',
 	options?: {
 		customComponent?: React.ComponentType
 		playSound?: boolean
@@ -73,6 +73,8 @@ function addFlagFunction(
 								? styles.colors.red
 								: type === 'warning'
 								? styles.colors.yellow
+								: type === 'info'
+								? styles.colors.main
 								: styles.colors.black,
 					}}
 				>

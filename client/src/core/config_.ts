@@ -227,7 +227,7 @@ export default {
 	// @ts-ignore
 	darkModeForce: false,
 
-	toastCloseTime: 5000,
+	toastCloseTime: 2000,
 
 	// @ts-ignore
 	mobileWidthTrigger: 700,

@@ -34,19 +34,7 @@ export default class Style extends Component {
 			<MediaQuery minWidth={config.mobileWidthTrigger}>
 				{(desktop) => (
 					<div>
-						{header('Dark mode', true)}
-						<CustomButton
-							onClick={async () => {
-								await global.toggleNightMode()
-							}}
-							appearance='secondary'
-							style={{
-								minWidth: 50,
-							}}
-						>
-							Toggle
-						</CustomButton>
-						{header('Typography')}
+						{header('Typography', true)}
 						<div style={{ ...styles.card }}>
 							<h1>
 								{'Hello. '}
@@ -85,12 +73,12 @@ export default class Style extends Component {
 							<hr />
 							<sp />
 							<i>
-								Lorem ipsum dolor sit amet,{' '}
+								Italic ipsum dolor sit amet,{' '}
 								<CustomTooltip
 									tooltipProps={{ placement: 'top' }}
 									content={<div>Hello World!</div>}
 								>
-									<b>tooltip</b>
+									<b style={{ color: styles.colors.main }}>tooltip</b>
 								</CustomTooltip>{' '}
 								adipiscing elit, sed do{' '}
 								<span style={{ color: styles.colors.red }}>colorized</span> tempor
@@ -119,7 +107,10 @@ export default class Style extends Component {
 							</p>
 							<sp />
 							<sp />
-							<p>{'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'}</p>
+							<p>
+								<b>Bold</b>
+								{' ipsum dolor sit amet, consectetur adipiscing elit.'}
+							</p>
 							<p>
 								{
 									'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat:'
@@ -127,7 +118,7 @@ export default class Style extends Component {
 							</p>
 							<ul>
 								<li>
-									Lorem <tag>Popular</tag>
+									Lorem <tag>Tag</tag>
 								</li>
 								<li>Ipsum</li>
 								<li>Dolor</li>
@@ -141,13 +132,24 @@ export default class Style extends Component {
 							</p>
 							<sp />
 							<blockquote>
-								Neque porro quisquam est qui dolorem ipsum quia dolor sit amet,
-								consectetur, adipisci velit...
+								Block quote porro quisquam est qui dolorem ipsum quia dolor sit
+								amet, consectetur, adipisci velit...
 							</blockquote>
 							<sp /> <sp />
-							<code>int var = 1</code>
+							<code>int code = 1</code>
 							<sp /> <sp /> <sp />
 						</div>
+						{header('Dark mode')}
+						<CustomButton
+							onClick={async () => {
+								await global.toggleNightMode()
+							}}
+							style={{
+								minWidth: 50,
+							}}
+						>
+							Toggle
+						</CustomButton>
 						{header('Buttons', false, ['<button/>', '<CustomButton/>'])}
 						<div
 							className='wrapMarginTopLeft flex flex-wrap justify-start'
@@ -157,15 +159,17 @@ export default class Style extends Component {
 								paddingRight: 10,
 							}}
 						>
-							<CustomButton isLoading style={{ minWidth: 50 }}>
-								Loading
-							</CustomButton>
-							<CustomButton isLoading appearance='primary' style={{ minWidth: 50 }}>
-								Loading
-							</CustomButton>
-							<CustomButton isLoading appearance='secondary' style={{ minWidth: 50 }}>
-								Loading
-							</CustomButton>
+							<CustomButton isLoading style={{ minWidth: 50 }}></CustomButton>
+							<CustomButton
+								isLoading
+								appearance='primary'
+								style={{ minWidth: 50 }}
+							></CustomButton>
+							<CustomButton
+								isLoading
+								appearance='secondary'
+								style={{ minWidth: 50 }}
+							></CustomButton>
 							<CustomButton style={{ minWidth: 50 }}>Default</CustomButton>
 							<CustomButton
 								appearance='primary'

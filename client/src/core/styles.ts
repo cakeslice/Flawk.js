@@ -104,9 +104,9 @@ export default {
 		noCloseButton: false,
 		fontWeight: 'bold',
 		fontSize: 19,
-		/* textStyle: {
-			marginTop: 10,
-		}, */
+		textStyle: {
+			marginTop: 5,
+		},
 	} as React.CSSProperties & {
 		line: boolean
 		lineColor: React.CSSProperties['background']
@@ -143,6 +143,7 @@ export default {
 
 	// @ts-ignore
 	card: {
+		width: 'fit-content',
 		boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.05), 0 6px 20px 0 rgba(0, 0, 0, 0.05)',
 		borderStyle: 'solid',
 		borderWidth: 1,

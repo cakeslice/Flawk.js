@@ -264,7 +264,7 @@ export default class Inputs extends Component {
 							/>
 						</div>
 						{header('Form')}
-						<div style={{ ...styles.card, maxWidth: 600 }}>
+						<div style={{ ...styles.card, width: 'auto', maxWidth: 600 }}>
 							<Formik
 								enableReinitialize
 								initialValues={

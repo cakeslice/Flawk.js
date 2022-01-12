@@ -168,6 +168,7 @@ class CT extends ReactQueryParams {
 
 		const wrapperStyle: React.CSSProperties = {
 			...styles.card,
+			width: 'auto',
 			padding: 0,
 			margin: 0,
 			borderRadius: styles.defaultBorderRadius,
@@ -594,7 +595,6 @@ class Row extends Component<RowProps> {
 								this.setState({ isOpen: !this.state.isOpen })
 							}}
 							style={{
-								cursor: 'pointer',
 								height: '100%',
 								paddingLeft: 10,
 							}}
@@ -685,17 +685,15 @@ export function TablePagination({
 		<SizeMe>
 			{({ size }) => {
 				const smaller = size && size.width && size.width < 550 ? true : false
-				const mini = size && size.width && size.width < 350 ? true : false
 
 				return (
 					<div
 						className='flex-col'
 						style={{
-							minHeight: 54,
+							minHeight: 44,
 							flexGrow: 1,
 						}}
 					>
-						<div style={{ flexGrow: 1, minHeight: 10 }} />
 						<div
 							style={{
 								display: 'flex',
@@ -714,7 +712,6 @@ export function TablePagination({
 							)}
 							{totalPages ? (
 								<Paginate
-									mini={mini}
 									onClick={onClick}
 									totalPages={totalPages || 1}
 									currentPage={p}

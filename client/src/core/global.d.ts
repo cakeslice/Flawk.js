@@ -39,8 +39,8 @@ declare global {
 	var toggleNightMode: (night?: boolean) => Promise<void>
 	var addFlag: (
 		title: string | JSX.Element | JSX.Element[],
-		description: string | JSX.Element | JSX.Element[],
-		type: 'warning' | 'error' | 'success' | 'info',
+		description: string | JSX.Element | JSX.Element[] | undefined,
+		type: 'warning' | 'error' | 'success' | 'info' | 'default',
 		options: {
 			customComponent?: React.ComponentType | ReactElement<any, any>
 			playSound?: boolean

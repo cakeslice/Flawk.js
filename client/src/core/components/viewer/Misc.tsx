@@ -13,7 +13,6 @@ import Loading from 'core/components/Loading'
 import styles from 'core/styles'
 import ReactQueryParams from 'core/utils/ReactQueryParams'
 import Parser from 'html-react-parser'
-import _ from 'lodash'
 import React from 'react'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import ReactQuill from 'react-quill'
@@ -76,13 +75,44 @@ export default class Misc extends ReactQueryParams {
 					</div>
 				</div>
 				{header('Toasts')}
-				<div>
+				<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
 					<CustomButton
 						onClick={() =>
 							global.addFlag(
-								'Hello! ' + _.random(0, 99).toString(),
-								'This is an example',
+								'New message',
+								<div>
+									<div>
+										<b>Chris:</b> Have you heard about the new Tesla?
+									</div>
+									<div className='flex justify-end'>
+										<CustomButton>Reply</CustomButton>
+									</div>
+								</div>,
 								'info',
+								{
+									playSound: true,
+								}
+							)
+						}
+					>
+						Info
+					</CustomButton>
+					<CustomButton
+						onClick={() =>
+							global.addFlag('Your changes were saved', undefined, 'success', {
+								closeAfter: 2000,
+								playSound: true,
+							})
+						}
+					>
+						Success
+					</CustomButton>
+					<CustomButton
+						onClick={() =>
+							global.addFlag(
+								'Warning',
+								'Your file can take a while to process',
+								'warning',
 								{
 									closeAfter: 5000,
 									playSound: true,
@@ -90,25 +120,22 @@ export default class Misc extends ReactQueryParams {
 							)
 						}
 					>
-						Notification
+						Warning
+					</CustomButton>
+					<CustomButton
+						onClick={() =>
+							global.addFlag('Error', 'File upload failed', 'error', {
+								playSound: true,
+							})
+						}
+					>
+						Error
 					</CustomButton>
 				</div>
 				{header('Copy to clipboard')}
 				<CopyToClipboard
-					text={'https://reactjs.org/docs/create-a-new-react-app.html'}
-					onCopy={() =>
-						global.addFlag('', '', 'info', {
-							customComponent: (
-								<div style={{ padding: 10 }}>
-									<CustomButton>Hello</CustomButton>
-									<sp />
-									<div>{'Copied!'}</div>
-								</div>
-							),
-							closeOnClick: false,
-							playSound: true,
-						})
-					}
+					text={'https://github.com/cakeslice'}
+					onCopy={() => global.addFlag('Copied!', '', 'default', { autoClose: true })}
 				>
 					<CustomButton>Copy Link</CustomButton>
 				</CopyToClipboard>

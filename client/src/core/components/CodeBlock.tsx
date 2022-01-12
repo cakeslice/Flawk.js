@@ -86,7 +86,7 @@ export default function CodeBlock(props: {
 										<span style={{ color: styles.colors.green }}>✔️</span>
 									</div>,
 									'',
-									'info',
+									'default',
 									{
 										closeAfter: 2000,
 									}
