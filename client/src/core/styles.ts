@@ -51,6 +51,8 @@ export default {
 	invalidFontSize: 13,
 	// @ts-ignore
 	inputFontWeight: undefined,
+	// @ts-ignore
+	inputBackground: undefined,
 
 	// @ts-ignore
 	inputBorderFactorDay: 0.2,

@@ -184,11 +184,11 @@ export default class CustomDropdown extends Component<{
 			},
 			activeBorderColor: styles.colors.mainLight,
 			activeShadowColor: styles.colors.mainVeryLight,
-			activeBackground: styles.colors.white,
+			activeBackground: styles.inputBackground || styles.colors.white,
 
 			//
 
-			background: styles.colors.white,
+			background: styles.inputBackground || styles.colors.white,
 		}
 		const defaultMenuStyle: CSSObjectWithLabel = {
 			background: styles.colors.white,

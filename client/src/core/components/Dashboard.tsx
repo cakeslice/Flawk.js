@@ -712,7 +712,8 @@ class Menu extends Component<{
 													color:
 														this.props.isOpen &&
 														selectedRoute.includes('/' + entry.id)
-															? styles.colors.main
+															? this.props.textColor ||
+															  styles.colors.main
 															: undefined,
 													marginLeft: this.props.isOpen ? 10 : 0,
 													maxWidth: this.props.isOpen ? 'auto' : 0,
@@ -796,7 +797,8 @@ class Menu extends Component<{
 													color:
 														this.props.isOpen &&
 														selectedRoute.includes('/' + entry.id)
-															? styles.colors.main
+															? this.props.textColor ||
+															  styles.colors.main
 															: undefined,
 													fontWeight:
 														this.props.isOpen &&

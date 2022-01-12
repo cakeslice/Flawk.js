@@ -126,7 +126,7 @@ class CT extends ReactQueryParams {
 		}
 
 		const headerRowStyle: React.CSSProperties = {
-			background: styles.colors.white,
+			background: styles.inputBackground || styles.colors.white,
 			padding: paddingX * 2,
 			paddingTop: 0,
 			paddingBottom: 0,
@@ -531,7 +531,7 @@ class CT extends ReactQueryParams {
 							<div
 								style={{
 									...wrapperStyle,
-									background: styles.colors.white,
+									background: styles.inputBackground || styles.colors.white,
 									...(overrideStyle && overrideStyle.wrapperStyle),
 
 									//borderTop: 'none',

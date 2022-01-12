@@ -106,7 +106,7 @@ export default class CustomButton extends Component<{
 
 			//
 
-			background: styles.colors.white,
+			background: styles.inputBackground || styles.colors.white,
 			':hover': {},
 			':active': {},
 			':checked': {},
