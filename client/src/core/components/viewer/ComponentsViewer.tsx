@@ -14,7 +14,6 @@ import styles from 'core/styles'
 import { css } from 'glamor'
 import React, { Component } from 'react'
 import MediaQuery from 'react-responsive'
-import { SizeMe } from 'react-sizeme'
 import scrollToElement from 'scroll-to-element'
 import CodeCollapse from './common/CodeCollapse'
 
@@ -252,65 +251,62 @@ export const header = (
 	}
 ) => {
 	return (
-		<SizeMe>
-			{({ size }) => {
-				const desktop = size && size.width && size.width > 735
-				return (
-					<div>
-						{!top && <sp />}
-						{!top && <sp />}
-						{!top && <sp />}
-						<div className={(desktop ? 'flex' : 'flex-col') + ' w-full'}>
-							<div className={sourceCode && 'flex-child-fix grow'}>
-								<div className='flex'>
-									<h3>{title}</h3>
-									{tags && <div style={{ minWidth: 15 }} />}
-									{tags && (
-										<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
-											{tags.map((tag) => (
-												<tag
-													style={{
-														position: 'relative',
-														top: -3,
-														marginLeft: 5,
-													}}
-												>
-													{tag}
-												</tag>
-											))}
-										</div>
-									)}
-								</div>
-								{sourceCode && !tags && <sp />}
-								{sourceCode && <sp />}
-								{sourceCode && sourceCode.component}
+		<MediaQuery minWidth={880}>
+			{(desktop) => (
+				<div>
+					{!top && <sp />}
+					{!top && <sp />}
+					{!top && <sp />}
+					<div className={(desktop ? 'flex' : 'flex-col') + ' w-full'}>
+						<div className={sourceCode && 'flex-child-fix grow'}>
+							<div className='flex'>
+								<h3>{title}</h3>
+								{tags && <div style={{ minWidth: 15 }} />}
+								{tags && (
+									<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+										{tags.map((tag) => (
+											<tag
+												style={{
+													position: 'relative',
+													top: -3,
+													marginLeft: 5,
+												}}
+											>
+												{tag}
+											</tag>
+										))}
+									</div>
+								)}
 							</div>
-							{sourceCode && (
-								<div
-									className='flex justify-end'
-									style={{
-										marginTop: !desktop ? 25 : 0,
-										justifySelf: !desktop ? 'flex-end' : undefined,
-									}}
-								>
-									<CodeCollapse
-										style={{ width: '100%' }}
-										codeStyle={{
-											width: desktop ? 400 : undefined,
-											marginLeft: desktop ? 25 : undefined,
-										}}
-										data={sourceCode.code}
-										lang={sourceCode.lang || 'tsx'}
-									></CodeCollapse>
-								</div>
-							)}
+							{sourceCode && !tags && <sp />}
+							{sourceCode && <sp />}
+							{sourceCode && sourceCode.component}
 						</div>
-						{!sourceCode && !tags && <sp />}
-						{!sourceCode && <sp />}
+						{sourceCode && (
+							<div
+								className='flex justify-end'
+								style={{
+									marginTop: !desktop ? 25 : 0,
+									justifySelf: !desktop ? 'flex-end' : undefined,
+								}}
+							>
+								<CodeCollapse
+									style={{ width: '100%' }}
+									codeStyle={{
+										width: desktop ? 400 : undefined,
+										marginLeft: desktop ? 25 : undefined,
+									}}
+									data={sourceCode.code}
+									lang={sourceCode.lang || 'tsx'}
+								></CodeCollapse>
+							</div>
+						)}
 					</div>
-				)
-			}}
-		</SizeMe>
+					{!sourceCode && !tags && <sp />}
+					{!sourceCode && <sp />}
+				</div>
+			)}
+		</MediaQuery>
 	)
 }
 

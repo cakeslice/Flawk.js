@@ -134,84 +134,13 @@ export default class Layout extends ReactQueryParams {
 			<Modal
 				name='exampleModal'
 				parent={this}
-				title={'Hello!'}
+				title={'Title'}
 				content={(close, Content, Buttons, Parent) => (
 					<Parent>
-						<Content>
-							<FTable
-								isLoading={this.state.fetching}
-								height={'500px'}
-								expandContent={(data) => (
-									<div>
-										<b>Expanded:</b> {data.title}
-									</div>
-								)}
-								keySelector={'id'}
-								columns={[
-									{
-										name: 'ID',
-										selector: 'id',
-
-										style: {
-											color: styles.colors.main,
-										},
-									},
-									{
-										name: 'Title',
-										selector: 'title',
-										grow: 4,
-									},
-									{
-										name: 'Custom Cell',
-										selector: 'completed',
-										grow: 2,
-										cell: (value) => <div>{value === true ? 'Yes' : 'No'}</div>,
-									},
-									{
-										name: 'Fat (g)',
-										selector: 'fat',
-										hide: 'mobile',
-									},
-									{
-										name: 'Carbs (g)',
-										selector: 'carbs',
-										hide: 'mobile',
-									},
-									{
-										name: 'Protein (g)',
-										selector: 'protein',
-										hide: 'mobile',
-									},
-									{
-										name: 'Sodium (mg)',
-										selector: 'sodium',
-										hide: 'mobile',
-									},
-									{
-										name: 'Calcium (%)',
-										selector: 'calcium',
-										hide: 'mobile',
-									},
-									{
-										name: <div style={styles.textEllipsis}>Custom Head</div>,
-										selector: 'action',
-										hide: 'mobile',
-									},
-								]}
-								data={this.state.data && this.state.data.items}
-							></FTable>
-							<sp />
-							<FButton
-								onClick={() => {
-									this.fetchData()
-								}}
-							>
-								Fetch
-							</FButton>
-						</Content>
+						<Content>Content</Content>
 						<Buttons>
 							<FButton appearance='primary' onClick={close}>
-								Done
+								Button
 							</FButton>
 						</Buttons>
 					</Parent>

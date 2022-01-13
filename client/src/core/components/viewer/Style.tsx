@@ -17,6 +17,7 @@ import MediaQuery from 'react-responsive'
 import { Link } from 'react-router-dom'
 import * as uuid from 'uuid'
 import { header } from './ComponentsViewer'
+
 export default class Style extends Component {
 	state = {
 		animationTrigger: undefined,
