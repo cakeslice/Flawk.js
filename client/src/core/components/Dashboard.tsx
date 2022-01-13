@@ -572,6 +572,7 @@ class Menu extends Component<{
 
 		const entryStyle = (entry: { id: string }) => {
 			return {
+				userSelect: 'none',
 				backgroundColor: selectedRoute.includes('/' + entry.id) && 'rgba(127,127,127,.05)',
 				':focus-visible': {
 					outline: 'none',

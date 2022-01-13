@@ -75,6 +75,7 @@ export default class MobileDrawer extends Component<{
 						},
 					}
 					const outputStyle: React.CSSProperties = {
+						userSelect: 'none',
 						color: this.props.textColor || styles.colors.black,
 						display: 'flex',
 						flexDirection: 'row',

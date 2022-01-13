@@ -438,10 +438,8 @@ const settings = (color: string) => {
 
 const iconWrapper = (icon: (color: string) => JSX.Element, iconSize?: number) => (
 	<div
+		className='flex items-center justify-center'
 		style={{
-			display: 'flex',
-			justifyContent: 'center',
-			alignItems: 'center',
 			opacity: 0.5,
 			width: iconSize ? iconSize * 0.85 : undefined,
 		}}
