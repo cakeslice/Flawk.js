@@ -7,11 +7,16 @@
 
 import logo from 'core/assets/images/logo.svg'
 import Dashboard, { DashboardRoute } from 'core/components/Dashboard'
+import lightOn from 'core/components/viewer/assets/lightbulb.svg'
+import lightOff from 'core/components/viewer/assets/lightbulb_off.svg'
 import config from 'core/config_'
 import styles from 'core/styles'
+import { css } from 'glamor'
 import React, { Component } from 'react'
 import MediaQuery from 'react-responsive'
+import { SizeMe } from 'react-sizeme'
 import scrollToElement from 'scroll-to-element'
+import CodeCollapse from './common/CodeCollapse'
 
 const Layout = React.lazy(() => import('core/components/viewer/Layout'))
 const Misc = React.lazy(() => import('core/components/viewer/Misc'))
@@ -129,8 +134,53 @@ export default class ComponentsViewer extends Component {
 			{
 				id: 'desktop_space',
 				notRoute: true,
-				tab: (props) => <div key={props.key} style={{ flexGrow: 1 }} />,
+				tab: (props) => <div key={props.key} style={{ flexGrow: 1, minHeight: 20 }} />,
 				desktopTab: true,
+			},
+			{
+				id: 'line',
+				notRoute: true,
+				tab: (props) => (
+					<div
+						style={{
+							height: 1,
+							background: styles.colors.lineColor,
+							width: '100%',
+						}}
+					></div>
+				),
+			},
+			{
+				id: 'middle',
+				notRoute: true,
+				tab: (props) => <div key={props.key} style={{ height: 20 }} />,
+			},
+			{
+				name: (!global.nightMode ? 'Dark' : 'Light') + ' mode',
+				notRoute: true,
+				onClick: () => global.toggleNightMode(),
+				customIcon: (active) => (
+					<div
+						{...css({
+							width: 25,
+							padding: 0,
+							opacity: 0.66,
+						})}
+					>
+						<img
+							style={{
+								maxHeight: 30,
+							}}
+							src={global.nightMode ? lightOff : lightOn}
+						></img>
+					</div>
+				),
+				id: 'dark_mode',
+			},
+			{
+				id: 'bottom',
+				notRoute: true,
+				tab: (props) => <div key={props.key} style={{ height: 40 }} />,
 			},
 		]
 
@@ -191,26 +241,78 @@ class Wrapper extends Component {
 	}
 }
 
-export const header = (title: string, top?: boolean, tags?: string[]) => (
-	<div>
-		{!top && <sp />}
-		{!top && <sp />}
-		{!top && <sp />}
-		<div className='flex'>
-			<h3>{title}</h3>
-			{tags && <div style={{ minWidth: 15 }} />}
-			{tags && (
-				<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
-					{tags.map((tag) => (
-						<tag style={{ position: 'relative', top: -3, marginLeft: 5 }}>{tag}</tag>
-					))}
-				</div>
-			)}
-		</div>
-		{!tags && <sp />}
-		<sp />
-	</div>
-)
+export const header = (
+	title: string,
+	top?: boolean,
+	tags?: string[],
+	sourceCode?: {
+		code: string
+		component: JSX.Element
+		lang?: 'tsx' | 'jsx' | 'json'
+	}
+) => {
+	return (
+		<SizeMe>
+			{({ size }) => {
+				const desktop = size && size.width && size.width > 735
+				return (
+					<div>
+						{!top && <sp />}
+						{!top && <sp />}
+						{!top && <sp />}
+						<div className={(desktop ? 'flex' : 'flex-col') + ' w-full'}>
+							<div className={sourceCode && 'flex-child-fix grow'}>
+								<div className='flex'>
+									<h3>{title}</h3>
+									{tags && <div style={{ minWidth: 15 }} />}
+									{tags && (
+										<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+											{tags.map((tag) => (
+												<tag
+													style={{
+														position: 'relative',
+														top: -3,
+														marginLeft: 5,
+													}}
+												>
+													{tag}
+												</tag>
+											))}
+										</div>
+									)}
+								</div>
+								{sourceCode && !tags && <sp />}
+								{sourceCode && <sp />}
+								{sourceCode && sourceCode.component}
+							</div>
+							{sourceCode && (
+								<div
+									className='flex justify-end'
+									style={{
+										marginTop: !desktop ? 25 : 0,
+										justifySelf: !desktop ? 'flex-end' : undefined,
+									}}
+								>
+									<CodeCollapse
+										style={{ width: '100%' }}
+										codeStyle={{
+											width: desktop ? 400 : undefined,
+											marginLeft: desktop ? 25 : undefined,
+										}}
+										data={sourceCode.code}
+										lang={sourceCode.lang || 'tsx'}
+									></CodeCollapse>
+								</div>
+							)}
+						</div>
+						{!sourceCode && !tags && <sp />}
+						{!sourceCode && <sp />}
+					</div>
+				)
+			}}
+		</SizeMe>
+	)
+}
 
 export const arrow = (color: string) => (
 	<svg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'>

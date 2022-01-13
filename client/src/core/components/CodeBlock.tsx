@@ -32,12 +32,13 @@ const clipboard = (color: string) => (
 )
 
 export default function CodeBlock(props: {
+	style?: React.CSSProperties
 	data: string
 	lang: 'json' | 'jsx' | 'tsx' | 'html'
 	noPrettier?: boolean
 }) {
 	return (
-		<div className='flex'>
+		<div style={props.style} className='flex'>
 			<SyntaxHighlighter
 				wrapLongLines
 				wrapLines
@@ -45,7 +46,7 @@ export default function CodeBlock(props: {
 				style={SyntaxStyle}
 				customStyle={{
 					borderRadius: 6,
-					background: 'rgba(30,30,30,1)',
+					background: global.nightMode ? 'rgba(30,30,30,1)' : '#282c34',
 					padding: 16,
 					fontSize: 14,
 					width: '100%',

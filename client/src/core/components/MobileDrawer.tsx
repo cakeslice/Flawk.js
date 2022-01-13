@@ -35,6 +35,8 @@ export default class MobileDrawer extends Component<{
 	}
 
 	renderList = () => {
+		const iconSize = 25
+
 		const selectedRoute = global.routerHistory().location.pathname.toString()
 
 		return (
@@ -79,10 +81,9 @@ export default class MobileDrawer extends Component<{
 						color: this.props.textColor || styles.colors.black,
 						display: 'flex',
 						flexDirection: 'row',
-						justifyContent: 'space-between',
 						alignItems: 'center',
-						paddingLeft: 35,
-						paddingRight: 35,
+						paddingLeft: 25,
+						paddingRight: 25,
 						width: '100%',
 						height: 59,
 
@@ -113,8 +114,42 @@ export default class MobileDrawer extends Component<{
 											  (link.subRoutes ? '/' + link.subRoutes[0].id : '')
 									}
 								>
+									{link.customIcon ? (
+										<div>
+											{link.customIcon(selectedRoute.includes('/' + link.id))}
+										</div>
+									) : (
+										<div
+											style={{
+												display: 'flex',
+												alignItems: 'center',
+												width: iconSize,
+											}}
+										>
+											{selectedRoute.includes('/' + link.id) ? (
+												<img
+													src={link.iconActive || link.icon}
+													style={{
+														height: iconSize,
+														width: iconSize,
+													}}
+												></img>
+											) : (
+												<img
+													src={link.icon}
+													style={{
+														opacity: 0.5,
+														filter: 'grayscale(100%)',
+														width: iconSize,
+														height: iconSize,
+													}}
+												></img>
+											)}
+										</div>
+									)}
 									<div
 										style={{
+											marginLeft: 10,
 											fontSize: styles.defaultFontSize,
 											lineHeight: 1.64,
 											fontWeight: selectedRoute.includes('/' + link.id)
@@ -145,8 +180,42 @@ export default class MobileDrawer extends Component<{
 										else this.changeState(true)
 									}}
 								>
+									{link.customIcon ? (
+										<div>
+											{link.customIcon(selectedRoute.includes('/' + link.id))}
+										</div>
+									) : (
+										<div
+											style={{
+												display: 'flex',
+												alignItems: 'center',
+												width: iconSize,
+											}}
+										>
+											{selectedRoute.includes('/' + link.id) ? (
+												<img
+													src={link.iconActive || link.icon}
+													style={{
+														height: iconSize,
+														width: iconSize,
+													}}
+												></img>
+											) : (
+												<img
+													src={link.icon}
+													style={{
+														opacity: 0.5,
+														filter: 'grayscale(100%)',
+														width: iconSize,
+														height: iconSize,
+													}}
+												></img>
+											)}
+										</div>
+									)}
 									<div
 										style={{
+											marginLeft: 10,
 											fontSize: styles.defaultFontSize,
 											lineHeight: 1.64,
 											fontWeight: selectedRoute.includes('/' + link.id)

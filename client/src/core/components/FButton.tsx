@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import Loading from 'core/components/Loading'
 import config from 'core/config_'
 import styles from 'core/styles'
 import { FormIKStruct, GlamorProps, Obj } from 'flawk-types'
@@ -12,7 +13,6 @@ import { FieldInputProps, FormikProps } from 'formik'
 import { css } from 'glamor'
 import React, { Component } from 'react'
 import MediaQuery from 'react-responsive'
-import { MetroSpinner } from 'react-spinners-kit'
 
 export type Appearance = 'primary' | 'secondary' | string // We need to support string for custom appearances declared in styles.extraButtons
 export default class FButton extends Component<{
@@ -312,11 +312,7 @@ export default class FButton extends Component<{
 									</div>
 								)}
 								{this.props.isLoading ? (
-									<MetroSpinner
-										size={styles.spinnerSmall.size}
-										color={finalStyle.loadingColor}
-										loading={true}
-									/>
+									<Loading size={18.5} />
 								) : (
 									this.props.children
 								)}

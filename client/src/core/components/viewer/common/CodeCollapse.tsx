@@ -6,6 +6,7 @@
  */
 
 import CodeBlock from 'core/components/CodeBlock'
+import OutsideAlerter from 'core/components/OutsideAlerter'
 import Tooltip from 'core/components/Tooltip'
 import config from 'core/config_'
 import styles from 'core/styles'
@@ -29,6 +30,7 @@ const code = (color: string) => (
 
 export default class CodeCollapse extends React.Component<{
 	style?: React.CSSProperties
+	codeStyle?: React.CSSProperties
 	className?: string
 	data: string
 	lang: 'json' | 'jsx' | 'tsx' | 'html'
@@ -39,47 +41,59 @@ export default class CodeCollapse extends React.Component<{
 
 	render() {
 		return (
-			<div
-				style={{ maxWidth: this.state.isOpen ? undefined : 0, ...this.props.style }}
-				className={this.props.className}
+			<OutsideAlerter
+				delay
+				clickedOutside={() => {
+					this.setState({ isOpen: false })
+				}}
 			>
-				<div className={'flex-col items-end'}>
-					<Tooltip tooltipProps={{ placement: 'left' }} content='Show code'>
-						<button
-							onClick={() => {
-								this.setState({ isOpen: !this.state.isOpen })
-							}}
-							style={{
-								display: 'flex',
-								alignItems: 'center',
-							}}
-						>
-							<tag>
-								<div
-									style={{
-										display: 'flex',
-										alignItems: 'center',
-										width: 23,
-										height: 23,
-									}}
-								>
-									{code(
-										this.state.isOpen
-											? styles.colors.main
-											: config.replaceAlpha(styles.colors.black, 0.5)
-									)}
-								</div>
-							</tag>
-						</button>
-					</Tooltip>
-					<div style={{ alignSelf: 'center', width: '100%', maxWidth: 600 }}>
-						<UnmountClosed isOpened={this.state.isOpen}>
-							<div style={{ minHeight: 5 }}></div>
-							<CodeBlock noPrettier lang={this.props.lang} data={this.props.data} />
-						</UnmountClosed>
+				<div
+					style={{ maxWidth: this.state.isOpen ? undefined : 0, ...this.props.style }}
+					className={this.props.className}
+				>
+					<div className={'flex-col items-end'}>
+						<Tooltip tooltipProps={{ placement: 'left' }} content='Show code'>
+							<button
+								onClick={() => {
+									this.setState({ isOpen: !this.state.isOpen })
+								}}
+								style={{
+									display: 'flex',
+									alignItems: 'center',
+								}}
+							>
+								<tag>
+									<div
+										style={{
+											display: 'flex',
+											alignItems: 'center',
+											width: 23,
+											height: 23,
+										}}
+									>
+										{code(
+											this.state.isOpen
+												? styles.colors.main
+												: config.replaceAlpha(styles.colors.black, 0.5)
+										)}
+									</div>
+								</tag>
+							</button>
+						</Tooltip>
+						<div style={{ alignSelf: 'center', width: '100%', maxWidth: 600 }}>
+							<UnmountClosed isOpened={this.state.isOpen}>
+								<div style={{ minHeight: 5 }}></div>
+								<CodeBlock
+									style={this.props.codeStyle}
+									noPrettier
+									lang={this.props.lang}
+									data={this.props.data}
+								/>
+							</UnmountClosed>
+						</div>
 					</div>
 				</div>
-			</div>
+			</OutsideAlerter>
 		)
 	}
 }

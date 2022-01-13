@@ -59,7 +59,7 @@ class Backend extends Component<PropsFromRedux> {
 						<div
 							className={
 								desktop
-									? 'wrapMarginTopLeft flex flex-wrap justify-between'
+									? 'wrapMarginTopLeft flex flex-wrap justify-start'
 									: undefined
 							}
 						>
@@ -68,13 +68,13 @@ class Backend extends Component<PropsFromRedux> {
 								<sp />
 								<Login {...this.props} desktop={desktop}></Login>
 							</div>
-							{!desktop && <sp />}
+							<sp />
 							<div>
 								<tag>Register</tag>
 								<sp />
 								<Register {...this.props} desktop={desktop}></Register>
 							</div>
-							{!desktop && <sp />}
+							<sp />
 							{!config.prod && (
 								<div>
 									<tag>Forgot password</tag>

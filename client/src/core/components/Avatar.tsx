@@ -5,11 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import config from 'core/config_'
+import Loading from 'core/components/Loading'
 import styles from 'core/styles'
 import React from 'react'
 import { Img } from 'react-image'
-import { MetroSpinner } from 'react-spinners-kit'
 import uniqolor from 'uniqolor'
 import avatar from '../assets/images/avatar.svg'
 
@@ -52,11 +51,7 @@ export default function Avatar({
 							alignItems: 'center',
 						}}
 					>
-						<MetroSpinner
-							size={styles.spinnerSmall.size}
-							color={config.replaceAlpha(styles.colors.black, 0.1)}
-							loading={true}
-						/>
+						<Loading size={18.5} />
 					</div>
 				}
 				unloader={

@@ -7,7 +7,7 @@
 
 import React, { Component } from 'react'
 
-type Props = { children: JSX.Element; clickedOutside: () => void }
+type Props = { delay?: boolean; children: JSX.Element; clickedOutside: () => void }
 
 export default class OutsideAlerter extends Component<Props> {
 	constructor(props: Props) {
@@ -32,7 +32,10 @@ export default class OutsideAlerter extends Component<Props> {
 	}
 	handleClickOutside(event: Event) {
 		if (this.wrapperRef && !this.wrapperRef.contains(event.target as Node)) {
-			if (this.props.clickedOutside) this.props.clickedOutside()
+			if (this.props.clickedOutside)
+				this.props.delay
+					? setTimeout(() => this.props.clickedOutside(), 100)
+					: this.props.clickedOutside()
 		}
 	}
 

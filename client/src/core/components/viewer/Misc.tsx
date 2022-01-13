@@ -39,11 +39,11 @@ export default class Misc extends ReactQueryParams {
 				{header('Loading', false, ['<Loading/>'])}
 				<div style={{ ...styles.card }}>
 					<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
-						<Loading large />
+						<Loading size={28 * 3} />
 						<sp />
 						<Loading />
 						<sp />
-						<Loading small />
+						<Loading size={18.5} />
 					</div>
 				</div>
 				{header('Query parameters', false, ['extends ReactQueryParams'])}
@@ -84,6 +84,7 @@ export default class Misc extends ReactQueryParams {
 									<div>
 										<b>Chris:</b> Have you heard about the new Tesla?
 									</div>
+									<sp />
 									<div className='flex justify-end'>
 										<FButton>Reply</FButton>
 									</div>

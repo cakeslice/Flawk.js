@@ -110,7 +110,6 @@ const DatePicker = (props: {
 
 export default class FInput extends Component<{
 	style?: React.CSSProperties
-	flex?: 'none' | 'flex-grow' | 'flex-shrink' | 'flex-basis'
 	center?: boolean
 	invalidType?: 'bottom' | 'label' | 'right'
 	label?: JSX.Element | string | JSX.Element[]
@@ -399,7 +398,6 @@ export default class FInput extends Component<{
 					<div
 						style={{
 							width: finalStyle.width || defaultWidth(desktop),
-							flex: this.props.flex,
 						}}
 					>
 						{label && (

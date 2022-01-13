@@ -10,18 +10,20 @@ import styles from 'core/styles'
 import React from 'react'
 import { MetroSpinner } from 'react-spinners-kit'
 
-export default function Loading(props: { large?: boolean; small?: boolean }) {
-	return (
-		<MetroSpinner
-			size={
-				props.large
-					? styles.spinnerLarge.size
-					: props.small
-					? styles.spinnerSmall.size
-					: styles.spinnerMedium.size
-			}
-			color={config.replaceAlpha(styles.colors.black, 0.2)}
-			loading={true}
-		/>
-	)
+export default class Loading extends React.Component<{ size?: number }> {
+	state = { actuallyLoading: false }
+
+	componentDidMount() {
+		setTimeout(() => this.setState({ actuallyLoading: true }), 200)
+	}
+
+	render() {
+		return (
+			<MetroSpinner
+				size={this.props.size || 42}
+				color={config.replaceAlpha(styles.colors.black, 0.2)}
+				loading={this.state.actuallyLoading}
+			/>
+		)
+	}
 }

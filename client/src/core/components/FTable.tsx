@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import Loading from 'core/components/Loading'
 import Paginate from 'core/components/Paginate'
 import config from 'core/config_'
 import styles from 'core/styles'
@@ -16,7 +17,6 @@ import React, { Component } from 'react'
 import { UnmountClosed } from 'react-collapse'
 import MediaQuery from 'react-responsive'
 import { SizeMe } from 'react-sizeme'
-import { MetroSpinner } from 'react-spinners-kit'
 import VisibilitySensor from 'react-visibility-sensor'
 import * as uuid from 'uuid'
 
@@ -362,14 +362,7 @@ class CT extends ReactQueryParams {
 												alignItems: 'center',
 											}}
 										>
-											<MetroSpinner
-												size={styles.spinnerMedium.size}
-												color={config.replaceAlpha(
-													styles.colors.black,
-													0.2
-												)}
-												loading={true}
-											/>
+											<Loading />
 										</div>
 									</div>
 								)}

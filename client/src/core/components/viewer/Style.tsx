@@ -139,20 +139,6 @@ export default class Style extends Component {
 							<code>int code = 1</code>
 							<sp /> <sp /> <sp />
 						</div>
-						{header('Dark mode', false, [
-							'global.nightMode',
-							'global.toggleNightMode()',
-						])}
-						<FButton
-							onClick={async () => {
-								await global.toggleNightMode()
-							}}
-							style={{
-								minWidth: 50,
-							}}
-						>
-							{global.nightMode ? 'Light' : 'Dark'}
-						</FButton>
 						{header('Button', false, ['<button/>', '<FButton/>'])}
 						<div
 							className='wrapMarginTopLeft flex flex-wrap justify-start'
@@ -305,6 +291,20 @@ export default class Style extends Component {
 								}}
 							></div>
 						</div>
+						{header('Dark mode', false, [
+							'global.nightMode',
+							'global.toggleNightMode()',
+						])}
+						<FButton
+							onClick={async () => {
+								await global.toggleNightMode()
+							}}
+							style={{
+								minWidth: 50,
+							}}
+						>
+							{global.nightMode ? 'Light' : 'Dark'} mode
+						</FButton>
 						{header('Cards', false, ['styles.card', 'styles.outlineCard'])}
 						<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
 							<div
@@ -327,6 +327,7 @@ export default class Style extends Component {
 									width: desktop ? 200 : '100%',
 									height: 200,
 								}}
+								distance={20}
 								triggerID={this.state.animationTrigger}
 								effects={['fade', 'down']}
 							>

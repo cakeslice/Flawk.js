@@ -70,7 +70,6 @@ export default class Dropdown extends Component<{
 		activeBorderColor?: string
 		activeBackground?: string
 	}
-	flex?: 'none' | 'flex-grow' | 'flex-shrink' | 'flex-basis'
 	invalidType?: 'bottom' | 'label' | 'right'
 	label?: JSX.Element | string | JSX.Element[]
 	labelStyle?: React.CSSProperties
@@ -282,7 +281,6 @@ export default class Dropdown extends Component<{
 									(this.props.style.width as number | string)) ||
 								(!this.props.customInput && defaultWidth(desktop)) ||
 								undefined,
-							flex: this.props.flex,
 						}}
 					>
 						{label && (
