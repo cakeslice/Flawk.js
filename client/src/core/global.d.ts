@@ -6,6 +6,7 @@
  */
 
 import { Lang } from 'flawk-types'
+import { ToastContentProps } from 'react-toastify'
 import { Socket } from 'socket.io-client'
 
 type StorageFallback = Pick<Storage, 'clear' | 'getItem' | 'setItem' | 'removeItem'>
@@ -39,10 +40,10 @@ declare global {
 	var toggleNightMode: (night?: boolean) => Promise<void>
 	var addFlag: (
 		title: string | JSX.Element | JSX.Element[],
-		description: string | JSX.Element | JSX.Element[] | undefined,
+		description: React.ReactNode | ((props: ToastContentProps) => React.ReactNode),
 		type: 'warning' | 'error' | 'success' | 'info' | 'default',
 		options: {
-			customComponent?: React.ComponentType | ReactElement<any, any>
+			customComponent?: React.ReactNode | ((props: ToastContentProps) => React.ReactNode)
 			playSound?: boolean
 			closeAfter?: number
 			closeButton?: boolean

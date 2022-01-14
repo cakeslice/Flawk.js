@@ -195,7 +195,7 @@ export default class Layout extends ReactQueryParams {
 								component: (
 									<div
 										className='grid grid-cols-4'
-										style={{ ...styles.card, width: '100%', gap: 10 }}
+										style={{ ...styles.card, width: '100%' }}
 									>
 										<div style={gridExample}></div>
 										<div style={gridExample}></div>

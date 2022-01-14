@@ -141,7 +141,7 @@ export default class FButton extends Component<{
 					opacity: 1,
 					borderColor: styles.colors.main,
 					color: styles.colors.main,
-					background: 'transparent',
+					background: styles.colors.white,
 				},
 			}),
 		}
@@ -196,19 +196,39 @@ export default class FButton extends Component<{
 		if (this.props.checkbox) {
 			if (checked !== undefined) this.state.checked = checked // eslint-disable-line
 
-			if (!this.state.checked) finalStyle.background = 'transparent'
-			if (this.state.checked && !this.props.isDisabled) {
+			if (!this.state.checked) finalStyle.background = styles.colors.white
+			if (!this.props.isDisabled) {
 				if (this.props.appearance === 'primary') {
-					finalStyle.color = this.props.isDisabled
-						? config.replaceAlpha(styles.colors.black, 0.5)
-						: styles.colors.whiteDay
+					finalStyle.color = styles.colors.whiteDay
+					finalStyle.borderColor = styles.colors.main
+				} else if (this.props.appearance === 'secondary') {
+					finalStyle.color = styles.colors.main
 					finalStyle.borderColor = styles.colors.main
 				} else {
-					finalStyle.color = this.props.isDisabled
-						? config.replaceAlpha(styles.colors.black, 0.5)
-						: styles.colors.main
-					finalStyle.borderColor = styles.colors.main
-					//finalStyle.background = styles.colors.mainVeryLight
+					finalStyle.color = styles.colors.black
+					finalStyle = {
+						...finalStyle,
+						':focus-visible': {
+							outline: 'none',
+							borderColor: styles.colors.whiteDay,
+						},
+						...(!global.nightMode && {
+							':focus-visible': {
+								outline: 'none',
+								borderStyle: 'dashed',
+								borderColor: styles.colors.whiteDay,
+							},
+						}),
+						':checked': {
+							borderColor: styles.colors.main,
+						},
+						':hover': {
+							borderColor: styles.colors.main,
+						},
+						':active': {
+							borderColor: styles.colors.main,
+						},
+					}
 				}
 			}
 		}

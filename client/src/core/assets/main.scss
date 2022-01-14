@@ -291,6 +291,7 @@ form {
 }
 .grid {
 	display: grid;
+	gap: 15px;
 }
 .grid-cols-1 {
 	grid-template-columns: repeat(1, minmax(0, 1fr));
@@ -352,6 +353,12 @@ form {
 }
 .wrapMarginBottomRight > * {
 	margin: 10px 0px 0px 10px;
+}
+.wrapMarginBigTopLeft {
+	max-width: 100%;
+}
+.wrapMarginBigTopLeft > * {
+	margin: 0px 25px 25px 0px;
 }
 
 // Mobile Notch support

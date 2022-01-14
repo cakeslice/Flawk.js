@@ -31,7 +31,7 @@ export default class Inputs extends Component {
 							'<FInput/>',
 							'<FButton checkbox/>',
 						])}
-						<div style={{ ...styles.card, maxWidth: 783 }}>
+						<div style={{ /* ...styles.card,  */ maxWidth: 783 }}>
 							<div className='wrapMarginTopLeft flex flex-wrap justify-start items-end'>
 								<FInput
 									type='email'
@@ -113,6 +113,14 @@ export default class Inputs extends Component {
 										this.setState({ checked: e })
 									}}
 									checkbox={'Primary'}
+								></FButton>
+								<FButton
+									appearance={'secondary'}
+									checked={this.state.checked}
+									onChange={(e) => {
+										this.setState({ checked: e })
+									}}
+									checkbox={'Secondary'}
 								></FButton>
 								<FButton
 									checked={this.state.checked}

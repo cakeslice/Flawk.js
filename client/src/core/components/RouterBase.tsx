@@ -14,13 +14,14 @@ import config from 'core/config_'
 import navigation from 'core/functions/navigation'
 import styles from 'core/styles'
 import { createBrowserHistory } from 'history'
+import _ from 'lodash'
 import { useStoreSelector } from 'project/redux/_store'
 import React, { useCallback, useEffect, useState } from 'react'
 import ReactGA from 'react-ga'
 import GitInfo from 'react-git-info/macro'
 import MediaQuery, { Context as ResponsiveContext } from 'react-responsive'
 import { Router } from 'react-router-dom'
-import { Bounce, toast, ToastContainer } from 'react-toastify'
+import { Bounce, toast, ToastContainer, ToastContentProps } from 'react-toastify'
 import FButton from './FButton'
 
 const gitHash = GitInfo().commit.shortHash
@@ -28,10 +29,10 @@ const gitHash = GitInfo().commit.shortHash
 let amountToasts = 0
 function addFlagFunction(
 	title: string | JSX.Element | JSX.Element[],
-	description: string | JSX.Element | JSX.Element[] | undefined,
+	description: React.ReactNode | ((props: ToastContentProps) => React.ReactNode),
 	type: 'warning' | 'error' | 'success' | 'info' | 'default',
 	options?: {
-		customComponent?: React.ComponentType
+		customComponent?: React.ReactNode | ((props: ToastContentProps) => React.ReactNode)
 		playSound?: boolean
 		autoClose?: boolean
 		closeButton?: boolean
@@ -56,47 +57,51 @@ function addFlagFunction(
 
 	const t = global.nightMode ? toast.dark : toast
 	t(
-		(customComponent && (
-			<div style={{ color: styles.colors.black, fontSize: styles.defaultFontSize }}>
-				{customComponent}
-			</div>
-		)) || (
-			<div style={{ padding: 5 }}>
-				<b
-					style={{
-						fontFamily: styles.font,
-						fontSize: styles.defaultFontSize,
-						color:
-							type === 'success'
-								? styles.colors.green
-								: type === 'error'
-								? styles.colors.red
-								: type === 'warning'
-								? styles.colors.orange
-								: type === 'info'
-								? styles.colors.main
-								: styles.colors.black,
-					}}
-				>
-					{title}
-				</b>
-				{description && <div style={{ minHeight: 10 }} />}
-				{description && (
-					<p
-						style={{
-							fontFamily: styles.font,
-							fontSize: styles.defaultFontSize,
-							color: styles.colors.black,
-							overflow: 'hidden',
-							textOverflow: 'ellipsis',
-						}}
-					>
-						{description}
-					</p>
-				)}
-				{(autoClose || closeAfter) && <div style={{ minHeight: 3 }} />}
-			</div>
-		),
+		(props) => {
+			return (
+				(customComponent && (
+					<div style={{ color: styles.colors.black, fontSize: styles.defaultFontSize }}>
+						{_.isFunction(customComponent) ? customComponent(props) : customComponent}
+					</div>
+				)) || (
+					<div style={{ padding: 5 }}>
+						<b
+							style={{
+								fontFamily: styles.font,
+								fontSize: styles.defaultFontSize,
+								color:
+									type === 'success'
+										? styles.colors.green
+										: type === 'error'
+										? styles.colors.red
+										: type === 'warning'
+										? styles.colors.orange
+										: type === 'info'
+										? styles.colors.main
+										: styles.colors.black,
+							}}
+						>
+							{title}
+						</b>
+						{description && <div style={{ minHeight: 10 }} />}
+						{description && (
+							<p
+								style={{
+									fontFamily: styles.font,
+									fontSize: styles.defaultFontSize,
+									color: styles.colors.black,
+									overflow: 'hidden',
+									textOverflow: 'ellipsis',
+								}}
+							>
+								{_.isFunction(description) ? description(props) : description}
+							</p>
+						)}
+						{(autoClose || closeAfter) && <div style={{ minHeight: 3 }} />}
+					</div>
+				)
+			)
+		},
 		{
 			onClose: () => {
 				amountToasts--

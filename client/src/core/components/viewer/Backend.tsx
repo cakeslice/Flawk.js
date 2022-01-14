@@ -59,7 +59,7 @@ class Backend extends Component<PropsFromRedux> {
 						<div
 							className={
 								desktop
-									? 'wrapMarginTopLeft flex flex-wrap justify-start'
+									? 'wrapMarginBigTopLeft flex flex-wrap justify-start'
 									: undefined
 							}
 						>
@@ -68,13 +68,15 @@ class Backend extends Component<PropsFromRedux> {
 								<sp />
 								<Login {...this.props} desktop={desktop}></Login>
 							</div>
-							<sp />
+							{!desktop && <sp />}
+							{!desktop && <sp />}
 							<div>
 								<tag>Register</tag>
 								<sp />
 								<Register {...this.props} desktop={desktop}></Register>
 							</div>
-							<sp />
+							{!desktop && <sp />}
+							{!desktop && <sp />}
 							{!config.prod && (
 								<div>
 									<tag>Forgot password</tag>
@@ -206,8 +208,8 @@ class Backend extends Component<PropsFromRedux> {
 								<FButton
 									onClick={async () => {
 										const res = await post('client/create_notification', {
-											notificationType: 'test',
-											message: 'This is a test!',
+											notificationType: 'Your video is ready',
+											message: 'test.mp4 processing is complete',
 										})
 									}}
 								>

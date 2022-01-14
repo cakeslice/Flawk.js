@@ -29,27 +29,22 @@ export default class Misc extends ReactQueryParams {
 				{(desktop) => (
 					<div>
 						{header('Avatar', true, ['<Avatar/>'])}{' '}
-						<div style={{ ...styles.card }}>
-							<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+						<div style={{ ...styles.card, padding: 0 }}>
+							<div className='wrapMarginBig flex flex-wrap justify-start'>
 								<Avatar name='José Guerreiro'></Avatar>
-								<sp />
 								<Avatar isOnline></Avatar>
-								<sp />
 								<Avatar></Avatar>
-								<sp />
 								<Avatar style={{ width: 40, height: 40 }}></Avatar>
 							</div>
 						</div>
 						{header('Loading', false, ['<Loading/>'])}
-						<div style={{ ...styles.card }}>
+						<div style={{ ...styles.card, padding: 0 }}>
 							<div
-								style={{ height: 94, width: desktop ? 300 : undefined }}
-								className='wrapMarginTopLeft flex flex-wrap justify-start'
+								style={{ minHeight: 94, width: desktop ? 300 : undefined }}
+								className='wrapMarginBig flex flex-wrap justify-start'
 							>
 								<Loading size={28 * 3} />
-								<sp />
 								<Loading />
-								<sp />
 								<Loading size={18.5} />
 							</div>
 						</div>
@@ -59,7 +54,7 @@ export default class Misc extends ReactQueryParams {
 								Parameter {'"test"'}: <b>{this.queryParams.test}</b>
 							</p>
 							<br />
-							<div className='flex'>
+							<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
 								<FButton
 									onClick={() => {
 										this.setQueryParams({
@@ -69,7 +64,6 @@ export default class Misc extends ReactQueryParams {
 								>
 									Add test=Hello!
 								</FButton>
-								<sp></sp>
 								<FButton
 									onClick={() => {
 										this.setQueryParams({
@@ -87,15 +81,20 @@ export default class Misc extends ReactQueryParams {
 								onClick={() =>
 									global.addFlag(
 										'New message',
-										<div>
+										(props) => (
 											<div>
-												<b>Chris:</b> Have you heard about the new Tesla?
+												<div>
+													<b>Chris:</b> Have you heard about the new
+													Tesla?
+												</div>
+												<sp />
+												<div className='flex justify-end'>
+													<FButton onClick={props.closeToast}>
+														Reply
+													</FButton>
+												</div>
 											</div>
-											<sp />
-											<div className='flex justify-end'>
-												<FButton>Reply</FButton>
-											</div>
-										</div>,
+										),
 										'info',
 										{
 											playSound: true,
@@ -124,7 +123,7 @@ export default class Misc extends ReactQueryParams {
 								onClick={() =>
 									global.addFlag(
 										'Warning',
-										'Your file can take a while to process',
+										'There is out-of-sync data you need to review to continue',
 										'warning',
 										{
 											closeAfter: 5000,
