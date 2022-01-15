@@ -27,7 +27,7 @@ export default class FButton extends Component<{
 	invalid?: string
 	noInvalidLabel?: boolean
 	// ----------- Checkbox props
-	checkbox?: JSX.Element | string
+	checkbox?: React.ReactNode
 	checked?: boolean
 	defaultChecked?: boolean
 	value?: boolean
@@ -223,7 +223,27 @@ export default class FButton extends Component<{
 							borderColor: styles.colors.main,
 						},
 						':hover': {
-							borderColor: styles.colors.main,
+							borderColor:
+								!this.props.isDisabled && invalid
+									? styles.colors.red
+									: !this.props.isDisabled
+									? config.replaceAlpha(
+											styles.colors.black,
+											global.nightMode ? 0.3 : 0.3
+									  )
+									: '',
+						},
+						':focus': {
+							outline: 'none',
+							boxShadow:
+								'0 0 0 2px ' +
+								(invalid
+									? config.replaceAlpha(styles.colors.red, 0.1)
+									: styles.colors.mainVeryLight),
+							/* background: invalid
+						? 'rgba(254, 217, 219, 0.5)'
+						: styles.colors.mainVeryLight, */
+							borderColor: invalid ? styles.colors.red : styles.colors.mainLight,
 						},
 						':active': {
 							borderColor: styles.colors.main,
@@ -346,6 +366,7 @@ export default class FButton extends Component<{
 										letterSpacing: 0.4,
 										fontSize: styles.defaultFontSize,
 										marginLeft: 7.5,
+										...styles.inputLabelStyle,
 										...this.props.checkboxLabelStyle,
 									}}
 								>

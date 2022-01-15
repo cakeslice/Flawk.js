@@ -17,7 +17,7 @@ export default function Field(
 		component: typeof React.Component
 		required?: boolean | string
 		invalidMessage?: string
-		checkbox?: JSX.Element | string
+		checkbox?: React.ReactNode
 		validate?: (value: string | number | boolean | undefined) => boolean
 		fastField?: boolean
 		type?: string

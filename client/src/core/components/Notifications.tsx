@@ -20,7 +20,7 @@ type Notification = {
 	isRead: boolean
 }
 
-type Props = { children?: JSX.Element }
+type Props = { children?: React.ReactNode }
 
 export default class Notifications extends Component<Props> {
 	constructor(props: Props) {

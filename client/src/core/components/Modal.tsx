@@ -15,14 +15,14 @@ import { Portal } from 'react-portal'
 
 type Props = {
 	onClose?: () => void
-	title?: string | JSX.Element | JSX.Element[]
+	title?: React.ReactNode
 	content: (
 		close: () => void,
 		Content: React.FC,
 		Buttons: React.FC,
 		Parent: React.FC,
 		Header: React.FC
-	) => JSX.Element
+	) => React.ReactNode
 	// Props to set modal state on the parent component on close automatically
 	name?: string
 	parent?: Component
@@ -239,7 +239,7 @@ export default class Modal extends Component<Props> {
 	}
 }
 class ModalHeader extends Component<{
-	title?: string | JSX.Element | JSX.Element[] | React.ReactNode
+	title?: React.ReactNode
 	headerStyle?: React.CSSProperties & {
 		line: boolean
 		lineColor: React.CSSProperties['background']

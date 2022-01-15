@@ -44,7 +44,7 @@ class Login extends Component<PropsFromRedux> {
 							<title>{config.title() + config.separator + 'Login'}</title>
 						</Helmet>
 
-						<h2>{'Login'}</h2>
+						<h3>{'Sign in to your account'}</h3>
 						<sp />
 						<sp />
 						<sp />

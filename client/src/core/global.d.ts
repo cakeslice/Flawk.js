@@ -39,7 +39,7 @@ declare global {
 	var nightMode: boolean
 	var toggleNightMode: (night?: boolean) => Promise<void>
 	var addFlag: (
-		title: string | JSX.Element | JSX.Element[],
+		title: React.ReactNode,
 		description: React.ReactNode | ((props: ToastContentProps) => React.ReactNode),
 		type: 'warning' | 'error' | 'success' | 'info' | 'default',
 		options: {

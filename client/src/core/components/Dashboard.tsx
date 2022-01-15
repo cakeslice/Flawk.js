@@ -29,7 +29,7 @@ export type DashboardRoute = {
 	name?: string
 	icon?: string
 	iconActive?: string
-	customIcon?: (active: boolean) => JSX.Element
+	customIcon?: (active: boolean) => React.ReactNode
 	hidden?: boolean
 	mobileTab?: boolean
 	desktopTab?: boolean
@@ -38,7 +38,7 @@ export type DashboardRoute = {
 	// eslint-disable-next-line
 	page?: Element | React.LazyExoticComponent<any> | typeof React.Component
 	onClick?: () => void
-	tab?: (props: TabProps) => JSX.Element
+	tab?: (props: TabProps) => React.ReactNode
 	notExact?: boolean
 	defaultRoute?: boolean
 	subRoutes?: DashboardRoute[]
@@ -126,10 +126,10 @@ export default class Dashboard extends Component<
 							{(desktop) => {
 								const headerHeight = desktop ? 90 : 50
 								return (
-									<Animated
-										alwaysVisible
+									<div
+										/* alwaysVisible
 										effects={['fade']}
-										duration={0.5}
+										duration={0.5} */
 										//
 										className='flex-col justify-center'
 									>
@@ -149,7 +149,7 @@ export default class Dashboard extends Component<
 											>
 												<Animated
 													alwaysVisible
-													effects={['left']}
+													effects={['fade', 'left']}
 													distance={closedWidth}
 													duration={0.75}
 													//
@@ -540,7 +540,7 @@ export default class Dashboard extends Component<
 												)}
 											</Switch>
 										</div>
-									</Animated>
+									</div>
 								)
 							}}
 						</MediaQuery>

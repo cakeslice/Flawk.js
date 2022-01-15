@@ -112,11 +112,11 @@ export default class FInput extends Component<{
 	style?: React.CSSProperties
 	center?: boolean
 	invalidType?: 'bottom' | 'label' | 'right'
-	label?: JSX.Element | string | JSX.Element[]
+	label?: React.ReactNode
 	labelStyle?: React.CSSProperties
 	emptyLabel?: boolean
-	icon?: JSX.Element
-	button?: JSX.Element
+	icon?: React.ReactNode
+	button?: React.ReactNode
 	buttonStyle?: React.CSSProperties
 	//
 	value?: number | string
@@ -415,6 +415,7 @@ export default class FInput extends Component<{
 											: undefined,
 									fontSize: styles.defaultFontSize,
 									whiteSpace: 'nowrap',
+									...styles.inputLabelStyle,
 									...this.props.labelStyle,
 								}}
 							>

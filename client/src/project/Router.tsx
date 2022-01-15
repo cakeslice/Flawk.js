@@ -43,7 +43,7 @@ const Register = React.lazy(() => import('./pages/auth/Register'))
 //
 const Main = React.lazy(() => import('./pages/main/Main'))
 
-export default function Router(): JSX.Element {
+export default function Router(): React.ReactNode {
 	const { structures, fetchingStructures, user, fetchingUser, authError } = useStoreSelector(
 		(state) => ({
 			structures: state.app.structures,
@@ -303,36 +303,36 @@ export default function Router(): JSX.Element {
 							<Route>
 								<div style={{ background: styles.colors.white }}>
 									<Header landingPage={landingPage} fillSpace />
-									<Animated
-										alwaysVisible
-										effects={['fade']}
-										duration={0.5}
-										delay={0.75}
-									>
-										<Switch>
-											<Route exact path='/login'>
-												<PublicWrapper desktop={desktop}>
-													<Login />
-												</PublicWrapper>
-											</Route>
-											<Route exact path='/signup'>
-												<PublicWrapper desktop={desktop}>
-													<Register />
-												</PublicWrapper>
-											</Route>
-											<Route exact path='/forgot'>
-												<PublicWrapper desktop={desktop}>
-													<Forgot />
-												</PublicWrapper>
-											</Route>
+									<Switch>
+										<Route exact path='/login'>
+											<PublicWrapper desktop={desktop}>
+												<Login />
+											</PublicWrapper>
+										</Route>
+										<Route exact path='/signup'>
+											<PublicWrapper desktop={desktop}>
+												<Register />
+											</PublicWrapper>
+										</Route>
+										<Route exact path='/forgot'>
+											<PublicWrapper desktop={desktop}>
+												<Forgot />
+											</PublicWrapper>
+										</Route>
 
-											<Route path='/'>
-												<PublicWrapper desktop={desktop}>
+										<Route path='/'>
+											<PublicWrapper desktop={desktop}>
+												<Animated
+													alwaysVisible
+													effects={['fade']}
+													duration={0.5}
+													delay={0.75}
+												>
 													<Main />
-												</PublicWrapper>
-											</Route>
-										</Switch>
-									</Animated>
+												</Animated>
+											</PublicWrapper>
+										</Route>
+									</Switch>
 									<Footer />
 								</div>
 							</Route>
@@ -436,7 +436,7 @@ const settings = (color: string) => {
 	)
 }
 
-const iconWrapper = (icon: (color: string) => JSX.Element, iconSize?: number) => (
+const iconWrapper = (icon: (color: string) => React.ReactNode, iconSize?: number) => (
 	<div
 		className='flex items-center justify-center'
 		style={{

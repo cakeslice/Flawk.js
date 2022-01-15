@@ -17,7 +17,7 @@ import Select, { components, CSSObjectWithLabel, DropdownIndicatorProps } from '
 
 export type Option = {
 	value: string
-	label: string | JSX.Element | JSX.Element[]
+	label: React.ReactNode
 	isDisabled?: boolean
 	style?: CSSObjectWithLabel
 }
@@ -25,7 +25,7 @@ export type Option = {
 const DropdownIndicator = ({ children, ...rest }: DropdownIndicatorProps<unknown, boolean>) => {
 	const { isDisabled, dropdownIndicator } = rest.selectProps as {
 		isDisabled?: boolean
-		dropdownIndicator?: JSX.Element
+		dropdownIndicator?: React.ReactNode
 	}
 
 	const dots = (color: string) => (
@@ -71,11 +71,11 @@ export default class Dropdown extends Component<{
 		activeBackground?: string
 	}
 	invalidType?: 'bottom' | 'label' | 'right'
-	label?: JSX.Element | string | JSX.Element[]
+	label?: React.ReactNode
 	labelStyle?: React.CSSProperties
 	button?: boolean
 	emptyLabel?: boolean
-	dropdownIndicator?: JSX.Element
+	dropdownIndicator?: React.ReactNode
 	customInput?: boolean
 	//
 	invalid?: string
@@ -190,6 +190,8 @@ export default class Dropdown extends Component<{
 			background: styles.inputBackground || styles.colors.white,
 		}
 		const defaultMenuStyle: CSSObjectWithLabel = {
+			animation:
+				(this.props.menuPlacement === 'top' ? 'openUp' : 'openDown') + ' 0.2s ease-in-out',
 			background: styles.colors.white,
 			borderStyle: 'solid',
 			borderWidth: '1px',
@@ -299,6 +301,7 @@ export default class Dropdown extends Component<{
 											? 'end'
 											: undefined,
 									whiteSpace: 'nowrap',
+									...styles.inputLabelStyle,
 									...this.props.labelStyle,
 								}}
 							>

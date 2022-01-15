@@ -195,7 +195,7 @@ export default class ComponentsViewer extends Component {
 		)
 	}
 }
-const iconWrapper = (icon: (color: string) => JSX.Element, active: boolean, size?: number) => (
+const iconWrapper = (icon: (color: string) => React.ReactNode, active: boolean, size?: number) => (
 	<div
 		className='flex items-center justify-center'
 		style={{
@@ -246,7 +246,7 @@ export const header = (
 	tags?: string[],
 	sourceCode?: {
 		code: string
-		component: JSX.Element
+		component: React.ReactNode
 		lang?: 'tsx' | 'jsx' | 'json'
 	}
 ) => {
@@ -260,7 +260,7 @@ export const header = (
 					<div className={(desktop ? 'flex' : 'flex-col') + ' w-full'}>
 						<div className={sourceCode && 'flex-child-fix grow'}>
 							<div className='flex'>
-								<h3>{title}</h3>
+								<h4>{title}</h4>
 								{tags && <div style={{ minWidth: 15 }} />}
 								{tags && (
 									<div className='wrapMarginTopLeft flex flex-wrap justify-start'>

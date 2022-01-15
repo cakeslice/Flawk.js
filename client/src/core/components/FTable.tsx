@@ -25,12 +25,17 @@ type SpecialRow = {
 	key: string
 	selector: string
 	style?: React.CSSProperties
-	row: (value: Value, data: Obj) => JSX.Element
+	row: (value: Value, data: Obj) => React.ReactNode
 }
 type Column = {
-	name?: string | JSX.Element | JSX.Element[]
+	name?: React.ReactNode
 	selector: string
-	cell?: (value: Value, data: Obj, isVisible: boolean, triggerUpdate: () => void) => JSX.Element
+	cell?: (
+		value: Value,
+		data: Obj,
+		isVisible: boolean,
+		triggerUpdate: () => void
+	) => React.ReactNode
 	rowStyle?: React.CSSProperties
 	style?: React.CSSProperties
 	grow?: number
@@ -51,11 +56,11 @@ type TableProps = {
 	data?: (Obj & { specialRow?: string })[]
 	isLoading?: boolean
 	updateID?: string
-	children?: JSX.Element
+	children?: React.ReactNode
 	style?: TableStyles
 	height?: number | string
 	hideHeader?: boolean
-	expandContent?: (object: Obj) => JSX.Element
+	expandContent?: (object: Obj) => React.ReactNode
 	columns?: Column[]
 	keySelector: string
 	specialRows?: SpecialRow[]
@@ -552,7 +557,7 @@ class CT extends ReactQueryParams {
 const expandButtonWidth = 10 + 12.5
 type RowProps = {
 	triggerUpdate: string
-	expandContent?: JSX.Element
+	expandContent?: React.ReactNode
 	rowStyle: React.CSSProperties & GlamorProps
 	style: React.CSSProperties
 	cellPadding: number

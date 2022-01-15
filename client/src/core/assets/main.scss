@@ -78,6 +78,10 @@ h2 {
 }
 h3 {
 	font-family: var(--fontAlt);
+	font-size: 24px;
+}
+h4 {
+	font-family: var(--fontAlt);
 	font-size: 22px;
 }
 
@@ -383,12 +387,65 @@ form {
 	}
 }
 
-//
+// Animations
+
+@keyframes openDown {
+	0% {
+		opacity: 0;
+		transform-origin: 0% 0%;
+		transform: scaleY(0);
+	}
+	100% {
+		opacity: 1;
+		transform-origin: 0% 0%;
+		transform: scaleY(1);
+	}
+}
+@keyframes openUp {
+	0% {
+		opacity: 0;
+		transform-origin: 0% 100%;
+		transform: scaleY(0);
+	}
+	100% {
+		opacity: 1;
+		transform-origin: 0% 100%;
+		transform: scaleY(1);
+	}
+}
+@keyframes openRight {
+	0% {
+		opacity: 0;
+		transform-origin: 0% 0%;
+		transform: scaleX(0);
+	}
+	100% {
+		opacity: 1;
+		transform-origin: 0% 0%;
+		transform: scaleX(1);
+	}
+}
+@keyframes openLeft {
+	0% {
+		opacity: 0;
+		transform-origin: 100% 0%;
+		transform: scaleX(0);
+	}
+	100% {
+		opacity: 1;
+		transform-origin: 100% 0%;
+		transform: scaleX(1);
+	}
+}
+
+// Extra
 
 .blur-background {
 	-webkit-backdrop-filter: blur(5px);
 	backdrop-filter: blur(5px);
 }
+
+// ----------- Third party overrides
 
 .Toastify__toast--dark {
 	background: #1e1e1e;
@@ -543,6 +600,8 @@ form {
 .ReactCollapse--collapse {
 	transition: height 500ms;
 }
+
+//
 
 .tooltip-container {
 	z-index: 99999 !important;

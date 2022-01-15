@@ -44,7 +44,7 @@ class Register extends Component<PropsFromRedux> {
 							<title>{config.title() + config.separator + 'Signup'}</title>
 						</Helmet>
 
-						<h2>{'Signup'}</h2>
+						<h3>{'Signup'}</h3>
 						<sp />
 						<sp />
 						<sp />

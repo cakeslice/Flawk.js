@@ -6,6 +6,7 @@
  */
 
 import { GlamorProps } from 'flawk-types'
+import React from 'react'
 import config from './config_'
 
 const _font = 'Roboto'
@@ -63,6 +64,8 @@ export default {
 	inputLabelOpacityNight: 0.66,
 	// @ts-ignore
 	inputLabelOpacityDay: 0.75,
+	// @ts-ignore
+	inputLabelStyle: undefined as React.CSSProperties,
 
 	// @ts-ignore
 	inputHeight: 31,

@@ -108,7 +108,7 @@ export default class Header extends Component<HeaderProps> {
 						>
 							<Animated
 								alwaysVisible
-								effects={['fade', 'down']}
+								effects={['fade', 'up']}
 								duration={0.5}
 								distance={desktop ? -desktopHeight : -mobileHeightTop}
 								//

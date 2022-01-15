@@ -14,8 +14,8 @@ type Props = {
 	key?: string | number
 	className?: string
 	style?: React.CSSProperties
-	content: (set: (isOpen: boolean) => void) => JSX.Element
-	trigger: (isOpen: boolean, set: (isOpen: boolean) => void) => JSX.Element
+	content: (set: (isOpen: boolean) => void) => React.ReactNode
+	trigger: (isOpen: boolean, set: (isOpen: boolean) => void) => React.ReactNode
 	defaultOpen?: boolean
 	customTrigger?: boolean
 	noArrow?: boolean

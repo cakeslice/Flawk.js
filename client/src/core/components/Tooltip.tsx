@@ -5,14 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import Animated from 'core/components/Animated'
 import styles from 'core/styles'
 import React from 'react'
 import TooltipTrigger, { TooltipTriggerProps } from 'react-popper-tooltip'
 
 export default function Tooltip(props: {
-	children: JSX.Element
-	content: JSX.Element | string
+	children: React.ReactNode
+	content: React.ReactNode
 	tooltipProps?: Partial<TooltipTriggerProps>
 	offset?: number
 	offsetAlt?: number
@@ -42,19 +41,25 @@ export default function Tooltip(props: {
 						className: 'tooltip-container',
 					})}
 				>
-					<Animated effects={['fade', 'up']} distance={5} delay={0} duration={0.2}>
-						<div
-							style={{
-								...styles.card,
-								padding: 7.5,
-								fontSize: 13,
-								...styles.tooltip,
-								...props.contentStyle,
-							}}
-						>
-							{props.content}
-						</div>
-					</Animated>
+					<div
+						style={{
+							animation:
+								(props.tooltipProps?.placement === 'left'
+									? 'openLeft'
+									: props.tooltipProps?.placement === 'right'
+									? 'openRight'
+									: props.tooltipProps?.placement === 'bottom'
+									? 'openDown'
+									: 'openUp') + ' 0.2s ease-in-out',
+							...styles.card,
+							padding: 7.5,
+							fontSize: 13,
+							...styles.tooltip,
+							...props.contentStyle,
+						}}
+					>
+						{props.content}
+					</div>
 				</div>
 			)}
 		>

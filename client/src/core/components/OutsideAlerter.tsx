@@ -7,7 +7,7 @@
 
 import React, { Component } from 'react'
 
-type Props = { delay?: boolean; children: JSX.Element; clickedOutside: () => void }
+type Props = { delay?: boolean; children: React.ReactNode; clickedOutside: () => void }
 
 export default class OutsideAlerter extends Component<Props> {
 	constructor(props: Props) {

@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import logo from 'core/assets/images/logo.svg'
 import Dropdown from 'core/components/Dropdown'
 import ExitPrompt from 'core/components/ExitPrompt'
 import FButton from 'core/components/FButton'
@@ -220,6 +221,7 @@ export default class Inputs extends Component {
 								/>
 
 								<Dropdown
+									menuPlacement='top'
 									placeholder={'Invalid Right'}
 									erasable
 									invalid={'*'}
@@ -254,7 +256,11 @@ export default class Inputs extends Component {
 							</div>
 							<sp />
 							<Dropdown
-								dropdownIndicator={<div>😄</div>}
+								dropdownIndicator={
+									<div className='flex items-center justify-center'>
+										<img style={{ height: 20 }} src={logo}></img>
+									</div>
+								}
 								style={{ width: '100%' }}
 								label={'Full width'}
 								defaultValue={'accept'}

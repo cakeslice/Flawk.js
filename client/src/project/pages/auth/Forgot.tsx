@@ -46,7 +46,7 @@ class Forgot extends Component<PropsFromRedux> {
 							<title>{config.title() + config.separator + 'Forgot password'}</title>
 						</Helmet>
 
-						<h2>{'Forgot password'}</h2>
+						<h3>{'Forgot password'}</h3>
 						<sp />
 						<sp />
 						<sp />
