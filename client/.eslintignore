@@ -4,4 +4,6 @@ build/*
 *.css
 *.scss
 *.d.ts
+android/*
+ios/*
 src/core/utils/serviceWorkerRegistration.js
