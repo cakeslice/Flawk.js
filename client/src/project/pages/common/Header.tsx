@@ -57,7 +57,7 @@ export default class Header extends Component<HeaderProps> {
 		const scrollTop = document.body.scrollTop || document.documentElement.scrollTop
 
 		this.setState({
-			shrink: this.props.landingPage ? scrollTop > 50 : true,
+			shrink: this.props.landingPage ? scrollTop > 0 : true,
 		})
 	}
 	componentDidMount() {
@@ -90,7 +90,8 @@ export default class Header extends Component<HeaderProps> {
 								(this.state.shrink ? ' blur-background' : '')
 							}
 							style={{
-								transition: 'border-color .5s, box-shadow .5s, backgroundColor .5s',
+								transition:
+									'border-color .5s, box-shadow .5s, background-color .5s',
 								backgroundColor: this.state.shrink
 									? config.replaceAlpha(styles.colors.background, 0.75)
 									: 'transparent',
