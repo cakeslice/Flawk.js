@@ -5,10 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import Animated from 'core/components/Animated'
 import config from 'core/config_'
 import styles from 'core/styles'
 import React, { Component } from 'react'
-import { UnmountClosed } from 'react-collapse'
 
 type Props = {
 	key?: string | number
@@ -72,10 +72,13 @@ export default class Collapsible extends Component<Props> {
 						{this.props.trigger(this.state.isOpen, this.set)}
 					</button>
 				)}
-				<UnmountClosed isOpened={this.state.isOpen}>
-					{/* // ! Collapse doesn't support vertical margins! */}
+				<Animated
+					duration={0.25}
+					effects={['fade', 'height']}
+					controlled={this.state.isOpen}
+				>
 					{this.props.content(this.set)}
-				</UnmountClosed>
+				</Animated>
 			</div>
 		)
 	}

@@ -29,7 +29,7 @@ import ReCaptcha from 'react-google-recaptcha'
 import { connect, ConnectedProps } from 'react-redux'
 import MediaQuery from 'react-responsive'
 import { Link } from 'react-router-dom'
-import { header, lock } from './ComponentsViewer'
+import { lock, Section } from './ComponentsViewer'
 
 const cardStyle = (desktop?: boolean) => {
 	return {
@@ -55,186 +55,123 @@ class Backend extends Component<PropsFromRedux> {
 			<MediaQuery minWidth={config.mobileWidthTrigger}>
 				{(desktop) => (
 					<div className='flex-col'>
-						{header('Authentication', true)}
-						<div
-							className={
-								desktop
-									? 'wrapMarginBigTopLeft flex flex-wrap justify-start'
-									: undefined
-							}
-						>
-							<div>
-								<tag>Login</tag>
-								<sp />
-								<Login {...this.props} desktop={desktop}></Login>
-							</div>
-							{!desktop && <sp />}
-							{!desktop && <sp />}
-							<div>
-								<tag>Register</tag>
-								<sp />
-								<Register {...this.props} desktop={desktop}></Register>
-							</div>
-							{!desktop && <sp />}
-							{!desktop && <sp />}
-							{!config.prod && (
-								<div>
-									<tag>Forgot password</tag>
-									<sp />
-									<Forgot {...this.props} desktop={desktop}></Forgot>
-								</div>
-							)}
-						</div>
-						{header('Account & Logout')}
-						{this.props.user ? (
+						<Section title='Authentication' top>
 							<div
 								className={
-									desktop ? 'wrapMarginTopLeft flex flex-wrap justify-start' : ''
+									desktop
+										? 'wrapMarginBigTopLeft flex flex-wrap justify-start'
+										: undefined
 								}
 							>
-								<Formik
-									enableReinitialize
-									initialValues={{}}
-									onSubmit={async (values, { setSubmitting }) => {
-										setSubmitting(true)
-										const res = await post('client/logout', {})
-										setSubmitting(false)
+								<div>
+									<tag>Login</tag>
+									<sp />
+									<Login {...this.props} desktop={desktop}></Login>
+								</div>
+								{!desktop && <sp />}
+								{!desktop && <sp />}
+								<div>
+									<tag>Register</tag>
+									<sp />
+									<Register {...this.props} desktop={desktop}></Register>
+								</div>
+								{!desktop && <sp />}
+								{!desktop && <sp />}
+								{!config.prod && (
+									<div>
+										<tag>Forgot password</tag>
+										<sp />
+										<Forgot {...this.props} desktop={desktop}></Forgot>
+									</div>
+								)}
+							</div>
+						</Section>
+						<Section title='Account & Logout'>
+							{this.props.user ? (
+								<div
+									className={
+										desktop
+											? 'wrapMarginTopLeft flex flex-wrap justify-start'
+											: ''
+									}
+								>
+									<Formik
+										enableReinitialize
+										initialValues={{}}
+										onSubmit={async (values, { setSubmitting }) => {
+											setSubmitting(true)
+											const res = await post('client/logout', {})
+											setSubmitting(false)
 
-										if (res.ok) {
-											await fetchUser(this.props.dispatch)
-										}
-									}}
-								>
-									{({ isSubmitting }) => {
-										return (
-											<Form noValidate>
-												<div className='flex-col items-center'>
-													<button
-														type='button'
-														style={{
-															fontSize: styles.defaultFontSize,
-															padding: 0,
-															display: 'flex',
-															alignItems: 'center',
-															marginBottom: 30,
-															color: styles.colors.black,
-														}}
-													>
-														<Avatar
-															src={
-																this.props.user &&
-																this.props.user.personal &&
-																this.props.user.personal.photoURL
-															}
+											if (res.ok) {
+												await fetchUser(this.props.dispatch)
+											}
+										}}
+									>
+										{({ isSubmitting }) => {
+											return (
+												<Form noValidate>
+													<div className='flex-col items-center'>
+														<button
+															type='button'
 															style={{
-																width: 30,
-																height: 30,
+																fontSize: styles.defaultFontSize,
+																padding: 0,
+																display: 'flex',
+																alignItems: 'center',
+																marginBottom: 30,
+																color: styles.colors.black,
 															}}
-														></Avatar>
-														{this.props.user && (
-															<p
-																style={{
-																	fontSize:
-																		styles.defaultFontSize,
-																	maxWidth: 100,
-																	marginLeft: 10,
-																	textOverflow: 'ellipsis',
-																	overflow: 'hidden',
-																	whiteSpace: 'nowrap',
-																}}
-															>
-																{this.props.user.personal &&
-																	this.props.user.personal
-																		.firstName}
-															</p>
-														)}
-													</button>
-													{this.props.user && (
-														<FButton
-															type='submit'
-															isLoading={
-																isSubmitting ||
-																this.props.fetchingUser
-															}
-															appearance='secondary'
 														>
-															{'Logout'}
-														</FButton>
-													)}
-												</div>
-											</Form>
-										)
-									}}
-								</Formik>
-							</div>
-						) : (
-							<div>
-								<span>
-									{lock(
-										config.replaceAlpha(
-											styles.colors.black,
-											global.nightMode ? 0.15 : 0.25
-										)
-									)}
-								</span>
-								<span> </span>
-								<span style={{ verticalAlign: 'top' }}>Please login to view</span>
-							</div>
-						)}
-						{header('Settings')}
-						{this.props.user ? (
-							<div>
-								<Settings {...this.props} desktop={desktop}></Settings>
-							</div>
-						) : (
-							<div>
-								<span>
-									{lock(
-										config.replaceAlpha(
-											styles.colors.black,
-											global.nightMode ? 0.15 : 0.25
-										)
-									)}
-								</span>
-								<span> </span>
-								<span style={{ verticalAlign: 'top' }}>Please login to view</span>
-							</div>
-						)}
-						{header('Notifications')}
-						{this.props.user ? (
-							<div className='flex' style={{ ...styles.card }}>
-								<Notifications></Notifications>
-								<sp />
-								<FButton
-									onClick={async () => {
-										const res = await post('client/create_notification', {
-											notificationType: 'Your video is ready',
-											message: 'test.mp4 processing is complete',
-										})
-									}}
-								>
-									Test
-								</FButton>
-							</div>
-						) : (
-							<div>
-								<span>
-									{lock(
-										config.replaceAlpha(
-											styles.colors.black,
-											global.nightMode ? 0.15 : 0.25
-										)
-									)}
-								</span>
-								<span> </span>
-								<span style={{ verticalAlign: 'top' }}>Please login to view</span>
-							</div>
-						)}
-						{header('Admin')}
-						{this.props.user && this.props.user.permission <= 10 ? (
-							<Admin></Admin>
-						) : (
-							<div>
+															<Avatar
+																src={
+																	this.props.user &&
+																	this.props.user.personal &&
+																	this.props.user.personal
+																		.photoURL
+																}
+																style={{
+																	width: 30,
+																	height: 30,
+																}}
+															></Avatar>
+															{this.props.user && (
+																<p
+																	style={{
+																		fontSize:
+																			styles.defaultFontSize,
+																		maxWidth: 100,
+																		marginLeft: 10,
+																		textOverflow: 'ellipsis',
+																		overflow: 'hidden',
+																		whiteSpace: 'nowrap',
+																	}}
+																>
+																	{this.props.user.personal &&
+																		this.props.user.personal
+																			.firstName}
+																</p>
+															)}
+														</button>
+														{this.props.user && (
+															<FButton
+																type='submit'
+																isLoading={
+																	isSubmitting ||
+																	this.props.fetchingUser
+																}
+																appearance='secondary'
+															>
+																{'Logout'}
+															</FButton>
+														)}
+													</div>
+												</Form>
+											)
+										}}
+									</Formik>
+								</div>
+							) : (
 								<div>
 									<span>
 										{lock(
@@ -246,87 +183,168 @@ class Backend extends Component<PropsFromRedux> {
 									</span>
 									<span> </span>
 									<span style={{ verticalAlign: 'top' }}>
-										Please login as Admin to view
+										Please login to view
 									</span>
 								</div>
-								<div style={{ fontSize: 13, opacity: 0.5 }}>
-									{'Check "permission" property in the Client document'}
+							)}
+						</Section>
+						<Section title='Settings'>
+							{this.props.user ? (
+								<div>
+									<Settings {...this.props} desktop={desktop}></Settings>
 								</div>
-							</div>
-						)}
-						{header('Remote data')}
-						<div style={{ maxWidth: 700 }} className='flex-col justify-center'>
-							{this.props.structures &&
-								Object.keys(this.props.structures).map((result: string, j) => (
-									<div key={result}>
-										<tag>{result}</tag>
-										<sp />
-										<FTable
-											height={'250px'}
-											hideHeader
-											keySelector={'_id'}
-											expandContent={(data) => (
-												<CodeBlock
-													lang='json'
-													data={JSON.stringify({
-														...data,
-														id: undefined,
-														__v: undefined,
-													})}
-												/>
+							) : (
+								<div>
+									<span>
+										{lock(
+											config.replaceAlpha(
+												styles.colors.black,
+												global.nightMode ? 0.15 : 0.25
+											)
+										)}
+									</span>
+									<span> </span>
+									<span style={{ verticalAlign: 'top' }}>
+										Please login to view
+									</span>
+								</div>
+							)}
+						</Section>
+						<Section title='Notifications'>
+							{this.props.user ? (
+								<div className='flex' style={{ ...styles.card }}>
+									<Notifications></Notifications>
+									<sp />
+									<FButton
+										onClick={async () => {
+											const res = await post('client/create_notification', {
+												notificationType: 'Your video is ready',
+												message: 'test.mp4 processing is complete',
+											})
+										}}
+									>
+										Test
+									</FButton>
+								</div>
+							) : (
+								<div>
+									<span>
+										{lock(
+											config.replaceAlpha(
+												styles.colors.black,
+												global.nightMode ? 0.15 : 0.25
+											)
+										)}
+									</span>
+									<span> </span>
+									<span style={{ verticalAlign: 'top' }}>
+										Please login to view
+									</span>
+								</div>
+							)}
+						</Section>
+						<Section title='Admin'>
+							{this.props.user && this.props.user.permission <= 10 ? (
+								<Admin></Admin>
+							) : (
+								<div>
+									<div>
+										<span>
+											{lock(
+												config.replaceAlpha(
+													styles.colors.black,
+													global.nightMode ? 0.15 : 0.25
+												)
 											)}
-											columns={[
-												{
-													name: 'Name',
-													selector: 'name',
-
-													cell: (c) => (
-														<div>
-															{c && config.localize(c as string)}
-														</div>
-													),
-												},
-												{
-													name: 'Code',
-													selector: 'code',
-												},
-											]}
-											data={
-												this.props.structures &&
-												this.props.structures[result]
-											}
-										></FTable>
-										<sp />
+										</span>
+										<span> </span>
+										<span style={{ verticalAlign: 'top' }}>
+											Please login as Admin to view
+										</span>
 									</div>
-								))}
-						</div>
-						{header('Websockets', false, ['global.socket.emit()'])}
-						{this.props.user ? (
-							<div className='wrapMarginTopLeft flex flex-wrap justify-start items-center'>
-								<FButton
-									onClick={async () => {
-										const token = await global.storage.getItem('token')
-										if (config.websocketSupport)
-											global.socket.emit('test', { token: token })
-									}}
-								>
-									Test
-								</FButton>
+									<div style={{ fontSize: 13, opacity: 0.5 }}>
+										{'Check "permission" property in the Client document'}
+									</div>
+								</div>
+							)}
+						</Section>
+						<Section title='Remote data'>
+							<div style={{ maxWidth: 700 }} className='flex-col justify-center'>
+								{this.props.structures &&
+									Object.keys(this.props.structures).map((result: string, j) => (
+										<div key={result}>
+											<tag>{result}</tag>
+											<sp />
+											<FTable
+												height={'250px'}
+												hideHeader
+												keySelector={'_id'}
+												expandContent={(data) => (
+													<CodeBlock
+														lang='json'
+														data={JSON.stringify({
+															...data,
+															id: undefined,
+															__v: undefined,
+														})}
+													/>
+												)}
+												columns={[
+													{
+														name: 'Name',
+														selector: 'name',
+
+														cell: (c) => (
+															<div>
+																{c && config.localize(c as string)}
+															</div>
+														),
+													},
+													{
+														name: 'Code',
+														selector: 'code',
+													},
+												]}
+												data={
+													this.props.structures &&
+													this.props.structures[result]
+												}
+											></FTable>
+											<sp />
+										</div>
+									))}
 							</div>
-						) : (
-							<div>
-								<span>
-									{lock(
-										config.replaceAlpha(
-											styles.colors.black,
-											global.nightMode ? 0.15 : 0.25
-										)
-									)}
-								</span>
-								<span> </span>
-								<span style={{ verticalAlign: 'top' }}>Please login to view</span>
-							</div>
-						)}
+						</Section>
+						<Section title='Websockets' tags={['global.socket.emit()']}>
+							{this.props.user ? (
+								<div className='wrapMarginTopLeft flex flex-wrap justify-start items-center'>
+									<FButton
+										onClick={async () => {
+											const token = await global.storage.getItem('token')
+											if (config.websocketSupport)
+												global.socket.emit('test', { token: token })
+										}}
+									>
+										Test
+									</FButton>
+								</div>
+							) : (
+								<div>
+									<span>
+										{lock(
+											config.replaceAlpha(
+												styles.colors.black,
+												global.nightMode ? 0.15 : 0.25
+											)
+										)}
+									</span>
+									<span> </span>
+									<span style={{ verticalAlign: 'top' }}>
+										Please login to view
+									</span>
+								</div>
+							)}
+						</Section>
 					</div>
 				)}
 			</MediaQuery>

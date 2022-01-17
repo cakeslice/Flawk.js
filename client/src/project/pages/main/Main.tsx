@@ -9,23 +9,9 @@ import FButton from 'core/components/FButton'
 import config from 'core/config_'
 import React, { Component } from 'react'
 import MediaQuery from 'react-responsive'
-import scrollToElement from 'scroll-to-element'
 
 export default class Main extends Component {
 	state = { flip: false }
-
-	componentDidMount() {
-		this.jumpToHash()
-	}
-	componentDidUpdate() {
-		this.jumpToHash()
-	}
-	jumpToHash = () => {
-		const hash = global.routerHistory().location.hash
-		if (hash) {
-			scrollToElement(hash, { offset: -120 })
-		}
-	}
 
 	render() {
 		return (

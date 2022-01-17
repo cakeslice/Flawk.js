@@ -10,6 +10,7 @@ import * as Sentry from '@sentry/react'
 import { Integrations } from '@sentry/tracing'
 import { useConstructor } from '@toolz/use-constructor'
 import { get } from 'core/api'
+import ScrollToTop from 'core/components/ScrollToTop'
 import config from 'core/config_'
 import navigation from 'core/functions/navigation'
 import styles from 'core/styles'
@@ -260,7 +261,9 @@ export default function RouterBase({ children }: { children: React.ReactNode }) 
 	return (
 		<MobileSimulator active={!config.prod && !config.staging}>
 			<div>
-				<Router history={history}>{children}</Router>
+				<Router history={history}>
+					<ScrollToTop>{children}</ScrollToTop>
+				</Router>
 
 				<ToastContainer />
 			</div>

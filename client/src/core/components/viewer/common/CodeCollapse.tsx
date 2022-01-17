@@ -11,7 +11,7 @@ import Tooltip from 'core/components/Tooltip'
 import config from 'core/config_'
 import styles from 'core/styles'
 import React from 'react'
-import { UnmountClosed } from 'react-collapse'
+import MediaQuery from 'react-responsive'
 
 const code = (color: string) => (
 	<svg
@@ -28,72 +28,114 @@ const code = (color: string) => (
 	</svg>
 )
 
-export default class CodeCollapse extends React.Component<{
-	style?: React.CSSProperties
+type Props = {
+	containerStyle?: React.CSSProperties
 	codeStyle?: React.CSSProperties
 	className?: string
 	data: string
 	lang: 'json' | 'jsx' | 'tsx' | 'html'
-}> {
+}
+export default class CodeCollapse extends React.Component<Props> {
+	constructor(props: Props) {
+		super(props)
+
+		this.setWrapperRef = this.setWrapperRef.bind(this)
+	}
+	timer: ReturnType<typeof setTimeout> | undefined = undefined
+
 	state = {
 		isOpen: false,
 	}
 
+	wrapperRef: HTMLElement | null = null
+	setWrapperRef(instance: HTMLElement | null) {
+		this.wrapperRef = instance
+	}
+
+	componentWillUnmount() {
+		if (this.timer) clearTimeout(this.timer)
+	}
+
 	render() {
 		return (
-			<OutsideAlerter
-				delay
-				clickedOutside={() => {
-					this.setState({ isOpen: false })
-				}}
-			>
-				<div
-					style={{ maxWidth: this.state.isOpen ? undefined : 0, ...this.props.style }}
-					className={this.props.className}
-				>
-					<div className={'flex-col items-end'}>
-						<Tooltip tooltipProps={{ placement: 'left' }} content='Show code'>
-							<button
-								onClick={() => {
-									this.setState({ isOpen: !this.state.isOpen })
-								}}
-								style={{
-									display: 'flex',
-									alignItems: 'center',
-								}}
-							>
-								<tag>
-									<div
-										style={{
-											display: 'flex',
-											alignItems: 'center',
-											width: 23,
-											height: 23,
-										}}
+			<MediaQuery minWidth={config.mobileWidthTrigger}>
+				{(desktop) => (
+					<OutsideAlerter
+						delay
+						clickedOutside={() => {
+							this.setState({ isOpen: false })
+						}}
+					>
+						<div ref={this.setWrapperRef} className={this.props.className}>
+							<div className={'flex-col items-end'}>
+								<div
+									style={{ width: desktop ? 0 : undefined }}
+									className={'flex-col items-end'}
+								>
+									<Tooltip
+										tooltipProps={{ placement: 'left' }}
+										content='Show code'
 									>
-										{code(
-											this.state.isOpen
-												? styles.colors.main
-												: config.replaceAlpha(styles.colors.black, 0.5)
-										)}
-									</div>
-								</tag>
-							</button>
-						</Tooltip>
-						<div style={{ alignSelf: 'center', width: '100%', maxWidth: 600 }}>
-							<UnmountClosed isOpened={this.state.isOpen}>
-								<div style={{ minHeight: 5 }}></div>
-								<CodeBlock
-									style={this.props.codeStyle}
-									noPrettier
-									lang={this.props.lang}
-									data={this.props.data}
-								/>
-							</UnmountClosed>
+										<button
+											onClick={() => {
+												if (!this.state.isOpen) {
+													if (this.timer) clearTimeout(this.timer)
+													this.timer = setTimeout(
+														() =>
+															window.scrollTo({
+																top:
+																	this.wrapperRef!.offsetTop -
+																	100,
+																behavior: 'smooth',
+															}),
+														400
+													)
+												}
+												this.setState({ isOpen: !this.state.isOpen })
+											}}
+											style={{
+												display: 'flex',
+												alignItems: 'center',
+											}}
+										>
+											<tag>
+												<div
+													style={{
+														display: 'flex',
+														alignItems: 'center',
+														width: 23,
+														height: 23,
+													}}
+												>
+													{code(
+														this.state.isOpen
+															? styles.colors.main
+															: config.replaceAlpha(
+																	styles.colors.black,
+																	0.5
+															  )
+													)}
+												</div>
+											</tag>
+										</button>
+									</Tooltip>
+								</div>
+								<div style={{ alignSelf: 'center', width: '100%', maxWidth: 600 }}>
+									<div style={{ minHeight: 5 }}></div>
+									<CodeBlock
+										visible={this.state.isOpen}
+										style={this.props.codeStyle}
+										containerStyle={this.props.containerStyle}
+										noPrettier
+										lang={this.props.lang}
+										data={this.props.data}
+									/>
+								</div>
+							</div>
 						</div>
-					</div>
-				</div>
-			</OutsideAlerter>
+					</OutsideAlerter>
+				)}
+			</MediaQuery>
 		)
 	}
 }

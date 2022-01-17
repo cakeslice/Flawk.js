@@ -75,7 +75,47 @@ export default {
 	// @ts-ignore
 	buttonFontWeight: undefined,
 	// @ts-ignore
-	extraButtons: [] as ({
+	extraButtons: [
+		{
+			buttonType: 'delete',
+			transition: 'background 200ms, border-color 200ms, color 200ms',
+			color: _red,
+			':focus-visible': {
+				outline: 'none',
+				borderColor: _red,
+			},
+			':hover': {
+				opacity: 1,
+				color: 'white',
+				background: config.replaceAlpha(_red, 0.5),
+				borderColor: _red,
+			},
+			':active': {
+				color: 'white',
+				borderColor: _red,
+				background: _red,
+			},
+		},
+		{
+			buttonType: 'delete_primary',
+			color: 'white',
+			borderColor: _red,
+			background: _red,
+
+			':focus-visible': {
+				outline: 'none',
+				background: config.replaceAlpha(_red, 0.5),
+			},
+			':hover': {
+				opacity: 1,
+				background: config.replaceAlpha(_red, 0.5),
+			},
+			':active': {
+				borderColor: _red,
+				background: _red,
+			},
+		},
+	] as ({
 		buttonType: string
 	} & GlamorProps &
 		React.CSSProperties)[],

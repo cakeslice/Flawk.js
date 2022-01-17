@@ -21,7 +21,7 @@ const mobileHeightTop = 65
 const desktopHeight = 55
 const desktopHeightTop = 65
 
-export type TabProps = Obj & { toggleOpen?: (open?: boolean) => void; key: string; isOpen: boolean }
+export type TabProps = Obj & { toggleOpen?: (open?: boolean) => void; isOpen: boolean }
 
 export type DashboardRoute = {
 	id: string
@@ -126,13 +126,7 @@ export default class Dashboard extends Component<
 							{(desktop) => {
 								const headerHeight = desktop ? 90 : 50
 								return (
-									<div
-										/* alwaysVisible
-										effects={['fade']}
-										duration={0.5} */
-										//
-										className='flex-col justify-center'
-									>
+									<div className='flex-col justify-center'>
 										{desktop ? (
 											<div
 												className='flex'
@@ -613,16 +607,22 @@ class Menu extends Component<{
 			>
 				{this.props.routes.map((entry, i) => {
 					if (entry.notRoute && entry.tab)
-						return entry.tab({
-							...this.props.pageProps,
-							toggleOpen: this.props.toggleOpen,
-							isOpen: this.props.isOpen,
-							key: i.toString(),
-						})
+						return (
+							<div
+								key={entry.id + (entry.params || '')}
+								style={{ display: 'contents' }}
+							>
+								{entry.tab({
+									...this.props.pageProps,
+									toggleOpen: this.props.toggleOpen,
+									isOpen: this.props.isOpen,
+								})}
+							</div>
+						)
 
 					const output = (
 						<div
-							key={entry.notRoute ? i : entry.id + (entry.params || '')}
+							key={entry.id + (entry.params || '')}
 							style={{
 								marginTop:
 									this.props.entryStyle && this.props.entryStyle.marginTop
@@ -821,7 +821,7 @@ class Menu extends Component<{
 
 					if (entry.subRoutes)
 						return (
-							<div key={entry.notRoute ? i : entry.id + (entry.params || '')}>
+							<div key={entry.id + (entry.params || '')}>
 								{output}
 								<UnmountClosed isOpened={selectedRoute.includes('/' + entry.id)}>
 									{entry.subRoutes &&

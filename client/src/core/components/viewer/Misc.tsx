@@ -18,7 +18,7 @@ import React from 'react'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import ReactQuill from 'react-quill'
 import MediaQuery from 'react-responsive'
-import { header } from './ComponentsViewer'
+import { Section } from './ComponentsViewer'
 
 export default class Misc extends ReactQueryParams {
 	state = { quill: '' }
@@ -28,182 +28,190 @@ export default class Misc extends ReactQueryParams {
 			<MediaQuery minWidth={config.mobileWidthTrigger}>
 				{(desktop) => (
 					<div>
-						{header('Avatar', true, ['<Avatar/>'])}{' '}
-						<div style={{ ...styles.card, padding: 0 }}>
-							<div className='wrapMarginBig flex flex-wrap justify-start'>
-								<Avatar name='José Guerreiro'></Avatar>
-								<Avatar isOnline></Avatar>
-								<Avatar></Avatar>
-								<Avatar style={{ width: 40, height: 40 }}></Avatar>
+						<Section title='Avatar' top tags={['<Avatar/>']}>
+							<div style={{ ...styles.card, padding: 0 }}>
+								<div className='wrapMarginBig flex flex-wrap justify-start'>
+									<Avatar name='José Guerreiro'></Avatar>
+									<Avatar isOnline></Avatar>
+									<Avatar></Avatar>
+									<Avatar style={{ width: 40, height: 40 }}></Avatar>
+								</div>
 							</div>
-						</div>
-						{header('Loading', false, ['<Loading/>'])}
-						<div style={{ ...styles.card, padding: 0 }}>
-							<div
-								style={{ minHeight: 94, width: desktop ? 300 : undefined }}
-								className='wrapMarginBig flex flex-wrap justify-start'
-							>
-								<Loading size={28 * 3} />
-								<Loading />
-								<Loading size={18.5} />
+						</Section>
+						<Section title='Loading' tags={['<Loading/>']}>
+							<div style={{ ...styles.card, padding: 0 }}>
+								<div
+									style={{ minHeight: 94, width: desktop ? 300 : undefined }}
+									className='wrapMarginBig flex flex-wrap justify-start'
+								>
+									<Loading size={28 * 3} />
+									<Loading />
+									<Loading size={18.5} />
+								</div>
 							</div>
-						</div>
-						{header('Query parameters', false, ['extends ReactQueryParams'])}
-						<div style={{ ...styles.card }}>
-							<p>
-								Parameter {'"test"'}: <b>{this.queryParams.test}</b>
-							</p>
-							<br />
+						</Section>
+						<Section title='Query parameters' tags={['extends ReactQueryParams']}>
+							<div style={{ ...styles.card }}>
+								<p>
+									Parameter {'"test"'}: <b>{this.queryParams.test}</b>
+								</p>
+								<br />
+								<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+									<FButton
+										onClick={() => {
+											this.setQueryParams({
+												test: 'Hello!',
+											})
+										}}
+									>
+										Add test=Hello!
+									</FButton>
+									<FButton
+										onClick={() => {
+											this.setQueryParams({
+												test: undefined,
+											})
+										}}
+									>
+										Remove test
+									</FButton>
+								</div>
+							</div>
+						</Section>
+						<Section title='Toast' tags={['global.addFlag()']}>
 							<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
 								<FButton
-									onClick={() => {
-										this.setQueryParams({
-											test: 'Hello!',
-										})
-									}}
+									onClick={() =>
+										global.addFlag(
+											'New message',
+											(props) => (
+												<div>
+													<div>
+														<b>Chris:</b> Have you heard about the new
+														Tesla?
+													</div>
+													<sp />
+													<div className='flex justify-end'>
+														<FButton onClick={props.closeToast}>
+															Reply
+														</FButton>
+													</div>
+												</div>
+											),
+											'info',
+											{
+												playSound: true,
+											}
+										)
+									}
 								>
-									Add test=Hello!
+									Info
 								</FButton>
 								<FButton
-									onClick={() => {
-										this.setQueryParams({
-											test: undefined,
-										})
-									}}
+									onClick={() =>
+										global.addFlag(
+											'Your changes were saved',
+											undefined,
+											'success',
+											{
+												closeAfter: 2000,
+												playSound: true,
+											}
+										)
+									}
 								>
-									Remove test
+									Success
+								</FButton>
+								<FButton
+									onClick={() =>
+										global.addFlag(
+											'Warning',
+											'There is out-of-sync data you need to review to continue',
+											'warning',
+											{
+												closeAfter: 5000,
+												playSound: true,
+											}
+										)
+									}
+								>
+									Warning
+								</FButton>
+								<FButton
+									onClick={() =>
+										global.addFlag('Error', 'File upload failed', 'error', {
+											playSound: true,
+										})
+									}
+								>
+									Error
 								</FButton>
 							</div>
-						</div>
-						{header('Toasts', false, ['global.addFlag()'])}
-						<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
-							<FButton
-								onClick={() =>
-									global.addFlag(
-										'New message',
-										(props) => (
-											<div>
-												<div>
-													<b>Chris:</b> Have you heard about the new
-													Tesla?
-												</div>
-												<sp />
-												<div className='flex justify-end'>
-													<FButton onClick={props.closeToast}>
-														Reply
-													</FButton>
-												</div>
-											</div>
-										),
-										'info',
-										{
-											playSound: true,
-										}
-									)
+						</Section>
+						<Section title='Copy to clipboard' tags={['<CopyToClipboard/>']}>
+							<CopyToClipboard
+								text={'https://github.com/cakeslice'}
+								onCopy={() =>
+									global.addFlag('Copied!', '', 'default', { autoClose: true })
 								}
 							>
-								Info
-							</FButton>
-							<FButton
-								onClick={() =>
-									global.addFlag(
-										'Your changes were saved',
-										undefined,
-										'success',
-										{
-											closeAfter: 2000,
-											playSound: true,
-										}
-									)
-								}
-							>
-								Success
-							</FButton>
-							<FButton
-								onClick={() =>
-									global.addFlag(
-										'Warning',
-										'There is out-of-sync data you need to review to continue',
-										'warning',
-										{
-											closeAfter: 5000,
-											playSound: true,
-										}
-									)
-								}
-							>
-								Warning
-							</FButton>
-							<FButton
-								onClick={() =>
-									global.addFlag('Error', 'File upload failed', 'error', {
-										playSound: true,
-									})
-								}
-							>
-								Error
-							</FButton>
-						</div>
-						{header('Copy to clipboard', false, ['<CopyToClipboard/>'])}
-						<CopyToClipboard
-							text={'https://github.com/cakeslice'}
-							onCopy={() =>
-								global.addFlag('Copied!', '', 'default', { autoClose: true })
-							}
-						>
-							<FButton>Copy Link</FButton>
-						</CopyToClipboard>
-						{header('Language switcher', false, ['<LanguageSwitcher/>'])}
-						<LanguageSwitcher></LanguageSwitcher>
-						{header('Scroll to top', false, ['global.scrollToTop()'])}
-						<FButton onClick={() => global.scrollToTop()}>Scroll</FButton>
-						{header('Text editor', false, ['<ReactQuill/>'])}
-						<ReactQuill
-							style={{
-								maxWidth: 700,
-								minHeight: 300,
-								background: styles.colors.white,
-								borderWidth: 1,
-								borderStyle: 'solid',
-								borderRadius: styles.defaultBorderRadius,
-								borderColor: styles.colors.borderColor,
-							}}
-							// A lot more options here: https://www.npmjs.com/package/react-quill
-							theme='snow'
-							//value={values.someText || ''}
-							onBlur={() => {
-								this.setState({ quill: this.state.quill })
-							}}
-							onChange={(q) => {
-								this.state.quill = q
-								// For Formik use setFieldValue
-							}}
-							modules={{
-								toolbar: [
-									['bold', 'italic', 'underline', 'strike'], // toggled buttons
-									['blockquote', 'code-block'],
+								<FButton>Copy Link</FButton>
+							</CopyToClipboard>
+						</Section>
+						<Section title='Language switcher' tags={['<LanguageSwitcher/>']}>
+							<LanguageSwitcher></LanguageSwitcher>
+						</Section>
+						<Section title='Scroll to top' tags={['config.scrollToTop()']}>
+							<FButton onClick={() => config.scrollToTop()}>Scroll</FButton>
+						</Section>
+						<Section title='Text editor' tags={['<ReactQuill/>']}>
+							<ReactQuill
+								style={{
+									maxWidth: 700,
+									minHeight: 300,
+									background: styles.colors.white,
+									borderWidth: 1,
+									borderStyle: 'solid',
+									borderRadius: styles.defaultBorderRadius,
+									borderColor: styles.colors.borderColor,
+								}}
+								// A lot more options here: https://www.npmjs.com/package/react-quill
+								theme='snow'
+								//value={values.someText || ''}
+								onBlur={() => {
+									this.setState({ quill: this.state.quill })
+								}}
+								onChange={(q) => {
+									this.state.quill = q
+									// For Formik use setFieldValue
+								}}
+								modules={{
+									toolbar: [
+										['bold', 'italic', 'underline', 'strike'], // toggled buttons
+										['blockquote', 'code-block'],
 
-									[{ header: 1 }, { header: 2 }], // custom button values
-									[{ list: 'ordered' }, { list: 'bullet' }],
-									[{ script: 'sub' }, { script: 'super' }], // superscript/subscript
-									[{ indent: '-1' }, { indent: '+1' }], // outdent/indent
-									[{ direction: 'rtl' }], // text direction
+										[{ header: 1 }, { header: 2 }], // custom button values
+										[{ list: 'ordered' }, { list: 'bullet' }],
+										[{ script: 'sub' }, { script: 'super' }], // superscript/subscript
+										[{ indent: '-1' }, { indent: '+1' }], // outdent/indent
+										[{ direction: 'rtl' }], // text direction
 
-									[{ size: ['small', false, 'large', 'huge'] }], // custom dropdown
-									[{ header: [1, 2, 3, 4, 5, 6, false] }],
+										[{ size: ['small', false, 'large', 'huge'] }], // custom dropdown
+										[{ header: [1, 2, 3, 4, 5, 6, false] }],
 
-									[{ color: [] }, { background: [] }], // dropdown with defaults from theme
-									[{ font: [] }],
-									[{ align: [] }],
+										[{ color: [] }, { background: [] }], // dropdown with defaults from theme
+										[{ font: [] }],
+										[{ align: [] }],
 
-									['clean'], // remove formatting button
-								],
-							}}
-						/>
-						<sp></sp>
-						<div style={{ maxWidth: 700 }}>
-							{this.state.quill && Parser(this.state.quill)}
-						</div>
+										['clean'], // remove formatting button
+									],
+								}}
+							/>
+							<sp></sp>
+							<div style={{ maxWidth: 700 }}>
+								{this.state.quill && Parser(this.state.quill)}
+							</div>
+						</Section>
 					</div>
 				)}
 			</MediaQuery>

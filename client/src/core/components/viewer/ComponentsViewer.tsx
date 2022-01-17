@@ -6,6 +6,7 @@
  */
 
 import logo from 'core/assets/images/logo.svg'
+import Anchor from 'core/components/Anchor'
 import Dashboard, { DashboardRoute } from 'core/components/Dashboard'
 import lightOn from 'core/components/viewer/assets/lightbulb.svg'
 import lightOff from 'core/components/viewer/assets/lightbulb_off.svg'
@@ -14,7 +15,6 @@ import styles from 'core/styles'
 import { css } from 'glamor'
 import React, { Component } from 'react'
 import MediaQuery from 'react-responsive'
-import scrollToElement from 'scroll-to-element'
 import CodeCollapse from './common/CodeCollapse'
 
 const Layout = React.lazy(() => import('core/components/viewer/Layout'))
@@ -25,20 +25,6 @@ const Backend = React.lazy(() => import('core/components/viewer/Backend'))
 const API = React.lazy(() => import('core/components/viewer/API'))
 
 export default class ComponentsViewer extends Component {
-	componentDidMount() {
-		this.jumpToHash()
-	}
-	componentDidUpdate() {
-		this.jumpToHash()
-	}
-
-	jumpToHash = () => {
-		const hash = global.routerHistory().location.hash
-		if (hash) {
-			scrollToElement(hash, { offset: -120 })
-		}
-	}
-
 	render() {
 		const routes: Array<DashboardRoute> = [
 			{
@@ -127,13 +113,13 @@ export default class ComponentsViewer extends Component {
 			{
 				id: 'mobile_space',
 				notRoute: true,
-				tab: (props) => <div key={props.key} style={{ minHeight: '30%' }}></div>,
+				tab: (props) => <div style={{ minHeight: '30%' }}></div>,
 				mobileTab: true,
 			},
 			{
 				id: 'desktop_space',
 				notRoute: true,
-				tab: (props) => <div key={props.key} style={{ flexGrow: 1, minHeight: 20 }} />,
+				tab: (props) => <div style={{ flexGrow: 1, minHeight: 20 }} />,
 				desktopTab: true,
 			},
 			{
@@ -152,7 +138,7 @@ export default class ComponentsViewer extends Component {
 			{
 				id: 'middle',
 				notRoute: true,
-				tab: (props) => <div key={props.key} style={{ height: 20 }} />,
+				tab: (props) => <div style={{ height: 20 }} />,
 			},
 			{
 				name: (!global.nightMode ? 'Dark' : 'Light') + ' mode',
@@ -179,7 +165,7 @@ export default class ComponentsViewer extends Component {
 			{
 				id: 'bottom',
 				notRoute: true,
-				tab: (props) => <div key={props.key} style={{ height: 40 }} />,
+				tab: (props) => <div style={{ height: 40 }} />,
 			},
 		]
 
@@ -240,72 +226,83 @@ class Wrapper extends Component {
 	}
 }
 
-export const header = (
-	title: string,
-	top?: boolean,
-	tags?: string[],
-	sourceCode?: {
-		code: string
-		component: React.ReactNode
-		lang?: 'tsx' | 'jsx' | 'json'
-	}
-) => {
+export const Section: React.FC<{
+	title: string
+	top?: boolean
+	tags?: string[]
+	code?: string
+	lang?: 'tsx' | 'jsx' | 'json'
+}> = ({ children, title, top, tags, code, lang }) => {
 	return (
-		<MediaQuery minWidth={880}>
-			{(desktop) => (
-				<div>
-					{!top && <sp />}
-					{!top && <sp />}
-					{!top && <sp />}
-					<div className={(desktop ? 'flex' : 'flex-col') + ' w-full'}>
-						<div className={sourceCode && 'flex-child-fix grow'}>
-							<div className='flex'>
-								<h4>{title}</h4>
-								{tags && <div style={{ minWidth: 15 }} />}
-								{tags && (
-									<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
-										{tags.map((tag) => (
-											<tag
+		<MediaQuery minWidth={config.mobileWidthTrigger}>
+			{(desktop) => {
+				const id = title.replaceAll(' ', '_').toLowerCase()
+				return (
+					<MediaQuery minWidth={880}>
+						{(tablet) => (
+							<div>
+								{!top && <sp />}
+								{!top && <sp />}
+								{!top && <sp />}
+								<Anchor id={id} updateHash>
+									<div className={(tablet ? 'flex' : 'flex-col') + ' w-full'}>
+										<div className={code && 'flex-child-fix grow'}>
+											<div className='flex'>
+												<h4>{title}</h4>
+												{tags && <div style={{ minWidth: 15 }} />}
+												{tags && (
+													<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+														{tags.map((tag) => (
+															<div
+																key={id + '_' + tag}
+																style={{
+																	display: 'flex',
+																	position: 'relative',
+																	top: -3,
+																	marginLeft: 5,
+																}}
+															>
+																<tag>{tag}</tag>
+															</div>
+														))}
+													</div>
+												)}
+											</div>
+											{code && !tags && <sp />}
+											{code && <sp />}
+											{code && children}
+										</div>
+										{code && (
+											<div
+												className='flex justify-end'
 												style={{
-													position: 'relative',
-													top: -3,
-													marginLeft: 5,
+													marginTop: !tablet ? 25 : 0,
+													justifySelf: !tablet ? 'flex-end' : undefined,
 												}}
 											>
-												{tag}
-											</tag>
-										))}
+												<CodeCollapse
+													containerStyle={{
+														width: desktop ? 400 : undefined,
+														height: desktop ? 600 : undefined,
+													}}
+													codeStyle={{
+														marginLeft: tablet ? 25 : undefined,
+													}}
+													data={code}
+													lang={lang || 'tsx'}
+												></CodeCollapse>
+											</div>
+										)}
 									</div>
-								)}
-							</div>
-							{sourceCode && !tags && <sp />}
-							{sourceCode && <sp />}
-							{sourceCode && sourceCode.component}
-						</div>
-						{sourceCode && (
-							<div
-								className='flex justify-end'
-								style={{
-									marginTop: !desktop ? 25 : 0,
-									justifySelf: !desktop ? 'flex-end' : undefined,
-								}}
-							>
-								<CodeCollapse
-									style={{ width: '100%' }}
-									codeStyle={{
-										width: desktop ? 400 : undefined,
-										marginLeft: desktop ? 25 : undefined,
-									}}
-									data={sourceCode.code}
-									lang={sourceCode.lang || 'tsx'}
-								></CodeCollapse>
+								</Anchor>
+								{!code && !tags && <sp />}
+								{!code && <sp />}
+								{!code && children}
 							</div>
 						)}
-					</div>
-					{!sourceCode && !tags && <sp />}
-					{!sourceCode && <sp />}
-				</div>
-			)}
+					</MediaQuery>
+				)
+			}}
 		</MediaQuery>
 	)
 }
@@ -332,41 +329,41 @@ const styleLogo = (color: string) => (
 		fill='none'
 		xmlns='http://www.w3.org/2000/svg'
 	>
-		<rect width='48' height='48' fill='white' fill-opacity='0.01' />
+		<rect width='48' height='48' fill='white' fillOpacity='0.01' />
 		<path
 			d='M32 6H42V16'
 			stroke={color}
-			stroke-width='4'
-			stroke-linecap='round'
-			stroke-linejoin='round'
+			strokeWidth='4'
+			strokeLinecap='round'
+			strokeLinejoin='round'
 		/>
 		<path
 			d='M17 32L19.1875 27M31 32L28.8125 27M19.1875 27L24 16L28.8125 27M19.1875 27H28.8125'
 			stroke={color}
-			stroke-width='4'
-			stroke-linecap='round'
-			stroke-linejoin='round'
+			strokeWidth='4'
+			strokeLinecap='round'
+			strokeLinejoin='round'
 		/>
 		<path
 			d='M16 6H6V16'
 			stroke={color}
-			stroke-width='4'
-			stroke-linecap='round'
-			stroke-linejoin='round'
+			strokeWidth='4'
+			strokeLinecap='round'
+			strokeLinejoin='round'
 		/>
 		<path
 			d='M32 42H42V32'
 			stroke={color}
-			stroke-width='4'
-			stroke-linecap='round'
-			stroke-linejoin='round'
+			strokeWidth='4'
+			strokeLinecap='round'
+			strokeLinejoin='round'
 		/>
 		<path
 			d='M16 42H6V32'
 			stroke={color}
-			stroke-width='4'
-			stroke-linecap='round'
-			stroke-linejoin='round'
+			strokeWidth='4'
+			strokeLinecap='round'
+			strokeLinejoin='round'
 		/>
 	</svg>
 )
@@ -380,14 +377,14 @@ const layoutLogo = (color: string) => (
 		xmlns='http://www.w3.org/2000/svg'
 	>
 		<path
-			fill-rule='evenodd'
-			clip-rule='evenodd'
+			fillRule='evenodd'
+			clipRule='evenodd'
 			d='M13 21V13H21V21H13ZM15 15H19L19 19H15V15Z'
 			fill={color}
 		/>
 		<path
-			fill-rule='evenodd'
-			clip-rule='evenodd'
+			fillRule='evenodd'
+			clipRule='evenodd'
 			d='M3 11L3 3L11 3V11H3ZM5 5L9 5V9L5 9L5 5Z'
 			fill={color}
 		/>
@@ -403,13 +400,13 @@ const inputsLogo = (color: string) => (
 		xmlns='http://www.w3.org/2000/svg'
 		version='1.1'
 		baseProfile='full'
-		enable-background='new 0 0 76.00 76.00'
+		enableBackground='new 0 0 76.00 76.00'
 	>
 		<path
 			fill={color}
-			fill-opacity='1'
-			stroke-width='0.2'
-			stroke-linejoin='round'
+			fillOpacity='1'
+			strokeWidth='0.2'
+			strokeLinejoin='round'
 			d='M 15.8333,23.75L 40.7708,23.75L 36.0208,28.5L 17.4166,28.5L 17.4166,47.5L 58.5833,47.5L 58.5833,28.5L 50.2708,28.5L 55.0208,23.75L 60.1667,23.75C 61.9156,23.75 63.3333,25.1678 63.3333,26.9167L 63.3333,49.0833C 63.3333,50.8322 61.9156,52.25 60.1667,52.25L 15.8333,52.25C 14.0844,52.25 12.6667,50.8322 12.6667,49.0833L 12.6667,26.9167C 12.6667,25.1678 14.0844,23.75 15.8333,23.75 Z M 55.0621,16.1879C 55.5053,16.6596 55.727,17.1679 55.727,17.7128L 55.5562,18.515L 55.0621,19.2378L 45.5648,28.735L 43.1676,31.1322L 40.868,33.4318L 38.8094,35.4905L 37.0953,37.1954L 35.8663,38.4153L 35.2563,39.0253L 34.2651,39.9311L 32.8621,41.0382L 31.3281,41.9715C 30.8075,42.2317 30.344,42.3618 29.9373,42.3618C 29.6201,42.3618 29.366,42.2663 29.1749,42.0751C 28.9837,41.884 28.8882,41.6238 28.8882,41.2944C 28.8882,40.8877 29.0183,40.4272 29.2786,39.9128L 30.2118,38.3787L 31.3098,36.9758L 32.2064,35.9937L 52.0122,16.1879L 52.735,15.6938L 53.5372,15.523C 54.0821,15.523 54.5904,15.7447 55.0621,16.1879 Z M 27.6499,42.0751L 29.1749,43.6001L 26.125,45.125L 27.6499,42.0751 Z '
 		/>
 	</svg>
@@ -429,14 +426,14 @@ const miscLogo = (color: string) => (
 			d='M29.5,8.714a3,3,0,0,0-1.753-2.728l-10.5-4.8a3,3,0,0,0-2.494,0l-10.5,4.8A3,3,0,0,0,2.5,8.714V23.286a3,3,0,0,0,1.753,2.728l10.5,4.8a3,3,0,0,0,2.494,0l10.5-4.8A3,3,0,0,0,29.5,23.286V8.714Zm-2,0V23.286a1,1,0,0,1-.584.909l-10.5,4.8a1.006,1.006,0,0,1-.832,0l-10.5-4.8a1,1,0,0,1-.584-.909V8.714A1,1,0,0,1,5.085,7.8L15.584,3a1.006,1.006,0,0,1,.832,0l10.5,4.8A1,1,0,0,1,27.5,8.714Z'
 			transform='translate(-2.501 -0.914)'
 			fill={color}
-			fill-rule='evenodd'
+			fillRule='evenodd'
 		/>
 		<path
 			id='Path_226'
 			data-name='Path 226'
 			d='M16,10.715A5.285,5.285,0,1,0,21.285,16,5.287,5.287,0,0,0,16,10.715Zm0,2A3.285,3.285,0,1,1,12.715,16,3.287,3.287,0,0,1,16,12.715Z'
 			transform='translate(-2.501 -0.914)'
-			fill-rule='evenodd'
+			fillRule='evenodd'
 			fill={color}
 		/>
 	</svg>

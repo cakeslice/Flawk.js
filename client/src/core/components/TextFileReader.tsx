@@ -11,12 +11,16 @@ export default class TextFileReader extends React.Component<{
 	txt: string
 	classOverride?: string
 }> {
+	timer: ReturnType<typeof setTimeout> | undefined = undefined
 	state = {
 		text: '',
 	}
 
 	componentDidMount() {
-		setTimeout(() => this.readTextFile(this.props.txt), 500)
+		this.timer = setTimeout(() => this.readTextFile(this.props.txt), 500)
+	}
+	componentWillUnmount() {
+		if (this.timer) clearTimeout(this.timer)
 	}
 
 	readTextFile = (file: string) => {

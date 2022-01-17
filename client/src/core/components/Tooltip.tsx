@@ -5,74 +5,93 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import Animated, { Effect } from 'core/components/Animated'
 import styles from 'core/styles'
 import React from 'react'
 import TooltipTrigger, { TooltipTriggerProps } from 'react-popper-tooltip'
 
-export default function Tooltip(props: {
+type Props = {
 	children: React.ReactNode
 	content: React.ReactNode
 	tooltipProps?: Partial<TooltipTriggerProps>
 	offset?: number
 	offsetAlt?: number
+	selectable?: boolean
 	contentStyle?: React.CSSProperties
-}) {
-	return (
-		<TooltipTrigger
-			placement='top'
-			delayHide={500}
-			modifiers={[
-				{
-					name: 'offset',
-					options: {
-						offset: [
-							props.offsetAlt === undefined ? 0 : props.offsetAlt,
-							props.offset === undefined ? 5 : props.offset,
-						],
+}
+export default class Tooltip extends React.Component<Props> {
+	state = { visible: false }
+
+	render() {
+		const props = this.props
+
+		return (
+			<TooltipTrigger
+				placement='top'
+				delayHide={200}
+				modifiers={[
+					{
+						name: 'offset',
+						options: {
+							offset: [
+								props.offsetAlt === undefined ? 0 : props.offsetAlt,
+								props.offset === undefined ? 5 : props.offset,
+							],
+						},
 					},
-				},
-			]}
-			trigger={['hover']}
-			{...props.tooltipProps}
-			tooltip={({ tooltipRef, getTooltipProps }) => (
-				<div
-					{...getTooltipProps({
-						ref: tooltipRef,
-						className: 'tooltip-container',
-					})}
-				>
+				]}
+				trigger={['hover']}
+				{...props.tooltipProps}
+				tooltipShown={true}
+				onVisibilityChange={(visible) => {
+					this.setState({ visible })
+				}}
+				tooltip={({ tooltipRef, getTooltipProps }) => (
 					<div
-						style={{
-							animation:
-								(props.tooltipProps?.placement === 'left'
-									? 'openLeft'
-									: props.tooltipProps?.placement === 'right'
-									? 'openRight'
-									: props.tooltipProps?.placement === 'bottom'
-									? 'openDown'
-									: 'openUp') + ' 0.2s ease-in-out',
-							...styles.card,
-							padding: 7.5,
-							fontSize: 13,
-							...styles.tooltip,
-							...props.contentStyle,
-						}}
+						{...getTooltipProps({
+							ref: tooltipRef,
+							className: 'tooltip-container',
+						})}
 					>
-						{props.content}
+						<Animated
+							controlled={this.state.visible}
+							className={!props.selectable ? 'select-none' : undefined}
+							effects={[
+								'fade',
+								((props.tooltipProps?.placement === 'left'
+									? 'left'
+									: props.tooltipProps?.placement === 'right'
+									? 'right'
+									: props.tooltipProps?.placement === 'bottom'
+									? 'down'
+									: 'up') + '-scale') as Effect,
+							]}
+							duration={0.2}
+							delay={0}
+							style={{
+								...styles.card,
+								padding: 7.5,
+								fontSize: 13,
+								...styles.tooltip,
+								...props.contentStyle,
+							}}
+						>
+							{props.content}
+						</Animated>
 					</div>
-				</div>
-			)}
-		>
-			{({ getTriggerProps, triggerRef }) => (
-				<span
-					{...getTriggerProps({
-						ref: triggerRef,
-						className: 'trigger',
-					})}
-				>
-					{props.children}
-				</span>
-			)}
-		</TooltipTrigger>
-	)
+				)}
+			>
+				{({ getTriggerProps, triggerRef }) => (
+					<span
+						{...getTriggerProps({
+							ref: triggerRef,
+							className: 'trigger',
+						})}
+					>
+						{props.children}
+					</span>
+				)}
+			</TooltipTrigger>
+		)
+	}
 }

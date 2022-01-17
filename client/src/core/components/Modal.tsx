@@ -41,6 +41,10 @@ type Props = {
 	noAutoFocus?: boolean
 }
 export default class Modal extends Component<Props> {
+	state = {
+		parentState: false,
+	}
+
 	constructor(props: Props) {
 		super(props)
 
@@ -51,9 +55,39 @@ export default class Modal extends Component<Props> {
 		this.renderHeader = this.renderHeader.bind(this)
 	}
 
-	componentDidMount() {
+	disableScroll() {
 		const target = document.querySelector('.scrollTarget')
-		if (target) disableBodyScroll(target)
+		if (target) disableBodyScroll(target, { reserveScrollBarGap: false })
+	}
+
+	componentDidMount() {
+		if (!this.props.parent || !this.props.name) {
+			this.disableScroll()
+		} else {
+			// @ts-ignore
+			this.state.parentState = this.props.parent.state[this.props.name]
+
+			if (this.state.parentState) {
+				this.disableScroll()
+			}
+		}
+	}
+	componentDidUpdate(prevProps: Props) {
+		if (
+			this.props.parent &&
+			this.props.name &&
+			// @ts-ignore
+			this.props.parent.state[this.props.name] !== this.state.parentState
+		) {
+			// @ts-ignore
+			this.state.parentState = this.props.parent.state[this.props.name]
+
+			if (this.state.parentState) {
+				this.disableScroll()
+			} else {
+				clearAllBodyScrollLocks()
+			}
+		}
 	}
 	componentWillUnmount() {
 		clearAllBodyScrollLocks()
@@ -67,6 +101,8 @@ export default class Modal extends Component<Props> {
 			s[this.props.name] = false
 			this.props.parent.setState(s)
 		}
+
+		clearAllBodyScrollLocks()
 	}
 
 	renderHeader: React.FC = ({ children }) => {
@@ -166,74 +202,86 @@ export default class Modal extends Component<Props> {
 
 		return (
 			<Portal>
-				<div
-					style={{
-						//backdropFilter: 'blur(2px)', // ! Bad for performance
-						background:
-							styles.modalBackground ||
-							config.replaceAlpha(
-								global.nightMode ? styles.colors.white : 'rgba(127,127,127,1)',
-								0.25
-							),
-						position: 'fixed',
-						top: 0,
-						left: 0,
-						right: 0,
-						bottom: 0,
-						zIndex: 99,
-						display: 'flex',
-						justifyContent: 'center',
-						alignItems: 'center',
-					}}
+				<Animated
+					className='scrollTarget'
+					controlled={
+						this.props.parent && this.props.name
+							? // @ts-ignore
+							  this.props.parent.state[this.props.name]
+							: undefined
+					}
+					alwaysVisible
+					effects={['fade']}
+					duration={0.25}
 				>
-					{!this.props.noAutoFocus && (
-						<button autoFocus={true} style={{ maxWidth: 0, maxHeight: 0 }}></button>
-					)}
-					<Animated alwaysVisible effects={['fade']} duration={0.5}>
-						<div style={{ margin: 10 }}>
-							<div
-								className='scrollTarget'
-								style={{
-									...styles.card,
-									...{
-										boxShadow: styles.strongerShadow,
-										margin: 0,
-										borderRadius: 5,
-										maxWidth: 'calc(100vw - 10px)',
-										maxHeight: 'calc(100vh - 100px)', // ! Needs to be like this to compensate for browser bars
-										minHeight: 20,
-										width: styles.modalWidth || 500,
-										display: 'flex',
-										flexDirection: 'column',
-										justifyContent: 'space-between',
-										padding: 0,
-										...(styles.modalCard && styles.modalCard),
-										...this.props.style,
-									},
-								}}
-							>
-								{this.props.title && (
-									<ModalHeader
-										modalPadding={modalPadding}
-										headerStyle={this.props.headerStyle}
-										title={this.props.title}
-										onClose={this.onClose}
-									/>
-								)}
+					<div
+						style={{
+							//backdropFilter: 'blur(2px)', // ! Bad for performance
+							background:
+								styles.modalBackground ||
+								config.replaceAlpha(
+									global.nightMode ? styles.colors.white : 'rgba(127,127,127,1)',
+									0.25
+								),
+							position: 'fixed',
+							top: 0,
+							left: 0,
+							right: 0,
+							bottom: 0,
+							zIndex: 99,
+							display: 'flex',
+							justifyContent: 'center',
+							alignItems: 'center',
+						}}
+					>
+						{!this.props.noAutoFocus && (
+							<button autoFocus={true} style={{ maxWidth: 0, maxHeight: 0 }}></button>
+						)}
+						<div>
+							<div style={{ margin: 10 }}>
+								<div
+									style={{
+										...styles.card,
+										...{
+											boxShadow: styles.strongerShadow,
+											margin: 0,
+											borderRadius: 5,
+											maxWidth: 'calc(100vw - 10px)',
+											maxHeight: 'calc(100vh - 100px)', // ! Needs to be like this to compensate for browser bars
+											minHeight: 20,
+											width: styles.modalWidth || 500,
+											display: 'flex',
+											flexDirection: 'column',
+											justifyContent: 'space-between',
+											padding: 0,
+											...(styles.modalCard && styles.modalCard),
+											...this.props.style,
+										},
+									}}
+								>
+									{this.props.title && (
+										<ModalHeader
+											modalPadding={modalPadding}
+											headerStyle={this.props.headerStyle}
+											title={this.props.title}
+											onClose={this.onClose}
+										/>
+									)}
 
-								{this.props.content
-									? this.props.content(
-											this.onClose,
-											this.renderContent,
-											this.renderButtons,
-											this.renderParent,
-											this.renderHeader
-									  )
-									: undefined}
+									{this.props.content
+										? this.props.content(
+												this.onClose,
+												this.renderContent,
+												this.renderButtons,
+												this.renderParent,
+												this.renderHeader
+										  )
+										: undefined}
+								</div>
 							</div>
 						</div>
-					</Animated>
-				</div>
+					</div>
+				</Animated>
 			</Portal>
 		)
 	}

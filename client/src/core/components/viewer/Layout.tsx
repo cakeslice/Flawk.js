@@ -17,7 +17,7 @@ import ReactQueryParams from 'core/utils/ReactQueryParams'
 import React from 'react'
 import MediaQuery from 'react-responsive'
 import Collapsible from '../Collapsible'
-import { header } from './ComponentsViewer'
+import { Section } from './ComponentsViewer'
 
 export default class Layout extends ReactQueryParams {
 	state = {
@@ -116,11 +116,7 @@ export default class Layout extends ReactQueryParams {
 						</Content>
 						<Buttons>
 							<FButton onClick={close}>Cancel</FButton>
-							<FButton
-								style={{ background: styles.colors.red }}
-								appearance='primary'
-								onClick={close}
-							>
+							<FButton appearance='delete_primary' onClick={close}>
 								Delete
 							</FButton>
 						</Buttons>
@@ -171,245 +167,236 @@ export default class Layout extends ReactQueryParams {
 				{(desktop) => {
 					return (
 						<div>
-							{this.state.exampleModal && this.exampleModal()}
-							{this.state.confirmModal && this.confirmModal()}
-							{header('Flex wrap/grow', true, undefined, {
-								code: codeFlexGrow,
-								component: (
-									<div style={{ ...styles.card }}>
-										<div className='wrapMargin flex flex-wrap'>
-											<div style={fixedExample}></div>
-											<div style={growExample}></div>
-											<div style={fixedExample}></div>
-											<div style={growExample}></div>
-											<div style={growExample}></div>
-											<div style={fixedExample}></div>
-											<div style={growExample}></div>
-											<div style={fixedExample}></div>
-										</div>
+							{this.exampleModal()}
+							{this.confirmModal()}
+							<Section title='Flex wrap/grow' top code={codeFlexGrow}>
+								<div style={{ ...styles.card }}>
+									<div className='wrapMargin flex flex-wrap'>
+										<div style={fixedExample}></div>
+										<div style={growExample}></div>
+										<div style={fixedExample}></div>
+										<div style={growExample}></div>
+										<div style={growExample}></div>
+										<div style={fixedExample}></div>
+										<div style={growExample}></div>
+										<div style={fixedExample}></div>
 									</div>
-								),
-							})}
-							{header('Grid', false, undefined, {
-								code: codeGrid,
-								component: (
-									<div
-										className='grid grid-cols-4'
-										style={{ ...styles.card, width: '100%' }}
-									>
-										<div style={gridExample}></div>
-										<div style={gridExample}></div>
-										<div style={gridExample}></div>
-										<div style={gridExample}></div>
-										<div style={gridExample}></div>
-										<div style={gridExample}></div>
-										<div style={gridExample}></div>
-										<div style={gridExample}></div>
-									</div>
-								),
-							})}
-							{header('Table', false, ['<FTable/>'], {
-								code: codeTable,
-								component: (
-									<div>
-										<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
-											<FInput
-												defaultValue={this.queryParams.search}
-												bufferedInput
-												onChange={(e) => {
-													this.setQueryParams({
-														search: e || undefined,
-													})
-													this.fetchData()
-												}}
-												placeholder={'Buffered Search'}
-											></FInput>
-											<FInput
-												style={{ width: 210 }}
-												defaultValue={this.queryParams.search}
-												onChange={(e) => {
-													this.setQueryParams({
-														search: e || undefined,
-													})
-												}}
-												onKeyPress={(e) => {
-													if (e.key === 'Enter') this.fetchData()
-												}}
-												onBlur={(e) => {
-													this.fetchData()
-												}}
-												placeholder={'Manual Search (Press Enter)'}
-											></FInput>
-										</div>
-										<div style={{ minHeight: 10 }}></div>
-										<FTable
-											isLoading={this.state.fetching}
-											height={'500px'}
-											expandContent={(data) => (
-												<div>
-													<b>Expanded:</b> {data.title}
-												</div>
-											)}
-											keySelector={'_id'}
-											columns={[
-												{
-													name: 'ID',
-													selector: 'id',
-
-													style: {
-														color: styles.colors.main,
-													},
-												},
-												{
-													name: 'Title',
-													selector: 'title',
-													grow: 4,
-												},
-												{
-													name: 'Custom Cell',
-													selector: 'completed',
-													grow: 2,
-													cell: (value) => (
-														<div>{value === true ? 'Yes' : 'No'}</div>
-													),
-												},
-												{
-													name: 'Fat (g)',
-													grow: 2,
-													selector: 'fat',
-													hide: 'mobile',
-												},
-												{
-													name: 'Carbs (g)',
-													selector: 'carbs',
-													hide: 'mobile',
-												},
-												{
-													name: 'Protein (g)',
-													selector: 'protein',
-													hide: 'mobile',
-												},
-												{
-													name: 'Sodium (mg)',
-													selector: 'sodium',
-													hide: 'mobile',
-												},
-												{
-													name: 'Calcium (%)',
-													selector: 'calcium',
-													hide: 'mobile',
-												},
-												{
-													name: (
-														<div style={styles.textEllipsis}>
-															Custom Head
-														</div>
-													),
-													selector: 'action',
-													hide: 'mobile',
-												},
-											]}
-											data={this.state.data && this.state.data.items}
-											pagination={{
-												onClick: (e) => {
-													this.setQueryParams({
-														page: e,
-													})
-													this.fetchData()
-												},
-												limit: this.queryParams.limit,
-												page: this.queryParams.page,
-												...(this.state.data && {
-													totalPages: this.state.data.totalPages,
-													totalItems: this.state.data.totalItems,
-												}),
-											}}
-										></FTable>
-									</div>
-								),
-							})}
-							{header('Pagination', false, ['<Paginate/>'])}
-							{this.state.data && desktop && (
-								<Paginate
-									onClick={(e) => {
-										this.setQueryParams({
-											page: e,
-										})
-										this.fetchData()
-									}}
-									totalPages={this.state.data && this.state.data.totalPages}
-									currentPage={this.queryParams.page}
-								></Paginate>
-							)}
-							<div id='anchor' />
-							{header('Modal', false, ['<Modal/>'])}
-							<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
-								<FButton onClick={() => this.setState({ exampleModal: true })}>
-									View
-								</FButton>
-								<FButton
-									style={{ color: styles.colors.red }}
-									onClick={() => this.setState({ confirmModal: true })}
+								</div>
+							</Section>
+							<Section title='Grid' code={codeGrid}>
+								<div
+									className='grid grid-cols-4'
+									style={{ ...styles.card, width: '100%' }}
 								>
-									Delete
-								</FButton>
-							</div>
-							{header('Collapse', false, ['<Collapsible/>', '<UnmountClosed/>'])}
-							<div style={{ ...styles.card }}>
-								<Collapsible
-									customTrigger
-									trigger={(isOpen, set) => (
-										<FButton onClick={() => set(!isOpen)}>
-											{isOpen ? 'Close' : 'Expand'}
-										</FButton>
-									)}
-									content={(set) => (
-										<div
-											style={{
-												// ! Collapse doesn't support vertical margins!
-												paddingTop: 15,
-												paddingLeft: 0,
+									<div style={gridExample}></div>
+									<div style={gridExample}></div>
+									<div style={gridExample}></div>
+									<div style={gridExample}></div>
+									<div style={gridExample}></div>
+									<div style={gridExample}></div>
+									<div style={gridExample}></div>
+									<div style={gridExample}></div>
+								</div>
+							</Section>
+							<Section title='Table' tags={['<FTable/>']} code={codeTable}>
+								<div>
+									<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+										<FInput
+											defaultValue={this.queryParams.search}
+											bufferedInput
+											onChange={(e) => {
+												this.setQueryParams({
+													search: e || undefined,
+												})
+												this.fetchData()
 											}}
-										>
+											placeholder={'Buffered Search'}
+										></FInput>
+										<FInput
+											style={{ width: 210 }}
+											defaultValue={this.queryParams.search}
+											onChange={(e) => {
+												this.setQueryParams({
+													search: e || undefined,
+												})
+											}}
+											onKeyPress={(e) => {
+												if (e.key === 'Enter') this.fetchData()
+											}}
+											onBlur={(e) => {
+												this.fetchData()
+											}}
+											placeholder={'Manual Search (Press Enter)'}
+										></FInput>
+									</div>
+									<div style={{ minHeight: 10 }}></div>
+									<FTable
+										isLoading={this.state.fetching}
+										height={'500px'}
+										expandContent={(data) => (
+											<div>
+												<b>Expanded:</b> {data.title}
+											</div>
+										)}
+										keySelector={'id'}
+										columns={[
+											{
+												name: 'ID',
+												selector: 'id',
+
+												style: {
+													color: styles.colors.main,
+												},
+											},
+											{
+												name: 'Title',
+												selector: 'title',
+												grow: 4,
+											},
+											{
+												name: 'Custom Cell',
+												selector: 'completed',
+												grow: 2,
+												cell: (value) => (
+													<div>{value === true ? 'Yes' : 'No'}</div>
+												),
+											},
+											{
+												name: 'Fat (g)',
+												grow: 2,
+												selector: 'fat',
+												hide: 'mobile',
+											},
+											{
+												name: 'Carbs (g)',
+												selector: 'carbs',
+												hide: 'mobile',
+											},
+											{
+												name: 'Protein (g)',
+												selector: 'protein',
+												hide: 'mobile',
+											},
+											{
+												name: 'Sodium (mg)',
+												selector: 'sodium',
+												hide: 'mobile',
+											},
+											{
+												name: 'Calcium (%)',
+												selector: 'calcium',
+												hide: 'mobile',
+											},
+											{
+												name: (
+													<div style={styles.textEllipsis}>
+														Custom Head
+													</div>
+												),
+												selector: 'action',
+												hide: 'mobile',
+											},
+										]}
+										data={this.state.data && this.state.data.items}
+										pagination={{
+											onClick: (e) => {
+												this.setQueryParams({
+													page: e,
+												})
+												this.fetchData()
+											},
+											limit: this.queryParams.limit,
+											page: this.queryParams.page,
+											...(this.state.data && {
+												totalPages: this.state.data.totalPages,
+												totalItems: this.state.data.totalItems,
+											}),
+										}}
+									></FTable>
+								</div>
+							</Section>
+							<Section title='Pagination' tags={['<Paginate/>']}>
+								{this.state.data && desktop && (
+									<Paginate
+										onClick={(e) => {
+											this.setQueryParams({
+												page: e,
+											})
+											this.fetchData()
+										}}
+										totalPages={this.state.data && this.state.data.totalPages}
+										currentPage={this.queryParams.page}
+									></Paginate>
+								)}
+							</Section>
+							<Section title='Modal' tags={['<Modal/>']}>
+								<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+									<FButton onClick={() => this.setState({ exampleModal: true })}>
+										View
+									</FButton>
+									<FButton
+										appearance='delete'
+										onClick={() => this.setState({ confirmModal: true })}
+									>
+										Delete
+									</FButton>
+								</div>
+							</Section>
+							<Section title='Collapse' tags={['<Collapsible/>', '<UnmountClosed/>']}>
+								<div style={{ ...styles.card }}>
+									<Collapsible
+										customTrigger
+										trigger={(isOpen, set) => (
+											<FButton onClick={() => set(!isOpen)}>
+												{isOpen ? 'Close' : 'Expand'}
+											</FButton>
+										)}
+										content={(set) => (
 											<div
-												className='flex-col'
-												style={{ ...styles.outlineCard }}
+												style={{
+													paddingTop: 15,
+													paddingLeft: 0,
+												}}
 											>
-												<p>Content</p>
-												<sp />
-												<div style={{ alignSelf: 'flex-end' }}>
-													<FButton onClick={() => set(false)}>
-														{'Close'}
-													</FButton>
+												<div
+													className='flex-col'
+													style={{ ...styles.outlineCard }}
+												>
+													<p>Content</p>
+													<sp />
+													<div style={{ alignSelf: 'flex-end' }}>
+														<FButton onClick={() => set(false)}>
+															{'Close'}
+														</FButton>
+													</div>
 												</div>
 											</div>
-										</div>
-									)}
-								></Collapsible>
-								<sp />
-								<Collapsible
-									trigger={(isOpen, set) => (
-										<b
-											style={{
-												color: isOpen ? styles.colors.main : undefined,
-											}}
-										>
-											What is this component for?
-										</b>
-									)}
-									content={(set) => (
-										<div
-											style={{
-												// ! Collapse doesn't support vertical margins!
-												paddingTop: 15,
-												paddingLeft: 25,
-											}}
-										>
-											It expands and shows hidden content
-										</div>
-									)}
-								></Collapsible>
-							</div>
+										)}
+									></Collapsible>
+									<sp />
+									<Collapsible
+										trigger={(isOpen, set) => (
+											<b
+												style={{
+													color: isOpen ? styles.colors.main : undefined,
+												}}
+											>
+												What is this component for?
+											</b>
+										)}
+										content={(set) => (
+											<div
+												style={{
+													paddingTop: 15,
+													paddingLeft: 25,
+												}}
+											>
+												It expands and shows hidden content
+											</div>
+										)}
+									></Collapsible>
+								</div>
+							</Section>
 						</div>
 					)
 				}}

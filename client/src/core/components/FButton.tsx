@@ -40,12 +40,16 @@ export default class FButton extends Component<{
 	onBlur?: (event: React.FocusEvent<HTMLButtonElement, Element>) => void
 	// -----------
 }> {
+	timer: ReturnType<typeof setTimeout> | undefined = undefined
 	state = {
 		checked: false,
 	}
 
 	componentDidMount() {
 		if (this.props.checkbox) this.setState({ checked: this.props.defaultChecked })
+	}
+	componentWillUnmount() {
+		if (this.timer) clearTimeout(this.timer)
 	}
 
 	render() {
@@ -112,7 +116,7 @@ export default class FButton extends Component<{
 			':checked': {},
 
 			loadingColor: config.replaceAlpha(styles.colors.black, 0.2),
-			color: config.replaceAlpha(styles.colors.black, global.nightMode ? 0.25 : 0.75),
+			color: config.replaceAlpha(styles.colors.black, global.nightMode ? 0.5 : 0.75),
 			borderColor: config.replaceAlpha(
 				styles.colors.black,
 				global.nightMode ? styles.inputBorderFactorNight : styles.inputBorderFactorDay
@@ -328,11 +332,12 @@ export default class FButton extends Component<{
 								onBlur={(e) => {
 									this.props.onBlur && this.props.onBlur(e)
 
-									formIK &&
-										formIK.setFieldTouched &&
-										setTimeout(() => {
+									if (formIK && formIK.setFieldTouched) {
+										if (this.timer) clearTimeout(this.timer)
+										this.timer = setTimeout(() => {
 											if (formIK && name) formIK.setFieldTouched(name, true)
 										})
+									}
 								}}
 								name={name}
 								type={this.props.type ? this.props.type : 'button'}
@@ -352,7 +357,14 @@ export default class FButton extends Component<{
 									</div>
 								)}
 								{this.props.isLoading ? (
-									<Loading size={18.5} />
+									<div>
+										<div style={{ maxHeight: 0, opacity: 0 }}>
+											{this.props.children}
+										</div>
+										<div className='flex items-center justify-center'>
+											<Loading size={18.5} />
+										</div>
+									</div>
 								) : (
 									this.props.children
 								)}

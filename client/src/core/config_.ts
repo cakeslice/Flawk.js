@@ -152,6 +152,15 @@ const _capitalize = (s: string) => {
 	if (typeof s !== 'string') return ''
 	return s.charAt(0).toUpperCase() + s.slice(1)
 }
+const _capitalizeAll = (s: string) => {
+	if (typeof s !== 'string') return ''
+	const split = s.split(' ')
+	let output = ''
+	split.forEach((p, i) => {
+		output += (i !== 0 ? ' ' : '') + p.charAt(0).toUpperCase() + p.slice(1)
+	})
+	return output
+}
 
 const _formatNumber = function (n: number, onlyPositive = false) {
 	n = Number.parseFloat(n.toString())
@@ -205,6 +214,22 @@ function _setStateAsync(that: React.Component, statePart: Obj) {
 	})
 }
 
+const realError = console.error
+const allowedTags = ['tag', 'sp', 'bb', 'hl']
+console.error = (...x) => {
+	let supress = false
+	allowedTags.forEach((tag) => {
+		if (
+			x[0] ===
+				'Warning: The tag <%s> is unrecognized in this browser. If you meant to render a React component, start its name with an uppercase letter.%s' &&
+			x[1] === tag
+		) {
+			supress = true
+		}
+	})
+	if (!supress) realError(...x)
+}
+
 export default {
 	prod: _prod,
 	staging: _staging,
@@ -251,6 +276,7 @@ export default {
 	setStateAsync: _setStateAsync,
 
 	capitalize: _capitalize,
+	capitalizeAll: _capitalizeAll,
 	numeral: (number: number, format: string) => {
 		const n = numeral(number).format(format)
 		return n
@@ -272,6 +298,10 @@ export default {
 		// @ts-ignore
 		Component.preload = factory
 		return Component
+	},
+
+	scrollToTop: () => {
+		window.scrollTo(0, 0)
 	},
 
 	// @ts-ignore

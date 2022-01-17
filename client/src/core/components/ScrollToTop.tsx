@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import navigation from 'core/functions/navigation'
 import { Component } from 'react'
 import { RouteComponentProps, withRouter } from 'react-router'
 
@@ -15,17 +16,21 @@ type Props = {
 class ScrollToTop extends Component<Props & RouteComponentProps> {
 	constructor(props: Props & RouteComponentProps) {
 		super(props)
-
-		global.scrollToTop = this.scrollToTop.bind(this)
 	}
 
 	scrollToTop() {
 		window.scrollTo(0, 0)
 	}
+	scrollToHash() {
+		navigation.scrollToHash(this.props.location.hash.replace('#', ''), 150)
+	}
 
 	componentDidUpdate(prevProps: Props) {
 		if (this.props.location !== prevProps.location) {
-			this.scrollToTop()
+			if (!this.props.location.hash) this.scrollToTop()
+			else {
+				this.scrollToHash()
+			}
 		}
 	}
 

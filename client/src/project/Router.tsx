@@ -12,7 +12,6 @@ import Animated from 'core/components/Animated'
 import Avatar from 'core/components/Avatar'
 import { DashboardRoute, TabProps } from 'core/components/Dashboard'
 import RouterBase from 'core/components/RouterBase'
-import ScrollToTop from 'core/components/ScrollToTop'
 import config from 'core/config_'
 import styles from 'core/styles'
 import React, { Component, useEffect } from 'react'
@@ -156,20 +155,20 @@ export default function Router(): React.ReactNode {
 		{
 			id: 'mobile_space',
 			notRoute: true,
-			tab: (props) => <div key={props.key} style={{ minHeight: '30%' }}></div>,
+			tab: (props) => <div style={{ minHeight: '30%' }}></div>,
 			mobileTab: true,
 		},
 		{
 			id: 'space',
 			notRoute: true,
-			tab: (props) => <div key={props.key} style={{ flexGrow: 1 }} />,
+			tab: (props) => <div style={{ flexGrow: 1 }} />,
 			desktopTab: true,
 		},
 		{
 			id: 'avatar',
 			notRoute: true,
 			tab: (props: TabProps & { user?: UserState }) => (
-				<div key={props.key}>
+				<div>
 					<div
 						style={{
 							display: 'flex',
@@ -251,7 +250,7 @@ export default function Router(): React.ReactNode {
 		{
 			id: 'bottom_space',
 			notRoute: true,
-			tab: (props) => <div key={props.key} style={{ minHeight: 60 }} />,
+			tab: (props) => <div style={{ minHeight: 60 }} />,
 			desktopTab: true,
 		},
 	])
@@ -260,86 +259,82 @@ export default function Router(): React.ReactNode {
 
 	return (
 		<RouterBase>
-			<ScrollToTop>
-				<MediaQuery minWidth={config.mobileWidthTrigger}>
-					{(desktop) => (
-						<Switch>
-							<Route path='/dashboard'>
-								<div>
-									<Helmet>
-										<title>
-											{config.title() + config.separator + 'Dashboard'}
-										</title>
-									</Helmet>
+			<MediaQuery minWidth={config.mobileWidthTrigger}>
+				{(desktop) => (
+					<Switch>
+						<Route path='/dashboard'>
+							<div>
+								<Helmet>
+									<title>{config.title() + config.separator + 'Dashboard'}</title>
+								</Helmet>
 
-									<Dashboard
-										wrapperComponent={DashboardWrapper}
-										path={'/dashboard/'}
-										color={styles.colors.white}
-										logo={logo}
-										routes={routes}
-										// Redux props
-										pageProps={{
-											structures,
-											fetchingStructures,
-											user,
-											fetchingUser,
-											authError,
-											//
-											fetchUser: async () => await fetchUser(dispatch),
-											fetchStructures: async () =>
-												await fetchStructures(dispatch),
-										}}
-									></Dashboard>
-								</div>
-							</Route>
+								<Dashboard
+									wrapperComponent={DashboardWrapper}
+									path={'/dashboard/'}
+									color={styles.colors.white}
+									logo={logo}
+									routes={routes}
+									// Redux props
+									pageProps={{
+										structures,
+										fetchingStructures,
+										user,
+										fetchingUser,
+										authError,
+										//
+										fetchUser: async () => await fetchUser(dispatch),
+										fetchStructures: async () =>
+											await fetchStructures(dispatch),
+									}}
+								></Dashboard>
+							</div>
+						</Route>
 
-							{/* {!config.prod && !config.staging && ( */}
-							<Route /* exact */ path='/components'>
-								<ComponentsViewer />
-							</Route>
-							{/* )} */}
+						{/* {!config.prod && !config.staging && ( */}
+						<Route /* exact */ path='/components'>
+							<ComponentsViewer />
+						</Route>
+						{/* )} */}
 
-							<Route>
-								<div style={{ background: styles.colors.white }}>
-									<Header landingPage={landingPage} fillSpace />
-									<Switch>
-										<Route exact path='/login'>
-											<PublicWrapper desktop={desktop}>
-												<Login />
-											</PublicWrapper>
-										</Route>
-										<Route exact path='/signup'>
-											<PublicWrapper desktop={desktop}>
-												<Register />
-											</PublicWrapper>
-										</Route>
-										<Route exact path='/forgot'>
-											<PublicWrapper desktop={desktop}>
-												<Forgot />
-											</PublicWrapper>
-										</Route>
+						<Route>
+							<div style={{ background: styles.colors.white }}>
+								<Header landingPage={landingPage} fillSpace />
+								<Switch>
+									<Route exact path='/login'>
+										<PublicWrapper desktop={desktop}>
+											<Login />
+										</PublicWrapper>
+									</Route>
+									<Route exact path='/signup'>
+										<PublicWrapper desktop={desktop}>
+											<Register />
+										</PublicWrapper>
+									</Route>
+									<Route exact path='/forgot'>
+										<PublicWrapper desktop={desktop}>
+											<Forgot />
+										</PublicWrapper>
+									</Route>
 
-										<Route path='/'>
-											<PublicWrapper desktop={desktop}>
-												<Animated
-													alwaysVisible
-													effects={['fade']}
-													duration={0.5}
-													delay={0.75}
-												>
-													<Main />
-												</Animated>
-											</PublicWrapper>
-										</Route>
-									</Switch>
-									<Footer />
-								</div>
-							</Route>
-						</Switch>
-					)}
-				</MediaQuery>
-			</ScrollToTop>
+									<Route path='/'>
+										<PublicWrapper desktop={desktop}>
+											<Animated
+												alwaysVisible
+												effects={['fade']}
+												duration={0.5}
+												delay={0.75}
+											>
+												<Main />
+											</Animated>
+										</PublicWrapper>
+									</Route>
+								</Switch>
+								<Footer />
+							</div>
+						</Route>
+					</Switch>
+				)}
+			</MediaQuery>
 		</RouterBase>
 	)
 }

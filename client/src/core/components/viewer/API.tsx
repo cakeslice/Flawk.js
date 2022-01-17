@@ -9,7 +9,7 @@ import { get } from 'core/api'
 import CodeBlock from 'core/components/CodeBlock'
 import { Obj } from 'flawk-types'
 import React, { Component } from 'react'
-import { header } from './ComponentsViewer'
+import { Section } from './ComponentsViewer'
 
 export default class API extends Component {
 	state: {
@@ -24,8 +24,11 @@ export default class API extends Component {
 	render() {
 		return (
 			<div>
-				{header('API', true)}
-				{this.state.api && <CodeBlock lang='json' data={JSON.stringify(this.state.api)} />}
+				<Section title='API' top tags={['<CodeBlock/>']}>
+					{this.state.api && (
+						<CodeBlock lang='json' data={JSON.stringify(this.state.api)} />
+					)}
+				</Section>
 			</div>
 		)
 	}

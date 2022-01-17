@@ -11,10 +11,14 @@ import React from 'react'
 import { MetroSpinner } from 'react-spinners-kit'
 
 export default class Loading extends React.Component<{ size?: number }> {
+	timer: ReturnType<typeof setTimeout> | undefined = undefined
 	state = { actuallyLoading: false }
 
 	componentDidMount() {
-		setTimeout(() => this.setState({ actuallyLoading: true }), 200)
+		this.timer = setTimeout(() => this.setState({ actuallyLoading: true }), 500)
+	}
+	componentWillUnmount() {
+		if (this.timer) clearTimeout(this.timer)
 	}
 
 	render() {

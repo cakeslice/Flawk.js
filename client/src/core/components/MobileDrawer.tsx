@@ -55,12 +55,19 @@ export default class MobileDrawer extends Component<{
 				<div style={{ minHeight: 30 }}></div>
 				{this.props.links.map((link, i, arr) => {
 					if (link.notRoute && link.tab)
-						return link.tab({
-							...this.props.pageProps,
-							isOpen: this.state.isOpen,
-							toggleOpen: this.props.toggleOpen,
-							key: i.toString(),
-						})
+						return (
+							<div
+								key={link.id + (link.params || '')}
+								style={{ display: 'contents' }}
+							>
+								{link.tab({
+									...this.props.pageProps,
+									isOpen: this.state.isOpen,
+									toggleOpen: this.props.toggleOpen,
+								})}
+							</div>
+						)
+
 					const last = arr.length - 1 === i
 
 					const outputCSS: React.CSSProperties & GlamorProps = {
@@ -91,7 +98,7 @@ export default class MobileDrawer extends Component<{
 						borderBottom: !last ? 'solid 1px ' + styles.colors.lineColor : undefined,
 					}
 					const output = (
-						<div key={link.notRoute ? i : link.id + (link.params || '')}>
+						<div key={link.id + (link.params || '')}>
 							{!link.notRoute ? (
 								<Link
 									className={this.props.className}
@@ -249,7 +256,7 @@ export default class MobileDrawer extends Component<{
 
 					if (link.subRoutes)
 						return (
-							<div key={link.notRoute ? i : link.id + (link.params || '')}>
+							<div key={link.id + (link.params || '')}>
 								{output}
 								<UnmountClosed isOpened={selectedRoute.includes('/' + link.id)}>
 									{link.subRoutes &&

@@ -37,4 +37,14 @@ export default {
 	resetCapacitorHistory() {
 		window.history.go(-(window.history.length - 1))
 	},
+	scrollToHash(hash: string, offset?: number) {
+		const el = document.getElementById(hash)
+		if (el) {
+			window.scrollTo({
+				top: el.offsetTop - (offset || 0),
+				behavior: 'smooth',
+			})
+			return true
+		} else return false
+	},
 }

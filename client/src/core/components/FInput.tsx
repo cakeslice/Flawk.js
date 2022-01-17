@@ -156,8 +156,6 @@ export default class FInput extends Component<{
 	bufferedValue: string | number | undefined = undefined
 
 	handleChangeBuffered = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-		if (this.timer) clearTimeout(this.timer)
-
 		this.bufferedValue =
 			this.props.type === 'number'
 				? e.target.value === ''
@@ -166,6 +164,7 @@ export default class FInput extends Component<{
 				: e.target.value === ''
 				? undefined
 				: e.target.value
+		if (this.timer) clearTimeout(this.timer)
 		this.timer = setTimeout(this.triggerChange, this.props.bufferInterval || 250)
 	}
 	handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -176,6 +175,10 @@ export default class FInput extends Component<{
 	}
 	triggerChange = () => {
 		this.props.onChange && this.props.onChange(this.bufferedValue)
+	}
+
+	componentWillUnmount() {
+		if (this.timer) clearTimeout(this.timer)
 	}
 
 	render() {
@@ -234,6 +237,7 @@ export default class FInput extends Component<{
 			),
 			opacity: 1,
 			'::placeholder': {
+				userSelect: 'none',
 				fontWeight: 400,
 				color: config.replaceAlpha(styles.colors.black, global.nightMode ? 0.25 : 0.5),
 				opacity: 1,
@@ -254,9 +258,6 @@ export default class FInput extends Component<{
 						(invalid
 							? config.replaceAlpha(styles.colors.red, 0.1)
 							: styles.colors.mainVeryLight),
-					/* background: invalid
-						? 'rgba(254, 217, 219, 0.5)'
-						: styles.colors.mainVeryLight, */
 					borderColor: invalid ? styles.colors.red : styles.colors.mainLight,
 				},
 			}),
@@ -317,7 +318,6 @@ export default class FInput extends Component<{
 		//
 
 		const commonProps = {
-			isControlled: controlled ? true : false,
 			defaultValue: this.props.defaultValue,
 			autoFocus: this.props.autoFocus,
 			required: this.props.required ? true : false,
@@ -383,6 +383,7 @@ export default class FInput extends Component<{
 		}
 		type DatePickerValue = (string & (string | number | readonly string[])) | undefined
 		const datePickerValueProps = {
+			isControlled: controlled ? true : false,
 			value: controlled ? (value === undefined ? '' : (value as DatePickerValue)) : undefined,
 			onChange: (e: string | Moment) => {
 				this.props.onChange && this.props.onChange(e)

@@ -32,26 +32,68 @@ export default {
 
 	extraButtons: [
 		{
+			buttonType: 'delete',
+			transition: 'background 200ms, border-color 200ms, color 200ms',
+			color: 'rgba(250,61,91,1)',
+			':focus-visible': {
+				outline: 'none',
+				borderColor: 'rgba(250,61,91,1)',
+			},
+			':hover': {
+				opacity: 1,
+				color: 'white',
+				borderColor: 'rgba(250,61,91,1)',
+				background: 'rgba(250,61,91,.5)',
+			},
+			':active': {
+				color: 'white',
+				background: 'rgba(250,61,91,1)',
+				borderColor: 'rgba(250,61,91,1)',
+			},
+		},
+		{
+			buttonType: 'delete_primary',
+			color: 'white',
+			borderColor: 'rgba(250,61,91,1)',
+			background: 'rgba(250,61,91,1)',
+
+			':focus-visible': {
+				outline: 'none',
+				background: 'rgba(250,61,91,.5)',
+			},
+			':hover': {
+				opacity: 1,
+				background: 'rgba(250,61,91,.5)',
+			},
+
+			':active': {
+				borderColor: 'rgba(250,61,91,1)',
+				background: 'rgba(250,61,91,1)',
+			},
+		},
+		{
 			buttonType: 'action',
 
-			color: 'black',
+			color: 'white',
+			fontWeight: 'bold',
 			minWidth: 128,
-			borderStyle: 'none',
+			borderColor: 'transparent',
 
 			transition: 'background 200ms, border-color 200ms, -webkit-filter 200ms',
 			':focus-visible': {
 				outline: 'none',
-				filter: 'drop-shadow(0px 0px 20px rgba(250, 40, 116, 0.71))',
-				background: 'linear-gradient(90deg, #FB28B0 0%, #FC263C 100%)',
+				borderColor: 'white',
 			},
 			':hover': {
+				borderColor: 'white',
 				opacity: 1,
 				filter: 'drop-shadow(0px 0px 20px rgba(250, 40, 116, 0.71))',
-				background: 'linear-gradient(90deg, #FB28B0 0%, #FC263C 100%)',
 			},
 			':active': {
+				borderColor: 'white',
 				filter: 'drop-shadow(0px 0px 20px rgba(250, 40, 116, 0.71))',
-				background: 'linear-gradient(90deg, #FB28B0 0%, #FC263C 100%)',
+				background:
+					'linear-gradient(90deg,rgba(251, 40, 176, .5) 0%, rgba(252, 38, 60, .5) 100%)',
 			},
 			background: 'linear-gradient(90deg, #FB28B0 0%, #FC263C 100%)',
 		},

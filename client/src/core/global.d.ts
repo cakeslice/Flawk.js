@@ -33,6 +33,7 @@ declare global {
 			sp: any
 			bb: any
 			tag: any
+			hl: any
 		}
 	}
 	//
@@ -54,7 +55,6 @@ declare global {
 	var routerHistory: () => History
 	//
 	var lang: Lang
-	var scrollToTop: () => void
 	var analytics:
 		| {
 				set: (obj: { userId: string }) => void

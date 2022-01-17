@@ -105,10 +105,9 @@ export default class Dropdown extends Component<{
 	timer: ReturnType<typeof setTimeout> | undefined = undefined
 	bufferedValue: string | undefined = undefined
 	handleChangeBuffered = (value: string | undefined) => {
-		if (this.timer) clearTimeout(this.timer)
-
 		this.bufferedValue = value
 
+		if (this.timer) clearTimeout(this.timer)
 		this.timer = setTimeout(this.triggerChange, this.props.bufferInterval || 250)
 	}
 	triggerChange = () => {
@@ -127,6 +126,9 @@ export default class Dropdown extends Component<{
 				this.setState({ loadedOptions: options })
 			})
 		}
+	}
+	componentWillUnmount() {
+		if (this.timer) clearTimeout(this.timer)
 	}
 
 	render() {
@@ -228,6 +230,7 @@ export default class Dropdown extends Component<{
 			whiteSpace: 'nowrap',
 			textOverflow: 'ellipsis',
 			width: '100%',
+			userSelect: 'none',
 		}
 
 		const conditionalContainerStyle = {

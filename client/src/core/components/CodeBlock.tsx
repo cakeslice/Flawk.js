@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import Animated from 'core/components/Animated'
 import Tooltip from 'core/components/Tooltip'
 import config from 'core/config_'
 import styles from 'core/styles'
@@ -12,6 +13,7 @@ import prettierParser from 'prettier/parser-babel'
 import prettier from 'prettier/standalone'
 import React from 'react'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
+import MediaQuery from 'react-responsive'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { vscDarkPlus as SyntaxStyle } from 'react-syntax-highlighter/dist/esm/styles/prism'
 
@@ -32,91 +34,106 @@ const clipboard = (color: string) => (
 )
 
 export default function CodeBlock(props: {
+	visible?: boolean
 	style?: React.CSSProperties
+	containerStyle?: React.CSSProperties
 	data: string
 	lang: 'json' | 'jsx' | 'tsx' | 'html'
 	noPrettier?: boolean
 }) {
 	return (
-		<div style={props.style} className='flex'>
-			<SyntaxHighlighter
-				wrapLongLines
-				wrapLines
-				language={props.lang}
-				style={SyntaxStyle}
-				customStyle={{
-					borderRadius: 6,
-					background: global.nightMode ? 'rgba(30,30,30,1)' : '#282c34',
-					padding: 16,
-					fontSize: 14,
-					width: '100%',
-				}}
-				codeTagProps={{
-					style: {
-						padding: 0,
-						background: 'transparent',
-					},
-				}}
-			>
-				{props.noPrettier
-					? props.data
-					: prettier.format(props.data, {
-							parser:
-								props.lang === 'json'
-									? 'json'
-									: props.lang === 'tsx'
-									? 'babel-ts'
-									: 'babel',
-							plugins: [prettierParser],
-							...config.prettierConfig,
-					  })}
-			</SyntaxHighlighter>
-			<div style={{ width: 0 }}>
-				<div style={{ position: 'relative', right: 50, top: 25 }}>
-					<Tooltip
-						tooltipProps={{ placement: 'left' }}
-						offsetAlt={13}
-						content='Copy code'
+		<MediaQuery minWidth={config.mobileWidthTrigger}>
+			{(desktop) => (
+				<Animated
+					controlled={props.visible !== undefined ? props.visible : true}
+					effects={desktop ? ['fade', 'height-width'] : ['fade']}
+					style={props.containerStyle}
+					duration={!desktop ? 0.25 : 0.25}
+					className='flex'
+				>
+					<SyntaxHighlighter
+						wrapLongLines
+						wrapLines
+						language={props.lang}
+						style={SyntaxStyle}
+						customStyle={{
+							borderRadius: 6,
+							background: global.nightMode ? 'rgba(30,30,30,1)' : '#282c34',
+							padding: 16,
+							fontSize: !desktop ? 14 : 14,
+							width: '100%',
+							...props.style,
+						}}
+						codeTagProps={{
+							style: {
+								padding: 0,
+								background: 'transparent',
+							},
+						}}
 					>
-						<CopyToClipboard
-							text={props.data}
-							onCopy={() =>
-								global.addFlag(
-									<div>
-										Copied to clipboard{' '}
-										<span style={{ color: styles.colors.green }}>✔️</span>
-									</div>,
-									'',
-									'default',
-									{
-										closeAfter: 2000,
-									}
-								)
-							}
-						>
-							<button
-								style={{
-									display: 'flex',
-									alignItems: 'center',
-								}}
+						{props.noPrettier
+							? props.data
+							: prettier.format(props.data, {
+									parser:
+										props.lang === 'json'
+											? 'json'
+											: props.lang === 'tsx'
+											? 'babel-ts'
+											: 'babel',
+									plugins: [prettierParser],
+									...config.prettierConfig,
+							  })}
+					</SyntaxHighlighter>
+					<div style={{ width: 0 }}>
+						<div style={{ position: 'relative', right: 50, top: 25 }}>
+							<Tooltip
+								tooltipProps={{ placement: 'left' }}
+								offsetAlt={13}
+								content='Copy code'
 							>
-								<tag style={{ opacity: 1, background: 'rgb(60,60,60)' }}>
-									<div
+								<CopyToClipboard
+									text={props.data}
+									onCopy={() =>
+										global.addFlag(
+											<div>
+												Copied to clipboard{' '}
+												<span style={{ color: styles.colors.green }}>
+													✔️
+												</span>
+											</div>,
+											'',
+											'default',
+											{
+												closeAfter: 2000,
+											}
+										)
+									}
+								>
+									<button
 										style={{
-											width: 23,
-											height: 23,
+											display: 'flex',
+											alignItems: 'center',
 										}}
 									>
-										{clipboard(
-											config.replaceAlpha(styles.colors.whiteDay, 0.5)
-										)}
-									</div>
-								</tag>
-							</button>
-						</CopyToClipboard>
-					</Tooltip>
-				</div>
-			</div>
-		</div>
+										<tag style={{ opacity: 1, background: 'rgb(60,60,60)' }}>
+											<div
+												style={{
+													width: 23,
+													height: 23,
+												}}
+											>
+												{clipboard(
+													config.replaceAlpha(styles.colors.whiteDay, 0.5)
+												)}
+											</div>
+										</tag>
+									</button>
+								</CopyToClipboard>
+							</Tooltip>
+						</div>
+					</div>
+				</Animated>
+			)}
+		</MediaQuery>
 	)
 }
