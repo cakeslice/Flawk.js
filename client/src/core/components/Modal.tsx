@@ -207,9 +207,19 @@ export default class Modal extends Component<Props> {
 					controlled={
 						this.props.parent && this.props.name
 							? // @ts-ignore
-							  this.props.parent.state[this.props.name]
+							  this.props.parent.state[this.props.name] === true
+								? true
+								: false
 							: undefined
 					}
+					style={{
+						position: 'fixed',
+						top: 0,
+						left: 0,
+						right: 0,
+						bottom: 0,
+						zIndex: 99,
+					}}
 					alwaysVisible
 					effects={['fade']}
 					duration={0.25}
@@ -217,21 +227,17 @@ export default class Modal extends Component<Props> {
 					<div
 						style={{
 							//backdropFilter: 'blur(2px)', // ! Bad for performance
+							display: 'flex',
+							justifyContent: 'center',
+							alignItems: 'center',
+							width: '100vw',
+							height: '100vh',
 							background:
 								styles.modalBackground ||
 								config.replaceAlpha(
 									global.nightMode ? styles.colors.white : 'rgba(127,127,127,1)',
 									0.25
 								),
-							position: 'fixed',
-							top: 0,
-							left: 0,
-							right: 0,
-							bottom: 0,
-							zIndex: 99,
-							display: 'flex',
-							justifyContent: 'center',
-							alignItems: 'center',
 						}}
 					>
 						{!this.props.noAutoFocus && (

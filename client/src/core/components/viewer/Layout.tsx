@@ -35,9 +35,6 @@ export default class Layout extends ReactQueryParams {
 			| undefined,
 		isOpen: false,
 		fetching: false,
-		//
-		exampleModal: false,
-		confirmModal: false,
 	}
 
 	defaultQueryParams: {

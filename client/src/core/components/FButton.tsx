@@ -362,7 +362,7 @@ export default class FButton extends Component<{
 											{this.props.children}
 										</div>
 										<div className='flex items-center justify-center'>
-											<Loading size={18.5} />
+											<Loading noDelay size={18.5} />
 										</div>
 									</div>
 								) : (
