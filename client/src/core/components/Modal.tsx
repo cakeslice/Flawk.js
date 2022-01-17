@@ -14,7 +14,6 @@ import React, { Component } from 'react'
 import { Portal } from 'react-portal'
 
 type Props = {
-	onClose?: () => void
 	title?: React.ReactNode
 	content: (
 		close: () => void,
@@ -26,6 +25,9 @@ type Props = {
 	// Props to set modal state on the parent component on close automatically
 	name?: string
 	parent?: Component
+	// To set modal state manually
+	visible?: boolean
+	onClose?: () => void
 	//
 	style?: React.CSSProperties
 	headerStyle?: React.CSSProperties & {
@@ -62,7 +64,7 @@ export default class Modal extends Component<Props> {
 
 	componentDidMount() {
 		if (!this.props.parent || !this.props.name) {
-			this.disableScroll()
+			if (this.props.visible) this.disableScroll()
 		} else {
 			// @ts-ignore
 			this.state.parentState = this.props.parent.state[this.props.name]
@@ -83,6 +85,13 @@ export default class Modal extends Component<Props> {
 			this.state.parentState = this.props.parent.state[this.props.name]
 
 			if (this.state.parentState) {
+				this.disableScroll()
+			} else {
+				clearAllBodyScrollLocks()
+			}
+		}
+		if (this.props.visible !== prevProps.visible && this.props.visible) {
+			if (this.props.visible) {
 				this.disableScroll()
 			} else {
 				clearAllBodyScrollLocks()
@@ -210,6 +219,8 @@ export default class Modal extends Component<Props> {
 							  this.props.parent.state[this.props.name] === true
 								? true
 								: false
+							: this.props.visible !== undefined
+							? this.props.visible
 							: undefined
 					}
 					style={{
