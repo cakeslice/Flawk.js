@@ -299,6 +299,15 @@ export default {
 		Component.preload = factory
 		return Component
 	},
+	injectScript: (src: string, type: 'text' | 'src', top?: boolean, async?: boolean) => {
+		const script = document.createElement('script'),
+			head = document.head || document.getElementsByTagName('head')[0]
+		if (type === 'text') script.text = src
+		else script.src = src
+		script.async = async ? true : false
+		if (top) head.insertBefore(script, head.firstChild)
+		else head.appendChild(script)
+	},
 
 	scrollToTop: () => {
 		window.scrollTo(0, 0)

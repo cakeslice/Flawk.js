@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import 'core/assets/quill.snow.css'
+import 'core/assets/third-party/quill.snow.css'
 import Avatar from 'core/components/Avatar'
 import FButton from 'core/components/FButton'
 import LanguageSwitcher from 'core/components/LanguageSwitcher'

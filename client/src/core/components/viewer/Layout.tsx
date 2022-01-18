@@ -6,6 +6,7 @@
  */
 
 import { get } from 'core/api'
+import logo from 'core/assets/images/logo.svg'
 import FButton from 'core/components/FButton'
 import FInput from 'core/components/FInput'
 import FTable from 'core/components/FTable'
@@ -238,9 +239,11 @@ export default class Layout extends ReactQueryParams {
 										keySelector={'id'}
 										columns={[
 											{
+												onClick: () => {
+													// TODO: Sorting
+												},
 												name: 'ID',
 												selector: 'id',
-
 												style: {
 													color: styles.colors.main,
 												},
@@ -259,39 +262,73 @@ export default class Layout extends ReactQueryParams {
 												),
 											},
 											{
-												name: 'Fat (g)',
+												name: (
+													<div style={{ ...styles.textEllipsis }}>
+														Fat{' '}
+														<small style={{ opacity: 0.75 }}>(g)</small>
+													</div>
+												),
 												grow: 2,
 												selector: 'fat',
-												hide: 'mobile',
+												//hide: 'mobile',
 											},
 											{
-												name: 'Carbs (g)',
-												selector: 'carbs',
-												hide: 'mobile',
+												name: 'Carbs',
+												selector: 'title',
+												//hide: 'mobile',
+												grow: 4,
+												style: { whiteSpace: 'nowrap' },
 											},
 											{
-												name: 'Protein (g)',
+												name: 'Protein',
 												selector: 'protein',
-												hide: 'mobile',
+												//hide: 'mobile',
 											},
 											{
-												name: 'Sodium (mg)',
+												style: { minWidth: 60 },
+												name: (
+													<div style={{ ...styles.textEllipsis }}>
+														Sodium{' '}
+														<small style={{ opacity: 0.75 }}>
+															(mg)
+														</small>
+													</div>
+												),
 												selector: 'sodium',
-												hide: 'mobile',
+												//hide: 'mobile',
+												cell: (value) => (
+													<div>
+														<FButton
+															style={{ minWidth: 50, width: '100%' }}
+														>
+															GO
+														</FButton>
+													</div>
+												),
 											},
 											{
 												name: 'Calcium (%)',
 												selector: 'calcium',
-												hide: 'mobile',
+												//hide: 'mobile',
+												cell: (value) => (
+													<div style={{ ...styles.textEllipsis }}>
+														Very long text is very long and very long
+													</div>
+												),
 											},
 											{
 												name: (
-													<div style={styles.textEllipsis}>
-														Custom Head
+													<div className='flex items-center justify-center'>
+														<img
+															style={{
+																width: 20,
+															}}
+															src={logo}
+														></img>
 													</div>
 												),
 												selector: 'action',
-												hide: 'mobile',
+												//hide: 'mobile',
 											},
 										]}
 										data={this.state.data && this.state.data.items}

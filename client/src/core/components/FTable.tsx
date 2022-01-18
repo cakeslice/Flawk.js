@@ -161,6 +161,11 @@ class CT extends ReactQueryParams {
 
 			//
 
+			//maxHeight: 50,
+			overflowY: 'hidden',
+
+			//
+
 			':hover': {
 				boxShadow:
 					'0 0 0 1px ' +
@@ -376,7 +381,8 @@ class CT extends ReactQueryParams {
 									id={'custom-table-' + this.state.uuid}
 									style={{
 										opacity: props.isLoading ? 0.5 : undefined,
-										overflow: 'auto',
+										overflowX: 'hidden',
+										overflowY: 'auto',
 										flexGrow: 1,
 									}}
 								>
@@ -452,6 +458,8 @@ class CT extends ReactQueryParams {
 																						i.toString()
 																					}
 																					style={{
+																						overflow:
+																							'hidden',
 																						minWidth:
 																							this
 																								.props
@@ -478,40 +486,54 @@ class CT extends ReactQueryParams {
 																				>
 																					<div
 																						style={{
-																							textOverflow:
-																								!c.cell
-																									? 'ellipsis'
-																									: undefined,
-																							overflow:
-																								!c.cell
-																									? 'hidden'
-																									: undefined,
+																							width: '100%',
 																							display:
 																								'inline-grid',
-																							...(overrideStyle &&
+																							...(c.cell &&
+																								overrideStyle &&
 																								overrideStyle.cellStyle),
-																							...(c.rowStyle &&
+																							...(c.cell &&
+																								c.rowStyle &&
 																								c.rowStyle),
 																						}}
 																					>
 																						{(isVisible ||
 																							c.alwaysVisible) &&
-																							((c.cell
-																								? c.cell(
+																							(c.cell ? (
+																								c.cell(
+																									_.get(
+																										d,
+																										c.selector
+																									) as Value,
+																									d,
+																									isVisible,
+																									this.triggerUpdate.bind(
+																										this
+																									)
+																								)
+																							) : (
+																								<div
+																									style={{
+																										textOverflow:
+																											'ellipsis',
+																										overflow:
+																											'hidden',
+																										whiteSpace:
+																											'nowrap',
+																										...(overrideStyle &&
+																											overrideStyle.cellStyle),
+																										...(c.rowStyle &&
+																											c.rowStyle),
+																									}}
+																								>
+																									{
 																										_.get(
 																											d,
 																											c.selector
-																										) as Value,
-																										d,
-																										isVisible,
-																										this.triggerUpdate.bind(
-																											this
-																										)
-																								  )
-																								: _.get(
-																										d,
-																										c.selector
-																								  )) as Value)}
+																										) as Value
+																									}
+																								</div>
+																							))}
 																					</div>
 																				</div>
 																			))}

@@ -28,41 +28,37 @@ export default class Footer extends Component {
 							background: styles.colors.main,
 						}}
 					>
-						<div style={{ overflow: 'hidden' }}>
-							<Animated
-								effects={['fade', 'up']}
-								distance={10}
-								duration={0.75}
-								delay={0.25}
+						<Animated
+							effects={['fade', 'up']}
+							distance={10}
+							duration={0.75}
+							delay={0.25}
+						>
+							<p
+								className='text-center'
+								style={{
+									fontSize: 14.5,
+									color: styles.colors.whiteDay,
+								}}
 							>
-								<div>
-									<p
-										className='text-center'
-										style={{
-											fontSize: 14.5,
-											color: styles.colors.whiteDay,
-										}}
-									>
-										© 2020 José Guerreiro
-									</p>
+								© 2020 José Guerreiro
+							</p>
 
-									<div style={{ minHeight: 30 }}></div>
+							<div style={{ minHeight: 30 }}></div>
 
-									<div className='flex items-center justify-center'>
-										<p
-											style={{
-												fontWeight: 'bold',
-												fontSize: 14.5,
-												//opacity: 0.47,
-												color: styles.colors.whiteDay,
-											}}
-										>
-											Made with ❤️
-										</p>
-									</div>
-								</div>
-							</Animated>
-						</div>
+							<div className='flex items-center justify-center'>
+								<p
+									style={{
+										fontWeight: 'bold',
+										fontSize: 14.5,
+										//opacity: 0.47,
+										color: styles.colors.whiteDay,
+									}}
+								>
+									Made with ❤️
+								</p>
+							</div>
+						</Animated>
 					</div>
 				)}
 			</MediaQuery>
