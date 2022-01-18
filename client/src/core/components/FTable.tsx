@@ -176,13 +176,14 @@ class CT extends ReactQueryParams {
 
 			//
 
+			transition: 'box-shadow 200ms',
 			':hover': {
 				boxShadow:
 					'0 0 0 1px ' +
-					styles.colors.mainLight +
+					config.replaceAlpha(styles.colors.main, 0.25) +
 					', ' +
 					'0 0 0 3px ' +
-					styles.colors.mainVeryLight,
+					config.replaceAlpha(styles.colors.mainVeryLight, 0.25),
 			},
 		}
 
@@ -501,6 +502,8 @@ class CT extends ReactQueryParams {
 																							width: '100%',
 																							display:
 																								'inline-grid',
+																							textAlign:
+																								'left',
 																							...(c.cell &&
 																								overrideStyle &&
 																								overrideStyle.cellStyle),
@@ -618,13 +621,12 @@ class Row extends Component<RowProps> {
 	render() {
 		return (
 			<div style={this.props.style}>
-				<div
-					{
-						// eslint-disable-next-line
-						...css(this.props.rowStyle)
-					}
-				>
-					{this.props.expandContent && (
+				{this.props.expandContent ? (
+					<div
+						{...css({
+							...this.props.rowStyle,
+						})}
+					>
 						<button
 							onClick={() => {
 								this.setState({ isOpen: !this.state.isOpen })
@@ -639,7 +641,8 @@ class Row extends Component<RowProps> {
 									display: 'flex',
 									alignItems: 'center',
 									width: 12.5,
-									transition: 'transform 200ms',
+									opacity: this.props.expandContent ? 1 : 0,
+									transition: 'transform 200ms, opacity 200ms',
 									transform: this.state.isOpen
 										? 'rotate(180deg)'
 										: 'rotate(90deg)',
@@ -653,9 +656,11 @@ class Row extends Component<RowProps> {
 								)}
 							</div>
 						</button>
-					)}
-					{this.props.children}
-				</div>
+						{this.props.children}
+					</div>
+				) : (
+					<div {...css(this.props.rowStyle)}>{this.props.children}</div>
+				)}
 				{this.props.expandContent && (
 					<UnmountClosed isOpened={this.state.isOpen}>
 						<div

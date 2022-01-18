@@ -122,7 +122,7 @@
 	max-height: 800px;
 	overflow: hidden;
 	font-family: sans-serif;
-	/*cursor: pointer;*/
+	/* cursor: pointer; */
 	direction: ltr;
 }
 
@@ -569,5 +569,3 @@
 .Toastify__slide-exit--bottom-center {
 	animation-name: Toastify__slideOutDown;
 }
-
-/*# sourceMappingURL=ReactToastify.css.map */

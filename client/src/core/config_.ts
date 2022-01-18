@@ -8,6 +8,7 @@
 import * as Sentry from '@sentry/react'
 import { countries, Country } from 'countries-list'
 import { KeyObject, Obj } from 'flawk-types'
+import hexRgb from 'hex-rgb'
 import Parser from 'html-react-parser'
 import _ from 'lodash'
 import moment from 'moment'
@@ -355,7 +356,13 @@ export default {
 	},
 
 	replaceAlpha(color: string, amount: number) {
-		return color.replace(/[^,]+(?=\))/, amount.toString())
+		let c = color
+		if (c.includes('#')) {
+			const rgba = hexRgb(c)
+			c = 'rgba(' + rgba.red + ',' + rgba.green + ',' + rgba.blue + ',' + rgba.alpha + ')'
+		}
+		if (c.includes('rgb(')) c = c.replace('rgb(', 'rgba(').replace(')', ', 1)')
+		return c.replace(/[^,]+(?=\))/, amount.toString())
 	},
 
 	prettierConfig: {

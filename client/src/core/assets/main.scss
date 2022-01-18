@@ -231,10 +231,26 @@ button:focus-visible {
 	outline: 1px dashed var(--main);
 	outline-offset: 3px;
 }
+//
 button:hover {
 	opacity: 0.75;
 }
 button:active {
+	opacity: 1;
+}
+@media screen and (max-width: 700px) {
+	button:hover {
+		opacity: 1;
+	}
+	button:active {
+		opacity: 0.75;
+	}
+}
+//
+.f-button:hover {
+	opacity: 1;
+}
+.f-button:active {
 	opacity: 1;
 }
 

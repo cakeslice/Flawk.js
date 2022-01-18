@@ -86,17 +86,15 @@ function addFlagFunction(
 						</b>
 						{description && <div style={{ minHeight: 10 }} />}
 						{description && (
-							<p
+							<div
 								style={{
 									fontFamily: styles.font,
 									fontSize: styles.defaultFontSize,
 									color: styles.colors.black,
-									overflow: 'hidden',
-									textOverflow: 'ellipsis',
 								}}
 							>
 								{_.isFunction(description) ? description(props) : description}
-							</p>
+							</div>
 						)}
 						{(autoClose || closeAfter) && <div style={{ minHeight: 3 }} />}
 					</div>

@@ -376,7 +376,7 @@ export default class Layout extends ReactQueryParams {
 									</FButton>
 								</div>
 							</Section>
-							<Section title='Collapse' tags={['<Collapsible/>', '<UnmountClosed/>']}>
+							<Section title='Collapse' tags={['<Collapsible/>', '<Animated/>']}>
 								<div style={{ ...styles.card }}>
 									<Collapsible
 										customTrigger

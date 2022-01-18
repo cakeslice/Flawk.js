@@ -69,6 +69,7 @@
 		"formik": "^2.2.9",
 		"framer-motion": "^4.1.17",
 		"glamor": "^2.20.40",
+		"hex-rgb": "^5.0.0",
 		"html-react-parser": "^1.4.0",
 		"immer": "^9.0.6",
 		"local-storage-fallback": "^4.1.2",
@@ -170,6 +171,9 @@
 		]
 	},
 	"jest": {
+		"transformIgnorePatterns": [
+			"node_modules/(?!hex-rgb)"
+		],
 		"testMatch": [
 			"**/*.test.js",
 			"**/*.test.ts",

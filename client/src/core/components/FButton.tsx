@@ -298,7 +298,7 @@ export default class FButton extends Component<{
 					<div style={{ width: finalStyle.width }}>
 						<div style={{ display: 'flex', alignItems: 'flex-start' }}>
 							<button
-								// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+								className='f-button'
 								{...css({
 									...finalStyle,
 									...(!desktop && {
