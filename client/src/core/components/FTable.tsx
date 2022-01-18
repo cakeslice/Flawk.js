@@ -80,10 +80,16 @@ class CT extends ReactQueryParams {
 	constructor(props: any) {
 		super(props)
 
+		this.setScrollYRef = this.setScrollYRef.bind(this)
 		this.state = {
 			uuid: uuid.v1(),
 			containment: undefined as undefined | HTMLElement | null,
 		}
+	}
+
+	scrollYRef: HTMLElement | null = null
+	setScrollYRef(instance: HTMLElement | null) {
+		this.scrollYRef = instance
 	}
 
 	updateID: string | undefined = undefined
@@ -98,7 +104,10 @@ class CT extends ReactQueryParams {
 			isLoading: nextProps.isLoading,
 			updateID: nextProps.updateID,
 		})
-		if (nP !== p) this.updateID = uuid.v1()
+		if (nP !== p) {
+			this.updateID = uuid.v1()
+			if (this.scrollYRef) this.scrollYRef.scrollTop = 0
+		}
 
 		return true
 	}
@@ -162,6 +171,7 @@ class CT extends ReactQueryParams {
 			//
 
 			//maxHeight: 50,
+			minHeight: 50,
 			overflowY: 'hidden',
 
 			//
@@ -379,6 +389,7 @@ class CT extends ReactQueryParams {
 
 								<div
 									id={'custom-table-' + this.state.uuid}
+									ref={this.setScrollYRef}
 									style={{
 										opacity: props.isLoading ? 0.5 : undefined,
 										overflowX: 'hidden',
@@ -410,6 +421,7 @@ class CT extends ReactQueryParams {
 													{({ isVisible }) => {
 														return (
 															<Row
+																updateID={this.updateID || ''}
 																triggerUpdate={JSON.stringify({
 																	updateID: this.updateID,
 																	isVisible: isVisible,
@@ -578,6 +590,7 @@ class CT extends ReactQueryParams {
 
 const expandButtonWidth = 10 + 12.5
 type RowProps = {
+	updateID: string
 	triggerUpdate: string
 	expandContent?: React.ReactNode
 	rowStyle: React.CSSProperties & GlamorProps
@@ -594,6 +607,8 @@ class Row extends Component<RowProps> {
 	}
 
 	shouldComponentUpdate(nextProps: RowProps, nextState: RowState) {
+		if (this.props.updateID !== nextProps.updateID) this.state.isOpen = false
+
 		return (
 			this.props.triggerUpdate !== nextProps.triggerUpdate ||
 			this.state.isOpen !== nextState.isOpen

@@ -46,7 +46,7 @@ export default class Layout extends ReactQueryParams {
 		search?: string
 	} = {
 		page: 1,
-		limit: 5,
+		limit: 15,
 	}
 	fetchData() {
 		// eslint-disable-next-line
