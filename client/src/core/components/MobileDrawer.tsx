@@ -15,7 +15,7 @@ import { css } from 'glamor'
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 
-export default class MobileDrawer extends Component<{
+type Props = {
 	className?: string
 	pageProps?: Obj
 	style?: React.CSSProperties
@@ -25,9 +25,17 @@ export default class MobileDrawer extends Component<{
 	links: DashboardRoute[]
 	path?: string
 	toggleOpen?: (open?: boolean) => void
-}> {
+}
+export default class MobileDrawer extends Component<Props> {
 	state = {
 		isOpen: false,
+	}
+	constructor(props: Props) {
+		super(props)
+
+		window.onpopstate = (event) => {
+			this.forceUpdate()
+		}
 	}
 
 	componentWillUnmount() {

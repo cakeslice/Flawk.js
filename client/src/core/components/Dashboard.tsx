@@ -544,7 +544,7 @@ export default class Dashboard extends Component<
 	}
 }
 
-class Menu extends Component<{
+type MenuProps = {
 	pageProps?: Obj
 	path: string
 	logo: string
@@ -556,7 +556,16 @@ class Menu extends Component<{
 	headerHeight: number
 	routes: Array<DashboardRoute>
 	toggleOpen: (open?: boolean) => void
-}> {
+}
+class Menu extends Component<MenuProps> {
+	constructor(props: MenuProps) {
+		super(props)
+
+		window.onpopstate = (event) => {
+			this.forceUpdate()
+		}
+	}
+
 	render() {
 		const iconSize = 25
 		const fontSize = styles.defaultFontSize
