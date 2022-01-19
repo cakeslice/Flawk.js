@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import Animated from 'core/components/Animated'
 import Loading from 'core/components/Loading'
 import Paginate from 'core/components/Paginate'
 import config from 'core/config_'
@@ -14,7 +15,6 @@ import { GlamorProps, Obj } from 'flawk-types'
 import { css } from 'glamor'
 import _ from 'lodash'
 import React, { Component } from 'react'
-import { UnmountClosed } from 'react-collapse'
 import MediaQuery from 'react-responsive'
 import { SizeMe } from 'react-sizeme'
 import VisibilitySensor from 'react-visibility-sensor'
@@ -662,7 +662,12 @@ class Row extends Component<RowProps> {
 					<div {...css(this.props.rowStyle)}>{this.props.children}</div>
 				)}
 				{this.props.expandContent && (
-					<UnmountClosed isOpened={this.state.isOpen}>
+					<Animated
+						alwaysVisible
+						duration={0.25}
+						effects={['fade', 'height']}
+						controlled={this.state.isOpen}
+					>
 						<div
 							style={{
 								// ! Collapse doesn't support vertical margins!
@@ -675,7 +680,7 @@ class Row extends Component<RowProps> {
 						>
 							{this.props.expandContent}
 						</div>
-					</UnmountClosed>
+					</Animated>
 				)}
 			</div>
 		)

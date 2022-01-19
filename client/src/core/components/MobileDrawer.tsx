@@ -6,13 +6,13 @@
  */
 
 import { clearAllBodyScrollLocks, disableBodyScroll, enableBodyScroll } from 'body-scroll-lock'
+import Animated from 'core/components/Animated'
 import { DashboardRoute } from 'core/components/Dashboard'
 import config from 'core/config_'
 import styles from 'core/styles'
 import { GlamorProps, Obj } from 'flawk-types'
 import { css } from 'glamor'
 import React, { Component } from 'react'
-import { UnmountClosed } from 'react-collapse'
 import { Link } from 'react-router-dom'
 
 export default class MobileDrawer extends Component<{
@@ -258,7 +258,12 @@ export default class MobileDrawer extends Component<{
 						return (
 							<div key={link.id + (link.params || '')}>
 								{output}
-								<UnmountClosed isOpened={selectedRoute.includes('/' + link.id)}>
+								<Animated
+									alwaysVisible
+									duration={0.25}
+									effects={['fade', 'height']}
+									controlled={selectedRoute.includes('/' + link.id)}
+								>
 									{link.subRoutes &&
 										link.subRoutes.map((sub, i) => (
 											<div key={link.id + '/' + sub.id + (sub.params || '')}>
@@ -338,7 +343,7 @@ export default class MobileDrawer extends Component<{
 												</Link>
 											</div>
 										))}
-								</UnmountClosed>
+								</Animated>
 							</div>
 						)
 					else return output

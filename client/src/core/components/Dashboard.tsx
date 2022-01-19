@@ -12,7 +12,6 @@ import styles from 'core/styles'
 import { Obj } from 'flawk-types'
 import { css } from 'glamor'
 import React, { Component, Suspense } from 'react'
-import { UnmountClosed } from 'react-collapse'
 import MediaQuery from 'react-responsive'
 import { Link, Redirect, Route, Switch } from 'react-router-dom'
 
@@ -823,7 +822,12 @@ class Menu extends Component<{
 						return (
 							<div key={entry.id + (entry.params || '')}>
 								{output}
-								<UnmountClosed isOpened={selectedRoute.includes('/' + entry.id)}>
+								<Animated
+									alwaysVisible
+									duration={0.25}
+									effects={['fade', 'height']}
+									controlled={selectedRoute.includes('/' + entry.id)}
+								>
 									{entry.subRoutes &&
 										entry.subRoutes.map((sub, i) => (
 											<div key={entry.id + '/' + sub.id + (sub.params || '')}>
@@ -939,7 +943,7 @@ class Menu extends Component<{
 												</Link>
 											</div>
 										))}
-								</UnmountClosed>
+								</Animated>
 							</div>
 						)
 					else return output
