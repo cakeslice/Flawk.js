@@ -28,11 +28,13 @@ module.exports = {
 		// @typescript-eslint/eslint-plugin
 		//
 		'eslint:recommended',
-		'plugin:import/recommended',
+		'plugin:react/recommended',
 		'plugin:react-hooks/recommended',
 		'plugin:jsx-a11y/recommended',
-		'plugin:security/recommended',
+		'plugin:import/recommended',
 		'plugin:jest/recommended',
+		//
+		'plugin:security/recommended',
 		'plugin:cypress/recommended',
 		// Disable rules that conflict with Prettier
 		// Prettier must be last to override other configs
@@ -139,6 +141,7 @@ module.exports = {
 			files: ['*.{js,jsx}'],
 
 			extends: ['plugin:jsdoc/recommended'],
+			// Only add plugins to customize the rules
 			plugins: ['jsdoc'],
 			rules: {
 				'jsdoc/require-jsdoc': [
@@ -169,6 +172,7 @@ module.exports = {
 				'plugin:@typescript-eslint/recommended',
 				'plugin:@typescript-eslint/recommended-requiring-type-checking',
 			],
+			// Only add plugins to customize the rules
 			plugins: ['@typescript-eslint'],
 			rules: {
 				'import/named': 'off',

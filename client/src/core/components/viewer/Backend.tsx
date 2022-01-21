@@ -15,11 +15,10 @@ import Field from 'core/components/Field'
 import FInput from 'core/components/FInput'
 import FTable from 'core/components/FTable'
 import Notifications from 'core/components/Notifications'
+import QueryParams from 'core/components/QueryParams'
 import config from 'core/config_'
 import upload from 'core/functions/upload'
 import styles from 'core/styles'
-import QueryString from 'core/utils/queryString'
-import ReactQueryParams from 'core/utils/ReactQueryParams'
 import { Form, Formik } from 'formik'
 import { css } from 'glamor'
 import { fetchUser } from 'project/redux/AppReducer'
@@ -1106,7 +1105,7 @@ class Settings extends Component<PropsFromRedux & { desktop?: boolean }> {
 		)
 	}
 }
-class Admin extends ReactQueryParams {
+class Admin extends QueryParams {
 	state: {
 		data?: {
 			items: { email: string; firstName: string }[]
@@ -1120,17 +1119,15 @@ class Admin extends ReactQueryParams {
 	defaultQueryParams = {
 		page: 1,
 		limit: 5,
-		/* sort: 'title',
-		order: 'asc', */
 	}
-	fetchData() {
-		config.lockFetch(this, async () => {
+	fetchData = async () => {
+		await config.lockFetch(this, async () => {
 			const q = {
 				...this.queryParams,
 				search: undefined,
 			}
 
-			const res = await post('admin/search_users?' + QueryString.stringify(q), {
+			const res = await post('admin/search_users?' + this.queryString(q), {
 				search: this.queryParams.search,
 			})
 
@@ -1162,9 +1159,12 @@ class Admin extends ReactQueryParams {
 								}}
 								defaultValue={this.queryParams.search}
 								bufferedInput
-								onChange={(e) => {
-									this.setQueryParams({ search: e || undefined, page: 1 })
-									this.fetchData()
+								onChange={async (e) => {
+									this.setQueryParams({
+										search: e as string | undefined,
+										page: 1,
+									})
+									await this.fetchData()
 								}}
 								placeholder={'Search'}
 							></FInput>
@@ -1194,11 +1194,11 @@ class Admin extends ReactQueryParams {
 								]}
 								data={this.state.data && this.state.data.items}
 								pagination={{
-									onClick: (e) => {
+									onClick: async (e) => {
 										this.setQueryParams({
 											page: e,
 										})
-										this.fetchData()
+										await this.fetchData()
 									},
 									limit: this.queryParams.limit,
 									page: this.queryParams.page,

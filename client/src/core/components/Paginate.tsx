@@ -17,8 +17,9 @@ const buttonStyle = {
 
 type Props = {
 	onClick: (totalPages: number) => void
-	currentPage: number
+	currentPage: string
 	totalPages: number
+	//
 	breakDelimiter?: string
 	boundaryPagesRange?: number
 	siblingPagesRange?: number
@@ -37,8 +38,6 @@ export default function Paginate(props: Props) {
 		hideEllipsis,
 		style,
 	} = {
-		// @ts-ignore
-		currentPage: 1,
 		breakDelimiter: '...',
 		boundaryPagesRange: 1,
 		siblingPagesRange: 1,
@@ -49,7 +48,7 @@ export default function Paginate(props: Props) {
 
 	function createPagination(bPR?: number, sPR?: number, noDelimiter?: boolean) {
 		const totalPages = props.totalPages
-		let cP = Number(currentPage)
+		let cP = currentPage ? Number(currentPage) : 1
 		if (cP > totalPages) cP = totalPages
 
 		const paginationModel = getPaginationModel({
@@ -100,7 +99,7 @@ export default function Paginate(props: Props) {
 	}
 
 	const totalPages = props.totalPages
-	let cP = Number(props.currentPage)
+	let cP = currentPage ? Number(currentPage) : 1
 	if (cP > totalPages) cP = totalPages
 
 	const isFirst = cP === 1

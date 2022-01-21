@@ -6,7 +6,7 @@
  */
 
 import navigation from 'core/functions/navigation'
-import { Component } from 'react'
+import React, { Component } from 'react'
 import { InView } from 'react-intersection-observer'
 
 type Props = {
@@ -15,7 +15,6 @@ type Props = {
 	updateOffset?: number
 	updateHash?: boolean
 }
-
 export default class Anchor extends Component<Props> {
 	componentDidMount() {
 		if (window.location.hash) {

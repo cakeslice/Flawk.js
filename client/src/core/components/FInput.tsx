@@ -58,17 +58,17 @@ const MaskedInput = (
 	</InputMask>
 )
 const TextAreaAuto = (props: TextareaAutosizeProps & React.RefAttributes<HTMLTextAreaElement>) => (
-	<TextareaAutosize minRows={2} maxRows={10} {...props} value={props.value}></TextareaAutosize>
+	<TextareaAutosize minRows={2} maxRows={10} {...props}></TextareaAutosize>
 )
 const TextArea = (
 	props: React.DetailedHTMLProps<
 		React.TextareaHTMLAttributes<HTMLTextAreaElement>,
 		HTMLTextAreaElement
 	>
-) => <textarea {...props} value={props.value}></textarea>
+) => <textarea {...props}></textarea>
 const Input = (
 	props: React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>
-) => <input {...props} value={props.value}></input>
+) => <input {...props}></input>
 const DatePicker = (props: {
 	utc?: boolean
 	locale?: string

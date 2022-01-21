@@ -205,6 +205,7 @@ export default class Animated extends Component<Props> {
 		return (
 			<InView key={props.triggerID || key}>
 				{({ inView, ref, entry }) => {
+					// eslint-disable-next-line
 					if (inView && !this.state.visible) this.state.visible = true
 
 					const animate =

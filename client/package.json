@@ -47,7 +47,7 @@
 		"lintTypescriptCI": "tsc --noEmit",
 		"auditFix": "npm audit fix && npm run auditCI",
 		"auditCI": "npm audit --production --audit-level=high",
-		"addPreloadLinks": "babel-node ./src/core/utils/addPreloadLinks.js"
+		"addPreloadLinks": "babel-node ./src/core/internal/addPreloadLinks.js"
 	},
 	"dependencies": {
 		"@capacitor/android": "^3.3.2",

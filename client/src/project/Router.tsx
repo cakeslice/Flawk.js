@@ -273,7 +273,7 @@ export default function Router(): React.ReactNode {
 									path={'/dashboard/'}
 									color={styles.colors.white}
 									logo={logo}
-									routes={routes}
+									routes={user ? routes : []}
 									// Redux props
 									pageProps={{
 										structures,

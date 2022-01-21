@@ -87,6 +87,7 @@ module.exports = {
 			files: ['*.{js,jsx}'],
 
 			extends: ['plugin:jsdoc/recommended'],
+			// Only add plugins to customize the rules
 			plugins: ['jsdoc'],
 			rules: {
 				'jsdoc/require-jsdoc': [
@@ -117,6 +118,7 @@ module.exports = {
 				'plugin:@typescript-eslint/recommended',
 				'plugin:@typescript-eslint/recommended-requiring-type-checking',
 			],
+			// Only add plugins to customize the rules
 			plugins: ['@typescript-eslint'],
 			rules: {
 				'import/named': 'off',

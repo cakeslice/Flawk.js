@@ -29,7 +29,7 @@
 		"lintTypescriptCI": "tsc --noEmit",
 		"auditFix": "npm audit fix",
 		"auditCI": "npm audit --audit-level=high",
-		"generateDatabase": "mtgen --no-populate-overload -o ./app/project/database.gen.ts ./app/project/database.ts && node ./app/core/utils/fixMtgen.js && prettier --write ./app/project/database.gen.ts"
+		"generateDatabase": "mtgen --no-populate-overload -o ./app/project/database.gen.ts ./app/project/database.ts && node ./app/core/internal/fixMtgen.js && prettier --write ./app/project/database.gen.ts"
 	},
 	"dependencies": {
 		"@awaitjs/express": "^0.9.0",

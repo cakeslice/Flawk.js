@@ -195,7 +195,7 @@ const iconWrapper = (icon: (color: string) => React.ReactNode, active: boolean, 
 	</div>
 )
 
-class Wrapper extends Component {
+class Wrapper extends Component<{ children: React.ReactNode }> {
 	render() {
 		return (
 			<MediaQuery minWidth={config.mobileWidthTrigger}>

@@ -12,15 +12,15 @@ import FInput from 'core/components/FInput'
 import FTable from 'core/components/FTable'
 import Modal from 'core/components/Modal'
 import Paginate from 'core/components/Paginate'
+import QueryParams from 'core/components/QueryParams'
 import config from 'core/config_'
 import styles from 'core/styles'
-import ReactQueryParams from 'core/utils/ReactQueryParams'
 import React from 'react'
 import MediaQuery from 'react-responsive'
 import Collapsible from '../Collapsible'
 import { Section } from './ComponentsViewer'
 
-export default class Layout extends ReactQueryParams {
+export default class Layout extends QueryParams {
 	state = {
 		data: undefined as
 			| {
@@ -38,44 +38,21 @@ export default class Layout extends ReactQueryParams {
 		fetching: false,
 	}
 
-	defaultQueryParams: {
-		page: number
-		limit: number
-		sort?: string
-		order?: 'asc' | 'desc'
-		search?: string
-	} = {
+	defaultQueryParams = {
 		page: 1,
 		limit: 15,
 	}
-	fetchData() {
-		// eslint-disable-next-line
-		config.lockFetch(this, async () => {
-			const q: typeof this.defaultQueryParams = {
-				...this.queryParams,
+	fetchData = async () => {
+		await config.lockFetch(this, async () => {
+			const q = {
+				_sort: this.queryParams.sort,
+				_order: this.queryParams.order,
+				_page: this.queryParams.page,
+				_limit: this.queryParams.limit,
+				q: this.queryParams.search,
 			}
 
-			let link = 'https://jsonplaceholder.typicode.com/todos'
-			let pre = '?'
-			if (q.sort) {
-				link += pre + '_sort=' + q.sort
-				pre = '&'
-			}
-			if (q.order) {
-				link += pre + '_order=' + q.order
-				pre = '&'
-			}
-			if (q.page) {
-				link += pre + '_page=' + q.page.toString()
-				pre = '&'
-			}
-			if (q.limit) {
-				link += pre + '_limit=' + q.limit.toString()
-				pre = '&'
-			}
-			if (q.search) {
-				link += pre + 'q=' + q.search
-			}
+			const link = 'https://jsonplaceholder.typicode.com/todos?' + this.queryString(q)
 
 			const res = await get(link, {
 				internal: false,
@@ -83,7 +60,7 @@ export default class Layout extends ReactQueryParams {
 
 			if (res.ok)
 				this.setState({
-					data: { items: res.body, totalItems: 200, totalPages: 40 },
+					data: { items: res.body, totalItems: 200, totalPages: 14 },
 				})
 		})
 	}
@@ -202,11 +179,11 @@ export default class Layout extends ReactQueryParams {
 										<FInput
 											defaultValue={this.queryParams.search}
 											bufferedInput
-											onChange={(e) => {
+											onChange={async (e) => {
 												this.setQueryParams({
-													search: e || undefined,
+													search: e as string | undefined,
 												})
-												this.fetchData()
+												await this.fetchData()
 											}}
 											placeholder={'Buffered Search'}
 										></FInput>
@@ -215,14 +192,14 @@ export default class Layout extends ReactQueryParams {
 											defaultValue={this.queryParams.search}
 											onChange={(e) => {
 												this.setQueryParams({
-													search: e || undefined,
+													search: e as string | undefined,
 												})
 											}}
 											onKeyPress={(e) => {
 												if (e.key === 'Enter') this.fetchData()
 											}}
-											onBlur={(e) => {
-												this.fetchData()
+											onBlur={async (e) => {
+												await this.fetchData()
 											}}
 											placeholder={'Manual Search (Press Enter)'}
 										></FInput>
@@ -239,8 +216,8 @@ export default class Layout extends ReactQueryParams {
 										keySelector={'id'}
 										columns={[
 											{
-												onClick: () => {
-													// TODO: Sorting
+												onClick: async () => {
+													await this.fetchData()
 												},
 												name: 'ID',
 												selector: 'id',
@@ -333,11 +310,11 @@ export default class Layout extends ReactQueryParams {
 										]}
 										data={this.state.data && this.state.data.items}
 										pagination={{
-											onClick: (e) => {
+											onClick: async (e) => {
 												this.setQueryParams({
 													page: e,
 												})
-												this.fetchData()
+												await this.fetchData()
 											},
 											limit: this.queryParams.limit,
 											page: this.queryParams.page,
@@ -352,11 +329,11 @@ export default class Layout extends ReactQueryParams {
 							<Section title='Pagination' tags={['<Paginate/>']}>
 								{this.state.data && desktop && (
 									<Paginate
-										onClick={(e) => {
+										onClick={async (e) => {
 											this.setQueryParams({
 												page: e,
 											})
-											this.fetchData()
+											await this.fetchData()
 										}}
 										totalPages={this.state.data && this.state.data.totalPages}
 										currentPage={this.queryParams.page}
@@ -459,11 +436,11 @@ const codeTable = `import FTable from 'core/components/FTable'
 	]}
 	data={this.state.data && this.state.data.items}
 	pagination={{
-		onClick: (e) => {
+		onClick: async (e) => {
 			this.setQueryParams({
 				page: e,
 			})
-			this.fetchData()
+			await this.fetchData()
 		},
 		limit: this.queryParams.limit,
 		page: this.queryParams.page,

@@ -8,9 +8,9 @@
 import Animated from 'core/components/Animated'
 import Loading from 'core/components/Loading'
 import Paginate from 'core/components/Paginate'
+import QueryParams from 'core/components/QueryParams'
 import config from 'core/config_'
 import styles from 'core/styles'
-import ReactQueryParams from 'core/utils/ReactQueryParams'
 import { GlamorProps, Obj } from 'flawk-types'
 import { css } from 'glamor'
 import _ from 'lodash'
@@ -72,19 +72,19 @@ type TableProps = {
 		totalItems?: number
 	}
 }
-export default function FTable(props: TableProps) {
-	return <CT {...props} />
-}
-class CT extends ReactQueryParams {
-	// eslint-disable-next-line
-	constructor(props: any) {
+
+export default class FTable extends QueryParams<
+	{ sort?: string; order?: 'asc' | 'desc' },
+	TableProps
+> {
+	state = {
+		uuid: uuid.v1(),
+		containment: undefined as undefined | HTMLElement | null,
+	}
+	constructor(props: TableProps) {
 		super(props)
 
 		this.setScrollYRef = this.setScrollYRef.bind(this)
-		this.state = {
-			uuid: uuid.v1(),
-			containment: undefined as undefined | HTMLElement | null,
-		}
 	}
 
 	scrollYRef: HTMLElement | null = null
@@ -473,11 +473,7 @@ class CT extends ReactQueryParams {
 																					style={{
 																						overflow:
 																							'hidden',
-																						minWidth:
-																							this
-																								.props
-																								.cellWidth ||
-																							50,
+																						minWidth: 50,
 																						width:
 																							(
 																								100 *
@@ -610,6 +606,7 @@ class Row extends Component<RowProps> {
 	}
 
 	shouldComponentUpdate(nextProps: RowProps, nextState: RowState) {
+		// eslint-disable-next-line
 		if (this.props.updateID !== nextProps.updateID) this.state.isOpen = false
 
 		return (
@@ -723,8 +720,8 @@ export function TablePagination({
 	totalPages?: number
 	totalItems?: number
 }) {
-	const p = Number(page)
-	const l = Number(limit)
+	const p = page ? Number(page) : 1
+	const l = limit ? Number(limit) : 15
 
 	return (
 		<SizeMe>
@@ -759,7 +756,7 @@ export function TablePagination({
 								<Paginate
 									onClick={onClick}
 									totalPages={totalPages || 1}
-									currentPage={p}
+									currentPage={page}
 								></Paginate>
 							) : (
 								<div />

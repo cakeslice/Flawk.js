@@ -67,6 +67,7 @@ export default class Modal extends Component<Props> {
 			if (this.props.visible) this.disableScroll()
 		} else {
 			// @ts-ignore
+			// eslint-disable-next-line
 			this.state.parentState = this.props.parent.state[this.props.name]
 
 			if (this.state.parentState) {
@@ -82,6 +83,7 @@ export default class Modal extends Component<Props> {
 			this.props.parent.state[this.props.name] !== this.state.parentState
 		) {
 			// @ts-ignore
+			// eslint-disable-next-line
 			this.state.parentState = this.props.parent.state[this.props.name]
 
 			if (this.state.parentState) {

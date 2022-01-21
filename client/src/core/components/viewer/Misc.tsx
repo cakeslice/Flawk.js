@@ -10,9 +10,9 @@ import Avatar from 'core/components/Avatar'
 import FButton from 'core/components/FButton'
 import LanguageSwitcher from 'core/components/LanguageSwitcher'
 import Loading from 'core/components/Loading'
+import QueryParams from 'core/components/QueryParams'
 import config from 'core/config_'
 import styles from 'core/styles'
-import ReactQueryParams from 'core/utils/ReactQueryParams'
 import Parser from 'html-react-parser'
 import React from 'react'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
@@ -20,9 +20,17 @@ import ReactQuill from 'react-quill'
 import MediaQuery from 'react-responsive'
 import { Section } from './ComponentsViewer'
 
-export default class Misc extends ReactQueryParams {
+export default class Misc extends QueryParams<{
+	bool?: boolean
+	number?: number
+	string?: string
+	date?: Date
+	none?: string
+	default?: number
+}> {
 	state = { quill: '' }
 
+	defaultQueryParams = { default: 1 }
 	render() {
 		return (
 			<MediaQuery minWidth={config.mobileWidthTrigger}>
@@ -50,33 +58,97 @@ export default class Misc extends ReactQueryParams {
 								</div>
 							</div>
 						</Section>
-						<Section title='Query parameters' tags={['extends ReactQueryParams']}>
-							<div style={{ ...styles.card }}>
-								<p>
-									Parameter {'"test"'}: <b>{this.queryParams.test}</b>
-								</p>
-								<br />
-								<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
-									<FButton
-										onClick={() => {
-											this.setQueryParams({
-												test: 'Hello!',
-											})
-										}}
-									>
-										Add test=Hello!
-									</FButton>
-									<FButton
-										onClick={() => {
-											this.setQueryParams({
-												test: undefined,
-											})
-										}}
-									>
-										Remove test
-									</FButton>
-								</div>
+						<Section title='Query parameters' tags={['extends QueryParams']}>
+							<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+								<FButton
+									onClick={() => {
+										this.setQueryParams({
+											bool: this.queryParams.bool ? undefined : false,
+										})
+									}}
+								>
+									Toggle bool
+								</FButton>
+								<FButton
+									onClick={() => {
+										this.setQueryParams({
+											number: this.queryParams.number ? undefined : 1337,
+										})
+									}}
+								>
+									Toggle number
+								</FButton>
+								<FButton
+									onClick={() => {
+										this.setQueryParams({
+											string: this.queryParams.string ? undefined : 'false',
+										})
+									}}
+								>
+									Toggle string
+								</FButton>
+								<FButton
+									onClick={() => {
+										this.setQueryParams({
+											date: this.queryParams.date ? undefined : new Date(),
+										})
+									}}
+								>
+									Toggle date
+								</FButton>
 							</div>
+							<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+								<FButton
+									onClick={() => {
+										this.setQueryParams({
+											none: this.queryParams.none ? undefined : '',
+										})
+									}}
+								>
+									Toggle empty
+								</FButton>
+								<FButton
+									onClick={() => {
+										this.setQueryParams({
+											none: this.queryParams.none ? undefined : 'undefined',
+										})
+									}}
+								>
+									Toggle undefined
+								</FButton>
+								<FButton
+									onClick={() => {
+										this.setQueryParams({
+											none: this.queryParams.none ? undefined : 'null',
+										})
+									}}
+								>
+									Toggle null
+								</FButton>
+								<FButton
+									onClick={() => {
+										this.setQueryParams({
+											default:
+												this.queryParams.default !== '1' ? undefined : 2,
+										})
+									}}
+								>
+									Toggle default (hidden)
+								</FButton>
+							</div>
+							{Object.keys(this.queryParams).map((p: string) => {
+								const k = p as keyof typeof this.queryParams
+								return (
+									<div key={p}>
+										<sp />
+										<p>
+											<tag>
+												{p} ({typeof this.queryParams[k]})
+											</tag>
+										</p>
+									</div>
+								)
+							})}
 						</Section>
 						<Section title='Toast' tags={['global.addFlag()']}>
 							<div className='wrapMarginTopLeft flex flex-wrap justify-start'>

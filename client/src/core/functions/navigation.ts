@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import { parseSearch } from 'core/components/QueryParams'
 import config from 'core/config_'
-import QueryString from 'core/utils/queryString'
 
 const inRestrictedEndpoint = () => {
 	if (!global.routerHistory) return false
@@ -25,13 +25,19 @@ export default {
 	invalidTokenRedirect: () => {
 		const h = global.routerHistory()
 		if (inRestrictedEndpoint()) {
-			h.replace(config.noTokenRedirect + '?from=' + h.location.pathname)
+			h.replace(
+				config.noTokenRedirect +
+					'?from=' +
+					window.location.pathname +
+					window.location.search +
+					window.location.hash
+			)
 		}
 	},
 	loginRedirect: () => {
 		if (inRestrictedEndpoint()) return
 
-		const query = QueryString.parse(window.location.search) as { from?: string }
+		const query = parseSearch(window.location.search) as { from?: string }
 		global.routerHistory().replace(query.from || config.loginRedirect)
 	},
 	resetCapacitorHistory() {

@@ -18,6 +18,9 @@ const isLocalhost = Boolean(
 		window.location.hostname.match(/^127(?:\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}$/)
 )
 
+/**
+ * @param config
+ */
 export function register(config) {
 	if (process.env.NODE_ENV === 'production' && 'serviceWorker' in navigator) {
 		// The URL constructor is available in all browsers that support SW.
@@ -52,12 +55,17 @@ export function register(config) {
 	}
 }
 
+/**
+ * @param swUrl
+ * @param config
+ */
 function registerValidSW(swUrl, config) {
 	navigator.serviceWorker
 		.register(swUrl)
 		.then((registration) => {
 			registration.onupdatefound = () => {
 				const installingWorker = registration.installing
+				// eslint-disable-next-line
 				if (installingWorker == null) {
 					return
 				}
@@ -96,6 +104,10 @@ function registerValidSW(swUrl, config) {
 		})
 }
 
+/**
+ * @param swUrl
+ * @param config
+ */
 function checkValidServiceWorker(swUrl, config) {
 	// Check if the service worker can be found. If it can't reload the page.
 	fetch(swUrl, {
@@ -106,6 +118,7 @@ function checkValidServiceWorker(swUrl, config) {
 			const contentType = response.headers.get('content-type')
 			if (
 				response.status === 404 ||
+				// eslint-disable-next-line
 				(contentType != null && contentType.indexOf('javascript') === -1)
 			) {
 				// No service worker found. Probably a different app. Reload the page.

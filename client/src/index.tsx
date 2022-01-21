@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-//import * as serviceWorkerRegistration from 'core/utils/serviceWorkerRegistration'
+//import * as serviceWorkerRegistration from 'core/internal/serviceWorkerRegistration'
 import App from 'project/App'
 import React from 'react'
 import ReactDOM from 'react-dom'
