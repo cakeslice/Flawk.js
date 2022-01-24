@@ -88,7 +88,7 @@ class Forgot extends Component<PropsFromRedux> {
 									setSubmitting(false)
 								}}
 							>
-								{({ isSubmitting }) => {
+								{({ isSubmitting, errors }) => {
 									return (
 										<Form
 											style={{
@@ -135,6 +135,7 @@ class Forgot extends Component<PropsFromRedux> {
 
 												<FButton
 													type='submit'
+													formErrors={errors}
 													isLoading={
 														isSubmitting || this.props.fetchingUser
 													}
@@ -305,6 +306,7 @@ class Forgot extends Component<PropsFromRedux> {
 
 												<FButton
 													type='submit'
+													formErrors={errors}
 													isLoading={
 														isSubmitting || this.props.fetchingUser
 													}

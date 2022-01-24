@@ -111,7 +111,7 @@ class Settings extends Component<DashboardProps> {
 									}
 								}}
 							>
-								{({ values, isSubmitting, setFieldValue, dirty }) => {
+								{({ values, isSubmitting, setFieldValue, errors, dirty }) => {
 									return (
 										<Form noValidate>
 											<ExitPrompt dirty={dirty} />
@@ -197,6 +197,7 @@ class Settings extends Component<DashboardProps> {
 											<div className='flex-col items-center'>
 												<FButton
 													type='submit'
+													formErrors={errors}
 													isDisabled={!dirty}
 													isLoading={
 														isSubmitting || this.props.fetchingUser

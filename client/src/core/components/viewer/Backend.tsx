@@ -107,7 +107,7 @@ class Backend extends Component<PropsFromRedux> {
 											}
 										}}
 									>
-										{({ isSubmitting }) => {
+										{({ isSubmitting, errors }) => {
 											return (
 												<Form noValidate>
 													<div className='flex-col items-center'>
@@ -155,6 +155,7 @@ class Backend extends Component<PropsFromRedux> {
 														{this.props.user && (
 															<FButton
 																type='submit'
+																formErrors={errors}
 																isLoading={
 																	isSubmitting ||
 																	this.props.fetchingUser
@@ -386,7 +387,7 @@ class Login extends Component<PropsFromRedux & { desktop?: boolean }> {
 						setSubmitting(false)
 					}}
 				>
-					{({ isSubmitting }) => {
+					{({ isSubmitting, errors }) => {
 						return (
 							<Form noValidate>
 								<div className='flex-col items-center justify-center'>
@@ -425,6 +426,7 @@ class Login extends Component<PropsFromRedux & { desktop?: boolean }> {
 
 									<FButton
 										type='submit'
+										formErrors={errors}
 										isLoading={isSubmitting || this.props.fetchingUser}
 										appearance='primary'
 									>
@@ -484,7 +486,7 @@ class Register extends Component<PropsFromRedux & { desktop?: boolean }> {
 							setSubmitting(false)
 						}}
 					>
-						{({ isSubmitting, dirty }) => {
+						{({ isSubmitting, dirty, errors }) => {
 							return (
 								<Form noValidate>
 									<ExitPrompt dirty={dirty} />
@@ -514,6 +516,7 @@ class Register extends Component<PropsFromRedux & { desktop?: boolean }> {
 
 										<FButton
 											type='submit'
+											formErrors={errors}
 											isLoading={isSubmitting || this.props.fetchingUser}
 											appearance='primary'
 										>
@@ -691,6 +694,7 @@ class Register extends Component<PropsFromRedux & { desktop?: boolean }> {
 
 										<FButton
 											type='submit'
+											formErrors={errors}
 											onClick={() => setFieldTouched('captcha', true)}
 											isLoading={isSubmitting || this.props.fetchingUser}
 											appearance='primary'
@@ -752,7 +756,7 @@ class Forgot extends Component<PropsFromRedux & { desktop?: boolean }> {
 							setSubmitting(false)
 						}}
 					>
-						{({ isSubmitting }) => {
+						{({ isSubmitting, errors }) => {
 							return (
 								<Form noValidate>
 									<div className='flex-col justify-center items-center'>
@@ -789,6 +793,7 @@ class Forgot extends Component<PropsFromRedux & { desktop?: boolean }> {
 
 										<FButton
 											type='submit'
+											formErrors={errors}
 											isLoading={isSubmitting || this.props.fetchingUser}
 											appearance='primary'
 										>
@@ -934,6 +939,7 @@ class Forgot extends Component<PropsFromRedux & { desktop?: boolean }> {
 
 										<FButton
 											type='submit'
+											formErrors={errors}
 											onClick={() => setFieldTouched('captcha', true)}
 											isLoading={isSubmitting || this.props.fetchingUser}
 											appearance='primary'
@@ -1011,7 +1017,7 @@ class Settings extends Component<PropsFromRedux & { desktop?: boolean }> {
 						}
 					}}
 				>
-					{({ values, isSubmitting, setFieldValue, dirty }) => {
+					{({ values, isSubmitting, setFieldValue, errors, dirty }) => {
 						return (
 							<Form noValidate>
 								<div className='wrapMargin flex justify-around flex-wrap'>
@@ -1090,6 +1096,7 @@ class Settings extends Component<PropsFromRedux & { desktop?: boolean }> {
 								<div className='flex-col items-center'>
 									<FButton
 										type='submit'
+										formErrors={errors}
 										isDisabled={!dirty}
 										isLoading={isSubmitting || this.props.fetchingUser}
 										appearance='primary'

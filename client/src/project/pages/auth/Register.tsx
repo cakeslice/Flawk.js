@@ -84,7 +84,7 @@ class Register extends Component<PropsFromRedux> {
 									setSubmitting(false)
 								}}
 							>
-								{({ isSubmitting, dirty }) => {
+								{({ isSubmitting, dirty, errors }) => {
 									return (
 										<Form
 											style={{
@@ -121,6 +121,7 @@ class Register extends Component<PropsFromRedux> {
 
 												<FButton
 													type='submit'
+													formErrors={errors}
 													isLoading={
 														isSubmitting || this.props.fetchingUser
 													}
@@ -317,6 +318,7 @@ class Register extends Component<PropsFromRedux> {
 
 												<FButton
 													type='submit'
+													formErrors={errors}
 													isLoading={
 														isSubmitting || this.props.fetchingUser
 													}

@@ -80,7 +80,7 @@ class Login extends Component<PropsFromRedux> {
 								setSubmitting(false)
 							}}
 						>
-							{({ isSubmitting }) => {
+							{({ isSubmitting, errors }) => {
 								return (
 									<Form
 										style={{
@@ -129,6 +129,7 @@ class Login extends Component<PropsFromRedux> {
 
 											<FButton
 												type='submit'
+												formErrors={errors}
 												isLoading={isSubmitting || this.props.fetchingUser}
 												appearance='primary'
 											>

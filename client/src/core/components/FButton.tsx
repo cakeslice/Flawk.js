@@ -24,19 +24,16 @@ const scrollToErrors = (errors: FormikErrors<unknown>) => {
 }
 
 export type Appearance = 'primary' | 'secondary' | string // We need to support string for custom appearances declared in styles.extraButtons
-export default class FButton extends Component<{
+type Props = {
 	style?: React.CSSProperties
 	children?: React.ReactNode
 	appearance?: Appearance
 	isDisabled?: boolean
 	simpleDisabled?: boolean
 	name?: string
-	type?: 'button' | 'reset' | 'submit'
 	isLoading?: boolean
 	invalid?: string
 	noInvalidLabel?: boolean
-	// ----------- Submit props
-	formErrors?: FormikErrors<unknown>
 	// ----------- Checkbox props
 	checkbox?: React.ReactNode
 	checked?: boolean
@@ -50,15 +47,23 @@ export default class FButton extends Component<{
 	onChange?: (checked: boolean) => void
 	onBlur?: (event: React.FocusEvent<HTMLButtonElement, Element>) => void
 	// -----------
-}> {
+} & (
+	| {
+			type?: 'button' | 'reset'
+			formErrors?: FormikErrors<unknown>
+	  }
+	| {
+			type: 'submit'
+			formErrors: FormikErrors<unknown>
+	  }
+)
+export default class FButton extends Component<Props> {
 	timer: ReturnType<typeof setTimeout> | undefined = undefined
 	state = {
 		checked: false,
 	}
 
 	componentDidMount() {
-		if (this.props.type === 'submit' && !this.props.formErrors && !config.prod)
-			alert("<FButton/>: Button with type 'submit' doesn't have 'formErrors' prop")
 		if (this.props.checkbox) this.setState({ checked: this.props.defaultChecked })
 	}
 	componentWillUnmount() {
