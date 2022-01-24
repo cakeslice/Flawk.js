@@ -43,8 +43,9 @@ type Props = {
 	required?: boolean | string
 	field?: FieldInputProps<Obj>
 	form?: FormikProps<Obj>
-	onClick?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
 	onChange?: (checked: boolean) => void
+	//
+	onClick?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
 	onBlur?: (event: React.FocusEvent<HTMLButtonElement, Element>) => void
 	// -----------
 } & (

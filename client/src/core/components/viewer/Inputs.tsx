@@ -98,6 +98,7 @@ export default class Inputs extends Component {
 									</span>
 								</div>
 								<sp />
+								<sp />
 								<FInput
 									style={{ width: '100%' }}
 									label={'Text Area'}
@@ -138,6 +139,12 @@ export default class Inputs extends Component {
 										simpleDisabled
 										checkbox={'Simple Disabled'}
 									></FButton>
+								</div>
+								<sp />
+								<sp />
+								<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+									<FInput label='Date Picker' datePicker></FInput>
+									<FInput label='Time Picker' timeInput></FInput>
 								</div>
 							</div>
 						</Section>
@@ -388,6 +395,22 @@ export default class Inputs extends Component {
 																label: 'Billing',
 															},
 														]}
+													/>
+												</div>
+												<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+													<Field
+														component={FInput}
+														required
+														datePicker
+														name='birthday'
+														label={'Birthday'}
+													/>
+													<Field
+														component={FInput}
+														required
+														timeInput
+														name='preferred_time'
+														label={'Preferred time'}
 													/>
 												</div>
 

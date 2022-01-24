@@ -87,6 +87,23 @@ const DatePicker = (props: {
 	inputStyle: React.CSSProperties & GlamorProps
 }) => (
 	<Datetime
+		renderView={(mode, renderDefault) => {
+			if (mode === 'time') return <div>NOT IMPLEMENTED</div>
+
+			return (
+				<div
+					style={{
+						animation: 'openDown' + ' 0.2s ease-in-out',
+					}}
+					className={
+						'rdtPickerCustom ' + (global.nightMode ? 'rdtPickerNight' : 'rdtPickerDay')
+					}
+				>
+					{renderDefault()}
+				</div>
+			)
+		}}
+		//
 		utc={props.utc}
 		locale={global.lang.moment}
 		timeFormat={false}
@@ -94,7 +111,13 @@ const DatePicker = (props: {
 		onChange={props.onChange}
 		renderInput={(p) => {
 			// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-			return <input {...css(props.inputStyle)} {...p} value={props.value ? p.value : ''} />
+			return (
+				<input
+					{...css(props.inputStyle)}
+					{...p}
+					value={props.value || !props.isControlled ? p.value : ''}
+				/>
+			)
 		}}
 		inputProps={{
 			disabled: props.isDisabled,
@@ -103,7 +126,7 @@ const DatePicker = (props: {
 			onBlur: props.onBlur,
 			onKeyPress: props.onKeyPress,
 			onFocus: props.onFocus,
-			placeholder: props.placeholder || new Date().toLocaleDateString(global.lang.date),
+			placeholder: props.placeholder,
 		}}
 	/>
 )
@@ -316,7 +339,11 @@ export default class FInput extends Component<{
 
 		const invalidType = this.props.invalidType || 'label'
 
-		const placeholder = this.props.timeInput ? !value && moment().format('HH:mm') : undefined
+		const placeholder = this.props.datePicker
+			? !value && new Date().toLocaleDateString(global.lang.date)
+			: this.props.timeInput
+			? !value && moment().format('HH:mm')
+			: undefined
 
 		const defaultWidth = (desktop: boolean) => {
 			return desktop ? 175 : '100%'
@@ -332,7 +359,7 @@ export default class FInput extends Component<{
 			autoComplete: this.props.autoComplete,
 			type: this.props.type ? this.props.type : 'text',
 			disabled: this.props.isDisabled,
-			placeholder: placeholder || this.props.placeholder || '',
+			placeholder: this.props.placeholder || placeholder || '',
 		}
 		const inputEventProps = {
 			onFocus: (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>) => {

@@ -19,7 +19,7 @@
 }
 
 :root {
-	--main: #0075ff;
+	--main: rgba(0, 117, 255, 1);
 
 	--font: 'Roboto';
 	--fontAlt: 'PT Sans';
@@ -553,23 +553,35 @@ form {
 	position: relative;
 }
 .rdtPicker {
+	user-select: none;
 	display: none;
 	position: absolute;
 
 	width: 210px;
 	min-width: 0%;
-	padding: 4px;
+	padding: 0px;
 	margin-top: 1px;
 	z-index: 99999 !important;
 
 	font-size: 12px;
 
-	background: #fff;
-	border-color: rgba(0, 0, 0, 0.1);
-	border-width: 1px;
-	border: 1px solid rgba(0, 0, 0, 0.1);
+	border-radius: 0px;
+	border: none;
+	box-shadow: none;
+	background: transparent;
+}
+.rdtPickerCustom {
+	box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.025), 0 2px 4px 0 rgba(0, 0, 0, 0.025);
+	padding: 4px;
 	border-radius: 6px;
-	box-shadow: '0 2px 4px 0 rgba(0, 0, 0, 0.025), 0 2px 4px 0 rgba(0, 0, 0, 0.025)';
+}
+.rdtPickerDay {
+	background: #fff;
+	border: 1px solid rgba(0, 0, 0, 0.1);
+}
+.rdtPickerNight {
+	background: rgba(30, 30, 30, 1);
+	border: 1px solid rgba(255, 255, 255, 0.1);
 }
 .rdtOpen .rdtPicker {
 	display: block;
@@ -601,7 +613,8 @@ form {
 .rdtPicker td.rdtMinute:hover,
 .rdtPicker td.rdtSecond:hover,
 .rdtPicker .rdtTimeToggle:hover {
-	background: #eeeeee;
+	background: rgba(127, 127, 127, 0.15);
+	border-radius: 6px;
 	cursor: pointer;
 }
 .rdtPicker td.rdtOld,
@@ -615,8 +628,8 @@ form {
 	content: '';
 	display: inline-block;
 	border-left: 7px solid transparent;
-	border-bottom: 7px solid #428bca;
-	border-top-color: rgba(0, 0, 0, 0.2);
+	border-bottom: 7px solid var(--main);
+	border-top-color: rgba(127, 127, 127, 0.15);
 	position: absolute;
 	bottom: 2px;
 	right: 2px;
@@ -624,18 +637,29 @@ form {
 }
 .rdtPicker td.rdtActive,
 .rdtPicker td.rdtActive:hover {
-	background-color: rgba(127, 127, 127, 0.66);
-	color: #fff;
+	background-color: rgba(127, 127, 127, 0.1);
+	color: inherit;
+	box-shadow: 0px 0px 0px 1px var(--main);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	border-radius: 6px;
+	font-weight: 700;
 	text-shadow: none;
 }
 .rdtPicker td.rdtActive.rdtToday:before {
-	border-bottom-color: #fff;
+	border-bottom-color: var(--main);
 }
 .rdtPicker td.rdtDisabled,
 .rdtPicker td.rdtDisabled:hover {
 	background: none;
 	color: #999999;
+	border-radius: 6px;
 	cursor: not-allowed;
+}
+.rdtPicker th {
+	border-bottom: 1px solid rgba(127, 127, 127, 0.15);
 }
 .rdtPicker th.rdtSwitch {
 	width: 100px;
@@ -647,14 +671,23 @@ form {
 	border-bottom: none;
 	cursor: default;
 }
+.rdtPicker thead tr:first-of-type th:hover {
+	background: rgba(127, 127, 127, 0.15);
+	border-radius: 3px;
+}
+td.rdtMonth:hover,
+td.rdtYear:hover {
+	background: rgba(127, 127, 127, 0.15);
+	border-radius: 6px;
+}
 
 //
 
 .lb-container {
-	background-color: rgba(0, 0, 0, 0.25);
+	background-color: rgba(0, 0, 0, 0.15);
 }
 .lb-container .lb-header {
-	background: rgba(0, 0, 0, 0.25);
+	background: rgba(0, 0, 0, 0.15);
 	box-shadow: none;
 }
 
