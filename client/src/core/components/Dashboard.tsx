@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import { clearAllBodyScrollLocks } from 'body-scroll-lock'
 import Animated from 'core/components/Animated'
 import MobileDrawer from 'core/components/MobileDrawer'
 import config from 'core/config_'
@@ -147,7 +148,6 @@ export default class Dashboard extends Component<
 													duration={0.75}
 													//
 													style={{
-														height: '100vh',
 														width:
 															bigScreen || this.props.alwaysOpen
 																? openWidth
@@ -155,9 +155,9 @@ export default class Dashboard extends Component<
 														transition: `width 500ms`,
 														position: 'fixed',
 														left: 0,
+														bottom: 0,
+														top: 0,
 														zIndex: 2,
-
-														minHeight: 850,
 														backgroundColor: this.props.color,
 													}}
 												>
@@ -170,6 +170,7 @@ export default class Dashboard extends Component<
 															this.props.alwaysOpen ||
 															this.state.open
 														}
+														isHover={this.state.open}
 														entryStyle={this.props.entryStyle}
 														color={this.props.color}
 														textColor={textColor}
@@ -549,6 +550,7 @@ type MenuProps = {
 	path: string
 	logo: string
 	isOpen: boolean
+	isHover: boolean
 	entryStyle?: Obj
 	color: string
 	textColor?: string
@@ -564,6 +566,26 @@ class Menu extends Component<MenuProps> {
 		window.onpopstate = (event) => {
 			this.forceUpdate()
 		}
+	}
+
+	componentDidMount() {
+		if (this.props.isHover) {
+			config.disableScroll()
+		} else {
+			clearAllBodyScrollLocks()
+		}
+	}
+	componentDidUpdate(prevProps: MenuProps) {
+		if (this.props.isHover !== prevProps.isHover) {
+			if (this.props.isHover) {
+				config.disableScroll()
+			} else {
+				clearAllBodyScrollLocks()
+			}
+		}
+	}
+	componentWillUnmount() {
+		clearAllBodyScrollLocks()
 	}
 
 	render() {
@@ -604,7 +626,9 @@ class Menu extends Component<MenuProps> {
 			<div
 				className='flex-col justify-start'
 				style={{
-					minHeight: '100vh',
+					height: '100%',
+					overflowY: 'auto',
+					overflowX: 'hidden',
 					color: this.props.textColor || styles.colors.black,
 					background: this.props.color,
 					borderRightStyle: 'solid',

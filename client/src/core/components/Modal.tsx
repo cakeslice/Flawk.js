@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { clearAllBodyScrollLocks, disableBodyScroll } from 'body-scroll-lock'
+import { clearAllBodyScrollLocks } from 'body-scroll-lock'
 import Animated from 'core/components/Animated'
 import config from 'core/config_'
 import styles from 'core/styles'
@@ -57,21 +57,16 @@ export default class Modal extends Component<Props> {
 		this.renderHeader = this.renderHeader.bind(this)
 	}
 
-	disableScroll() {
-		const target = document.querySelector('.scrollTarget')
-		if (target) disableBodyScroll(target, { reserveScrollBarGap: false })
-	}
-
 	componentDidMount() {
 		if (!this.props.parent || !this.props.name) {
-			if (this.props.visible) this.disableScroll()
+			if (this.props.visible) config.disableScroll()
 		} else {
 			// @ts-ignore
 			// eslint-disable-next-line
 			this.state.parentState = this.props.parent.state[this.props.name]
 
 			if (this.state.parentState) {
-				this.disableScroll()
+				config.disableScroll()
 			}
 		}
 	}
@@ -87,14 +82,14 @@ export default class Modal extends Component<Props> {
 			this.state.parentState = this.props.parent.state[this.props.name]
 
 			if (this.state.parentState) {
-				this.disableScroll()
+				config.disableScroll()
 			} else {
 				clearAllBodyScrollLocks()
 			}
 		}
 		if (this.props.visible !== prevProps.visible && this.props.visible) {
 			if (this.props.visible) {
-				this.disableScroll()
+				config.disableScroll()
 			} else {
 				clearAllBodyScrollLocks()
 			}

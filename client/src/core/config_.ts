@@ -6,6 +6,7 @@
  */
 
 import * as Sentry from '@sentry/react'
+import { disableBodyScroll } from 'body-scroll-lock'
 import { countries, Country } from 'countries-list'
 import { KeyObject, Obj } from 'flawk-types'
 import hexRgb from 'hex-rgb'
@@ -312,6 +313,10 @@ export default {
 
 	scrollToTop: () => {
 		window.scrollTo(0, 0)
+	},
+	disableScroll: () => {
+		const target = document.querySelector('.scrollTarget')
+		if (target) disableBodyScroll(target, { reserveScrollBarGap: false })
 	},
 
 	// @ts-ignore
