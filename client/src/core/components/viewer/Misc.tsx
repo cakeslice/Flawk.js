@@ -5,7 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import 'core/assets/third-party/quill.snow.css'
 import Avatar from 'core/components/Avatar'
 import FButton from 'core/components/FButton'
 import LanguageSwitcher from 'core/components/LanguageSwitcher'
@@ -239,7 +238,7 @@ export default class Misc extends QueryParams<{
 						<Section title='Text editor' tags={['<ReactQuill/>']}>
 							<ReactQuill
 								style={{
-									maxWidth: 700,
+									maxWidth: 710,
 									minHeight: 300,
 									background: styles.colors.white,
 									borderWidth: 1,
@@ -259,28 +258,24 @@ export default class Misc extends QueryParams<{
 								}}
 								modules={{
 									toolbar: [
-										['bold', 'italic', 'underline', 'strike'], // toggled buttons
+										['bold', 'italic', 'underline', 'strike'], // Toggled buttons
 										['blockquote', 'code-block'],
-
-										[{ header: 1 }, { header: 2 }], // custom button values
 										[{ list: 'ordered' }, { list: 'bullet' }],
-										[{ script: 'sub' }, { script: 'super' }], // superscript/subscript
-										[{ indent: '-1' }, { indent: '+1' }], // outdent/indent
-										[{ direction: 'rtl' }], // text direction
-
-										[{ size: ['small', false, 'large', 'huge'] }], // custom dropdown
+										[{ indent: '-1' }, { indent: '+1' }], // Outdent/indent
 										[{ header: [1, 2, 3, 4, 5, 6, false] }],
-
-										[{ color: [] }, { background: [] }], // dropdown with defaults from theme
+										[{ color: [] }, { background: [] }], // Dropdown with defaults from theme
 										[{ font: [] }],
 										[{ align: [] }],
-
-										['clean'], // remove formatting button
+										//['clean'], // Remove formatting button
+										//[{ header: 1 }, { header: 2 }], // Custom button values
+										//[{ size: ['small', false, 'large', 'huge'] }], // Custom dropdown
+										//[{ script: 'sub' }, { script: 'super' }], // Superscript/Subscript
+										//[{ direction: 'rtl' }], // Text direction
 									],
 								}}
 							/>
 							<sp></sp>
-							<div style={{ maxWidth: 700 }}>
+							<div className='ql-editor' style={{ maxWidth: 700 }}>
 								{this.state.quill && Parser(this.state.quill)}
 							</div>
 						</Section>

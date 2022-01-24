@@ -8,7 +8,6 @@
 import config from 'core/config_'
 import styles from 'core/styles'
 import { Range } from 'rc-slider'
-import 'rc-slider/assets/index.css'
 import React, { Component } from 'react'
 
 type Props = {

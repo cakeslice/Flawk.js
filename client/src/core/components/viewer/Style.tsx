@@ -120,7 +120,8 @@ export default class Style extends Component {
 								</p>
 								<ul>
 									<li>
-										Lorem <tag>Tag</tag>
+										Lorem <tag>Tag #1</tag>
+										<tag>Tag #2</tag>
 									</li>
 									<li>Ipsum</li>
 									<li>Dolor</li>
@@ -132,14 +133,11 @@ export default class Style extends Component {
 										'Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?'
 									}
 								</p>
-								<sp />
 								<blockquote>
 									Block quote porro quisquam est qui dolorem ipsum quia dolor sit
 									amet, consectetur, adipisci velit...
 								</blockquote>
-								<sp /> <sp />
 								<code>int code = 1</code>
-								<sp /> <sp /> <sp />
 							</div>
 						</Section>
 						<Section title='Button' tags={['<button/>', '<FButton/>']}>

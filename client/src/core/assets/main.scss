@@ -6,6 +6,12 @@
  */
 
 @import '../../core/assets/reset.css';
+@import 'core/assets/third-party/quill.snow.css';
+@import 'core/assets/third-party/react-toastify.css';
+@import 'react-awesome-lightbox/build/style.css';
+@import 'react-datetime/css/react-datetime.css';
+@import 'rc-slider/assets/index.css';
+@import 'react-input-range/lib/css/index.css';
 
 *:focus {
 	outline: 0;
@@ -144,7 +150,10 @@ a:hover {
 a:visited {
 }
 
-ul {
+//
+
+ul,
+ol {
 	padding-top: 5px;
 	list-style: inside;
 	padding-left: 20px;
@@ -162,18 +171,14 @@ hr {
 
 tag {
 	opacity: 0.66;
-	padding: 3px 6px;
+	padding: 2px 5px;
+	margin: 1px;
 	font-size: 13px;
 	font-weight: bold;
 	border-radius: 6px;
 	background: rgba(127, 127, 127, 0.15);
 }
-blockquote,
-code {
-	padding: 14px;
-	border-radius: 6px;
-	background: rgba(127, 127, 127, 0.15);
-}
+
 hl {
 	border-radius: 3px;
 	padding: 1px;
@@ -183,6 +188,36 @@ hl {
 	font-style: normal;
 	background: rgba(255, 255, 0, 0.5);
 }
+
+//
+
+code {
+	font-family: monospace;
+}
+.ql-editor pre,
+.ql-snow .ql-editor pre.ql-syntax,
+pre .ql-snow .ql-editor blockquote,
+.ql-editor blockquote,
+.ql-editor code,
+pre,
+blockquote,
+code {
+	display: block;
+	overflow-wrap: break-word;
+	padding: 13px;
+	margin-top: 7px;
+	margin-bottom: 7px;
+	border-radius: 6px;
+	color: inherit;
+	background: rgba(127, 127, 127, 0.15);
+}
+.ql-editor pre,
+.ql-snow .ql-editor pre.ql-syntax,
+pre {
+	overflow-x: auto;
+}
+
+//
 
 input {
 	font-size: 14px;
@@ -633,4 +668,17 @@ form {
 
 .tooltip-container {
 	z-index: 99999 !important;
+}
+
+//
+
+.ql-snow .ql-stroke {
+	stroke: rgba(127, 127, 127);
+}
+.ql-snow .ql-picker {
+	color: rgba(127, 127, 127);
+}
+.ql-container {
+	font-size: 14px;
+	font-family: var(--font);
 }

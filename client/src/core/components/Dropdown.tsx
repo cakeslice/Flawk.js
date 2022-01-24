@@ -11,7 +11,6 @@ import { FormIKStruct, Obj } from 'flawk-types'
 import { FieldInputProps, FormikProps } from 'formik'
 import { css } from 'glamor'
 import React, { Component } from 'react'
-import 'react-input-range/lib/css/index.css'
 import MediaQuery from 'react-responsive'
 import Select, { components, CSSObjectWithLabel, DropdownIndicatorProps } from 'react-select'
 
