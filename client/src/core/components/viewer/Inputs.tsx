@@ -314,7 +314,7 @@ export default class Inputs extends Component {
 										setSubmitting(false)
 									}}
 								>
-									{({ handleReset, isSubmitting, dirty }) => {
+									{({ handleReset, isSubmitting, dirty, errors }) => {
 										return (
 											<Form noValidate>
 												<ExitPrompt dirty={dirty} />
@@ -408,6 +408,7 @@ export default class Inputs extends Component {
 													<FButton
 														appearance={'secondary'}
 														type='submit'
+														formErrors={errors}
 														isLoading={isSubmitting}
 													>
 														{config.text('common.save')}

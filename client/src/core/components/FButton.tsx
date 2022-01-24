@@ -9,10 +9,19 @@ import Loading from 'core/components/Loading'
 import config from 'core/config_'
 import styles from 'core/styles'
 import { FormIKStruct, GlamorProps, Obj } from 'flawk-types'
-import { FieldInputProps, FormikProps } from 'formik'
+import { FieldInputProps, FormikErrors, FormikProps } from 'formik'
 import { css } from 'glamor'
 import React, { Component } from 'react'
 import MediaQuery from 'react-responsive'
+
+const scrollToErrors = (errors: FormikErrors<unknown>) => {
+	const errorKeys = Object.keys(errors)
+	if (errorKeys.length > 0) {
+		setTimeout(() => {
+			document.getElementsByName(errorKeys[0])[0].focus()
+		}, 10)
+	}
+}
 
 export type Appearance = 'primary' | 'secondary' | string // We need to support string for custom appearances declared in styles.extraButtons
 export default class FButton extends Component<{
@@ -26,6 +35,8 @@ export default class FButton extends Component<{
 	isLoading?: boolean
 	invalid?: string
 	noInvalidLabel?: boolean
+	// ----------- Submit props
+	formErrors?: FormikErrors<unknown>
 	// ----------- Checkbox props
 	checkbox?: React.ReactNode
 	checked?: boolean
@@ -46,6 +57,8 @@ export default class FButton extends Component<{
 	}
 
 	componentDidMount() {
+		if (this.props.type === 'submit' && !this.props.formErrors && !config.prod)
+			alert("<FButton/>: Button with type 'submit' doesn't have 'formErrors' prop")
 		if (this.props.checkbox) this.setState({ checked: this.props.defaultChecked })
 	}
 	componentWillUnmount() {
@@ -308,6 +321,10 @@ export default class FButton extends Component<{
 								})}
 								onClick={(e) => {
 									if (this.props.isLoading || this.props.isDisabled) return
+
+									if (this.props.formErrors) {
+										scrollToErrors(this.props.formErrors)
+									}
 
 									if (this.props.checkbox) {
 										if (checked !== undefined) {
