@@ -570,25 +570,30 @@ export default class Dropdown extends Component<{
 												backgroundColor: d.isDisabled
 													? config.replaceAlpha(
 															styles.colors.black,
-															global.nightMode ? 0.05 : 0.1
+															global.nightMode ? 0.025 : 0.05
 													  )
 													: isSelected
-													? styles.colors.mainLight
-													: isFocused
 													? styles.colors.mainVeryLight
+													: isFocused
+													? config.replaceAlpha(
+															styles.colors.black,
+															global.nightMode ? 0.05 : 0.1
+													  )
 													: undefined,
 												color: isSelected
-													? styles.colors.whiteDay
+													? styles.colors.black
 													: isDisabled
 													? config.replaceAlpha(
 															styles.colors.black,
 															global.nightMode ? 0.25 : 0.5
 													  )
 													: undefined,
+												fontWeight: isSelected ? 700 : 400,
 												opacity: d.isDisabled ? 0.75 : undefined,
 												cursor: d.isDisabled ? 'default' : 'pointer',
 
 												':active': {
+													fontWeight: !d.isDisabled ? 700 : undefined,
 													backgroundColor: !d.isDisabled
 														? styles.colors.mainVeryLight
 														: undefined,

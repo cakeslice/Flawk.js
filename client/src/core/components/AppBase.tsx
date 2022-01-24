@@ -288,6 +288,15 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 
 	const Child = component
 
+	const devInfo = {
+		fontSize: 13,
+		fontWeight: 'bold',
+		marginLeft: 20,
+		marginBottom: 2,
+		textShadow: '1px 1px 2px rgba(0,0,0,.5)',
+		color: styles.colors.black,
+	}
+
 	return (
 		<ErrorBoundary FallbackComponent={ErrorFallback}>
 			<Suspense fallback={<div></div>}>
@@ -509,32 +518,19 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 									</div>
 
 									{!config.staging && config.darkModeAvailable && (
-										<b
-											style={{
-												fontSize: 13,
-												marginLeft: 20,
-												cursor: 'pointer',
-												textShadow: '1px 1px 2px rgba(0,0,0,.5)',
-												color: styles.colors.black,
-											}}
+										<button
+											style={devInfo}
 											onClick={async () => {
 												await toggleNightMode()
 											}}
 										>
 											DARK
-										</b>
+										</button>
 									)}
 
 									{!config.staging && (
-										<div
-											style={{
-												fontSize: 13,
-												fontWeight: 'bold',
-												marginLeft: 20,
-												cursor: 'pointer',
-												color: styles.colors.black,
-												textShadow: '1px 1px 2px rgba(0,0,0,.5)',
-											}}
+										<button
+											style={devInfo}
 											onClick={async () => {
 												config.changeLang()
 												await global.storage.setItem(
@@ -546,24 +542,18 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 										>
 											LANG-
 											{global.lang.text}
-										</div>
+										</button>
 									)}
 
 									{!config.staging && (
-										<b
+										<button
 											onClick={() => {
 												window.open('/components', '_blank')
 											}}
-											style={{
-												fontSize: 13,
-												marginLeft: 20,
-												color: styles.colors.black,
-												cursor: 'pointer',
-												textShadow: '1px 1px 2px rgba(0,0,0,.5)',
-											}}
+											style={devInfo}
 										>
 											STYLE
-										</b>
+										</button>
 									)}
 								</div>
 							)}

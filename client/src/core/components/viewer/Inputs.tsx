@@ -19,6 +19,21 @@ import React, { Component } from 'react'
 import MediaQuery from 'react-responsive'
 import { Section } from './ComponentsViewer'
 
+const dropdownOptions = [
+	{
+		value: 'yes',
+		label: 'Yes',
+	},
+	{
+		value: 'no',
+		label: 'No',
+	},
+	{
+		value: 'maybe',
+		label: 'Maybe',
+	},
+]
+
 export default class Inputs extends Component {
 	state: { checked?: boolean } = {}
 
@@ -170,8 +185,8 @@ export default class Inputs extends Component {
 											})
 											for (let i = 0; i < 60; i++) {
 												p.push({
-													value: 'accept' + i.toString(),
-													label: 'Active ' + i.toString(),
+													value: 'option' + i.toString(),
+													label: 'Option ' + i.toString(),
 													isDisabled: false,
 												})
 											}
@@ -184,32 +199,14 @@ export default class Inputs extends Component {
 										label={'Disabled'}
 										defaultValue={'accept'}
 										placeholder={'Value'}
-										options={[
-											{
-												value: 'accept',
-												label: 'Active',
-											},
-											{
-												value: 'deny',
-												label: 'Inactive',
-											},
-										]}
+										options={dropdownOptions}
 									/>
 									<Dropdown
 										label={'Invalid Label'}
 										placeholder={'#123'}
 										erasable
 										invalid={'*'}
-										options={[
-											{
-												value: 'accept',
-												label: 'Active',
-											},
-											{
-												value: 'deny',
-												label: 'Inactive',
-											},
-										]}
+										options={dropdownOptions}
 									/>
 								</div>
 								<sp />
@@ -220,16 +217,7 @@ export default class Inputs extends Component {
 										erasable
 										invalidType='bottom'
 										invalid={'Not allowed'}
-										options={[
-											{
-												value: 'accept',
-												label: 'Active',
-											},
-											{
-												value: 'deny',
-												label: 'Inactive',
-											},
-										]}
+										options={dropdownOptions}
 									/>
 
 									<Dropdown
@@ -238,16 +226,7 @@ export default class Inputs extends Component {
 										erasable
 										invalid={'*'}
 										invalidType={'right'}
-										options={[
-											{
-												value: 'accept',
-												label: 'Active',
-											},
-											{
-												value: 'deny',
-												label: 'Inactive',
-											},
-										]}
+										options={dropdownOptions}
 									/>
 
 									<Dropdown
@@ -277,16 +256,7 @@ export default class Inputs extends Component {
 									label={'Full width'}
 									defaultValue={'accept'}
 									placeholder={'Value'}
-									options={[
-										{
-											value: 'accept',
-											label: 'Active',
-										},
-										{
-											value: 'deny',
-											label: 'Inactive',
-										},
-									]}
+									options={dropdownOptions}
 								/>
 							</div>
 						</Section>
@@ -393,6 +363,11 @@ export default class Inputs extends Component {
 															{
 																value: 'billing',
 																label: 'Billing',
+															},
+															{
+																value: 'super_admin',
+																label: 'Super Admin',
+																isDisabled: true,
 															},
 														]}
 													/>
