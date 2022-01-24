@@ -91,9 +91,7 @@ export default {
 			},
 			':active': {
 				borderColor: 'white',
-				filter: 'drop-shadow(0px 0px 20px rgba(250, 40, 116, 0.71))',
-				background:
-					'linear-gradient(90deg,rgba(251, 40, 176, .5) 0%, rgba(252, 38, 60, .5) 100%)',
+				filter: 'drop-shadow(0px 0px 20px rgba(250, 40, 116, 0))',
 			},
 			background: 'linear-gradient(90deg, #FB28B0 0%, #FC263C 100%)',
 		},

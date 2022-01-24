@@ -167,7 +167,11 @@ export default class Dropdown extends Component<{
 		const defaultContainerStyle = {
 			...defaultStyle,
 			borderRadius: styles.defaultBorderRadius,
-			borderStyle: 'solid',
+			borderTopStyle: styles.inputBorder === 'full' ? 'solid' : 'none',
+			borderBottomStyle:
+				styles.inputBorder === 'full' || styles.inputBorder === 'bottom' ? 'solid' : 'none',
+			borderLeftStyle: styles.inputBorder === 'full' ? 'solid' : 'none',
+			borderRightStyle: styles.inputBorder === 'full' ? 'solid' : 'none',
 			borderWidth: '1px',
 			boxSizing: 'border-box',
 			borderColor: config.replaceAlpha(
@@ -236,8 +240,9 @@ export default class Dropdown extends Component<{
 		const conditionalContainerStyle = {
 			...(!this.props.isDisabled &&
 				invalid && {
-					boxShadow:
-						invalid && '0 0 0 2px ' + config.replaceAlpha(styles.colors.red, 0.1),
+					boxShadow: styles.inputBoxShadow
+						? invalid && '0 0 0 2px ' + config.replaceAlpha(styles.colors.red, 0.1)
+						: undefined,
 					borderColor: config.replaceAlpha(
 						styles.colors.red,
 						global.nightMode
@@ -476,14 +481,15 @@ export default class Dropdown extends Component<{
 																		.activeBorderColor) ||
 															  defaultContainerStyle.activeBorderColor,
 												},
-												boxShadow:
-													'0 0 2px ' +
-													(!this.props.isDisabled && invalid
-														? config.replaceAlpha(
-																styles.colors.red,
-																0.1
-														  )
-														: defaultContainerStyle.activeShadowColor),
+												boxShadow: styles.inputBoxShadow
+													? '0 0 2px ' +
+													  (!this.props.isDisabled && invalid
+															? config.replaceAlpha(
+																	styles.colors.red,
+																	0.1
+															  )
+															: defaultContainerStyle.activeShadowColor)
+													: undefined,
 												borderColor:
 													!this.props.isDisabled && invalid
 														? styles.colors.red
@@ -502,14 +508,15 @@ export default class Dropdown extends Component<{
 																		.activeBorderColor) ||
 															  defaultContainerStyle.activeBorderColor,
 												},
-												boxShadow:
-													'0 0 0 2px ' +
-													(!this.props.isDisabled && invalid
-														? config.replaceAlpha(
-																styles.colors.red,
-																0.1
-														  )
-														: defaultContainerStyle.activeShadowColor),
+												boxShadow: styles.inputBoxShadow
+													? '0 0 0 2px ' +
+													  (!this.props.isDisabled && invalid
+															? config.replaceAlpha(
+																	styles.colors.red,
+																	0.1
+															  )
+															: defaultContainerStyle.activeShadowColor)
+													: undefined,
 												borderColor:
 													!this.props.isDisabled && invalid
 														? styles.colors.red

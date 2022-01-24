@@ -215,7 +215,11 @@ export default class FInput extends Component<{
 			fontWeight: styles.inputFontWeight || undefined,
 
 			borderRadius: styles.defaultBorderRadius,
-			borderStyle: 'solid',
+			borderTopStyle: styles.inputBorder === 'full' ? 'solid' : 'none',
+			borderBottomStyle:
+				styles.inputBorder === 'full' || styles.inputBorder === 'bottom' ? 'solid' : 'none',
+			borderLeftStyle: styles.inputBorder === 'full' ? 'solid' : 'none',
+			borderRightStyle: styles.inputBorder === 'full' ? 'solid' : 'none',
 			borderWidth: '1px',
 			boxSizing: 'border-box',
 
@@ -253,11 +257,12 @@ export default class FInput extends Component<{
 				},
 				':focus': {
 					outline: 'none',
-					boxShadow:
-						'0 0 0 2px ' +
-						(invalid
-							? config.replaceAlpha(styles.colors.red, 0.1)
-							: styles.colors.mainVeryLight),
+					boxShadow: styles.inputBoxShadow
+						? '0 0 0 2px ' +
+						  (invalid
+								? config.replaceAlpha(styles.colors.red, 0.1)
+								: styles.colors.mainVeryLight)
+						: undefined,
 					borderColor: invalid ? styles.colors.red : styles.colors.mainLight,
 				},
 			}),
@@ -278,7 +283,9 @@ export default class FInput extends Component<{
 			...finalStyle,
 			...(!this.props.isDisabled &&
 				invalid && {
-					boxShadow: '0 0 0 2px ' + config.replaceAlpha(styles.colors.red, 0.1),
+					boxShadow: styles.inputBoxShadow
+						? '0 0 0 2px ' + config.replaceAlpha(styles.colors.red, 0.1)
+						: undefined,
 					borderColor: config.replaceAlpha(
 						styles.colors.red,
 						global.nightMode

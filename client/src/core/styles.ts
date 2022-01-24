@@ -56,6 +56,10 @@ export default {
 	inputBackground: undefined,
 
 	// @ts-ignore
+	inputBoxShadow: true,
+	// @ts-ignore
+	inputBorder: 'full' as 'full' | 'bottom' | 'none',
+	// @ts-ignore
 	inputBorderFactorDay: 0.2,
 	// @ts-ignore
 	inputBorderFactorNight: 0.15,

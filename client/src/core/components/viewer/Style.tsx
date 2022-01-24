@@ -221,14 +221,15 @@ export default class Style extends Component {
 								</FButton>
 								<FButton
 									style={{
-										minWidth: 50,
+										minWidth: 100,
+										justifyContent: 'space-between',
 									}}
 								>
+									<div>Icon</div>
 									<img
-										style={{ maxHeight: 15, marginRight: 7.5 }}
+										style={{ maxHeight: 15, marginLeft: 7.5 }}
 										src={logo}
 									></img>
-									<div>Icon</div>
 								</FButton>
 								<button>Basic</button>
 							</div>
