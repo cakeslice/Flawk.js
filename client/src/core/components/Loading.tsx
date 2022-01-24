@@ -10,7 +10,11 @@ import styles from 'core/styles'
 import React from 'react'
 import { MetroSpinner } from 'react-spinners-kit'
 
-export default class Loading extends React.Component<{ noDelay?: boolean; size?: number }> {
+export default class Loading extends React.Component<{
+	noDelay?: boolean
+	size?: number
+	color?: string
+}> {
 	timer: ReturnType<typeof setTimeout> | undefined = undefined
 	state = { actuallyLoading: false }
 
@@ -26,7 +30,7 @@ export default class Loading extends React.Component<{ noDelay?: boolean; size?:
 		return (
 			<MetroSpinner
 				size={this.props.size || 42}
-				color={config.replaceAlpha(styles.colors.black, 0.2)}
+				color={this.props.color || config.replaceAlpha(styles.colors.black, 0.2)}
 				loading={this.props.noDelay || this.state.actuallyLoading}
 			/>
 		)

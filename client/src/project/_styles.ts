@@ -79,7 +79,7 @@ export default {
 			minWidth: 128,
 			borderColor: 'transparent',
 
-			transition: 'background 200ms, border-color 200ms, -webkit-filter 200ms',
+			transition: 'background 200ms, border-color 200ms, filter 200ms',
 			':focus-visible': {
 				outline: 'none',
 				borderColor: 'white',
