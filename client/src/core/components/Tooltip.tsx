@@ -6,9 +6,12 @@
  */
 
 import Animated, { Effect } from 'core/components/Animated'
+import config from 'core/config_'
 import styles from 'core/styles'
 import React from 'react'
 import TooltipTrigger, { TooltipTriggerProps } from 'react-popper-tooltip'
+import MediaQuery from 'react-responsive'
+import OutsideAlerter from './OutsideAlerter'
 
 type Props = {
 	children: React.ReactNode
@@ -26,72 +29,94 @@ export default class Tooltip extends React.Component<Props> {
 		const props = this.props
 
 		return (
-			<TooltipTrigger
-				placement='top'
-				delayHide={200}
-				modifiers={[
-					{
-						name: 'offset',
-						options: {
-							offset: [
-								props.offsetAlt === undefined ? 0 : props.offsetAlt,
-								props.offset === undefined ? 5 : props.offset,
-							],
-						},
-					},
-				]}
-				trigger={['hover']}
-				{...props.tooltipProps}
-				tooltipShown={true}
-				onVisibilityChange={(visible) => {
-					this.setState({ visible })
-				}}
-				tooltip={({ tooltipRef, getTooltipProps }) => (
-					<div
-						{...getTooltipProps({
-							ref: tooltipRef,
-							className: 'tooltip-container',
-						})}
+			<MediaQuery minWidth={config.mobileWidthTrigger}>
+				{(desktop) => (
+					<TooltipTrigger
+						placement='top'
+						delayHide={200}
+						modifiers={[
+							{
+								name: 'offset',
+								options: {
+									offset: [
+										props.offsetAlt === undefined ? 0 : props.offsetAlt,
+										props.offset === undefined ? 5 : props.offset,
+									],
+								},
+							},
+						]}
+						trigger={desktop ? ['hover'] : []}
+						{...props.tooltipProps}
+						tooltipShown={true}
+						onVisibilityChange={(visible) => {
+							this.setState({ visible })
+						}}
+						tooltip={({ tooltipRef, getTooltipProps }) => (
+							<OutsideAlerter
+								clickedOutside={() => {
+									if (!desktop) this.setState({ visible: false })
+								}}
+							>
+								<div
+									{...getTooltipProps({
+										ref: tooltipRef,
+										className: 'tooltip-container',
+									})}
+								>
+									<Animated
+										controlled={this.state.visible}
+										className={!props.selectable ? 'select-none' : undefined}
+										effects={[
+											'fade',
+											((props.tooltipProps?.placement === 'left'
+												? 'left'
+												: props.tooltipProps?.placement === 'right'
+												? 'right'
+												: props.tooltipProps?.placement === 'bottom'
+												? 'down'
+												: 'up') + '-scale') as Effect,
+										]}
+										duration={0.2}
+										delay={0}
+										style={{
+											...styles.card,
+											padding: 7.5,
+											fontSize: 13,
+											...styles.tooltip,
+											...props.contentStyle,
+										}}
+									>
+										{props.content}
+									</Animated>
+								</div>
+							</OutsideAlerter>
+						)}
 					>
-						<Animated
-							controlled={this.state.visible}
-							className={!props.selectable ? 'select-none' : undefined}
-							effects={[
-								'fade',
-								((props.tooltipProps?.placement === 'left'
-									? 'left'
-									: props.tooltipProps?.placement === 'right'
-									? 'right'
-									: props.tooltipProps?.placement === 'bottom'
-									? 'down'
-									: 'up') + '-scale') as Effect,
-							]}
-							duration={0.2}
-							delay={0}
-							style={{
-								...styles.card,
-								padding: 7.5,
-								fontSize: 13,
-								...styles.tooltip,
-								...props.contentStyle,
-							}}
-						>
-							{props.content}
-						</Animated>
-					</div>
+						{({ getTriggerProps, triggerRef }) =>
+							desktop ? (
+								<span
+									{...getTriggerProps({
+										ref: triggerRef,
+										className: 'trigger',
+									})}
+								>
+									{props.children}
+								</span>
+							) : (
+								<button
+									{...getTriggerProps({
+										ref: triggerRef,
+										className: 'trigger',
+									})}
+									onClick={() => this.setState({ visible: !this.state.visible })}
+								>
+									{props.children}
+								</button>
+							)
+						}
+					</TooltipTrigger>
 				)}
-			>
-				{({ getTriggerProps, triggerRef }) => (
-					<span
-						{...getTriggerProps({
-							ref: triggerRef,
-							className: 'trigger',
-						})}
-					>
-						{props.children}
-					</span>
-				)}
-			</TooltipTrigger>
+			</MediaQuery>
 		)
 	}
 }

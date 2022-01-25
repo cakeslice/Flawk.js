@@ -7,7 +7,7 @@
 
 import Avatar from 'core/components/Avatar'
 import FButton from 'core/components/FButton'
-import LanguageSwitcher from 'core/components/LanguageSwitcher'
+import LanguageSelect from 'core/components/LanguageSelect'
 import Loading from 'core/components/Loading'
 import QueryParams from 'core/components/QueryParams'
 import config from 'core/config_'
@@ -229,8 +229,8 @@ export default class Misc extends QueryParams<{
 								<FButton>Copy Link</FButton>
 							</CopyToClipboard>
 						</Section>
-						<Section title='Language switcher' tags={['<LanguageSwitcher/>']}>
-							<LanguageSwitcher></LanguageSwitcher>
+						<Section title='Localization' tags={['<LanguageSelect/>']}>
+							<LanguageSelect></LanguageSelect>
 						</Section>
 						<Section title='Scroll to top' tags={['config.scrollToTop()']}>
 							<FButton onClick={() => config.scrollToTop()}>Scroll</FButton>

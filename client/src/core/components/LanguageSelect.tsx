@@ -9,7 +9,7 @@ import config from 'core/config_'
 import React from 'react'
 import Dropdown from './Dropdown'
 
-export default function LanguageSwitcher() {
+export default function LanguageSelect() {
 	const lang = global.lang.text
 
 	return (

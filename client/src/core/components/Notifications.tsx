@@ -102,125 +102,123 @@ export default class Notifications extends Component<Props> {
 					this.setState({ open: false })
 				}}
 			>
-				{
-					<div>
-						<div
-							onClick={async () => {
-								await config.setStateAsync(this, { open: !this.state.open })
-								await this.fetchNotifications()
-							}}
-							style={{ cursor: 'pointer', userSelect: 'none' }}
-						>
-							{bell(
-								this.state.open
-									? styles.colors.main
-									: global.nightMode
-									? 'rgba(116,116,116,1)'
-									: 'rgba(176,176,176,1)',
-								unread ? styles.colors.red : 'transparent'
-							)}
-						</div>
+				<div>
+					<div
+						onClick={async () => {
+							await config.setStateAsync(this, { open: !this.state.open })
+							await this.fetchNotifications()
+						}}
+						style={{ cursor: 'pointer', userSelect: 'none' }}
+					>
+						{bell(
+							this.state.open
+								? styles.colors.main
+								: global.nightMode
+								? 'rgba(116,116,116,1)'
+								: 'rgba(176,176,176,1)',
+							unread ? styles.colors.red : 'transparent'
+						)}
+					</div>
 
-						{this.state.open && (
-							<div style={{ maxWidth: 0, maxHeight: 0 }}>
+					{this.state.open && (
+						<div style={{ maxWidth: 0, maxHeight: 0 }}>
+							<div
+								style={{
+									position: 'relative',
+									zIndex: 5,
+									top: 15,
+									minWidth: 300,
+								}}
+							>
 								<div
 									style={{
-										position: 'relative',
-										zIndex: 5,
-										top: 15,
-										minWidth: 300,
+										...styles.card,
+										...{
+											overflow: 'hidden',
+											padding: 5,
+											paddingBottom: 0,
+											boxShadow: styles.strongerShadow,
+										},
 									}}
 								>
 									<div
 										style={{
-											...styles.card,
-											...{
-												overflow: 'hidden',
-												padding: 5,
-												paddingBottom: 0,
-												boxShadow: styles.strongerShadow,
-											},
+											width: '100%',
+											height:
+												this.state.data && this.state.data.length > 0
+													? 400
+													: undefined,
+											overflow: 'scroll',
 										}}
 									>
-										<div
-											style={{
-												width: '100%',
-												height:
-													this.state.data && this.state.data.length > 0
-														? 400
-														: undefined,
-												overflow: 'scroll',
-											}}
-										>
-											{this.state.data && this.state.data.length > 0 ? (
-												this.state.data.map((n) => (
+										{this.state.data && this.state.data.length > 0 ? (
+											this.state.data.map((n) => (
+												<div
+													key={n._id}
+													style={{ cursor: 'pointer' }}
+													onClick={async () => {
+														await this.readNotification(n._id)
+													}}
+												>
 													<div
-														key={n._id}
-														style={{ cursor: 'pointer' }}
-														onClick={async () => {
-															await this.readNotification(n._id)
+														style={{
+															padding: 10,
+															marginBottom: 3,
+															display: 'flex',
+															minHeight: 60,
+															alignItems: 'center',
 														}}
 													>
 														<div
 															style={{
-																padding: 10,
-																marginBottom: 3,
-																display: 'flex',
-																minHeight: 60,
-																alignItems: 'center',
+																minWidth: 7.5,
+																minHeight: 7.5,
+																marginRight: 7.5,
+																borderRadius: '50%',
+																background: !n.isRead
+																	? styles.colors.main
+																	: undefined,
 															}}
-														>
-															<div
+														></div>
+														{n.imageURL && (
+															<Avatar
 																style={{
-																	minWidth: 7.5,
-																	minHeight: 7.5,
-																	marginRight: 7.5,
-																	borderRadius: '50%',
-																	background: !n.isRead
-																		? styles.colors.main
-																		: undefined,
+																	width: 30,
+																	height: 30,
 																}}
-															></div>
-															{n.imageURL && (
-																<Avatar
-																	style={{
-																		width: 30,
-																		height: 30,
-																	}}
-																	src={n.imageURL}
-																></Avatar>
-															)}
+																src={n.imageURL}
+															></Avatar>
+														)}
 
-															{Parser(
-																n
-																	? '<p style="max-width: 230px; margin-left:10px">' +
-																			n.message +
-																			'</p>'
-																	: '<p>N/A</p>'
-															)}
-														</div>
+														{Parser(
+															n
+																? '<p style="max-width: 230px; margin-left:10px">' +
+																		n.message +
+																		'</p>'
+																: '<p>N/A</p>'
+														)}
 													</div>
-												))
-											) : (
-												<div
-													className='flex justify-center items-center'
-													style={{
-														opacity: 0.5,
-														padding: 20,
-														width: '100%',
-														height: '100%',
-													}}
-												>
-													No notifications
 												</div>
-											)}
-										</div>
+											))
+										) : (
+											<div
+												className='flex justify-center items-center'
+												style={{
+													opacity: 0.5,
+													padding: 20,
+													width: '100%',
+													height: '100%',
+												}}
+											>
+												No notifications
+											</div>
+										)}
 									</div>
 								</div>
 							</div>
-						)}
-					</div>
-				}
+						</div>
+					)}
+				</div>
 			</OutsideAlerter>
 		)
 	}

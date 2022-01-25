@@ -85,7 +85,7 @@ export default function CodeBlock(props: {
 							  })}
 					</SyntaxHighlighter>
 					<div style={{ width: 0 }}>
-						<div style={{ position: 'relative', right: 50, top: 25 }}>
+						<div style={{ position: 'relative', right: 55, top: 25 }}>
 							<Tooltip
 								tooltipProps={{ placement: 'left' }}
 								offsetAlt={13}

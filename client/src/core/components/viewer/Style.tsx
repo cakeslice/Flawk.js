@@ -416,7 +416,7 @@ export default class Style extends Component {
 									content={<div>Hello World!</div>}
 								>
 									<div style={styles.card}>
-										<b>Hover me</b>
+										<b>{desktop ? 'Hover' : 'Click'} me</b>
 									</div>
 								</Tooltip>
 							</div>

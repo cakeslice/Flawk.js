@@ -288,13 +288,14 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 
 	const Child = component
 
-	const devInfo = {
+	const devInfo: React.CSSProperties = {
 		fontSize: 13,
 		fontWeight: 'bold',
 		marginLeft: 20,
 		marginBottom: 2,
 		textShadow: '1px 1px 2px rgba(0,0,0,.5)',
 		color: styles.colors.black,
+		pointerEvents: 'all',
 	}
 
 	return (
@@ -479,7 +480,6 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 										position: 'fixed',
 										bottom: 0,
 										right: 20,
-										width: '100%',
 										display: 'flex',
 										alignItems: 'flex-end',
 										marginBottom: 5,
@@ -490,6 +490,7 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 										userSelect: 'none',
 										paddingLeft: 10,
 										opacity: 0.8,
+										pointerEvents: 'none',
 									}}
 								>
 									<div>
@@ -517,7 +518,7 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 										)}
 									</div>
 
-									{!config.staging && config.darkModeAvailable && (
+									{desktop && !config.staging && config.darkModeAvailable && (
 										<button
 											style={devInfo}
 											onClick={async () => {
@@ -528,7 +529,7 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 										</button>
 									)}
 
-									{!config.staging && (
+									{desktop && !config.staging && (
 										<button
 											style={devInfo}
 											onClick={async () => {
@@ -545,7 +546,7 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 										</button>
 									)}
 
-									{!config.staging && (
+									{desktop && !config.staging && (
 										<button
 											onClick={() => {
 												window.open('/components', '_blank')
