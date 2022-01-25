@@ -10,6 +10,7 @@ import Animated from 'core/components/Animated'
 import config from 'core/config_'
 import styles from 'core/styles'
 import { Obj } from 'flawk-types'
+import FocusTrap from 'focus-trap-react'
 import React, { Component } from 'react'
 import { Portal } from 'react-portal'
 
@@ -57,16 +58,20 @@ export default class Modal extends Component<Props> {
 		this.renderHeader = this.renderHeader.bind(this)
 	}
 
+	onVisible() {
+		config.disableScroll()
+	}
+
 	componentDidMount() {
 		if (!this.props.parent || !this.props.name) {
-			if (this.props.visible) config.disableScroll()
+			if (this.props.visible) this.onVisible()
 		} else {
 			// @ts-ignore
 			// eslint-disable-next-line
 			this.state.parentState = this.props.parent.state[this.props.name]
 
 			if (this.state.parentState) {
-				config.disableScroll()
+				this.onVisible()
 			}
 		}
 	}
@@ -82,14 +87,14 @@ export default class Modal extends Component<Props> {
 			this.state.parentState = this.props.parent.state[this.props.name]
 
 			if (this.state.parentState) {
-				config.disableScroll()
+				this.onVisible()
 			} else {
 				clearAllBodyScrollLocks()
 			}
 		}
 		if (this.props.visible !== prevProps.visible && this.props.visible) {
 			if (this.props.visible) {
-				config.disableScroll()
+				this.onVisible()
 			} else {
 				clearAllBodyScrollLocks()
 			}
@@ -232,69 +237,70 @@ export default class Modal extends Component<Props> {
 					effects={['fade']}
 					duration={0.25}
 				>
-					<div
-						style={{
-							//backdropFilter: 'blur(2px)', // ! Bad for performance
-							display: 'flex',
-							justifyContent: 'center',
-							alignItems: 'center',
-							width: '100vw',
-							height: '100vh',
-							background:
-								styles.modalBackground ||
-								config.replaceAlpha(
-									global.nightMode ? styles.colors.white : 'rgba(127,127,127,1)',
-									0.25
-								),
-						}}
-					>
-						{!this.props.noAutoFocus && (
-							<button autoFocus={true} style={{ maxWidth: 0, maxHeight: 0 }}></button>
-						)}
-						<div>
-							<div style={{ margin: 10 }}>
-								<div
-									style={{
-										...styles.card,
-										...{
-											boxShadow: styles.strongerShadow,
-											margin: 0,
-											borderRadius: 5,
-											maxWidth: 'calc(100vw - 10px)',
-											maxHeight: 'calc(100vh - 100px)', // ! Needs to be like this to compensate for browser bars
-											minHeight: 20,
-											width: styles.modalWidth || 500,
-											display: 'flex',
-											flexDirection: 'column',
-											justifyContent: 'space-between',
-											padding: 0,
-											...(styles.modalCard && styles.modalCard),
-											...this.props.style,
-										},
-									}}
-								>
-									{this.props.title && (
-										<ModalHeader
-											modalPadding={modalPadding}
-											headerStyle={this.props.headerStyle}
-											title={this.props.title}
-											onClose={this.onClose}
-										/>
-									)}
+					<FocusTrap>
+						<div
+							style={{
+								//backdropFilter: 'blur(2px)', // ! Bad for performance
+								display: 'flex',
+								justifyContent: 'center',
+								alignItems: 'center',
+								width: '100vw',
+								height: '100vh',
+								background:
+									styles.modalBackground ||
+									config.replaceAlpha(
+										global.nightMode
+											? styles.colors.white
+											: 'rgba(127,127,127,1)',
+										0.25
+									),
+							}}
+						>
+							<div>
+								<div style={{ margin: 10 }}>
+									<div
+										style={{
+											...styles.card,
+											...{
+												boxShadow: styles.strongerShadow,
+												margin: 0,
+												borderRadius: 5,
+												maxWidth: 'calc(100vw - 10px)',
+												maxHeight: 'calc(100vh - 100px)', // ! Needs to be like this to compensate for browser bars
+												minHeight: 20,
+												width: styles.modalWidth || 500,
+												display: 'flex',
+												flexDirection: 'column',
+												justifyContent: 'space-between',
+												padding: 0,
+												...(styles.modalCard && styles.modalCard),
+												...this.props.style,
+											},
+										}}
+									>
+										{this.props.title && (
+											<ModalHeader
+												modalPadding={modalPadding}
+												headerStyle={this.props.headerStyle}
+												title={this.props.title}
+												onClose={this.onClose}
+											/>
+										)}
 
-									{this.props.content
-										? this.props.content(
-												this.onClose,
-												this.renderContent,
-												this.renderButtons,
-												this.renderParent,
-												this.renderHeader
-										  )
-										: undefined}
+										{this.props.content
+											? this.props.content(
+													this.onClose,
+													this.renderContent,
+													this.renderButtons,
+													this.renderParent,
+													this.renderHeader
+											  )
+											: undefined}
+									</div>
 								</div>
 							</div>
 						</div>
-					</div>
+					</FocusTrap>
 				</Animated>
 			</Portal>
 		)

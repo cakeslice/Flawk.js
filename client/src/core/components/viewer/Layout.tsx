@@ -40,7 +40,7 @@ export default class Layout extends QueryParams {
 
 	defaultQueryParams = {
 		page: 1,
-		limit: 15,
+		limit: 100,
 	}
 	fetchData = async () => {
 		await config.lockFetch(this, async () => {
@@ -60,7 +60,14 @@ export default class Layout extends QueryParams {
 
 			if (res.ok)
 				this.setState({
-					data: { items: res.body, totalItems: 200, totalPages: 14 },
+					data: {
+						// @ts-ignore
+						items: res.body.map((obj, i) => {
+							return { ...obj, specialRow: i % 5 ? undefined : 'special' }
+						}),
+						totalItems: 200,
+						totalPages: 2,
+					},
 				})
 		})
 	}
@@ -214,6 +221,22 @@ export default class Layout extends QueryParams {
 											</div>
 										)}
 										keySelector={'id'}
+										specialRows={[
+											{
+												key: 'special',
+												selector: 'title',
+												row: (value, data) => (
+													<div>
+														<b>{data.id + ': ' + value}</b>
+													</div>
+												),
+												style: {
+													background: styles.colors.mainVeryLight,
+													minHeight: 25,
+													justifyContent: 'center',
+												},
+											},
+										]}
 										columns={[
 											{
 												onClick: async () => {

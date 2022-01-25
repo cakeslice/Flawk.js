@@ -25,6 +25,7 @@ type SpecialRow = {
 	key: string
 	selector: string
 	style?: React.CSSProperties
+	expandContent?: boolean
 	row: (value: Value, data: Obj) => React.ReactNode
 }
 type Column = {
@@ -104,7 +105,7 @@ export default class FTable extends QueryParams<
 			isLoading: nextProps.isLoading,
 			updateID: nextProps.updateID,
 		})
-		if (nP !== p) {
+		if (nP !== p && !nextProps.isLoading) {
 			this.updateID = uuid.v1()
 			if (this.scrollYRef) this.scrollYRef.scrollTop = 0
 		}
@@ -401,10 +402,6 @@ export default class FTable extends QueryParams<
 									{props.data &&
 										props.data.map((d) => {
 											const k = _.get(d, props.keySelector) as string
-											const rS = {
-												...rowStyle,
-												...(overrideStyle && overrideStyle.rowStyle),
-											}
 
 											let sR: undefined | SpecialRow
 											if (d.specialRow) {
@@ -413,13 +410,39 @@ export default class FTable extends QueryParams<
 												})
 											}
 
+											const rS = {
+												...rowStyle,
+												...(overrideStyle && overrideStyle.rowStyle),
+												...(d.specialRow && sR && sR.style),
+											}
+											const style = {
+												...rowWrapperStyle,
+												...(overrideStyle && overrideStyle.rowWrapperStyle),
+											}
+
 											return this.state.containment ? (
 												<VisibilitySensor
+													intervalCheck={false}
+													scrollDelay={25}
+													scrollCheck={true}
+													resizeDelay={250}
+													resizeCheck={true}
 													partialVisibility
 													key={k}
 													containment={this.state.containment}
 												>
 													{({ isVisible }) => {
+														if (!isVisible)
+															return (
+																<div
+																	style={{
+																		...style,
+																		opacity: 0.5,
+																	}}
+																>
+																	<div style={rS}></div>
+																</div>
+															)
 														return (
 															<Row
 																updateID={this.updateID || ''}
@@ -427,18 +450,10 @@ export default class FTable extends QueryParams<
 																	updateID: this.updateID,
 																	isVisible: isVisible,
 																})}
-																style={{
-																	...rowWrapperStyle,
-																	...(overrideStyle &&
-																		overrideStyle.rowWrapperStyle),
-																}}
-																rowStyle={{
-																	...rS,
-																	...(d.specialRow &&
-																		sR &&
-																		sR.style),
-																}}
+																style={style}
+																rowStyle={rS}
 																expandContent={
+																	(!sR || sR.expandContent) &&
 																	props.expandContent &&
 																	props.expandContent(d)
 																}
@@ -667,7 +682,6 @@ class Row extends Component<RowProps> {
 					>
 						<div
 							style={{
-								// ! Collapse doesn't support vertical margins!
 								padding: this.props.cellPadding,
 								paddingTop: this.props.cellPaddingY * 2,
 								paddingBottom: this.props.cellPaddingY,
