@@ -149,7 +149,7 @@ export default class ComponentsViewer extends Component {
 						{...css({
 							width: 25,
 							padding: 0,
-							opacity: 0.66,
+							opacity: 0.75,
 						})}
 					>
 						<img

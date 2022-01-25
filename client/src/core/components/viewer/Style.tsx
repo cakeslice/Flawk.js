@@ -69,7 +69,9 @@ export default class Style extends Component {
 								<sp></sp>
 								<h3>
 									{'Another title '}
-									<tag>h3</tag>
+									<span>
+										<tag>h3</tag>
+									</span>
 								</h3>
 								<hr />
 								<sp />
@@ -133,11 +135,18 @@ export default class Style extends Component {
 										'Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?'
 									}
 								</p>
+								<sp />
+								<hr />
+								<sp />
 								<blockquote>
 									Block quote porro quisquam est qui dolorem ipsum quia dolor sit
 									amet, consectetur, adipisci velit...
 								</blockquote>
 								<code>int code = 1</code>
+								<sp />
+								<p>
+									Press <kbd>Enter</kbd> to continue...
+								</p>
 							</div>
 						</Section>
 						<Section title='Button' tags={['<button/>', '<FButton/>']}>
@@ -317,7 +326,7 @@ export default class Style extends Component {
 								{global.nightMode ? 'Light' : 'Dark'} mode
 							</FButton>
 						</Section>
-						<Section title='Cards' tags={['styles.card', 'styles.outlineCard']}>
+						<Section title='Card' tags={['styles.card', 'styles.outlineCard']}>
 							<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
 								<div
 									style={{

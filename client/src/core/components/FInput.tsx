@@ -440,9 +440,6 @@ export default class FInput extends Component<{
 								style={{
 									display: 'flex',
 									justifyContent: 'space-between',
-									opacity: global.nightMode
-										? styles.inputLabelOpacityNight
-										: styles.inputLabelOpacityDay,
 									letterSpacing: 0.4,
 									textAlign:
 										typeof label === 'string' && label.length === 1
@@ -452,9 +449,26 @@ export default class FInput extends Component<{
 									whiteSpace: 'nowrap',
 									...styles.inputLabelStyle,
 									...this.props.labelStyle,
+									opacity: 1,
 								}}
 							>
-								{label}
+								<div
+									style={{
+										opacity: global.nightMode
+											? styles.inputLabelOpacityNight
+											: styles.inputLabelOpacityDay,
+										...(styles.inputLabelStyle &&
+											styles.inputLabelStyle.opacity && {
+												opacity: styles.inputLabelStyle.opacity,
+											}),
+										...(this.props.labelStyle &&
+											this.props.labelStyle.opacity && {
+												opacity: this.props.labelStyle.opacity,
+											}),
+									}}
+								>
+									{label}
+								</div>
 								{invalidType === 'label' &&
 									name &&
 									!this.props.isDisabled &&
@@ -464,6 +478,7 @@ export default class FInput extends Component<{
 											style={{
 												marginLeft: 7.5,
 												fontSize: styles.invalidFontSize,
+												fontWeight: styles.invalidFontWeight,
 												color: styles.colors.red,
 											}}
 										>
@@ -597,6 +612,7 @@ export default class FInput extends Component<{
 										<p
 											style={{
 												fontSize: styles.invalidFontSize,
+												fontWeight: styles.invalidFontWeight,
 												color: styles.colors.red,
 											}}
 										>
@@ -615,6 +631,7 @@ export default class FInput extends Component<{
 									<p
 										style={{
 											fontSize: styles.invalidFontSize,
+											fontWeight: styles.invalidFontWeight,
 											color: styles.colors.red,
 										}}
 									>

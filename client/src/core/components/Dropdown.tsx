@@ -323,6 +323,7 @@ export default class Dropdown extends Component<{
 												marginLeft: 7.5,
 
 												fontSize: styles.invalidFontSize,
+												fontWeight: styles.invalidFontWeight,
 												color: styles.colors.red,
 											}}
 										>
@@ -673,6 +674,7 @@ export default class Dropdown extends Component<{
 										<p
 											style={{
 												fontSize: styles.invalidFontSize,
+												fontWeight: styles.invalidFontWeight,
 												color: styles.colors.red,
 											}}
 										>
@@ -691,6 +693,7 @@ export default class Dropdown extends Component<{
 									<p
 										style={{
 											fontSize: styles.invalidFontSize,
+											fontWeight: styles.invalidFontWeight,
 											color: styles.colors.red,
 										}}
 									>

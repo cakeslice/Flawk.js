@@ -309,6 +309,7 @@ export default class FButton extends Component<Props> {
 						borderColor: styles.colors.red,
 					},
 				}),
+			...(this.props.isLoading && { opacity: 0.75 }),
 		}
 
 		return (
@@ -418,6 +419,7 @@ export default class FButton extends Component<Props> {
 									<p
 										style={{
 											fontSize: styles.invalidFontSize,
+											fontWeight: styles.invalidFontWeight,
 											color: styles.colors.red,
 										}}
 									>
