@@ -345,6 +345,7 @@ class ModalHeader extends Component<{
 							(this.props.headerStyle.noCloseButton === undefined ||
 								this.props.headerStyle.noCloseButton === false))) && (
 						<button
+							type='button'
 							style={{
 								borderRadius: 5,
 								height: 24,
