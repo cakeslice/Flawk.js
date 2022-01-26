@@ -486,8 +486,8 @@ export default class Style extends Component {
 									</Animated>
 									<Animated
 										style={animationCard}
-										keepMounted
-										controlled={this.state.animationTrigger}
+										animateOffscreen
+										triggerID={this.state.animationUUID}
 										effects={['shake']}
 									>
 										<tag>Shake</tag>
