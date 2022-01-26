@@ -7,7 +7,7 @@
 
 import Animated from 'core/components/Animated'
 import Tooltip from 'core/components/Tooltip'
-import config from 'core/config_'
+import config from 'core/config'
 import styles from 'core/styles'
 import prettierParser from 'prettier/parser-babel'
 import prettier from 'prettier/standalone'

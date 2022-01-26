@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import config from 'core/config_'
+import config from 'core/config'
 import { Obj } from 'flawk-types'
 import nodemailer from 'nodemailer'
 import hbs from 'nodemailer-express-handlebars'

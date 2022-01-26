@@ -6,7 +6,7 @@
  */
 
 import Loading from 'core/components/Loading'
-import config from 'core/config_'
+import config from 'core/config'
 import styles from 'core/styles'
 import { FormIKStruct, GlamorProps, Obj } from 'flawk-types'
 import { FieldInputProps, FormikErrors, FormikProps } from 'formik'

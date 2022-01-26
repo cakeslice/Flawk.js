@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import config from 'core/config_'
+import config from 'core/config'
 import navigation from 'core/functions/navigation'
 import { KeyUnknown } from 'flawk-types'
 import _ from 'lodash'

@@ -6,7 +6,7 @@
  */
 
 import FButton from 'core/components/FButton'
-import config from 'core/config_'
+import config from 'core/config'
 import React, { Component } from 'react'
 import MediaQuery from 'react-responsive'
 

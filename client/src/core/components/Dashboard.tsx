@@ -8,7 +8,7 @@
 import { clearAllBodyScrollLocks } from 'body-scroll-lock'
 import Animated from 'core/components/Animated'
 import MobileDrawer from 'core/components/MobileDrawer'
-import config from 'core/config_'
+import config from 'core/config'
 import styles from 'core/styles'
 import { Obj } from 'flawk-types'
 import { css } from 'glamor'

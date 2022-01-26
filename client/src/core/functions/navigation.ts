@@ -6,7 +6,7 @@
  */
 
 import { parseSearch } from 'core/components/QueryParams'
-import config from 'core/config_'
+import config from 'core/config'
 
 const inRestrictedEndpoint = () => {
 	if (!global.routerHistory) return false

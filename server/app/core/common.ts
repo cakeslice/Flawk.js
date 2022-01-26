@@ -8,7 +8,7 @@
 import * as Sentry from '@sentry/node'
 import Nexmo, { MessageError, MessageRequestResponse } from '@vonage/server-sdk'
 import AWS from 'aws-sdk'
-import config from 'core/config_'
+import config from 'core/config'
 import db from 'core/functions/db'
 import crypto from 'crypto-extra'
 import { toRegex } from 'diacritic-regex'

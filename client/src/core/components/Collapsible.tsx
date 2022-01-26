@@ -6,7 +6,7 @@
  */
 
 import Animated from 'core/components/Animated'
-import config from 'core/config_'
+import config from 'core/config'
 import styles from 'core/styles'
 import React, { Component } from 'react'
 

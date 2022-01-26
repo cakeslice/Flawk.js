@@ -6,7 +6,7 @@
  */
 
 import Animated, { Effect } from 'core/components/Animated'
-import config from 'core/config_'
+import config from 'core/config'
 import styles from 'core/styles'
 import React from 'react'
 import TooltipTrigger, { TooltipTriggerProps } from 'react-popper-tooltip'

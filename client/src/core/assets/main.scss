@@ -19,7 +19,7 @@
 }
 
 :root {
-	--main: rgba(0, 117, 255, 1);
+	--main: rgba(51, 108, 251, 1);
 
 	--font: 'Roboto';
 	--fontAlt: 'PT Sans';
@@ -307,6 +307,9 @@ kbd {
 
 // Helpers (tailwind.css like)
 
+.font-bold {
+	font-weight: 700;
+}
 .select-none {
 	user-select: none;
 }

@@ -7,7 +7,7 @@
 
 import { clearAllBodyScrollLocks } from 'body-scroll-lock'
 import Animated from 'core/components/Animated'
-import config from 'core/config_'
+import config from 'core/config'
 import styles from 'core/styles'
 import { Obj } from 'flawk-types'
 import React, { Component } from 'react'

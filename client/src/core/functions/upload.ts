@@ -6,7 +6,7 @@
  */
 
 import { post } from 'core/api'
-import config from 'core/config_'
+import config from 'core/config'
 import { Obj } from 'flawk-types'
 import { ChangeEvent } from 'react'
 try {

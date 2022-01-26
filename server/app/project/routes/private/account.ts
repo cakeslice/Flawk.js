@@ -8,7 +8,7 @@
 import { Router } from '@awaitjs/express'
 import bcrypt from 'bcryptjs'
 import common from 'core/common'
-import config from 'core/config_'
+import config from 'core/config'
 import { sendEmail } from 'core/functions/email'
 import { ObjectId } from 'flawk-types'
 import jwt from 'jsonwebtoken'

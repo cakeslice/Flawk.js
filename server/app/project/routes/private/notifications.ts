@@ -6,7 +6,7 @@
  */
 
 import { Router } from '@awaitjs/express'
-import config from 'core/config_'
+import config from 'core/config'
 import db, { AggregationCount, ObjectId } from 'core/functions/db'
 import { clientSocketNotification } from 'core/functions/sockets'
 import mongoose from 'mongoose'

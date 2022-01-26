@@ -6,7 +6,7 @@
  */
 
 import Animated from 'core/components/Animated'
-import config from 'core/config_'
+import config from 'core/config'
 import styles from 'core/styles'
 import React, { Component } from 'react'
 import MediaQuery from 'react-responsive'
@@ -19,7 +19,6 @@ export default class Footer extends Component {
 					<div
 						className='flex-col items-center justify-center w-full'
 						style={{
-							//backgroundColor: 'black', //styles.colors.blackDay,
 							minHeight: 279,
 							boxSizing: 'border-box',
 							padding: 20,
@@ -41,7 +40,13 @@ export default class Footer extends Component {
 									color: styles.colors.whiteDay,
 								}}
 							>
-								© 2020 José Guerreiro
+								© 2020{' '}
+								<a
+									href='https://cakeslice.dev'
+									style={{ color: styles.colors.whiteDay, fontWeight: 700 }}
+								>
+									José Guerreiro
+								</a>
 							</p>
 
 							<div style={{ minHeight: 30 }}></div>

@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import config from 'core/config_'
+import config from 'core/config'
 import React from 'react'
 import { Beforeunload } from 'react-beforeunload'
 import { Prompt } from 'react-router-dom'

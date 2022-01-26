@@ -8,7 +8,7 @@
 import { Router } from '@awaitjs/express'
 import bcrypt from 'bcryptjs'
 import common from 'core/common'
-import config from 'core/config_'
+import config from 'core/config'
 import { getNextRef } from 'core/functions/db'
 import { sendEmail } from 'core/functions/email'
 import crypto from 'crypto-extra'

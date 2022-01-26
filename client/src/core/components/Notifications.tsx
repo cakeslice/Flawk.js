@@ -6,7 +6,7 @@
  */
 
 import { get, post } from 'core/api'
-import config from 'core/config_'
+import config from 'core/config'
 import styles from 'core/styles'
 import Parser from 'html-react-parser'
 import React, { Component } from 'react'

@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import config from 'core/config_'
+import config from 'core/config'
 import styles from 'core/styles'
 import { FormIKStruct, Obj } from 'flawk-types'
 import { FieldInputProps, FormikProps } from 'formik'

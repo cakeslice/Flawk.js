@@ -12,7 +12,7 @@ const _fontAlt = 'PT Sans'
 const _background = 'rgba(246,248,251,1)'
 const _backgroundNight = 'rgba(35, 35, 35,1)'
 
-const _main = '#336cfb'
+const _main = 'rgba(51,108,251, 1)'
 const _mainLight = 'rgba(51,108,251, .85)'
 const _mainVeryLight = 'rgba(51,108,251, .25)'
 

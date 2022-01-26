@@ -7,7 +7,7 @@
 
 import { GlamorProps } from 'flawk-types'
 import React from 'react'
-import config from './config_'
+import config from './config'
 
 const _font = 'Roboto'
 const _fontAlt = 'PT Sans'
@@ -21,9 +21,9 @@ const _lineColorNight = 'rgba(255, 255, 255, 0.05)'
 const _black = 'rgba(30, 30, 30, 1)'
 const _white = 'rgba(255,255,255, 1)'
 
-const _main = 'rgba(0,117,255, 1)'
-const _mainLight = 'rgba(0,117,255, .85)'
-const _mainVeryLight = 'rgba(66, 117, 255, .25)'
+const _main = 'rgba(51,108,251, 1)'
+const _mainLight = 'rgba(51,108,251, .85)'
+const _mainVeryLight = 'rgba(51,108,251, .25)'
 
 const _green = 'rgba(40,201,134, 1)'
 const _red = 'rgba(250,61,91,1)'

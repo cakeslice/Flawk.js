@@ -7,7 +7,7 @@
 
 const recaptchaBypass = 'recaptchaToken=' + (process.env.recaptchaBypass || '')
 
-import config from 'core/config_'
+import config from 'core/config'
 import request from 'supertest'
 import { app } from '../core/app'
 import { setupDatabase } from './setupDatabase'

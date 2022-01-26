@@ -8,7 +8,7 @@
 import { clearAllBodyScrollLocks, disableBodyScroll, enableBodyScroll } from 'body-scroll-lock'
 import Animated from 'core/components/Animated'
 import { DashboardRoute } from 'core/components/Dashboard'
-import config from 'core/config_'
+import config from 'core/config'
 import styles from 'core/styles'
 import { GlamorProps, Obj } from 'flawk-types'
 import { css } from 'glamor'
