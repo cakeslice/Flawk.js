@@ -324,7 +324,7 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 							{inRestrictedRoute && oldBuild && (
 								<div style={{ maxHeight: 0 }}>
 									<Animated
-										alwaysVisible
+										animateOffscreen
 										effects={['up']}
 										distance={50}
 										duration={0.5}
@@ -381,7 +381,7 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 								socketConnectionDelay && (
 									<div style={{ maxHeight: 0 }}>
 										<Animated
-											alwaysVisible
+											animateOffscreen
 											effects={['up']}
 											distance={50}
 											duration={0.5}
@@ -413,7 +413,7 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 							{config.showCookieNotice && cookieNotice === 'false' && (
 								<div style={{ maxHeight: 0 }}>
 									<Animated
-										alwaysVisible
+										animateOffscreen
 										effects={['up']}
 										distance={50}
 										duration={0.5}

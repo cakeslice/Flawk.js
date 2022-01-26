@@ -43,7 +43,8 @@ type Props = {
 	repeat?: number
 	children?: React.ReactNode
 	controlled?: boolean
-	alwaysVisible?: boolean
+	animateOffscreen?: boolean
+	keepMounted?: boolean
 }
 export default class Animated extends Component<Props> {
 	state = {
@@ -156,7 +157,7 @@ export default class Animated extends Component<Props> {
 
 		const hasDynamicSize = heightManipulation || widthManipulation
 
-		if (props.alwaysVisible || props.controlled !== undefined) {
+		if (props.animateOffscreen || props.controlled !== undefined) {
 			// ! If animation is being controlled, it should always trigger even if not in view
 			const animate =
 				props.controlled !== undefined
@@ -197,13 +198,13 @@ export default class Animated extends Component<Props> {
 						},
 					}}
 				>
-					{this.state.mounted ? props.children : null}
+					{this.props.keepMounted || this.state.mounted ? props.children : null}
 				</motion.div>
 			)
 		}
 
 		return (
-			<InView key={props.triggerID || key}>
+			<InView key={key}>
 				{({ inView, ref, entry }) => {
 					// eslint-disable-next-line
 					if (inView && !this.state.visible) this.state.visible = true
@@ -219,6 +220,7 @@ export default class Animated extends Component<Props> {
 
 					return (
 						<motion.div
+							key={props.triggerID}
 							onAnimationComplete={(variant) => {
 								if (variant === 'hidden') this.setMounted(false)
 							}}
@@ -249,7 +251,9 @@ export default class Animated extends Component<Props> {
 								},
 							}}
 						>
-							{this.state.mounted || (this.props.controlled === undefined && inView)
+							{this.props.keepMounted ||
+							this.state.mounted ||
+							(this.props.controlled === undefined && inView)
 								? props.children
 								: null}
 						</motion.div>

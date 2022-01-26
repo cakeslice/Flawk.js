@@ -675,7 +675,7 @@ class Row extends Component<RowProps> {
 				)}
 				{this.props.expandContent && (
 					<Animated
-						alwaysVisible
+						animateOffscreen
 						duration={0.25}
 						effects={['fade', 'height']}
 						controlled={this.state.isOpen}

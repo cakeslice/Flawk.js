@@ -20,7 +20,8 @@ import { Section } from './ComponentsViewer'
 
 export default class Style extends Component {
 	state = {
-		animationTrigger: undefined,
+		animationTrigger: true,
+		animationUUID: undefined,
 	}
 
 	render() {
@@ -33,405 +34,482 @@ export default class Style extends Component {
 
 		return (
 			<MediaQuery minWidth={config.mobileWidthTrigger}>
-				{(desktop) => (
-					<div>
-						<Section title='Typography' top>
-							<div style={{ ...styles.card }}>
-								<h1>
-									{'Hello. '}
-									<tag>h1</tag>
-								</h1>
-								<hr />
-								<sp />
-								<h2>
-									{'This a '}
-									<span
+				{(desktop) => {
+					const animationCard: React.CSSProperties = {
+						...styles.card,
+						display: 'flex',
+						flexDirection: 'column',
+						alignItems: 'center',
+						textAlign: 'center',
+						width: desktop ? 200 : '100%',
+						height: 100,
+						minHeight: 68,
+					}
+
+					return (
+						<div>
+							<Section title='Typography' top>
+								<div style={{ ...styles.card }}>
+									<h1>
+										{'Hello. '}
+										<tag>h1</tag>
+									</h1>
+									<hr />
+									<sp />
+									<h2>
+										{'This a '}
+										<span
+											style={{
+												textDecoration: 'underline',
+												textDecorationColor: styles.colors.main,
+											}}
+										>
+											title
+										</span>{' '}
+										<tag>h2</tag>
+									</h2>
+									<hr />
+									<sp />
+									<p>
+										Lorem ipsum dolor sit amet, <s>strikethrough</s> adipiscing
+										elit, sed do eiusmod tempor <b>bold</b> ut labore et dolore
+										magna aliqua. Ut enim ad minim veniam, quis nostrud
+										exercitation ullamco laboris nisi ut aliquip ex ea commodo{' '}
+										<Link to='/components/style#button'>anchor link</Link>.
+									</p>
+									<sp />
+									<sp />
+									<sp></sp>
+									<h3>
+										{'Another title '}
+										<span>
+											<tag>h3</tag>
+										</span>
+									</h3>
+									<hr />
+									<sp />
+									<i>
+										Italic ipsum dolor sit amet,{' '}
+										<Tooltip
+											tooltipProps={{ placement: 'top' }}
+											content={<div>Hello World!</div>}
+										>
+											<b style={{ color: styles.colors.main }}>tooltip</b>
+										</Tooltip>{' '}
+										adipiscing elit, sed do{' '}
+										<span style={{ color: styles.colors.red }}>colorized</span>{' '}
+										tempor <hl>highlighted</hl> incididunt ut <u>underline</u>{' '}
+										et dolore magna{' '}
+										<a
+											href='https://github.com/cakeslice'
+											target='_blank'
+											rel='noreferrer'
+										>
+											new tab link
+										</a>
+										.
+									</i>
+									<sp />
+									<p>
+										{
+											'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'
+										}
+									</p>
+									<sp />
+									<p>
+										<b>
+											<bb>{'Bigger. '}</bb>
+										</b>
+										<small>{'Smaller.'}</small>
+									</p>
+									<sp />
+									<sp />
+									<p>
+										<b>Bold</b>
+										{' ipsum dolor sit amet, consectetur adipiscing elit.'}
+									</p>
+									<p>
+										{
+											'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat:'
+										}
+									</p>
+									<ul>
+										<li>
+											Lorem <tag>Tag #1</tag>
+											<tag>Tag #2</tag>
+										</li>
+										<li>Ipsum</li>
+										<li>Dolor</li>
+										<li>Sit</li>
+									</ul>
+									<sp />
+									<p>
+										{
+											'Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?'
+										}
+									</p>
+									<sp />
+									<hr />
+									<sp />
+									<blockquote>
+										Block quote porro quisquam est qui dolorem ipsum quia dolor
+										sit amet, consectetur, adipisci velit...
+									</blockquote>
+									<code>int code = 1</code>
+									<sp />
+									<p>
+										Press <kbd>Enter</kbd> to continue...
+									</p>
+								</div>
+							</Section>
+							<Section title='Button' tags={['<button/>', '<FButton/>']}>
+								<div
+									className='wrapMarginTopLeft flex flex-wrap justify-start'
+									style={{
+										...styles.card,
+										paddingBottom: 10,
+										paddingRight: 10,
+									}}
+								>
+									<FButton isLoading style={{ minWidth: 50 }}></FButton>
+									<FButton
+										isLoading
+										appearance='primary'
+										style={{ minWidth: 50 }}
+									>
+										Loading
+									</FButton>
+									<FButton
+										isLoading
+										appearance='secondary'
+										style={{ minWidth: 50 }}
+									>
+										Loading
+									</FButton>
+									<FButton style={{ minWidth: 50 }}>Default</FButton>
+									<FButton
+										appearance='primary'
 										style={{
-											textDecoration: 'underline',
-											textDecorationColor: styles.colors.main,
+											minWidth: 50,
 										}}
 									>
-										title
-									</span>{' '}
-									<tag>h2</tag>
-								</h2>
-								<hr />
+										Primary
+									</FButton>
+									<FButton
+										appearance='secondary'
+										style={{
+											minWidth: 50,
+										}}
+									>
+										Secondary
+									</FButton>
+									{styles.extraButtons.map((e) => (
+										<FButton
+											key={'button_' + e.buttonType}
+											appearance={e.buttonType}
+										>
+											{config.capitalizeAll(
+												e.buttonType.replaceAll('_', ' ')
+											)}
+										</FButton>
+									))}
+									<FButton
+										isDisabled
+										style={{
+											minWidth: 50,
+										}}
+									>
+										Default Disabled
+									</FButton>
+									<FButton
+										appearance='primary'
+										isDisabled
+										style={{
+											minWidth: 50,
+										}}
+									>
+										Primary Disabled
+									</FButton>
+									<FButton
+										appearance='secondary'
+										isDisabled
+										style={{
+											minWidth: 50,
+										}}
+									>
+										Secondary Disabled
+									</FButton>
+									<FButton
+										appearance='secondary'
+										isDisabled
+										simpleDisabled
+										style={{
+											minWidth: 50,
+										}}
+									>
+										Simple Disabled
+									</FButton>
+									<FButton
+										style={{
+											minWidth: 100,
+											justifyContent: 'space-between',
+										}}
+									>
+										<div>Icon</div>
+										<img
+											style={{ maxHeight: 15, marginLeft: 7.5 }}
+											src={logo}
+										></img>
+									</FButton>
+									<button>Basic</button>
+								</div>
+							</Section>
+							<Section title='Color' tags={['styles.colors']}>
+								<div
+									className='wrapMarginTopLeft flex flex-wrap justify-start'
+									style={{
+										...styles.card,
+										maxWidth: 600,
+									}}
+								>
+									<div
+										style={{
+											...colorStyle,
+											background: styles.colors.black,
+										}}
+									></div>{' '}
+									<div
+										style={{
+											...colorStyle,
+											background: styles.colors.white,
+										}}
+									></div>
+									<div
+										style={{
+											...colorStyle,
+											background: styles.colors.main,
+										}}
+									></div>
+									<div
+										style={{
+											...colorStyle,
+											background: styles.colors.mainLight,
+										}}
+									></div>
+									<div
+										style={{
+											...colorStyle,
+											background: styles.colors.mainVeryLight,
+										}}
+									></div>
+									<div
+										style={{
+											...colorStyle,
+											background: styles.colors.red,
+										}}
+									></div>
+									<div
+										style={{
+											...colorStyle,
+											background: styles.colors.green,
+										}}
+									></div>
+									<div
+										style={{
+											...colorStyle,
+											background: styles.colors.orange,
+										}}
+									></div>
+									<div
+										style={{
+											...colorStyle,
+											background: styles.colors.yellow,
+										}}
+									></div>
+									<div
+										style={{
+											...colorStyle,
+											background: styles.colors.blue,
+										}}
+									></div>
+								</div>
+							</Section>
+							<Section
+								title='Dark mode'
+								tags={['global.nightMode', 'global.toggleNightMode()']}
+							>
+								<FButton
+									onClick={async () => {
+										await global.toggleNightMode()
+									}}
+									style={{
+										minWidth: 50,
+									}}
+								>
+									{global.nightMode ? 'Light' : 'Dark'} mode
+								</FButton>
+							</Section>
+							<Section title='Card' tags={['styles.card', 'styles.outlineCard']}>
+								<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+									<div
+										style={{
+											...styles.card,
+											textAlign: 'center',
+											width: desktop ? 200 : '100%',
+											height: 200,
+										}}
+									>
+										<tag>Basic</tag>
+									</div>
+									<div
+										{...css({
+											...styles.card,
+											/* 	transition: 'opacity .25s',
+													opacity: 0.5, */
+											transition: 'top 250ms, box-shadow 250ms',
+											top: 0,
+											boxShadow: styles.card.boxShadow,
+											position: 'relative',
+											':hover': {
+												boxShadow: styles.strongerShadow,
+												top: -5,
+												//	transform: 'translateY(5px)',
+											},
+											width: desktop ? 200 : '100%',
+											height: 200,
+											textAlign: 'center',
+										})}
+									>
+										<tag>Hover</tag>
+									</div>
+									<div
+										style={{
+											...styles.outlineCard,
+											textAlign: 'center',
+											width: desktop ? 200 : '100%',
+											height: 200,
+										}}
+									>
+										<tag>Outline</tag>
+									</div>
+									<div
+										{...css({
+											...styles.card,
+											background: config.replaceAlpha(
+												styles.colors.black,
+												0.1
+											),
+											color: config.replaceAlpha(styles.colors.black, 0.5),
+											boxShadow: 'none',
+											border: 'none',
+											width: desktop ? 200 : '100%',
+											height: 200,
+											textAlign: 'center',
+										})}
+									>
+										<tag>Muted</tag>
+									</div>
+								</div>
+							</Section>
+
+							<Section title='Animation' tags={['transition', '<Animated/>']}>
+								<FButton
+									onClick={() =>
+										this.setState({
+											animationTrigger: !this.state.animationTrigger,
+											animationUUID: uuid.v1(),
+										})
+									}
+								>
+									Toggle
+								</FButton>
 								<sp />
-								<p>
-									Lorem ipsum dolor sit amet, <s>strikethrough</s> adipiscing
-									elit, sed do eiusmod tempor <b>bold</b> ut labore et dolore
-									magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-									ullamco laboris nisi ut aliquip ex ea commodo{' '}
-									<Link to='/components/style#button'>anchor link</Link>.
-								</p>
 								<sp />
+								<tag>CSS</tag>
 								<sp />
-								<sp></sp>
-								<h3>
-									{'Another title '}
-									<span>
-										<tag>h3</tag>
-									</span>
-								</h3>
-								<hr />
+								<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+									<div
+										style={{
+											...animationCard,
+											height: this.state.animationTrigger ? 100 : 0,
+											transition: 'height 750ms ease-in-out',
+										}}
+									>
+										<tag>transition</tag>
+									</div>
+									<div
+										style={{
+											...animationCard,
+											opacity: 0.25,
+											animation: 'heartbeat 1s infinite alternate',
+										}}
+									>
+										<tag>animation</tag>
+									</div>
+								</div>
 								<sp />
-								<i>
-									Italic ipsum dolor sit amet,{' '}
+								<tag>{'<Animated/>'}</tag>
+								<sp />
+								<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+									<Animated
+										style={animationCard}
+										keepMounted
+										controlled={this.state.animationTrigger}
+										effects={['fade']}
+									>
+										<tag>Fade</tag>
+									</Animated>
+									<Animated
+										style={animationCard}
+										keepMounted
+										controlled={this.state.animationTrigger}
+										effects={['height']}
+									>
+										<tag>Size</tag>
+									</Animated>
+									<Animated
+										style={animationCard}
+										keepMounted
+										controlled={this.state.animationTrigger}
+										effects={['down-scale']}
+									>
+										<tag>Scale</tag>
+									</Animated>
+									<Animated
+										style={animationCard}
+										keepMounted
+										controlled={this.state.animationTrigger}
+										distance={20}
+										effects={['down']}
+									>
+										<tag>Position</tag>
+									</Animated>
+									<Animated
+										style={animationCard}
+										keepMounted
+										controlled={this.state.animationTrigger}
+										effects={['shake']}
+									>
+										<tag>Shake</tag>
+									</Animated>
+								</div>
+							</Section>
+
+							<Section title='Tooltip' tags={['<Tooltip/>']}>
+								<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
 									<Tooltip
-										tooltipProps={{ placement: 'top' }}
+										tooltipProps={{ placement: 'right' }}
 										content={<div>Hello World!</div>}
 									>
-										<b style={{ color: styles.colors.main }}>tooltip</b>
-									</Tooltip>{' '}
-									adipiscing elit, sed do{' '}
-									<span style={{ color: styles.colors.red }}>colorized</span>{' '}
-									tempor <hl>highlighted</hl> incididunt ut <u>underline</u> et
-									dolore magna{' '}
-									<a
-										href='https://github.com/cakeslice'
-										target='_blank'
-										rel='noreferrer'
-									>
-										new tab link
-									</a>
-									.
-								</i>
-								<sp />
-								<p>
-									{
-										'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'
-									}
-								</p>
-								<sp />
-								<p>
-									<b>
-										<bb>{'Bigger. '}</bb>
-									</b>
-									<small>{'Smaller.'}</small>
-								</p>
-								<sp />
-								<sp />
-								<p>
-									<b>Bold</b>
-									{' ipsum dolor sit amet, consectetur adipiscing elit.'}
-								</p>
-								<p>
-									{
-										'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat:'
-									}
-								</p>
-								<ul>
-									<li>
-										Lorem <tag>Tag #1</tag>
-										<tag>Tag #2</tag>
-									</li>
-									<li>Ipsum</li>
-									<li>Dolor</li>
-									<li>Sit</li>
-								</ul>
-								<sp />
-								<p>
-									{
-										'Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?'
-									}
-								</p>
-								<sp />
-								<hr />
-								<sp />
-								<blockquote>
-									Block quote porro quisquam est qui dolorem ipsum quia dolor sit
-									amet, consectetur, adipisci velit...
-								</blockquote>
-								<code>int code = 1</code>
-								<sp />
-								<p>
-									Press <kbd>Enter</kbd> to continue...
-								</p>
-							</div>
-						</Section>
-						<Section title='Button' tags={['<button/>', '<FButton/>']}>
-							<div
-								className='wrapMarginTopLeft flex flex-wrap justify-start'
-								style={{
-									...styles.card,
-									paddingBottom: 10,
-									paddingRight: 10,
-								}}
-							>
-								<FButton isLoading style={{ minWidth: 50 }}></FButton>
-								<FButton isLoading appearance='primary' style={{ minWidth: 50 }}>
-									Loading
-								</FButton>
-								<FButton isLoading appearance='secondary' style={{ minWidth: 50 }}>
-									Loading
-								</FButton>
-								<FButton style={{ minWidth: 50 }}>Default</FButton>
-								<FButton
-									appearance='primary'
-									style={{
-										minWidth: 50,
-									}}
-								>
-									Primary
-								</FButton>
-								<FButton
-									appearance='secondary'
-									style={{
-										minWidth: 50,
-									}}
-								>
-									Secondary
-								</FButton>
-								{styles.extraButtons.map((e) => (
-									<FButton
-										key={'button_' + e.buttonType}
-										appearance={e.buttonType}
-									>
-										{config.capitalizeAll(e.buttonType.replaceAll('_', ' '))}
-									</FButton>
-								))}
-								<FButton
-									isDisabled
-									style={{
-										minWidth: 50,
-									}}
-								>
-									Default Disabled
-								</FButton>
-								<FButton
-									appearance='primary'
-									isDisabled
-									style={{
-										minWidth: 50,
-									}}
-								>
-									Primary Disabled
-								</FButton>
-								<FButton
-									appearance='secondary'
-									isDisabled
-									style={{
-										minWidth: 50,
-									}}
-								>
-									Secondary Disabled
-								</FButton>
-								<FButton
-									appearance='secondary'
-									isDisabled
-									simpleDisabled
-									style={{
-										minWidth: 50,
-									}}
-								>
-									Simple Disabled
-								</FButton>
-								<FButton
-									style={{
-										minWidth: 100,
-										justifyContent: 'space-between',
-									}}
-								>
-									<div>Icon</div>
-									<img
-										style={{ maxHeight: 15, marginLeft: 7.5 }}
-										src={logo}
-									></img>
-								</FButton>
-								<button>Basic</button>
-							</div>
-						</Section>
-						<Section title='Color' tags={['styles.colors']}>
-							<div
-								className='wrapMarginTopLeft flex flex-wrap justify-start'
-								style={{
-									...styles.card,
-									maxWidth: 600,
-								}}
-							>
-								<div
-									style={{
-										...colorStyle,
-										background: styles.colors.black,
-									}}
-								></div>{' '}
-								<div
-									style={{
-										...colorStyle,
-										background: styles.colors.white,
-									}}
-								></div>
-								<div
-									style={{
-										...colorStyle,
-										background: styles.colors.main,
-									}}
-								></div>
-								<div
-									style={{
-										...colorStyle,
-										background: styles.colors.mainLight,
-									}}
-								></div>
-								<div
-									style={{
-										...colorStyle,
-										background: styles.colors.mainVeryLight,
-									}}
-								></div>
-								<div
-									style={{
-										...colorStyle,
-										background: styles.colors.red,
-									}}
-								></div>
-								<div
-									style={{
-										...colorStyle,
-										background: styles.colors.green,
-									}}
-								></div>
-								<div
-									style={{
-										...colorStyle,
-										background: styles.colors.orange,
-									}}
-								></div>
-								<div
-									style={{
-										...colorStyle,
-										background: styles.colors.yellow,
-									}}
-								></div>
-								<div
-									style={{
-										...colorStyle,
-										background: styles.colors.blue,
-									}}
-								></div>
-							</div>
-						</Section>
-						<Section
-							title='Dark mode'
-							tags={['global.nightMode', 'global.toggleNightMode()']}
-						>
-							<FButton
-								onClick={async () => {
-									await global.toggleNightMode()
-								}}
-								style={{
-									minWidth: 50,
-								}}
-							>
-								{global.nightMode ? 'Light' : 'Dark'} mode
-							</FButton>
-						</Section>
-						<Section title='Card' tags={['styles.card', 'styles.outlineCard']}>
-							<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
-								<div
-									style={{
-										...styles.card,
-										textAlign: 'center',
-										width: desktop ? 200 : '100%',
-										height: 200,
-									}}
-								>
-									<tag>Basic</tag>
+										<div style={styles.card}>
+											<b>{desktop ? 'Hover' : 'Click'} me</b>
+										</div>
+									</Tooltip>
 								</div>
-								<Animated
-									style={{
-										...styles.card,
-										display: 'flex',
-										flexDirection: 'column',
-										alignItems: 'center',
-										textAlign: 'center',
-										width: desktop ? 200 : '100%',
-										height: 200,
-									}}
-									distance={20}
-									triggerID={this.state.animationTrigger}
-									effects={['fade', 'height']}
-								>
-									<tag>Animated</tag>
-									<sp></sp>
-									<FButton
-										onClick={() =>
-											this.setState({
-												animationTrigger: uuid.v1(),
-											})
-										}
-									>
-										Trigger
-									</FButton>
-								</Animated>
-								<div
-									{...css({
-										...styles.card,
-										/* 	transition: 'opacity .25s',
-													opacity: 0.5, */
-										transition: 'top 250ms, box-shadow 250ms',
-										top: 0,
-										boxShadow: styles.card.boxShadow,
-										position: 'relative',
-										':hover': {
-											boxShadow: styles.strongerShadow,
-											top: -5,
-											//	transform: 'translateY(5px)',
-										},
-										width: desktop ? 200 : '100%',
-										height: 200,
-										textAlign: 'center',
-									})}
-								>
-									<tag>Hover</tag>
-								</div>
-								<div
-									style={{
-										...styles.outlineCard,
-										textAlign: 'center',
-										width: desktop ? 200 : '100%',
-										height: 200,
-									}}
-								>
-									<tag>Outline</tag>
-								</div>
-								<div
-									{...css({
-										...styles.card,
-										background: config.replaceAlpha(styles.colors.black, 0.1),
-										color: config.replaceAlpha(styles.colors.black, 0.5),
-										boxShadow: 'none',
-										border: 'none',
-										width: desktop ? 200 : '100%',
-										height: 200,
-										textAlign: 'center',
-									})}
-								>
-									<tag>Muted</tag>
-								</div>
-							</div>
-						</Section>
-
-						<Section title='Animation' tags={['<Animated/>']}>
-							<div>
-								<b>TODO</b>
-							</div>
-						</Section>
-
-						<Section title='Tooltip' tags={['<Tooltip/>']}>
-							<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
-								<Tooltip
-									tooltipProps={{ placement: 'right' }}
-									content={<div>Hello World!</div>}
-								>
-									<div style={styles.card}>
-										<b>{desktop ? 'Hover' : 'Click'} me</b>
-									</div>
-								</Tooltip>
-							</div>
-						</Section>
-					</div>
-				)}
+							</Section>
+						</div>
+					)
+				}}
 			</MediaQuery>
 		)
 	}

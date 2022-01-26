@@ -142,7 +142,7 @@ export default class Dashboard extends Component<
 												}
 											>
 												<Animated
-													alwaysVisible
+													animateOffscreen
 													effects={['fade', 'left']}
 													distance={closedWidth}
 													duration={0.75}
@@ -224,7 +224,7 @@ export default class Dashboard extends Component<
 														}}
 													>
 														<Animated
-															alwaysVisible
+															animateOffscreen
 															effects={['down']}
 															distance={mobileHeight}
 															duration={0.75}
@@ -856,7 +856,7 @@ class Menu extends Component<MenuProps> {
 							<div key={entry.id + (entry.params || '')}>
 								{output}
 								<Animated
-									alwaysVisible
+									animateOffscreen
 									duration={0.25}
 									effects={['fade', 'height']}
 									controlled={selectedRoute.includes('/' + entry.id)}

@@ -463,6 +463,11 @@ kbd {
 
 // Animations
 
+@keyframes heartbeat {
+	to {
+		opacity: 1;
+	}
+}
 @keyframes openDown {
 	0% {
 		opacity: 0;

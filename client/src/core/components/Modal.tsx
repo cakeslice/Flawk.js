@@ -233,7 +233,7 @@ export default class Modal extends Component<Props> {
 						bottom: 0,
 						zIndex: 99,
 					}}
-					alwaysVisible
+					animateOffscreen
 					effects={['fade']}
 					duration={0.25}
 				>

@@ -319,7 +319,7 @@ export default function Router(): React.ReactNode {
 									<Route path='/'>
 										<PublicWrapper desktop={desktop}>
 											<Animated
-												alwaysVisible
+												animateOffscreen
 												effects={['fade']}
 												duration={0.5}
 												delay={0.75}

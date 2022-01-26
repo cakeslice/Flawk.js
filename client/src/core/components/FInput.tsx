@@ -93,7 +93,7 @@ const DatePicker = (props: {
 			return (
 				<div
 					style={{
-						animation: 'openDown' + ' 0.2s ease-in-out',
+						animation: 'openDown 0.2s ease-in-out',
 					}}
 					className={
 						'rdtPickerCustom ' + (global.nightMode ? 'rdtPickerNight' : 'rdtPickerDay')

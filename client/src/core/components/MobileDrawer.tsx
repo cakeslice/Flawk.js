@@ -268,7 +268,7 @@ export default class MobileDrawer extends Component<Props> {
 							<div key={link.id + (link.params || '')}>
 								{output}
 								<Animated
-									alwaysVisible
+									animateOffscreen
 									duration={0.25}
 									effects={['fade', 'height']}
 									controlled={selectedRoute.includes('/' + link.id)}
