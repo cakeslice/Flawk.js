@@ -78,68 +78,81 @@ export default class Animated extends Component<Props> {
 
 		let heightManipulation = false
 		let widthManipulation = false
+		let inAndOut = false
+		let skipFirstTrigger = false
 
 		let key = this.state.uuid
 		props.effects.forEach((effect) => {
 			key += effect
-			const shake = [0, -1, 2, -4, 4, 0]
 
 			switch (effect) {
 				case 'fade':
+					inAndOut = true
 					finalIn.opacity = 1
 					finalOut.opacity = 0
 					break
 				case 'up':
+					inAndOut = true
 					finalIn.y = 0
 					finalOut.y = props.distance || 50
 					break
 				case 'down':
+					inAndOut = true
 					finalIn.y = 0
 					finalOut.y = -(props.distance || 50)
 					break
 				case 'left':
+					inAndOut = true
 					finalIn.x = 0
 					finalOut.x = -(props.distance || 50)
 					break
 				case 'right':
+					inAndOut = true
 					finalIn.y = 0
 					finalOut.y = props.distance || 50
 					break
 				case 'up-scale':
+					inAndOut = true
 					finalIn.originY = 1
 					finalOut.originY = 1
 					finalIn.scaleY = 1
 					finalOut.scaleY = 0
 					break
 				case 'down-scale':
+					inAndOut = true
 					finalIn.originY = 0
 					finalOut.originY = 0
 					finalIn.scaleY = 1
 					finalOut.scaleY = 0
 					break
 				case 'left-scale':
+					inAndOut = true
 					finalIn.originX = 1
 					finalOut.originX = 1
 					finalIn.scaleX = 1
 					finalOut.scaleX = 0
 					break
 				case 'right-scale':
+					inAndOut = true
 					finalIn.originX = 0
 					finalOut.originX = 0
 					finalIn.scaleX = 1
 					finalOut.scaleX = 0
 					break
 				case 'height':
+					inAndOut = true
 					heightManipulation = true
 					finalIn.height = (props.style && props.style.height) || 'auto'
 					finalOut.height = 0
 					break
 				case 'width':
+					inAndOut = true
 					widthManipulation = true
 					finalIn.width = (props.style && props.style.width) || 'auto'
 					finalOut.width = 0
 					break
 				case 'height-width':
+					inAndOut = true
 					heightManipulation = true
 					widthManipulation = true
 					finalIn.height = (props.style && props.style.height) || 'auto'
@@ -148,8 +161,9 @@ export default class Animated extends Component<Props> {
 					finalOut.height = 0
 					break
 				case 'shake':
-					finalIn.x = 0
-					finalOut.x = shake
+					skipFirstTrigger = true
+					finalIn.x = [0, -1, 2, -4, 4, 0]
+					finalOut.x = 0
 					transition.duration = props.duration || 0.5
 					break
 			}
@@ -157,13 +171,15 @@ export default class Animated extends Component<Props> {
 
 		const hasDynamicSize = heightManipulation || widthManipulation
 
-		if (props.animateOffscreen || props.controlled !== undefined) {
+		if (!inAndOut || props.animateOffscreen || props.controlled !== undefined) {
 			// ! If animation is being controlled, it should always trigger even if not in view
 			const animate =
 				props.controlled !== undefined
 					? props.controlled && this.state.mounted
 						? 'show'
 						: 'hidden'
+					: skipFirstTrigger && !props.triggerID
+					? 'hidden'
 					: 'show'
 
 			return (
@@ -198,13 +214,15 @@ export default class Animated extends Component<Props> {
 						},
 					}}
 				>
-					{this.props.keepMounted || this.state.mounted ? props.children : null}
+					{skipFirstTrigger || this.props.keepMounted || this.state.mounted
+						? props.children
+						: null}
 				</motion.div>
 			)
 		}
 
 		return (
-			<InView key={key}>
+			<InView key={props.triggerID || key}>
 				{({ inView, ref, entry }) => {
 					// eslint-disable-next-line
 					if (inView && !this.state.visible) this.state.visible = true
@@ -215,12 +233,13 @@ export default class Animated extends Component<Props> {
 								? 'show'
 								: 'hidden'
 							: this.state.visible
-							? 'show'
+							? skipFirstTrigger && !props.triggerID
+								? 'hidden'
+								: 'show'
 							: 'hidden'
 
 					return (
 						<motion.div
-							key={props.triggerID}
 							onAnimationComplete={(variant) => {
 								if (variant === 'hidden') this.setMounted(false)
 							}}
@@ -251,7 +270,8 @@ export default class Animated extends Component<Props> {
 								},
 							}}
 						>
-							{this.props.keepMounted ||
+							{skipFirstTrigger ||
+							this.props.keepMounted ||
 							this.state.mounted ||
 							(this.props.controlled === undefined && inView)
 								? props.children

@@ -11,6 +11,7 @@ import FButton from 'core/components/FButton'
 import Tooltip from 'core/components/Tooltip'
 import config from 'core/config_'
 import styles from 'core/styles'
+import { motion } from 'framer-motion'
 import { css } from 'glamor'
 import React, { Component } from 'react'
 import MediaQuery from 'react-responsive'
@@ -461,6 +462,13 @@ export default class Style extends Component {
 									</Animated>
 									<Animated
 										style={animationCard}
+										triggerID={this.state.animationUUID}
+										effects={['fade']}
+									>
+										<tag>Fade Trigger</tag>
+									</Animated>
+									<Animated
+										style={animationCard}
 										keepMounted
 										controlled={this.state.animationTrigger}
 										effects={['height']}
@@ -486,12 +494,34 @@ export default class Style extends Component {
 									</Animated>
 									<Animated
 										style={animationCard}
-										animateOffscreen
 										triggerID={this.state.animationUUID}
 										effects={['shake']}
 									>
 										<tag>Shake</tag>
 									</Animated>
+
+									<div style={{ ...animationCard, alignItems: undefined }}>
+										<div>
+											<tag>Layout</tag>
+										</div>
+										<sp />
+										<Animated
+											className='flex items-center justify-around'
+											effects={[]}
+										>
+											<motion.div layout>
+												<kbd>Esc</kbd>
+											</motion.div>
+											{this.state.animationTrigger && (
+												<motion.div layout>
+													<kbd>Enter</kbd>
+												</motion.div>
+											)}
+											<motion.div layout>
+												<kbd>Alt</kbd>
+											</motion.div>
+										</Animated>
+									</div>
 								</div>
 							</Section>
 
