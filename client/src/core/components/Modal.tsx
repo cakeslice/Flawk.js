@@ -10,8 +10,8 @@ import Animated from 'core/components/Animated'
 import config from 'core/config_'
 import styles from 'core/styles'
 import { Obj } from 'flawk-types'
-import FocusTrap from 'focus-trap-react'
 import React, { Component } from 'react'
+import FocusLock from 'react-focus-lock'
 import { Portal } from 'react-portal'
 
 type Props = {
@@ -237,7 +237,7 @@ export default class Modal extends Component<Props> {
 					effects={['fade']}
 					duration={0.25}
 				>
-					<FocusTrap>
+					<FocusLock>
 						<div
 							style={{
 								//backdropFilter: 'blur(2px)', // ! Bad for performance
@@ -300,7 +300,7 @@ export default class Modal extends Component<Props> {
 								</div>
 							</div>
 						</div>
-					</FocusTrap>
+					</FocusLock>
 				</Animated>
 			</Portal>
 		)
