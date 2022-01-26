@@ -47,7 +47,7 @@ export default class Inputs extends Component {
 							tags={['<input>', '<FInput/>', '<FButton checkbox/>']}
 							top
 						>
-							<div style={{ /* ...styles.card,  */ maxWidth: 783 }}>
+							<div style={{ ...styles.card, maxWidth: 783 }}>
 								<div className='wrapMarginTopLeft flex flex-wrap justify-start items-end'>
 									<FInput
 										type='email'
@@ -114,11 +114,13 @@ export default class Inputs extends Component {
 								</div>
 								<sp />
 								<sp />
-								<FInput
-									style={{ width: '100%' }}
-									label={'Text Area'}
-									textArea
-								></FInput>
+								<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+									<FInput
+										style={{ width: '100%' }}
+										label={'Text Area'}
+										textArea
+									></FInput>
+								</div>
 								<sp />
 								<sp />
 								<div className='wrapMarginTopLeft flex flex-wrap justify-start'>

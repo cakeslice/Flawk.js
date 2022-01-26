@@ -220,7 +220,8 @@ pre {
 
 //
 
-input {
+input,
+textarea {
 	font-size: 14px;
 	font-family: var(--font);
 	background-color: transparent;
@@ -567,6 +568,7 @@ kbd {
 
 .rdt {
 	position: relative;
+	width: 100%;
 }
 .rdtPicker {
 	user-select: none;

@@ -19,10 +19,25 @@ import { Link } from 'react-router-dom'
 import * as uuid from 'uuid'
 import { Section } from './ComponentsViewer'
 
-export default class Style extends Component {
+// eslint-disable-next-line
+type Props = {}
+export default class Style extends Component<Props> {
+	constructor(props: Props) {
+		super(props)
+
+		this.toggleAnimation = this.toggleAnimation.bind(this)
+	}
+
 	state = {
 		animationTrigger: true,
 		animationUUID: undefined,
+	}
+
+	toggleAnimation() {
+		this.setState({
+			animationTrigger: !this.state.animationTrigger,
+			animationUUID: uuid.v1(),
+		})
 	}
 
 	render() {
@@ -45,6 +60,7 @@ export default class Style extends Component {
 						width: desktop ? 200 : '100%',
 						height: 100,
 						minHeight: 68,
+						cursor: 'pointer',
 					}
 
 					return (
@@ -170,6 +186,7 @@ export default class Style extends Component {
 										...styles.card,
 										paddingBottom: 10,
 										paddingRight: 10,
+										maxWidth: 950,
 									}}
 								>
 									<FButton isLoading style={{ minWidth: 50 }}></FButton>
@@ -266,73 +283,109 @@ export default class Style extends Component {
 								</div>
 							</Section>
 							<Section title='Color' tags={['styles.colors']}>
-								<div
-									className='wrapMarginTopLeft flex flex-wrap justify-start'
-									style={{
-										...styles.card,
-										maxWidth: 600,
-									}}
-								>
-									<div
-										style={{
-											...colorStyle,
-											background: styles.colors.black,
-										}}
-									></div>{' '}
-									<div
-										style={{
-											...colorStyle,
-											background: styles.colors.white,
-										}}
-									></div>
-									<div
-										style={{
-											...colorStyle,
-											background: styles.colors.main,
-										}}
-									></div>
-									<div
-										style={{
-											...colorStyle,
-											background: styles.colors.mainLight,
-										}}
-									></div>
-									<div
-										style={{
-											...colorStyle,
-											background: styles.colors.mainVeryLight,
-										}}
-									></div>
-									<div
-										style={{
-											...colorStyle,
-											background: styles.colors.red,
-										}}
-									></div>
-									<div
-										style={{
-											...colorStyle,
-											background: styles.colors.green,
-										}}
-									></div>
-									<div
-										style={{
-											...colorStyle,
-											background: styles.colors.orange,
-										}}
-									></div>
-									<div
-										style={{
-											...colorStyle,
-											background: styles.colors.yellow,
-										}}
-									></div>
-									<div
-										style={{
-											...colorStyle,
-											background: styles.colors.blue,
-										}}
-									></div>
+								<div className='wrapMarginBigTopLeft flex flex-wrap justify-start'>
+									<div>
+										<tag>Main</tag>
+										<sp />
+										<div
+											className='wrapMarginTopLeft flex flex-wrap justify-start'
+											style={{
+												...styles.card,
+												maxWidth: 600,
+											}}
+										>
+											<div
+												style={{
+													...colorStyle,
+													background: styles.colors.main,
+												}}
+											></div>
+											<div
+												style={{
+													...colorStyle,
+													background: styles.colors.mainLight,
+												}}
+											></div>
+											<div
+												style={{
+													...colorStyle,
+													background: styles.colors.mainVeryLight,
+												}}
+											></div>
+											<div
+												style={{
+													...colorStyle,
+													background: styles.colors.background,
+												}}
+											></div>
+										</div>
+									</div>{' '}
+									<div>
+										<tag>Basic</tag>
+										<sp />
+										<div
+											className='wrapMarginTopLeft flex flex-wrap justify-start'
+											style={{
+												...styles.card,
+												maxWidth: 600,
+											}}
+										>
+											<div
+												style={{
+													...colorStyle,
+													background: styles.colors.black,
+												}}
+											></div>
+											<div
+												style={{
+													...colorStyle,
+													background: styles.colors.white,
+												}}
+											></div>
+											<div
+												style={{
+													...colorStyle,
+													background: styles.colors.blue,
+												}}
+											></div>
+											<div
+												style={{
+													...colorStyle,
+													background: styles.colors.purple,
+												}}
+											></div>
+											<div
+												style={{
+													...colorStyle,
+													background: styles.colors.pink,
+												}}
+											></div>
+											<div
+												style={{
+													...colorStyle,
+													background: styles.colors.red,
+												}}
+											></div>
+											<div
+												style={{
+													...colorStyle,
+													background: styles.colors.orange,
+												}}
+											></div>
+											<div
+												style={{
+													...colorStyle,
+													background: styles.colors.yellow,
+												}}
+											></div>
+											<div
+												style={{
+													...colorStyle,
+													background: styles.colors.green,
+												}}
+											></div>
+										</div>
+									</div>
 								</div>
 							</Section>
 							<Section
@@ -413,23 +466,32 @@ export default class Style extends Component {
 								</div>
 							</Section>
 
-							<Section title='Animation' tags={['transition', '<Animated/>']}>
-								<FButton
-									onClick={() =>
-										this.setState({
-											animationTrigger: !this.state.animationTrigger,
-											animationUUID: uuid.v1(),
-										})
-									}
-								>
-									Toggle
-								</FButton>
-								<sp />
+							<Section title='Tooltip' tags={['<Tooltip/>']}>
+								<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+									<Tooltip
+										tooltipProps={{ placement: 'right' }}
+										content={<div>Hello World!</div>}
+									>
+										<div style={styles.card}>
+											<b>{desktop ? 'Hover' : 'Click'} me</b>
+										</div>
+									</Tooltip>
+								</div>
+							</Section>
+
+							<Section
+								title='Animation'
+								tags={['transition', '<Animated/>', '<motion.div/>']}
+							>
+								<div style={{ opacity: 0.5, textAlign: 'center' }}>
+									Click any card to toggle
+								</div>
 								<sp />
 								<tag>CSS</tag>
 								<sp />
 								<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
 									<div
+										onClick={this.toggleAnimation}
 										style={{
 											...animationCard,
 											height: this.state.animationTrigger ? 100 : 0,
@@ -439,6 +501,7 @@ export default class Style extends Component {
 										<tag>transition</tag>
 									</div>
 									<div
+										onClick={this.toggleAnimation}
 										style={{
 											...animationCard,
 											opacity: 0.25,
@@ -453,39 +516,40 @@ export default class Style extends Component {
 								<sp />
 								<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
 									<Animated
+										onClick={this.toggleAnimation}
 										style={animationCard}
-										keepMounted
 										controlled={this.state.animationTrigger}
 										effects={['fade']}
 									>
 										<tag>Fade</tag>
 									</Animated>
-									<Animated
+									{/* <Animated
+										onClick={this.toggleAnimation}
 										style={animationCard}
 										triggerID={this.state.animationUUID}
 										effects={['fade']}
 									>
 										<tag>Fade Trigger</tag>
-									</Animated>
+									</Animated> */}
 									<Animated
+										onClick={this.toggleAnimation}
 										style={animationCard}
-										keepMounted
 										controlled={this.state.animationTrigger}
 										effects={['height']}
 									>
 										<tag>Size</tag>
 									</Animated>
 									<Animated
+										onClick={this.toggleAnimation}
 										style={animationCard}
-										keepMounted
 										controlled={this.state.animationTrigger}
 										effects={['down-scale']}
 									>
 										<tag>Scale</tag>
 									</Animated>
 									<Animated
+										onClick={this.toggleAnimation}
 										style={animationCard}
-										keepMounted
 										controlled={this.state.animationTrigger}
 										distance={20}
 										effects={['down']}
@@ -493,6 +557,7 @@ export default class Style extends Component {
 										<tag>Position</tag>
 									</Animated>
 									<Animated
+										onClick={this.toggleAnimation}
 										style={animationCard}
 										triggerID={this.state.animationUUID}
 										effects={['shake']}
@@ -500,15 +565,15 @@ export default class Style extends Component {
 										<tag>Shake</tag>
 									</Animated>
 
-									<div style={{ ...animationCard, alignItems: undefined }}>
+									<div
+										onClick={this.toggleAnimation}
+										style={{ ...animationCard, alignItems: undefined }}
+									>
 										<div>
 											<tag>Layout</tag>
 										</div>
 										<sp />
-										<Animated
-											className='flex items-center justify-around'
-											effects={[]}
-										>
+										<div className='flex items-center justify-around'>
 											<motion.div layout>
 												<kbd>Esc</kbd>
 											</motion.div>
@@ -520,21 +585,24 @@ export default class Style extends Component {
 											<motion.div layout>
 												<kbd>Alt</kbd>
 											</motion.div>
-										</Animated>
-									</div>
-								</div>
-							</Section>
-
-							<Section title='Tooltip' tags={['<Tooltip/>']}>
-								<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
-									<Tooltip
-										tooltipProps={{ placement: 'right' }}
-										content={<div>Hello World!</div>}
-									>
-										<div style={styles.card}>
-											<b>{desktop ? 'Hover' : 'Click'} me</b>
 										</div>
-									</Tooltip>
+									</div>
+
+									<Animated
+										onClick={this.toggleAnimation}
+										style={animationCard}
+										effects={['fade']}
+									>
+										<tag>When visible</tag>
+									</Animated>
+									<Animated
+										onClick={this.toggleAnimation}
+										style={animationCard}
+										animateOffscreen
+										effects={['fade']}
+									>
+										<tag>Offscreen</tag>
+									</Animated>
 								</div>
 							</Section>
 						</div>

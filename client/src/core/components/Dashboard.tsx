@@ -204,7 +204,12 @@ export default class Dashboard extends Component<
 															: 0,
 													}}
 												>
-													<div
+													<Animated
+														animateOffscreen
+														effects={['fade', 'down']}
+														distance={mobileHeight}
+														duration={0.75}
+														//
 														className='blur-background w-full flex-col items-center'
 														style={{
 															transition:
@@ -223,12 +228,7 @@ export default class Dashboard extends Component<
 															zIndex: 30,
 														}}
 													>
-														<Animated
-															animateOffscreen
-															effects={['down']}
-															distance={mobileHeight}
-															duration={0.75}
-															//
+														<div
 															className='flex justify-between w-full'
 															style={{
 																maxWidth: maxWidth,
@@ -318,8 +318,8 @@ export default class Dashboard extends Component<
 																}
 																pageProps={this.props.pageProps}
 															></MobileDrawer>
-														</Animated>
-													</div>
+														</div>
+													</Animated>
 												</div>
 											</div>
 										)}

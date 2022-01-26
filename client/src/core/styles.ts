@@ -28,6 +28,7 @@ const _mainVeryLight = 'rgba(66, 117, 255, .25)'
 const _green = 'rgba(40,201,134, 1)'
 const _red = 'rgba(250,61,91,1)'
 const _pink = 'rgba(189, 31, 130, 1)'
+const _purple = 'rgba(159, 90, 253, 1)'
 const _orange = 'rgba(255,152,0,1)'
 const _yellow = 'rgba(255,235,59,1)'
 const _blue = 'rgba(66, 124, 255,1)'
@@ -270,6 +271,9 @@ export default {
 		red: _red,
 		// @ts-ignore
 		pink: _pink,
+		// @ts-ignore
+		purple: _purple,
+		// @ts-ignore
 		orange: _orange,
 		// @ts-ignore
 		yellow: _yellow,

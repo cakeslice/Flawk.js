@@ -34,6 +34,7 @@ export default class Tooltip extends React.Component<Props> {
 					<TooltipTrigger
 						placement='top'
 						delayHide={200}
+						delayShow={50}
 						modifiers={[
 							{
 								name: 'offset',

@@ -33,18 +33,22 @@ export type Effect =
 type AnimateProps = AnimationControls | TargetAndTransition | VariantLabels | undefined
 
 type Props = {
-	triggerID?: string | number
 	style?: React.CSSProperties
 	className?: string
-	distance?: number
+	children?: React.ReactNode
+	//
 	effects: Effect[]
+	distance?: number
 	duration?: number
 	delay?: number
 	repeat?: number
-	children?: React.ReactNode
+	//
 	controlled?: boolean
 	animateOffscreen?: boolean
-	keepMounted?: boolean
+	triggerID?: string | number
+	//
+	onClick?: React.MouseEventHandler<HTMLElement>
+	onBlur?: React.FocusEventHandler<HTMLElement>
 }
 export default class Animated extends Component<Props> {
 	state = {
@@ -80,6 +84,7 @@ export default class Animated extends Component<Props> {
 		let widthManipulation = false
 		let inAndOut = false
 		let skipFirstTrigger = false
+		let keepMounted = true
 
 		let key = this.state.uuid
 		props.effects.forEach((effect) => {
@@ -87,6 +92,7 @@ export default class Animated extends Component<Props> {
 
 			switch (effect) {
 				case 'fade':
+					keepMounted = false
 					inAndOut = true
 					finalIn.opacity = 1
 					finalOut.opacity = 0
@@ -112,6 +118,7 @@ export default class Animated extends Component<Props> {
 					finalOut.y = props.distance || 50
 					break
 				case 'up-scale':
+					keepMounted = false
 					inAndOut = true
 					finalIn.originY = 1
 					finalOut.originY = 1
@@ -119,6 +126,7 @@ export default class Animated extends Component<Props> {
 					finalOut.scaleY = 0
 					break
 				case 'down-scale':
+					keepMounted = false
 					inAndOut = true
 					finalIn.originY = 0
 					finalOut.originY = 0
@@ -126,6 +134,7 @@ export default class Animated extends Component<Props> {
 					finalOut.scaleY = 0
 					break
 				case 'left-scale':
+					keepMounted = false
 					inAndOut = true
 					finalIn.originX = 1
 					finalOut.originX = 1
@@ -133,6 +142,7 @@ export default class Animated extends Component<Props> {
 					finalOut.scaleX = 0
 					break
 				case 'right-scale':
+					keepMounted = false
 					inAndOut = true
 					finalIn.originX = 0
 					finalOut.originX = 0
@@ -182,8 +192,12 @@ export default class Animated extends Component<Props> {
 					? 'hidden'
 					: 'show'
 
+			const mounted = skipFirstTrigger || keepMounted || this.state.mounted
+
 			return (
 				<motion.div
+					onClick={props.onClick}
+					onBlur={props.onBlur}
 					onAnimationComplete={(variant) => {
 						if (variant === 'hidden') this.setMounted(false)
 					}}
@@ -194,8 +208,8 @@ export default class Animated extends Component<Props> {
 						height: heightManipulation ? 'auto' : undefined,
 						width: widthManipulation ? 'auto' : undefined,
 						...props.style,
-						pointerEvents: animate === 'hidden' ? 'none' : undefined,
-						userSelect: animate === 'hidden' ? 'none' : undefined,
+						pointerEvents: !mounted && animate === 'hidden' ? 'none' : undefined,
+						userSelect: !mounted && animate === 'hidden' ? 'none' : undefined,
 					}}
 					//
 					initial={
@@ -214,9 +228,7 @@ export default class Animated extends Component<Props> {
 						},
 					}}
 				>
-					{skipFirstTrigger || this.props.keepMounted || this.state.mounted
-						? props.children
-						: null}
+					{mounted ? props.children : null}
 				</motion.div>
 			)
 		}
@@ -238,8 +250,16 @@ export default class Animated extends Component<Props> {
 								: 'show'
 							: 'hidden'
 
+					const mounted =
+						skipFirstTrigger ||
+						keepMounted ||
+						this.state.mounted ||
+						(this.props.controlled === undefined && inView)
+
 					return (
 						<motion.div
+							onClick={props.onClick}
+							onBlur={props.onBlur}
 							onAnimationComplete={(variant) => {
 								if (variant === 'hidden') this.setMounted(false)
 							}}
@@ -250,8 +270,9 @@ export default class Animated extends Component<Props> {
 								height: heightManipulation ? 'auto' : undefined,
 								width: widthManipulation ? 'auto' : undefined,
 								...props.style,
-								pointerEvents: animate === 'hidden' ? 'none' : undefined,
-								userSelect: animate === 'hidden' ? 'none' : undefined,
+								pointerEvents:
+									!mounted && animate === 'hidden' ? 'none' : undefined,
+								userSelect: !mounted && animate === 'hidden' ? 'none' : undefined,
 							}}
 							//
 							initial={
@@ -270,12 +291,7 @@ export default class Animated extends Component<Props> {
 								},
 							}}
 						>
-							{skipFirstTrigger ||
-							this.props.keepMounted ||
-							this.state.mounted ||
-							(this.props.controlled === undefined && inView)
-								? props.children
-								: null}
+							{mounted ? props.children : null}
 						</motion.div>
 					)
 				}}
