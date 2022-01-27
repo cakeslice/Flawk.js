@@ -32,12 +32,7 @@ type SpecialRow = {
 type Column = {
 	name?: React.ReactNode
 	selector: string
-	cell?: (
-		value: Value,
-		data: Obj,
-		isVisible: boolean,
-		triggerUpdate: () => void
-	) => React.ReactNode
+	cell?: (value: Value, data: Obj, isVisible: boolean) => React.ReactNode
 	rowStyle?: React.CSSProperties
 	style?: React.CSSProperties
 	grow?: number
@@ -57,7 +52,7 @@ type TableStyles = {
 type TableProps = {
 	data?: (Obj & { specialRow?: string })[]
 	isLoading?: boolean
-	updateID?: string
+	triggerUpdateID?: string
 	children?: React.ReactNode
 	style?: TableStyles
 	height?: number | string
@@ -94,32 +89,28 @@ export default class FTable extends QueryParams<
 		this.scrollYRef = instance
 	}
 
-	updateID: string | undefined = undefined
+	triggerUpdateID: string | undefined = undefined
 	dataID: string | undefined = undefined
 	shouldComponentUpdate(nextProps: TableProps) {
 		const dataChanged = !isEqual(this.props.data, nextProps.data)
 		const isLoadingChanged = this.props.isLoading !== nextProps.isLoading
-		const updateIDChanged = this.props.updateID !== nextProps.updateID
+		const triggerUpdateIDChanged = this.props.triggerUpdateID !== nextProps.triggerUpdateID
 
 		if (
 			(dataChanged ||
 				isLoadingChanged ||
-				updateIDChanged ||
-				nextProps.updateID === undefined) &&
+				triggerUpdateIDChanged ||
+				nextProps.triggerUpdateID === undefined) &&
 			!nextProps.isLoading
 		) {
-			this.updateID = uuid.v1()
+			this.triggerUpdateID = uuid.v1()
 			if (dataChanged) {
-				this.dataID = this.updateID
+				this.dataID = this.triggerUpdateID
 				if (this.scrollYRef) this.scrollYRef.scrollTop = 0
 			}
 		}
 
 		return true
-	}
-
-	triggerUpdate() {
-		this.updateID = uuid.v1()
 	}
 
 	componentDidMount() {
@@ -449,7 +440,9 @@ export default class FTable extends QueryParams<
 														return (
 															<Row
 																dataID={this.dataID || ''}
-																updateID={this.updateID || ''}
+																triggerUpdateID={
+																	this.triggerUpdateID || ''
+																}
 																isVisible={isVisible}
 																style={style}
 																rowStyle={rS}
@@ -533,10 +526,7 @@ export default class FTable extends QueryParams<
 																										c.selector
 																									) as Value,
 																									d,
-																									isVisible,
-																									this.triggerUpdate.bind(
-																										this
-																									)
+																									isVisible
 																								)
 																							) : (
 																								<div
@@ -604,7 +594,7 @@ export default class FTable extends QueryParams<
 
 const expandButtonWidth = 10 + 12.5
 type RowProps = {
-	updateID: string
+	triggerUpdateID: string
 	dataID: string
 	isVisible: boolean
 	expandContent?: React.ReactNode
@@ -626,7 +616,7 @@ class Row extends Component<RowProps> {
 		if (this.props.dataID !== nextProps.dataID) this.state.isOpen = false
 
 		return (
-			this.props.updateID !== nextProps.updateID ||
+			this.props.triggerUpdateID !== nextProps.triggerUpdateID ||
 			this.props.isVisible !== nextProps.isVisible ||
 			this.state.isOpen !== nextState.isOpen
 		)
