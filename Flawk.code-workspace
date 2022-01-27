@@ -1,22 +1,22 @@
 {
-	"folders": [
-		{
-			"name": "Backend",
-			"path": "server"
-		},
-		{
-			"name": "Frontend",
-			"path": "client"
-		}
-	],
-	"settings": {
-		"workbench.colorCustomizations": {
-			"activityBar.background": "#203222",
-			"titleBar.activeBackground": "#2D462F",
-			"titleBar.activeForeground": "#FAFCFA"
-		},
-		"workbench.editorAssociations": {
-			"*.md": "vscode.markdown.preview.editor"
-		}
-	}
+  "folders": [
+    {
+      "name": "Backend",
+      "path": "server"
+    },
+    {
+      "name": "Frontend",
+      "path": "client"
+    }
+  ],
+  "settings": {
+    "workbench.colorCustomizations": {
+      "activityBar.background": "#0A2F50",
+      "titleBar.activeBackground": "#0E426F",
+      "titleBar.activeForeground": "#F9FCFE"
+    },
+    "workbench.editorAssociations": {
+      "*.md": "vscode.markdown.preview.editor"
+    }
+  }
 }

@@ -248,18 +248,20 @@ export default class Inputs extends Component {
 									/>
 								</div>
 								<sp />
-								<Dropdown
-									dropdownIndicator={
-										<div className='flex items-center justify-center'>
-											<img style={{ height: 20 }} src={logo}></img>
-										</div>
-									}
-									style={{ width: '100%' }}
-									label={'Full width'}
-									defaultValue={'accept'}
-									placeholder={'Value'}
-									options={dropdownOptions}
-								/>
+								<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+									<Dropdown
+										dropdownIndicator={
+											<div className='flex items-center justify-center'>
+												<img style={{ height: 20 }} src={logo}></img>
+											</div>
+										}
+										style={{ width: '100%' }}
+										label={'Full width'}
+										defaultValue={'accept'}
+										placeholder={'Value'}
+										options={dropdownOptions}
+									/>
+								</div>
 							</div>
 						</Section>
 						<Section title='Form' tags={['<Formik/>', '<Form/>', '<Field/>']}>

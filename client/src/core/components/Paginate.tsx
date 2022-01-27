@@ -12,7 +12,6 @@ import { getPaginationModel } from 'ultimate-pagination'
 
 const buttonStyle = {
 	padding: 12,
-	fontSize: styles.defaultFontSize,
 }
 
 type Props = {
@@ -69,16 +68,22 @@ export default function Paginate(props: Props) {
 					<button
 						disabled={data.isActive}
 						style={{
-							color: data.isActive ? styles.colors.main : styles.colors.black,
-							opacity: data.isActive ? 1 : global.nightMode ? 0.5 : 0.75,
-							fontWeight: data.isActive ? 'bold' : 'normal',
 							...buttonStyle,
 							...style,
 						}}
 						onClick={() => onClick(data.value)}
 						key={`Paginate${data.key}`}
 					>
-						{data.value}
+						<span
+							style={{
+								opacity: data.isActive ? 1 : global.nightMode ? 0.5 : 0.75,
+								color: data.isActive ? styles.colors.main : styles.colors.black,
+								fontWeight: data.isActive ? 'bold' : 'normal',
+								fontSize: styles.defaultFontSize,
+							}}
+						>
+							{data.value}
+						</span>
 					</button>
 				)
 			}

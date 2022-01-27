@@ -85,6 +85,7 @@
 		"react-dropzone": "^11.4.2",
 		"react-elastic-carousel": "^0.11.5",
 		"react-error-boundary": "^3.1.4",
+		"react-fast-compare": "^3.2.0",
 		"react-flagkit": "^2.0.4",
 		"react-focus-lock": "^2.7.1",
 		"react-ga": "^3.3.0",

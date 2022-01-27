@@ -15,6 +15,7 @@ import { GlamorProps, Obj } from 'flawk-types'
 import { css } from 'glamor'
 import _ from 'lodash'
 import React, { Component } from 'react'
+import isEqual from 'react-fast-compare'
 import MediaQuery from 'react-responsive'
 import { SizeMe } from 'react-sizeme'
 import VisibilitySensor from 'react-visibility-sensor'
@@ -94,20 +95,24 @@ export default class FTable extends QueryParams<
 	}
 
 	updateID: string | undefined = undefined
+	dataID: string | undefined = undefined
 	shouldComponentUpdate(nextProps: TableProps) {
-		const p = JSON.stringify({
-			data: this.props.data,
-			isLoading: this.props.isLoading,
-			updateID: this.props.updateID,
-		})
-		const nP = JSON.stringify({
-			data: nextProps.data,
-			isLoading: nextProps.isLoading,
-			updateID: nextProps.updateID,
-		})
-		if (nP !== p && !nextProps.isLoading) {
+		const dataChanged = !isEqual(this.props.data, nextProps.data)
+		const isLoadingChanged = this.props.isLoading !== nextProps.isLoading
+		const updateIDChanged = this.props.updateID !== nextProps.updateID
+
+		if (
+			(dataChanged ||
+				isLoadingChanged ||
+				updateIDChanged ||
+				nextProps.updateID === undefined) &&
+			!nextProps.isLoading
+		) {
 			this.updateID = uuid.v1()
-			if (this.scrollYRef) this.scrollYRef.scrollTop = 0
+			if (dataChanged) {
+				this.dataID = this.updateID
+				if (this.scrollYRef) this.scrollYRef.scrollTop = 0
+			}
 		}
 
 		return true
@@ -422,11 +427,9 @@ export default class FTable extends QueryParams<
 
 											return this.state.containment ? (
 												<VisibilitySensor
-													intervalCheck={false}
-													scrollDelay={25}
-													scrollCheck={true}
-													resizeDelay={250}
-													resizeCheck={true}
+													intervalCheck={true}
+													intervalDelay={100}
+													// Interval check is the only one that deals with all possible cases
 													partialVisibility
 													key={k}
 													containment={this.state.containment}
@@ -445,11 +448,9 @@ export default class FTable extends QueryParams<
 															)
 														return (
 															<Row
+																dataID={this.dataID || ''}
 																updateID={this.updateID || ''}
-																triggerUpdate={JSON.stringify({
-																	updateID: this.updateID,
-																	isVisible: isVisible,
-																})}
+																isVisible={isVisible}
 																style={style}
 																rowStyle={rS}
 																expandContent={
@@ -587,7 +588,6 @@ export default class FTable extends QueryParams<
 							>
 								{props.pagination && (
 									<TablePagination
-										desktop={desktop}
 										items={props.data ? props.data.length : 0}
 										{...props.pagination}
 									/>
@@ -605,7 +605,8 @@ export default class FTable extends QueryParams<
 const expandButtonWidth = 10 + 12.5
 type RowProps = {
 	updateID: string
-	triggerUpdate: string
+	dataID: string
+	isVisible: boolean
 	expandContent?: React.ReactNode
 	rowStyle: React.CSSProperties & GlamorProps
 	style: React.CSSProperties
@@ -622,10 +623,11 @@ class Row extends Component<RowProps> {
 
 	shouldComponentUpdate(nextProps: RowProps, nextState: RowState) {
 		// eslint-disable-next-line
-		if (this.props.updateID !== nextProps.updateID) this.state.isOpen = false
+		if (this.props.dataID !== nextProps.dataID) this.state.isOpen = false
 
 		return (
-			this.props.triggerUpdate !== nextProps.triggerUpdate ||
+			this.props.updateID !== nextProps.updateID ||
+			this.props.isVisible !== nextProps.isVisible ||
 			this.state.isOpen !== nextState.isOpen
 		)
 	}
@@ -718,7 +720,6 @@ const sorting = (color: string, colorActive: string, direction?: 'asc' | 'desc')
 )
 
 export function TablePagination({
-	desktop,
 	items,
 	onClick,
 	limit,
@@ -726,7 +727,6 @@ export function TablePagination({
 	totalPages,
 	totalItems,
 }: {
-	desktop: boolean
 	items: number
 	onClick: (page: number) => void
 	limit: string
