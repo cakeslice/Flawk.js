@@ -8,11 +8,12 @@
 import { clearAllBodyScrollLocks, disableBodyScroll, enableBodyScroll } from 'body-scroll-lock'
 import Animated from 'core/components/Animated'
 import { DashboardRoute } from 'core/components/Dashboard'
+import TrackedComponent from 'core/components/TrackedComponent'
 import config from 'core/config'
 import styles from 'core/styles'
 import { GlamorProps, Obj } from 'flawk-types'
 import { css } from 'glamor'
-import React, { Component } from 'react'
+import React from 'react'
 import { Link } from 'react-router-dom'
 
 type Props = {
@@ -26,7 +27,9 @@ type Props = {
 	path?: string
 	toggleOpen?: (open?: boolean) => void
 }
-export default class MobileDrawer extends Component<Props> {
+export default class MobileDrawer extends TrackedComponent<Props> {
+	trackedName = 'MobileDrawer'
+
 	state = {
 		isOpen: false,
 	}
@@ -378,6 +381,7 @@ export default class MobileDrawer extends Component<Props> {
 		return (
 			<div style={{ display: 'flex' }}>
 				<button
+					type='button'
 					className='scrollTarget'
 					onClick={() => this.changeState()}
 					style={this.props.style}

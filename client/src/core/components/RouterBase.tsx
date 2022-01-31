@@ -176,13 +176,8 @@ export default function RouterBase({ children }: { children: React.ReactNode }) 
 				}
 
 				console.log(
-					'------ BUILD ------\n\n' +
-						buildEnv +
-						' | @' +
-						gitHash +
-						' | SERV@' +
-						buildNumber +
-						'\n\n-------------------'
+					'%c\n' + buildEnv + ' | @' + gitHash + ' | SERV@' + buildNumber + '\n',
+					'color: orange; font-weight: 700; font-size: 14px'
 				)
 				Sentry.init({
 					release: '@' + gitHash + '-SERV@' + buildNumber,
@@ -206,11 +201,8 @@ export default function RouterBase({ children }: { children: React.ReactNode }) 
 				})
 			} else
 				console.log(
-					'------ BUILD ------\n\n' +
-						buildEnv +
-						' | @' +
-						gitHash +
-						'\n\n-------------------'
+					'%c\n' + buildEnv + ' | @' + gitHash + '\n',
+					'color: orange; font-weight: 700; font-size: 14px'
 				)
 
 			global.startAnalytics = async function () {
@@ -242,11 +234,82 @@ export default function RouterBase({ children }: { children: React.ReactNode }) 
 				addFlag(data.title, data.description, 'info', { autoClose: true })
 			})
 		}
+
+		if (!config.prod) {
+			global.stats = {
+				lastCount: 0,
+				components: [],
+				track: (component, prop) => {
+					if (global.stats) {
+						let found = _.find(global.stats.components, (e) => e.name === component)
+						if (!found) {
+							found = {
+								name: component,
+								renders: 0,
+								changes: [],
+							}
+							global.stats?.components.push(found)
+						}
+
+						found.renders++
+
+						let foundChanges = _.find(found.changes, (e) => e.prop === prop)
+						if (!foundChanges) {
+							foundChanges = {
+								prop: prop,
+								amount: 0,
+							}
+							found.changes.push(foundChanges)
+						}
+
+						foundChanges.amount++
+					}
+				},
+			}
+			setInterval(() => {
+				if (global.stats) {
+					let renders = 0
+					global.stats.components = _.sortBy(global.stats.components, (c) => -c.renders)
+					global.stats.components.forEach((c) => {
+						renders += c.renders
+					})
+					if (document.hasFocus() && renders !== global.stats.lastCount) {
+						console.groupCollapsed('%cRender Count: ' + renders, 'color: orange')
+						console.log(
+							'\n%cUSE REACT PROFILER TO CHECK OTHER COMPONENTS\n',
+							'font-weight: bold; color: cyan'
+						)
+						global.stats.components.forEach((c, i) => {
+							console.groupCollapsed(
+								'%c' + c.name + ': ' + c.renders,
+								i === 0 ? 'color: yellow' : ''
+							)
+							c.changes = _.sortBy(c.changes, (c) => -c.amount)
+							c.changes.forEach((change, k) => {
+								console.log(
+									'%c' + change.prop + ': ' + change.amount,
+									k === 0 ? 'color: red; font-weight: bold;' : ''
+								)
+							})
+							console.groupEnd()
+						})
+						console.groupEnd()
+					}
+					global.stats.lastCount = renders
+				}
+			}, 1000)
+		}
 	})
 
 	useEffect(() => {
 		const unlisten = history.listen((location) => {
-			if (!config.prod && !config.staging) console.log(location.pathname)
+			if (!config.prod && !config.staging) {
+				if (global.stats) {
+					global.stats.components = []
+					global.stats.lastCount = 0
+				}
+				console.log(location.pathname)
+			}
 			if (!fetchingUser && !user && authError) navigation.invalidTokenRedirect()
 		})
 		return unlisten
@@ -319,6 +382,7 @@ function MobileSimulator({ children, active }: { children: React.ReactNode; acti
 											position: 'fixed',
 											bottom: 37,
 											right: 35,
+											zIndex: 999,
 									  }
 							}
 						>

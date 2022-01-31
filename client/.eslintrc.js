@@ -45,8 +45,15 @@ module.exports = {
 	rules: {
 		'jest/valid-describe': 'off',
 		//
-		'import/no-unresolved': 'off',
-		'import/no-anonymous-default-export': 'off',
+		'react/jsx-no-bind': ['warn', { ignoreRefs: true }],
+		'react/no-array-index-key': 'warn',
+		'react/no-redundant-should-component-update': 'error',
+		'react/no-unused-prop-types': 'error',
+		'react/no-unused-state': 'error',
+		'react/no-typos': 'error',
+		'react/no-arrow-function-lifecycle': 'error',
+		'react/no-children-prop': 'error',
+		'react/button-has-type': 'error',
 		//
 		'jsx-a11y/accessible-emoji': 'warn',
 		'jsx-a11y/alt-text': 'warn',
@@ -80,10 +87,14 @@ module.exports = {
 		'jsx-a11y/scope': 'warn',
 		'jsx-a11y/tabindex-no-positive': 'warn',
 		////////////////
+		'import/no-unresolved': 'off',
+		'import/no-anonymous-default-export': 'off',
+		//
 		'no-secrets/no-secrets': 'error',
 		'security/detect-object-injection': 0,
 		//
 		eqeqeq: 'error',
+		'no-return-assign': 'error',
 		'no-console': 'off',
 		'no-unused-vars': 'warn',
 		'no-use-before-define': 'error',
@@ -124,6 +135,7 @@ module.exports = {
 		'no-empty': 'error',
 		'no-useless-catch': 'error',
 		'no-unreachable': 'error',
+		'array-callback-return': 'error',
 		//
 		'no-redeclare': 'error',
 		'no-constant-condition': 'error',
@@ -181,7 +193,7 @@ module.exports = {
 				//
 				'@typescript-eslint/unbound-method': 'warn',
 				'@typescript-eslint/restrict-plus-operands': 'off',
-				'@typescript-eslint/no-empty-function': ['warn'],
+				'@typescript-eslint/no-empty-function': ['error'],
 				'@typescript-eslint/require-await': 'warn',
 				'@typescript-eslint/no-explicit-any': ['error'],
 				'@typescript-eslint/no-use-before-define': ['error'],

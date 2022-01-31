@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import TrackedComponent from 'core/components/TrackedComponent'
 import { Obj } from 'flawk-types'
-import { Component } from 'react'
 
 export const getSearch = (object: Obj, removeEmpty = true) => {
 	if (removeEmpty)
@@ -56,7 +56,7 @@ export default class QueryParams<
 	},
 	// eslint-disable-next-line
 	P = {}
-> extends Component<P> {
+> extends TrackedComponent<P> {
 	defaultQueryParams: T = {} as T
 	// @ts-ignore
 	private _parsedDefaultParams: Record<keyof T, string> = {}

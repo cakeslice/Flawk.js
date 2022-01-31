@@ -5,13 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import TrackedComponent from 'core/components/TrackedComponent'
 import config from 'core/config'
 import styles from 'core/styles'
 import { FormIKStruct, GlamorProps, Obj } from 'flawk-types'
 import { FieldInputProps, FormikProps } from 'formik'
 import { css } from 'glamor'
 import moment, { Moment } from 'moment'
-import React, { Component } from 'react'
+import React from 'react'
 import Datetime from 'react-datetime'
 import InputMask from 'react-input-mask'
 import MediaQuery from 'react-responsive'
@@ -131,7 +132,7 @@ const DatePicker = (props: {
 	/>
 )
 
-export default class FInput extends Component<{
+type Props = {
 	style?: React.CSSProperties
 	center?: boolean
 	invalidType?: 'bottom' | 'label' | 'right'
@@ -142,7 +143,6 @@ export default class FInput extends Component<{
 	button?: React.ReactNode
 	buttonStyle?: React.CSSProperties
 	//
-	value?: number | string
 	defaultValue?: number | string
 	autoFocus?: boolean
 	autoComplete?: string
@@ -151,21 +151,12 @@ export default class FInput extends Component<{
 	invalid?: string
 	isDisabled?: boolean
 	simpleDisabled?: boolean
-	mask?: string | (string | RegExp)[]
-	formatChars?: Record<number, string>
 	name?: string
 	bufferedInput?: boolean
 	bufferInterval?: number
-	isControlled?: string
 	type?: React.HTMLInputTypeAttribute
 	//
-	textArea?: boolean
-	textAreaFixed?: boolean
-	minRows?: number
-	maxRows?: number
-	//
 	datePicker?: boolean
-	timeInput?: boolean
 	//
 	field?: FieldInputProps<Obj>
 	form?: FormikProps<Obj>
@@ -174,7 +165,50 @@ export default class FInput extends Component<{
 	onBlur?: (event: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>) => void
 	onFocus?: (event: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>) => void
 	onKeyPress?: (event: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => void
-}> {
+} & (
+	| {
+			textArea?: boolean
+			textAreaFixed?: undefined
+			minRows?: undefined
+			maxRows?: undefined
+	  }
+	| {
+			textArea: true
+			textAreaFixed?: boolean
+			minRows?: number
+			maxRows?: number
+	  }
+) &
+	(
+		| {
+				mask: string | (string | RegExp)[]
+				timeInput?: undefined
+				formatChars?: Record<number, string>
+		  }
+		| {
+				mask?: undefined
+				timeInput: boolean
+				formatChars?: undefined
+		  }
+		| {
+				mask?: undefined
+				timeInput?: undefined
+				formatChars?: undefined
+		  }
+	) &
+	(
+		| {
+				value?: undefined
+				isControlled?: undefined
+		  }
+		| {
+				value: number | string
+				isControlled: boolean
+		  }
+	)
+export default class FInput extends TrackedComponent<Props> {
+	trackedName = 'FInput'
+
 	timer: ReturnType<typeof setTimeout> | undefined = undefined
 	bufferedValue: string | number | undefined = undefined
 
@@ -387,6 +421,18 @@ export default class FInput extends Component<{
 		const valueProps = {
 			value: controlled ? (value === undefined ? '' : value) : undefined,
 			onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+				if (formIK && name && formIK.setFieldValue)
+					formIK.setFieldValue(
+						name,
+						this.props.type === 'number'
+							? e.target.value === ''
+								? undefined
+								: Number(e.target.value)
+							: e.target.value === ''
+							? undefined
+							: e.target.value
+					)
+
 				if (this.props.bufferedInput && !formIK) {
 					this.handleChangeBuffered(e)
 				} else {
@@ -401,18 +447,6 @@ export default class FInput extends Component<{
 								: e.target.value
 						)
 				}
-
-				if (formIK && name && formIK.setFieldValue)
-					formIK.setFieldValue(
-						name,
-						this.props.type === 'number'
-							? e.target.value === ''
-								? undefined
-								: Number(e.target.value)
-							: e.target.value === ''
-							? undefined
-							: e.target.value
-					)
 			},
 		}
 		type DatePickerValue = (string & (string | number | readonly string[])) | undefined
@@ -420,10 +454,10 @@ export default class FInput extends Component<{
 			isControlled: controlled ? true : false,
 			value: controlled ? (value === undefined ? '' : (value as DatePickerValue)) : undefined,
 			onChange: (e: string | Moment) => {
-				this.props.onChange && this.props.onChange(e)
-
 				if (formIK && name && formIK.setFieldValue)
 					formIK.setFieldValue(name, e === '' ? undefined : e)
+
+				this.props.onChange && this.props.onChange(e)
 			},
 		}
 
@@ -452,7 +486,8 @@ export default class FInput extends Component<{
 									opacity: 1,
 								}}
 							>
-								<div
+								<label
+									htmlFor={name}
 									style={{
 										opacity: global.nightMode
 											? styles.inputLabelOpacityNight
@@ -468,7 +503,7 @@ export default class FInput extends Component<{
 									}}
 								>
 									{label}
-								</div>
+								</label>
 								{invalidType === 'label' &&
 									name &&
 									!this.props.isDisabled &&

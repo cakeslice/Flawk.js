@@ -75,7 +75,9 @@ function ErrorFallback({ error }: FallbackProps) {
 		return (
 			<div>
 				<span style={{ color: 'white' }}>Chunk Load Error!</span>{' '}
-				<button onClick={() => window.location.reload()}>Try Again</button>
+				<button type='button' onClick={() => window.location.reload()}>
+					Try Again
+				</button>
 			</div>
 		)
 
@@ -96,7 +98,9 @@ function ErrorFallback({ error }: FallbackProps) {
 		return (
 			<div>
 				<span style={{ color: 'white' }}>Chunk Load Error!</span>{' '}
-				<button onClick={() => window.location.reload()}>Try Again</button>
+				<button type='button' onClick={() => window.location.reload()}>
+					Try Again
+				</button>
 			</div>
 		)
 	}
@@ -118,7 +122,10 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 
 	// Should be on top of your function after state is declared
 	useConstructor(() => {
-		console.log('Powered by Flawk.js: https://flawk.cakeslice.dev')
+		console.log(
+			'\n%cPowered by Flawk.js: https://flawk.cakeslice.dev\n',
+			'color: #6495ED; font-weight: 700; font-size: 14px'
+		)
 
 		void (async function () {
 			if (config.darkModeForce) applyNightMode(true, true)
@@ -520,6 +527,7 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 
 									{desktop && !config.staging && config.darkModeAvailable && (
 										<button
+											type='button'
 											style={devInfo}
 											onClick={async () => {
 												await toggleNightMode()
@@ -531,6 +539,7 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 
 									{desktop && !config.staging && (
 										<button
+											type='button'
 											style={devInfo}
 											onClick={async () => {
 												config.changeLang()
@@ -548,6 +557,7 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 
 									{desktop && !config.staging && (
 										<button
+											type='button'
 											onClick={() => {
 												window.open('/components', '_blank')
 											}}

@@ -279,7 +279,7 @@ export default class Style extends Component<Props> {
 											src={logo}
 										></img>
 									</FButton>
-									<button>Basic</button>
+									<button type='button'>Basic</button>
 								</div>
 							</Section>
 							<Section title='Color' tags={['styles.colors']}>

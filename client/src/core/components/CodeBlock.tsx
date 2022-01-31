@@ -110,6 +110,7 @@ export default function CodeBlock(props: {
 									}
 								>
 									<button
+										type='button'
 										style={{
 											display: 'flex',
 											alignItems: 'center',

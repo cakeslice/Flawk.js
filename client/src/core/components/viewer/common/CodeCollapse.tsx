@@ -77,6 +77,7 @@ export default class CodeCollapse extends React.Component<Props> {
 										content='Show code'
 									>
 										<button
+											type='button'
 											onClick={() => {
 												if (!this.state.isOpen) {
 													if (this.timer) clearTimeout(this.timer)

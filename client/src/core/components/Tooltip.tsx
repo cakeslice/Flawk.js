@@ -6,6 +6,7 @@
  */
 
 import Animated, { Effect } from 'core/components/Animated'
+import TrackedComponent from 'core/components/TrackedComponent'
 import config from 'core/config'
 import styles from 'core/styles'
 import React from 'react'
@@ -22,7 +23,9 @@ type Props = {
 	selectable?: boolean
 	contentStyle?: React.CSSProperties
 }
-export default class Tooltip extends React.Component<Props> {
+export default class Tooltip extends TrackedComponent<Props> {
+	trackedName = 'Tooltip'
+
 	state = { visible: false }
 
 	render() {
@@ -105,6 +108,7 @@ export default class Tooltip extends React.Component<Props> {
 								</span>
 							) : (
 								<button
+									type='button'
 									{...getTriggerProps({
 										ref: triggerRef,
 										className: 'trigger',

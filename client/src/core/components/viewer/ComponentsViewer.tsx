@@ -42,7 +42,10 @@ export default class ComponentsViewer extends Component {
 									height: 120,
 								}}
 							>
-								<button onClick={() => global.routerHistory().push('/')}>
+								<button
+									type='button'
+									onClick={() => global.routerHistory().push('/')}
+								>
 									<img
 										style={{
 											objectFit: 'contain',
@@ -181,6 +184,7 @@ export default class ComponentsViewer extends Component {
 		)
 	}
 }
+
 const iconWrapper = (icon: (color: string) => React.ReactNode, active: boolean, size?: number) => (
 	<div
 		className='flex items-center justify-center'

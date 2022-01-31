@@ -8,11 +8,12 @@
 import { clearAllBodyScrollLocks } from 'body-scroll-lock'
 import Animated from 'core/components/Animated'
 import MobileDrawer from 'core/components/MobileDrawer'
+import TrackedComponent from 'core/components/TrackedComponent'
 import config from 'core/config'
 import styles from 'core/styles'
 import { Obj } from 'flawk-types'
 import { css } from 'glamor'
-import React, { Component, Suspense } from 'react'
+import React, { Suspense } from 'react'
 import MediaQuery from 'react-responsive'
 import { Link, Redirect, Route, Switch } from 'react-router-dom'
 
@@ -61,10 +62,12 @@ type DashboardProps = {
 	logoStyle?: Obj
 	bigScreenWidth?: number
 }
-export default class Dashboard extends Component<
+export default class Dashboard extends TrackedComponent<
 	DashboardProps,
 	{ open: boolean; entryMaxWidth: number; showHeaderBackground: boolean }
 > {
+	trackedName = 'Dashboard'
+
 	state = {
 		open: false,
 		entryMaxWidth: this.props.closedWidth || 60,
@@ -258,6 +261,7 @@ export default class Dashboard extends Component<
 															}}
 														>
 															<button
+																type='button'
 																onClick={() =>
 																	global.routerHistory().push('/')
 																}
@@ -559,7 +563,9 @@ type MenuProps = {
 	routes: Array<DashboardRoute>
 	toggleOpen: (open?: boolean) => void
 }
-class Menu extends Component<MenuProps> {
+class Menu extends TrackedComponent<MenuProps> {
+	trackedName = 'Dashboard/Menu'
+
 	constructor(props: MenuProps) {
 		super(props)
 

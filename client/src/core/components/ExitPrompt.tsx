@@ -13,6 +13,7 @@ import { Prompt } from 'react-router-dom'
 export default function ExitPrompt(props: { dirty: boolean; noRouter?: boolean }) {
 	return (
 		<Beforeunload
+			// eslint-disable-next-line
 			onBeforeunload={props.dirty ? () => config.text('common.areYouSure') : () => {}}
 		>
 			{!props.noRouter && (

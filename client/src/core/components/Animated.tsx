@@ -55,7 +55,6 @@ export default class Animated extends Component<Props> {
 		visible: false,
 		mounted: this.props.controlled !== undefined ? this.props.controlled : true,
 		initialVisible: this.props.controlled,
-		initialTrigger: this.props.triggerID,
 		uuid: uuid.v1(),
 	}
 

@@ -9,13 +9,13 @@ import Animated from 'core/components/Animated'
 import Loading from 'core/components/Loading'
 import Paginate from 'core/components/Paginate'
 import QueryParams from 'core/components/QueryParams'
+import TrackedComponent from 'core/components/TrackedComponent'
 import config from 'core/config'
 import styles from 'core/styles'
 import { GlamorProps, Obj } from 'flawk-types'
 import { css } from 'glamor'
 import _ from 'lodash'
-import React, { Component } from 'react'
-import isEqual from 'react-fast-compare'
+import React from 'react'
 import MediaQuery from 'react-responsive'
 import { SizeMe } from 'react-sizeme'
 import VisibilitySensor from 'react-visibility-sensor'
@@ -74,6 +74,8 @@ export default class FTable extends QueryParams<
 	{ sort?: string; order?: 'asc' | 'desc' },
 	TableProps
 > {
+	trackedName = 'FTable'
+
 	state = {
 		uuid: uuid.v1(),
 		containment: undefined as undefined | HTMLElement | null,
@@ -89,28 +91,29 @@ export default class FTable extends QueryParams<
 		this.scrollYRef = instance
 	}
 
-	triggerUpdateID: string | undefined = undefined
-	dataID: string | undefined = undefined
-	shouldComponentUpdate(nextProps: TableProps) {
-		const dataChanged = !isEqual(this.props.data, nextProps.data)
+	isLoadingID: string | undefined = undefined
+	shouldComponentUpdate(nextProps: TableProps, nextState: typeof this.state) {
+		this.trackedProps =
+			nextProps.triggerUpdateID !== undefined ? ['triggerUpdateID', 'isLoading'] : undefined
+		super.shouldComponentUpdate(nextProps, nextState)
+
 		const isLoadingChanged = this.props.isLoading !== nextProps.isLoading
 		const triggerUpdateIDChanged = this.props.triggerUpdateID !== nextProps.triggerUpdateID
 
 		if (
-			(dataChanged ||
-				isLoadingChanged ||
+			(isLoadingChanged ||
 				triggerUpdateIDChanged ||
 				nextProps.triggerUpdateID === undefined) &&
 			!nextProps.isLoading
 		) {
-			this.triggerUpdateID = uuid.v1()
-			if (dataChanged) {
-				this.dataID = this.triggerUpdateID
+			if (isLoadingChanged) {
+				this.isLoadingID = uuid.v1()
 				if (this.scrollYRef) this.scrollYRef.scrollTop = 0
 			}
+			return true
 		}
 
-		return true
+		return false
 	}
 
 	componentDidMount() {
@@ -292,6 +295,7 @@ export default class FTable extends QueryParams<
 														if (c.onClick)
 															return (
 																<button
+																	type='button'
 																	onClick={() => {
 																		const key = c.selector
 																		this.setQueryParams({
@@ -437,12 +441,15 @@ export default class FTable extends QueryParams<
 																	<div style={rS}></div>
 																</div>
 															)
+														const rowKey = 'r_' + k
 														return (
 															<Row
-																dataID={this.dataID || ''}
+																isLoadingID={this.isLoadingID || ''}
 																triggerUpdateID={
-																	this.triggerUpdateID || ''
+																	this.props.triggerUpdateID ||
+																	undefined
 																}
+																trackedName={rowKey}
 																isVisible={isVisible}
 																style={style}
 																rowStyle={rS}
@@ -594,8 +601,9 @@ export default class FTable extends QueryParams<
 
 const expandButtonWidth = 10 + 12.5
 type RowProps = {
-	triggerUpdateID: string
-	dataID: string
+	trackedName: string
+	triggerUpdateID?: string
+	isLoadingID: string
 	isVisible: boolean
 	expandContent?: React.ReactNode
 	rowStyle: React.CSSProperties & GlamorProps
@@ -606,19 +614,30 @@ type RowProps = {
 type RowState = {
 	isOpen: boolean
 }
-class Row extends Component<RowProps> {
+class Row extends TrackedComponent<RowProps> {
+	trackedName = 'FTable/Row'
+
 	state: RowState = {
 		isOpen: false,
 	}
 
 	shouldComponentUpdate(nextProps: RowProps, nextState: RowState) {
-		// eslint-disable-next-line
-		if (this.props.dataID !== nextProps.dataID) this.state.isOpen = false
+		this.trackedProps =
+			nextProps.triggerUpdateID !== undefined ? ['triggerUpdateID', 'isVisible'] : undefined
+		this.trackedState = nextProps.triggerUpdateID !== undefined ? ['isOpen'] : undefined
+		super.shouldComponentUpdate(nextProps, nextState)
+
+		if (this.props.isLoadingID !== nextProps.isLoadingID) {
+			this.state.isOpen = false
+			nextState.isOpen = false
+		}
 
 		return (
+			nextProps.triggerUpdateID === undefined ||
 			this.props.triggerUpdateID !== nextProps.triggerUpdateID ||
 			this.props.isVisible !== nextProps.isVisible ||
-			this.state.isOpen !== nextState.isOpen
+			this.state.isOpen !== nextState.isOpen ||
+			this.props.isLoadingID !== nextProps.isLoadingID
 		)
 	}
 
@@ -632,6 +651,7 @@ class Row extends Component<RowProps> {
 						})}
 					>
 						<button
+							type='button'
 							onClick={() => {
 								this.setState({ isOpen: !this.state.isOpen })
 							}}

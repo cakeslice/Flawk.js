@@ -6,12 +6,13 @@
  */
 
 import Loading from 'core/components/Loading'
+import TrackedComponent from 'core/components/TrackedComponent'
 import config from 'core/config'
 import styles from 'core/styles'
 import { FormIKStruct, GlamorProps, Obj } from 'flawk-types'
 import { FieldInputProps, FormikErrors, FormikProps } from 'formik'
 import { css } from 'glamor'
-import React, { Component } from 'react'
+import React from 'react'
 import MediaQuery from 'react-responsive'
 
 const scrollToErrors = (errors: FormikErrors<unknown>) => {
@@ -34,38 +35,51 @@ type Props = {
 	isLoading?: boolean
 	invalid?: string
 	noInvalidLabel?: boolean
-	// ----------- Checkbox props
-	checkbox?: React.ReactNode
-	checked?: boolean
-	defaultChecked?: boolean
-	value?: boolean
-	checkboxLabelStyle?: React.CSSProperties
-	required?: boolean | string
-	field?: FieldInputProps<Obj>
-	form?: FormikProps<Obj>
-	onChange?: (checked: boolean) => void
-	//
 	onClick?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
 	onBlur?: (event: React.FocusEvent<HTMLButtonElement, Element>) => void
 	// -----------
 } & (
 	| {
-			type?: 'button' | 'reset'
-			formErrors?: FormikErrors<unknown>
+			checkbox?: undefined
+			checked?: undefined
+			defaultChecked?: undefined
+			checkboxLabelStyle?: undefined
+			required?: undefined
+			field?: undefined
+			form?: undefined
+			onChange?: undefined
 	  }
 	| {
-			type: 'submit'
-			formErrors: FormikErrors<unknown>
+			checkbox: React.ReactNode
+			checked?: boolean
+			defaultChecked?: boolean
+			checkboxLabelStyle?: React.CSSProperties
+			required?: boolean | string
+			field?: FieldInputProps<Obj>
+			form?: FormikProps<Obj>
+			onChange?: (checked: boolean) => void
 	  }
-)
-export default class FButton extends Component<Props> {
+) &
+	(
+		| {
+				type?: 'button' | 'reset'
+				formErrors?: FormikErrors<unknown>
+		  }
+		| {
+				type: 'submit'
+				formErrors: FormikErrors<unknown>
+		  }
+	)
+export default class FButton extends TrackedComponent<Props> {
+	trackedName = 'FButton'
+
 	timer: ReturnType<typeof setTimeout> | undefined = undefined
 	state = {
 		checked: false,
 	}
 
 	componentDidMount() {
-		if (this.props.checkbox) this.setState({ checked: this.props.defaultChecked })
+		if (this.props.checkbox && this.props.defaultChecked) this.setState({ checked: true })
 	}
 	componentWillUnmount() {
 		if (this.timer) clearTimeout(this.timer)
@@ -90,7 +104,9 @@ export default class FButton extends Component<Props> {
 		}
 
 		const name = (formIK && formIK.name) || this.props.name
-		const checked = (formIK ? formIK.value : this.props.checked) as boolean
+		const checked = (
+			formIK ? formIK.value !== false && formIK.value !== undefined : this.props.checked
+		) as boolean
 		const invalid =
 			formIK && (formIK.touch || formIK.submitCount > 0) ? formIK.error : this.props.invalid
 
@@ -335,35 +351,36 @@ export default class FButton extends Component<Props> {
 
 									if (this.props.checkbox) {
 										if (checked !== undefined) {
-											this.props.onChange && this.props.onChange(!checked)
-
 											formIK &&
 												formIK.setFieldValue &&
 												name &&
 												formIK.setFieldValue(name, !checked)
+
+											this.props.onChange && this.props.onChange(!checked)
 										} else
 											this.setState({ checked: !this.state.checked }, () => {
-												this.props.onChange &&
-													this.props.onChange(this.state.checked)
-
 												formIK &&
 													formIK.setFieldValue &&
 													name &&
 													formIK.setFieldValue(name, this.state.checked)
+
+												this.props.onChange &&
+													this.props.onChange(this.state.checked)
 											})
 									} else if (this.props.onClick) this.props.onClick(e)
 								}}
 								onBlur={(e) => {
-									this.props.onBlur && this.props.onBlur(e)
-
 									if (formIK && formIK.setFieldTouched) {
 										if (this.timer) clearTimeout(this.timer)
 										this.timer = setTimeout(() => {
 											if (formIK && name) formIK.setFieldTouched(name, true)
 										})
 									}
+
+									this.props.onBlur && this.props.onBlur(e)
 								}}
 								name={name}
+								// eslint-disable-next-line
 								type={this.props.type ? this.props.type : 'button'}
 								disabled={this.props.isDisabled || this.props.isLoading}
 							>
@@ -394,7 +411,8 @@ export default class FButton extends Component<Props> {
 								)}
 							</button>
 							{this.props.checkbox && (
-								<div
+								<label
+									htmlFor={name}
 									style={{
 										opacity: global.nightMode
 											? styles.inputLabelOpacityNight
@@ -407,7 +425,7 @@ export default class FButton extends Component<Props> {
 									}}
 								>
 									{this.props.checkbox}
-								</div>
+								</label>
 							)}
 						</div>
 						{name && !this.props.noInvalidLabel && (

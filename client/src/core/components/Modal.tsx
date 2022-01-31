@@ -7,6 +7,7 @@
 
 import { clearAllBodyScrollLocks } from 'body-scroll-lock'
 import Animated from 'core/components/Animated'
+import TrackedComponent from 'core/components/TrackedComponent'
 import config from 'core/config'
 import styles from 'core/styles'
 import { Obj } from 'flawk-types'
@@ -43,7 +44,9 @@ type Props = {
 	}
 	noAutoFocus?: boolean
 }
-export default class Modal extends Component<Props> {
+export default class Modal extends TrackedComponent<Props> {
+	trackedName = 'Modal'
+
 	state = {
 		parentState: false,
 	}

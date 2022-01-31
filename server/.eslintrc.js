@@ -36,6 +36,7 @@ module.exports = {
 		'security-node/detect-possible-timing-attacks': 'error',
 		//
 		eqeqeq: 'error',
+		'no-return-assign': 'error',
 		'no-console': 'off',
 		'no-unused-vars': 'warn',
 		'no-use-before-define': 'error',
@@ -76,6 +77,7 @@ module.exports = {
 		'no-empty': 'error',
 		'no-useless-catch': 'error',
 		'no-unreachable': 'error',
+		'array-callback-return': 'error',
 		//
 		'no-redeclare': 'error',
 		'no-constant-condition': 'error',
@@ -124,7 +126,9 @@ module.exports = {
 				'import/named': 'off',
 				'no-use-before-define': 'off',
 				//
+				'@typescript-eslint/unbound-method': 'warn',
 				'@typescript-eslint/restrict-plus-operands': 'off',
+				'@typescript-eslint/no-empty-function': ['error'],
 				'@typescript-eslint/require-await': 'warn',
 				'@typescript-eslint/no-explicit-any': ['error'],
 				'@typescript-eslint/no-use-before-define': ['error'],

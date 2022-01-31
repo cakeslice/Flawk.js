@@ -79,6 +79,18 @@ declare global {
 	var socket: Socket
 	//
 	var playNotificationSound: () => void
+	//
+	var stats:
+		| {
+				lastCount: number
+				components: Array<{
+					name: string
+					renders: number
+					changes: Array<{ prop: string; amount: number }>
+				}>
+				track: (component: string, prop: string) => void
+		  }
+		| undefined
 }
 
 export {}

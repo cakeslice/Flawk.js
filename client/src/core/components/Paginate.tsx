@@ -36,14 +36,7 @@ export default function Paginate(props: Props) {
 		hideInactive,
 		hideEllipsis,
 		style,
-	} = {
-		breakDelimiter: '...',
-		boundaryPagesRange: 1,
-		siblingPagesRange: 1,
-		hideInactive: false,
-		hideEllipsis: false,
-		...props,
-	} as Props & { mini: boolean }
+	} = props
 
 	function createPagination(bPR?: number, sPR?: number, noDelimiter?: boolean) {
 		const totalPages = props.totalPages
@@ -55,7 +48,7 @@ export default function Paginate(props: Props) {
 			totalPages,
 			boundaryPagesRange: bPR,
 			siblingPagesRange: sPR,
-			hideEllipsis,
+			hideEllipsis: hideEllipsis || false,
 			hidePreviousAndNextPageLinks: true,
 			hideFirstAndLastPageLinks: true,
 		})
@@ -66,6 +59,7 @@ export default function Paginate(props: Props) {
 			if (data.type === 'PAGE') {
 				return (
 					<button
+						type='button'
 						disabled={data.isActive}
 						style={{
 							...buttonStyle,
@@ -97,7 +91,7 @@ export default function Paginate(props: Props) {
 					}}
 					key={`Paginate${data.key}`}
 				>
-					{breakDelimiter}
+					{breakDelimiter || '...'}
 				</div>
 			)
 		})
@@ -118,8 +112,8 @@ export default function Paginate(props: Props) {
 			{({ size }) => {
 				const mini = size && size.width && size.width < 300 ? true : false
 
-				const bPR = mini ? 0 : boundaryPagesRange
-				const sPR = mini ? 1 : siblingPagesRange
+				const bPR = mini ? 0 : boundaryPagesRange !== undefined ? boundaryPagesRange : 1
+				const sPR = mini ? 1 : siblingPagesRange !== undefined ? siblingPagesRange : 1
 
 				return (
 					<div
@@ -132,6 +126,7 @@ export default function Paginate(props: Props) {
 						<div className='flex flex-wrap'>
 							{(!hideInactive || !isFirst) && (
 								<button
+									type='button'
 									disabled={isFirst}
 									style={{ ...buttonStyle }}
 									onClick={() => {
@@ -155,6 +150,7 @@ export default function Paginate(props: Props) {
 							{createPagination(bPR, sPR, mini)}
 							{(!hideInactive || !isLast) && (
 								<button
+									type='button'
 									disabled={isLast}
 									style={{ ...buttonStyle }}
 									onClick={() => {

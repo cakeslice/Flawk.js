@@ -98,7 +98,7 @@ export default function Router(): React.ReactNode {
 								height: 120,
 							}}
 						>
-							<button onClick={() => global.routerHistory().push('/')}>
+							<button type='button' onClick={() => global.routerHistory().push('/')}>
 								<img
 									style={{
 										objectFit: 'contain',
@@ -177,6 +177,7 @@ export default function Router(): React.ReactNode {
 						}}
 					>
 						<button
+							type='button'
 							style={{
 								fontSize: styles.defaultFontSize,
 								padding: 0,

@@ -5,12 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import TrackedComponent from 'core/components/TrackedComponent'
 import config from 'core/config'
 import styles from 'core/styles'
 import { FormIKStruct, Obj } from 'flawk-types'
 import { FieldInputProps, FormikProps } from 'formik'
 import { css } from 'glamor'
-import React, { Component } from 'react'
+import React from 'react'
 import MediaQuery from 'react-responsive'
 import Select, { components, CSSObjectWithLabel, DropdownIndicatorProps } from 'react-select'
 
@@ -62,7 +63,7 @@ const DropdownIndicator = ({ children, ...rest }: DropdownIndicatorProps<unknown
 	)
 }
 
-export default class Dropdown extends Component<{
+type Props = {
 	style?: CSSObjectWithLabel & {
 		input?: CSSObjectWithLabel
 		menu?: CSSObjectWithLabel
@@ -100,7 +101,10 @@ export default class Dropdown extends Component<{
 	form?: FormikProps<Obj>
 	onChange?: (value: string | undefined) => void
 	onBlur?: (event: React.FocusEvent<HTMLInputElement, Element>) => void
-}> {
+}
+export default class Dropdown extends TrackedComponent<Props> {
+	trackedName = 'Dropdown'
+
 	timer: ReturnType<typeof setTimeout> | undefined = undefined
 	bufferedValue: string | undefined = undefined
 	handleChangeBuffered = (value: string | undefined) => {
@@ -297,22 +301,36 @@ export default class Dropdown extends Component<{
 								style={{
 									display: 'flex',
 									justifyContent: 'space-between',
-									opacity: global.nightMode
-										? styles.inputLabelOpacityNight
-										: styles.inputLabelOpacityDay,
 									letterSpacing: 0.4,
-									//fontWeight: 700,
-									fontSize: styles.defaultFontSize,
 									textAlign:
 										typeof label === 'string' && label.length === 1
 											? 'end'
 											: undefined,
+									fontSize: styles.defaultFontSize,
 									whiteSpace: 'nowrap',
 									...styles.inputLabelStyle,
 									...this.props.labelStyle,
+									opacity: 1,
 								}}
 							>
-								{label}
+								<label
+									htmlFor={name}
+									style={{
+										opacity: global.nightMode
+											? styles.inputLabelOpacityNight
+											: styles.inputLabelOpacityDay,
+										...(styles.inputLabelStyle &&
+											styles.inputLabelStyle.opacity && {
+												opacity: styles.inputLabelStyle.opacity,
+											}),
+										...(this.props.labelStyle &&
+											this.props.labelStyle.opacity && {
+												opacity: this.props.labelStyle.opacity,
+											}),
+									}}
+								>
+									{label}
+								</label>
 								{invalidType === 'label' &&
 									name &&
 									!this.props.isDisabled &&
@@ -349,26 +367,26 @@ export default class Dropdown extends Component<{
 								onChange={(output) => {
 									const o = output as { value: string } | undefined
 
-									this.props.onChange &&
-										this.props.onChange(
-											o ? (o.value === '' ? undefined : o.value) : undefined
-										)
-
 									if (formIK && name && formIK.setFieldValue)
 										formIK.setFieldValue(
 											name,
+											o ? (o.value === '' ? undefined : o.value) : undefined
+										)
+
+									this.props.onChange &&
+										this.props.onChange(
 											o ? (o.value === '' ? undefined : o.value) : undefined
 										)
 								}}
 								onBlur={(output) => {
 									const o = output as React.FocusEvent<HTMLInputElement, Element>
 
-									this.props.onBlur && this.props.onBlur(o)
-
 									if (formIK && name && formIK.setFieldTouched)
 										setTimeout(() => {
 											if (formIK) formIK.setFieldTouched(name, true)
 										})
+
+									this.props.onBlur && this.props.onBlur(o)
 								}}
 								placeholder={this.props.placeholder}
 								value={

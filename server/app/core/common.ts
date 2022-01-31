@@ -232,7 +232,7 @@ export default {
 		if (input && input !== '') {
 			const i = input.trim().split(/(?:,| |\+)+/)
 			let s = ''
-			i.map((t, index) => {
+			i.forEach((t, index) => {
 				let r = _.escapeRegExp(t)
 				r = toRegex()(r).toString()
 				r = '(?=' + r.substring(1, r.length - 2) + ')'

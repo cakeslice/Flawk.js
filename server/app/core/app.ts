@@ -173,7 +173,7 @@ async function extractRouteTypes(file: string) {
 	})
 
 	// @ts-ignore
-	foundNodes.map((f) => {
+	foundNodes.forEach((f) => {
 		const [node] = f
 		// @ts-ignore
 		let text = printer.printNode(ts.EmitHint.Unspecified, node, sourceFile) // eslint-disable-line
@@ -326,7 +326,7 @@ function parseObject(obj: Obj) {
 	let isArray = false
 	if (_.find(Object.keys(p), (k) => p[k] === 'isArray')) isArray = true
 
-	Object.keys(p).map((k) => {
+	Object.keys(p).forEach((k) => {
 		if (k === 'isArray') return
 
 		const property = k.replace('?', '')
@@ -786,13 +786,15 @@ async function generateOpenApi() {
 function setup() {
 	initLogging()
 
-	if (config.jest) console.log('----- JEST TESTING -----\n')
+	console.log('\x1b[35m%s\x1b[0m', '\n#### Flawk.js ####\n')
+
+	if (config.jest) console.log('\x1b[33m%s\x1b[0m', '----- JEST TESTING -----\n')
 	console.log(
-		'\nEnvironment: ' +
-			(config.prod ? 'production' : config.staging ? 'staging' : 'development')
+		'\x1b[36m%s\x1b[0m',
+		'Environment: ' + (config.prod ? 'production' : config.staging ? 'staging' : 'development')
 	)
-	console.log('Build: ' + '@' + global.buildNumber)
-	console.log('Running on NodeJS ' + process.version + '\n')
+	console.log('\x1b[36m%s\x1b[0m', 'Build: ' + '@' + global.buildNumber)
+	console.log('\x1b[36m%s\x1b[0m', 'Running on NodeJS ' + process.version + '\n')
 
 	// CORS
 	const corsOptions: cors.CorsOptions = {
@@ -1080,7 +1082,7 @@ function setup() {
 				return split[split.length - 1] === file.replace('.ts', '').replace('.js', '')
 			})
 		)
-			console.log('--- MISSING ' + file + ' in routes configuration')
+			console.log('\x1b[33m%s\x1b[0m', '--- MISSING ' + file + ' in routes configuration')
 	})
 	fs.readdirSync('./app/project/routes/private').forEach((file) => {
 		if (
@@ -1089,7 +1091,7 @@ function setup() {
 				return split[split.length - 1] === file.replace('.ts', '').replace('.js', '')
 			})
 		)
-			console.log('--- MISSING ' + file + ' in routes configuration')
+			console.log('\x1b[33m%s\x1b[0m', '--- MISSING ' + file + ' in routes configuration')
 	})
 
 	for (let i = 0; i < config.publicRoutes.length; i++) {
@@ -1100,7 +1102,10 @@ function setup() {
 			app.use(config.path + '/', route)
 			//console.log('Loading ' + '/project' + config.publicRoutes[i])
 		} else {
-			console.log('--- FAILED to load ' + '/project' + config.publicRoutes[i])
+			console.log(
+				'\x1b[33m%s\x1b[0m',
+				'--- FAILED to load ' + '/project' + config.publicRoutes[i]
+			)
 		}
 	}
 	for (let i = 0; i < config.routes.length; i++) {
@@ -1111,7 +1116,7 @@ function setup() {
 			app.use(config.path + '/', route)
 			//console.log('Loading ' + '/project' + config.routes[i])
 		} else {
-			console.log('--- FAILED to load ' + '/project' + config.routes[i])
+			console.log('\x1b[33m%s\x1b[0m', '--- FAILED to load ' + '/project' + config.routes[i])
 		}
 	}
 	console.log('')
@@ -1226,11 +1231,14 @@ async function listen() {
 
 		await onDatabaseConnected()
 	} catch (err) {
-		console.log('FAILED TO CONNECT TO DATABASE!' + '\n', err)
+		console.error('FAILED TO CONNECT TO DATABASE!' + '\n', err)
 	}
 
 	const server = app.listen(config.port, () => {
-		console.log('Listening to requests on port ' + config.port.toString() + '\n')
+		console.log(
+			'\x1b[32m%s\x1b[0m',
+			'Listening to requests on port ' + config.port.toString() + '\n'
+		)
 	})
 
 	if (config.websocketSupport) {

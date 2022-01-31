@@ -124,11 +124,7 @@ export default class Inputs extends Component {
 								<sp />
 								<sp />
 								<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
-									<FButton
-										defaultChecked={true}
-										onChange={(e) => {}}
-										checkbox={'Checkbox'}
-									></FButton>
+									<FButton defaultChecked={true} checkbox={'Checkbox'}></FButton>
 									<FButton
 										appearance={'primary'}
 										checked={this.state.checked}

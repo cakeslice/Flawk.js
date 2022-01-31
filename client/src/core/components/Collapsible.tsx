@@ -40,6 +40,7 @@ export default class Collapsible extends Component<Props> {
 					this.props.trigger(this.state.isOpen, this.set)
 				) : (
 					<button
+						type='button'
 						onClick={() => {
 							this.setState({ isOpen: !this.state.isOpen })
 						}}

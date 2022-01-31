@@ -19,7 +19,7 @@ export default function Field(
 		invalidMessage?: string
 		checkbox?: React.ReactNode
 		validate?: (value: string | number | boolean | undefined) => boolean
-		fastField?: boolean
+		fastField?: false
 		type?: string
 	} & (FInput['props'] | Dropdown['props'] | FButton['props'])
 ) {
@@ -58,6 +58,7 @@ export default function Field(
 		return error
 	}
 
-	if (props.fastField) return <FormFastField {...props} validate={validate}></FormFastField>
+	if (props.fastField === undefined || props.fastField)
+		return <FormFastField {...props} validate={validate}></FormFastField>
 	else return <FormField {...props} validate={validate}></FormField>
 }

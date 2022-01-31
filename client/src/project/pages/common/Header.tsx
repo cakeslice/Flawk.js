@@ -164,7 +164,10 @@ export default class Header extends Component<HeaderProps> {
 
 								{desktop && <div></div>}
 
-								<button onClick={() => global.routerHistory().push('/')}>
+								<button
+									type='button'
+									onClick={() => global.routerHistory().push('/')}
+								>
 									<img
 										style={{
 											minWidth: desktop ? 48 : 30,
