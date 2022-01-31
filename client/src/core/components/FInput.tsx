@@ -208,6 +208,10 @@ type Props = {
 	)
 export default class FInput extends TrackedComponent<Props> {
 	trackedName = 'FInput'
+	shouldComponentUpdate(nextProps: Props, nextState: typeof this.state) {
+		super.shouldComponentUpdate(nextProps, nextState, false)
+		return this.deepEqualityCheck(nextProps, nextState)
+	}
 
 	timer: ReturnType<typeof setTimeout> | undefined = undefined
 	bufferedValue: string | number | undefined = undefined

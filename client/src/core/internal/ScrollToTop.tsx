@@ -5,15 +5,20 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import TrackedComponent from 'core/components/TrackedComponent'
 import navigation from 'core/functions/navigation'
-import { Component } from 'react'
 import { RouteComponentProps, withRouter } from 'react-router'
 
 type Props = {
 	location: Location
 }
+class ScrollToTop extends TrackedComponent<Props & RouteComponentProps> {
+	trackedName = 'ScrollToTop'
+	shouldComponentUpdate(nextProps: Props & RouteComponentProps, nextState: typeof this.state) {
+		super.shouldComponentUpdate(nextProps, nextState, false)
+		return this.deepEqualityCheck(nextProps, nextState)
+	}
 
-class ScrollToTop extends Component<Props & RouteComponentProps> {
 	constructor(props: Props & RouteComponentProps) {
 		super(props)
 	}

@@ -104,6 +104,10 @@ type Props = {
 }
 export default class Dropdown extends TrackedComponent<Props> {
 	trackedName = 'Dropdown'
+	shouldComponentUpdate(nextProps: Props, nextState: typeof this.state) {
+		super.shouldComponentUpdate(nextProps, nextState, false)
+		return this.deepEqualityCheck(nextProps, nextState)
+	}
 
 	timer: ReturnType<typeof setTimeout> | undefined = undefined
 	bufferedValue: string | undefined = undefined

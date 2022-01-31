@@ -8,7 +8,8 @@
 import config from 'core/config'
 import styles from 'core/styles'
 import { Range } from 'rc-slider'
-import React, { Component } from 'react'
+import React from 'react'
+import TrackedComponent from './TrackedComponent'
 
 type Props = {
 	min: number
@@ -17,7 +18,13 @@ type Props = {
 	defaultValue: [number, number]
 	width?: number
 }
-export default class Slider extends Component<Props> {
+export default class Slider extends TrackedComponent<Props> {
+	trackedName = 'Slider'
+	shouldComponentUpdate(nextProps: Props, nextState: typeof this.state) {
+		super.shouldComponentUpdate(nextProps, nextState, false)
+		return this.deepEqualityCheck(nextProps, nextState)
+	}
+
 	state = {
 		value: this.props.defaultValue,
 	}

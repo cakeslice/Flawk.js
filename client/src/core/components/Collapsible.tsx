@@ -8,7 +8,8 @@
 import Animated from 'core/components/Animated'
 import config from 'core/config'
 import styles from 'core/styles'
-import React, { Component } from 'react'
+import React from 'react'
+import TrackedComponent from './TrackedComponent'
 
 type Props = {
 	key?: string | number
@@ -20,7 +21,13 @@ type Props = {
 	customTrigger?: boolean
 	noArrow?: boolean
 }
-export default class Collapsible extends Component<Props> {
+export default class Collapsible extends TrackedComponent<Props> {
+	trackedName = 'Collapsible'
+	shouldComponentUpdate(nextProps: Props, nextState: typeof this.state) {
+		super.shouldComponentUpdate(nextProps, nextState, false)
+		return this.deepEqualityCheck(nextProps, nextState)
+	}
+
 	state = { isOpen: this.props.defaultOpen !== undefined ? this.props.defaultOpen : false }
 
 	constructor(props: Props) {
@@ -74,6 +81,7 @@ export default class Collapsible extends Component<Props> {
 					</button>
 				)}
 				<Animated
+					trackedName='Collapsible'
 					duration={0.25}
 					effects={['fade', 'height']}
 					controlled={this.state.isOpen}

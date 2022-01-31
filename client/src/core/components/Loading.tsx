@@ -9,12 +9,20 @@ import config from 'core/config'
 import styles from 'core/styles'
 import React from 'react'
 import { MetroSpinner } from 'react-spinners-kit'
+import TrackedComponent from './TrackedComponent'
 
-export default class Loading extends React.Component<{
+type Props = {
 	noDelay?: boolean
 	size?: number
 	color?: string
-}> {
+}
+export default class Loading extends TrackedComponent<Props> {
+	trackedName = 'Loading'
+	shouldComponentUpdate(nextProps: Props, nextState: typeof this.state) {
+		super.shouldComponentUpdate(nextProps, nextState, false)
+		return this.deepEqualityCheck(nextProps, nextState)
+	}
+
 	timer: ReturnType<typeof setTimeout> | undefined = undefined
 	state = { actuallyLoading: false }
 

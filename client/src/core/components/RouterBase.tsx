@@ -245,43 +245,48 @@ export default function RouterBase({ children }: { children: React.ReactNode }) 
 						if (!found) {
 							found = {
 								name: component,
-								renders: 0,
+								totalRenders: 0,
 								changes: [],
 							}
 							global.stats?.components.push(found)
 						}
 
-						found.renders++
-
-						let foundChanges = _.find(found.changes, (e) => e.prop === prop)
-						if (!foundChanges) {
-							foundChanges = {
-								prop: prop,
-								amount: 0,
+						if (prop === 'totalRenders') {
+							if (found) found.totalRenders++
+						} else {
+							let foundChanges = _.find(found.changes, (e) => e.prop === prop)
+							if (!foundChanges) {
+								foundChanges = {
+									prop: prop,
+									amount: 0,
+								}
+								found.changes.push(foundChanges)
 							}
-							found.changes.push(foundChanges)
-						}
 
-						foundChanges.amount++
+							foundChanges.amount++
+						}
 					}
 				},
 			}
 			setInterval(() => {
 				if (global.stats) {
-					let renders = 0
-					global.stats.components = _.sortBy(global.stats.components, (c) => -c.renders)
+					let totalRenders = 0
+					global.stats.components = _.sortBy(
+						global.stats.components,
+						(c) => -c.totalRenders
+					)
 					global.stats.components.forEach((c) => {
-						renders += c.renders
+						totalRenders += c.totalRenders
 					})
-					if (document.hasFocus() && renders !== global.stats.lastCount) {
-						console.groupCollapsed('%cRender Count: ' + renders, 'color: orange')
+					if (document.hasFocus() && totalRenders !== global.stats.lastCount) {
+						console.groupCollapsed('%cRender Count: ' + totalRenders, 'color: orange')
 						console.log(
 							'\n%cUSE REACT PROFILER TO CHECK OTHER COMPONENTS\n',
 							'font-weight: bold; color: cyan'
 						)
 						global.stats.components.forEach((c, i) => {
 							console.groupCollapsed(
-								'%c' + c.name + ': ' + c.renders,
+								'%c' + c.name + ': ' + c.totalRenders,
 								i === 0 ? 'color: yellow' : ''
 							)
 							c.changes = _.sortBy(c.changes, (c) => -c.amount)
@@ -295,7 +300,7 @@ export default function RouterBase({ children }: { children: React.ReactNode }) 
 						})
 						console.groupEnd()
 					}
-					global.stats.lastCount = renders
+					global.stats.lastCount = totalRenders
 				}
 			}, 1000)
 		}

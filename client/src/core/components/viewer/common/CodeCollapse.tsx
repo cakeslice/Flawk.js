@@ -8,6 +8,7 @@
 import CodeBlock from 'core/components/CodeBlock'
 import OutsideAlerter from 'core/components/OutsideAlerter'
 import Tooltip from 'core/components/Tooltip'
+import TrackedComponent from 'core/components/TrackedComponent'
 import config from 'core/config'
 import styles from 'core/styles'
 import React from 'react'
@@ -35,7 +36,13 @@ type Props = {
 	data: string
 	lang: 'json' | 'jsx' | 'tsx' | 'html'
 }
-export default class CodeCollapse extends React.Component<Props> {
+export default class CodeCollapse extends TrackedComponent<Props> {
+	trackedName = 'CodeCollapse'
+	shouldComponentUpdate(nextProps: Props, nextState: typeof this.state) {
+		super.shouldComponentUpdate(nextProps, nextState, false)
+		return this.deepEqualityCheck(nextProps, nextState)
+	}
+
 	constructor(props: Props) {
 		super(props)
 
@@ -61,6 +68,7 @@ export default class CodeCollapse extends React.Component<Props> {
 			<MediaQuery minWidth={config.mobileWidthTrigger}>
 				{(desktop) => (
 					<OutsideAlerter
+						trackedName='CodeCollapse'
 						delay
 						clickedOutside={() => {
 							this.setState({ isOpen: false })
@@ -68,10 +76,7 @@ export default class CodeCollapse extends React.Component<Props> {
 					>
 						<div ref={this.setWrapperRef} className={this.props.className}>
 							<div className={'flex-col items-end'}>
-								<div
-									style={{ width: desktop ? 0 : undefined }}
-									className={'flex-col items-end'}
-								>
+								<div style={{ width: 0 }} className={'flex-col items-end'}>
 									<Tooltip
 										tooltipProps={{ placement: 'left' }}
 										content='Show code'

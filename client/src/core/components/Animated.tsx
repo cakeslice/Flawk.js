@@ -12,9 +12,10 @@ import {
 	Transition,
 	VariantLabels,
 } from 'framer-motion'
-import React, { Component } from 'react'
+import React from 'react'
 import { InView } from 'react-intersection-observer'
 import * as uuid from 'uuid'
+import TrackedComponent from './TrackedComponent'
 
 export type Effect =
 	| 'fade'
@@ -49,8 +50,16 @@ type Props = {
 	//
 	onClick?: React.MouseEventHandler<HTMLElement>
 	onBlur?: React.FocusEventHandler<HTMLElement>
+	//
+	trackedName?: string
 }
-export default class Animated extends Component<Props> {
+export default class Animated extends TrackedComponent<Props> {
+	trackedName = 'Animated'
+	shouldComponentUpdate(nextProps: Props, nextState: typeof this.state) {
+		super.shouldComponentUpdate(nextProps, nextState, false)
+		return this.deepEqualityCheck(nextProps, nextState)
+	}
+
 	state = {
 		visible: false,
 		mounted: this.props.controlled !== undefined ? this.props.controlled : true,

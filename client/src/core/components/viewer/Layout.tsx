@@ -184,6 +184,7 @@ export default class Layout extends QueryParams {
 								<div>
 									<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
 										<FInput
+											name='buffered_search'
 											defaultValue={this.queryParams.search}
 											bufferedInput
 											onChange={async (e) => {
@@ -195,6 +196,7 @@ export default class Layout extends QueryParams {
 											placeholder={'Buffered Search'}
 										></FInput>
 										<FInput
+											name='manual_search'
 											style={{ width: 210 }}
 											defaultValue={this.queryParams.search}
 											onChange={(e) => {

@@ -85,7 +85,7 @@ declare global {
 				lastCount: number
 				components: Array<{
 					name: string
-					renders: number
+					totalRenders: number
 					changes: Array<{ prop: string; amount: number }>
 				}>
 				track: (component: string, prop: string) => void

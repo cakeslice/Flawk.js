@@ -37,7 +37,6 @@ type Props = {
 	noInvalidLabel?: boolean
 	onClick?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
 	onBlur?: (event: React.FocusEvent<HTMLButtonElement, Element>) => void
-	// -----------
 } & (
 	| {
 			checkbox?: undefined
@@ -72,6 +71,10 @@ type Props = {
 	)
 export default class FButton extends TrackedComponent<Props> {
 	trackedName = 'FButton'
+	shouldComponentUpdate(nextProps: Props, nextState: typeof this.state) {
+		super.shouldComponentUpdate(nextProps, nextState, false)
+		return this.deepEqualityCheck(nextProps, nextState)
+	}
 
 	timer: ReturnType<typeof setTimeout> | undefined = undefined
 	state = {

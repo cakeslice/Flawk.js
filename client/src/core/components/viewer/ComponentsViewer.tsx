@@ -237,10 +237,11 @@ export const Section: React.FC<{
 	code?: string
 	lang?: 'tsx' | 'jsx' | 'json'
 }> = ({ children, title, top, tags, code, lang }) => {
+	const id = title.replaceAll(' ', '_').toLowerCase()
+
 	return (
 		<MediaQuery minWidth={config.mobileWidthTrigger}>
 			{(desktop) => {
-				const id = title.replaceAll(' ', '_').toLowerCase()
 				return (
 					<MediaQuery minWidth={880}>
 						{(tablet) => (

@@ -46,6 +46,10 @@ type Props = {
 }
 export default class Modal extends TrackedComponent<Props> {
 	trackedName = 'Modal'
+	shouldComponentUpdate(nextProps: Props, nextState: typeof this.state) {
+		super.shouldComponentUpdate(nextProps, nextState, false)
+		return this.deepEqualityCheck(nextProps, nextState)
+	}
 
 	state = {
 		parentState: false,
@@ -217,6 +221,7 @@ export default class Modal extends TrackedComponent<Props> {
 		return (
 			<Portal>
 				<Animated
+					trackedName='Modal'
 					className='scrollTarget'
 					controlled={
 						this.props.parent && this.props.name

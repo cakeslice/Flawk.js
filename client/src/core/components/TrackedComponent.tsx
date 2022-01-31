@@ -21,9 +21,25 @@ export default class TrackedComponent<Props = {}, State = {}> extends Component<
 		}
 	}
 
-	// ! Don't forget to call super.shouldComponentUpdate(nextProps) if overridden!
-	shouldComponentUpdate(nextProps: Props, nextState: State) {
-		if (!config.prod) {
+	// ! Don't forget to call super.shouldComponentUpdate(nextProps) AND super.trackRender() if overridden!
+	shouldComponentUpdate(nextProps: Props, nextState: State, trackRender: boolean) {
+		if (!config.prod && !config.staging) {
+			const name =
+				this.trackedName +
+				// @ts-ignore
+				(this.props.name
+					? // @ts-ignore
+					  ' "' + this.props.name + '"'
+					: // @ts-ignore
+					this.props.field && this.props.field.name
+					? // @ts-ignore
+					  ' "' + this.props.field.name + '"'
+					: // @ts-ignore
+					this.props.trackedName
+					? // @ts-ignore
+					  ' "' + this.props.trackedName + '"'
+					: '')
+
 			if (nextProps)
 				Object.keys(nextProps).forEach((key) => {
 					if (this.trackedProps) {
@@ -39,24 +55,7 @@ export default class TrackedComponent<Props = {}, State = {}> extends Component<
 						// @ts-ignore
 						!isEqual(nextProps[key], this.props[key])
 					) {
-						global.stats &&
-							global.stats.track(
-								this.trackedName +
-									// @ts-ignore
-									(this.props.name
-										? // @ts-ignore
-										  ' "' + this.props.name + '"'
-										: // @ts-ignore
-										this.props.field && this.props.field.name
-										? // @ts-ignore
-										  ' "' + this.props.field.name + '"'
-										: // @ts-ignore
-										this.props.trackedName
-										? // @ts-ignore
-										  ' "' + this.props.trackedName + '"'
-										: ''),
-								'prop/' + key
-							)
+						global.stats && global.stats.track(name, 'prop/' + key)
 					}
 				})
 			if (nextState)
@@ -74,27 +73,39 @@ export default class TrackedComponent<Props = {}, State = {}> extends Component<
 						// @ts-ignore
 						!isEqual(nextState[key], this.state[key])
 					) {
-						global.stats &&
-							global.stats.track(
-								this.trackedName +
-									// @ts-ignore
-									(this.props.name
-										? // @ts-ignore
-										  ' "' + this.props.name + '"'
-										: // @ts-ignore
-										this.props.field && this.props.field.name
-										? // @ts-ignore
-										  ' "' + this.props.field.name + '"'
-										: // @ts-ignore
-										this.props.trackedName
-										? // @ts-ignore
-										  ' "' + this.props.trackedName + '"'
-										: ''),
-								'state/' + key
-							)
+						global.stats && global.stats.track(name, 'state/' + key)
 					}
 				})
+			if (trackRender !== false) this.trackRender()
 		}
+
 		return true
+	}
+
+	trackRender() {
+		if (!config.prod && !config.staging) {
+			const name =
+				this.trackedName +
+				// @ts-ignore
+				(this.props.name
+					? // @ts-ignore
+					  ' "' + this.props.name + '"'
+					: // @ts-ignore
+					this.props.field && this.props.field.name
+					? // @ts-ignore
+					  ' "' + this.props.field.name + '"'
+					: // @ts-ignore
+					this.props.trackedName
+					? // @ts-ignore
+					  ' "' + this.props.trackedName + '"'
+					: '')
+
+			global.stats && global.stats.track(name, 'totalRenders')
+		}
+	}
+	deepEqualityCheck(nextProps: Props, nextState: State) {
+		const render = !isEqual(this.props, nextProps) || !isEqual(this.state, nextState)
+		if (render) this.trackRender()
+		return render
 	}
 }

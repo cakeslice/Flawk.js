@@ -45,6 +45,7 @@ export default function CodeBlock(props: {
 		<MediaQuery minWidth={config.mobileWidthTrigger}>
 			{(desktop) => (
 				<Animated
+					trackedName='CodeBlock'
 					controlled={props.visible !== undefined ? props.visible : true}
 					effects={desktop ? ['fade', 'height-width'] : ['fade']}
 					style={props.containerStyle}

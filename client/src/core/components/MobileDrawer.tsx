@@ -29,6 +29,10 @@ type Props = {
 }
 export default class MobileDrawer extends TrackedComponent<Props> {
 	trackedName = 'MobileDrawer'
+	shouldComponentUpdate(nextProps: Props, nextState: typeof this.state) {
+		super.shouldComponentUpdate(nextProps, nextState, false)
+		return this.deepEqualityCheck(nextProps, nextState)
+	}
 
 	state = {
 		isOpen: false,
@@ -271,6 +275,7 @@ export default class MobileDrawer extends TrackedComponent<Props> {
 							<div key={link.id + (link.params || '')}>
 								{output}
 								<Animated
+									trackedName='MobileDrawer'
 									animateOffscreen
 									duration={0.25}
 									effects={['fade', 'height']}

@@ -6,16 +6,24 @@
  */
 
 import navigation from 'core/functions/navigation'
-import React, { Component } from 'react'
+import React from 'react'
 import { InView } from 'react-intersection-observer'
+import TrackedComponent from './TrackedComponent'
 
 type Props = {
 	id: string
 	scrollOffset?: number
 	updateOffset?: number
 	updateHash?: boolean
+	children?: React.ReactNode
 }
-export default class Anchor extends Component<Props> {
+export default class Anchor extends TrackedComponent<Props> {
+	trackedName = 'Anchor'
+	shouldComponentUpdate(nextProps: Props, nextState: typeof this.state) {
+		super.shouldComponentUpdate(nextProps, nextState, false)
+		return this.deepEqualityCheck(nextProps, nextState)
+	}
+
 	componentDidMount() {
 		if (window.location.hash) {
 			navigation.scrollToHash(
@@ -26,12 +34,9 @@ export default class Anchor extends Component<Props> {
 	}
 
 	render() {
+		const rootMargin = '0px 0px -' + (80 + (this.props.updateOffset || 0)).toString() + '% 0px'
 		return (
-			<InView
-				rootMargin={
-					'0px 0px -' + (80 + (this.props.updateOffset || 0)).toString() + '% 0px'
-				}
-			>
+			<InView rootMargin={rootMargin}>
 				{({ inView, ref, entry }) => {
 					if (this.props.updateHash) {
 						if (inView) {

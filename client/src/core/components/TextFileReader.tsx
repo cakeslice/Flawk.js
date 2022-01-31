@@ -6,11 +6,19 @@
  */
 
 import React from 'react'
+import TrackedComponent from './TrackedComponent'
 
-export default class TextFileReader extends React.Component<{
+type Props = {
 	txt: string
 	classOverride?: string
-}> {
+}
+export default class TextFileReader extends TrackedComponent<Props> {
+	trackedName = 'TextFileReader'
+	shouldComponentUpdate(nextProps: Props, nextState: typeof this.state) {
+		super.shouldComponentUpdate(nextProps, nextState, false)
+		return this.deepEqualityCheck(nextProps, nextState)
+	}
+
 	timer: ReturnType<typeof setTimeout> | undefined = undefined
 	state = {
 		text: '',

@@ -9,9 +9,10 @@ import { get, post } from 'core/api'
 import config from 'core/config'
 import styles from 'core/styles'
 import Parser from 'html-react-parser'
-import React, { Component } from 'react'
+import React from 'react'
 import Avatar from './Avatar'
 import OutsideAlerter from './OutsideAlerter'
+import TrackedComponent from './TrackedComponent'
 
 type Notification = {
 	_id: string
@@ -21,8 +22,13 @@ type Notification = {
 }
 
 type Props = { children?: React.ReactNode }
+export default class Notifications extends TrackedComponent<Props> {
+	trackedName = 'Notifications'
+	shouldComponentUpdate(nextProps: Props, nextState: typeof this.state) {
+		super.shouldComponentUpdate(nextProps, nextState, false)
+		return this.deepEqualityCheck(nextProps, nextState)
+	}
 
-export default class Notifications extends Component<Props> {
 	constructor(props: Props) {
 		super(props)
 
@@ -98,6 +104,7 @@ export default class Notifications extends Component<Props> {
 
 		return (
 			<OutsideAlerter
+				trackedName='Notifications'
 				clickedOutside={() => {
 					this.setState({ open: false })
 				}}

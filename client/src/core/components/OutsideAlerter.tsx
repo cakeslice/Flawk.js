@@ -5,11 +5,22 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import React, { Component } from 'react'
+import React from 'react'
+import TrackedComponent from './TrackedComponent'
 
-type Props = { delay?: boolean; children: React.ReactNode; clickedOutside: () => void }
+type Props = {
+	delay?: boolean
+	children: React.ReactNode
+	clickedOutside: () => void
+	trackedName?: string
+}
+export default class OutsideAlerter extends TrackedComponent<Props> {
+	trackedName = 'OutsideAlerter'
+	shouldComponentUpdate(nextProps: Props, nextState: typeof this.state) {
+		super.shouldComponentUpdate(nextProps, nextState, false)
+		return this.deepEqualityCheck(nextProps, nextState)
+	}
 
-export default class OutsideAlerter extends Component<Props> {
 	constructor(props: Props) {
 		super(props)
 

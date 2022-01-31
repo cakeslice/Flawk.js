@@ -22,14 +22,14 @@ import VisibilitySensor from 'react-visibility-sensor'
 import * as uuid from 'uuid'
 
 type Value = string | number | boolean | undefined
-type SpecialRow = {
+export type SpecialRow = {
 	key: string
 	selector: string
 	style?: React.CSSProperties
 	expandContent?: boolean
 	row: (value: Value, data: Obj) => React.ReactNode
 }
-type Column = {
+export type Column = {
 	name?: React.ReactNode
 	selector: string
 	cell?: (value: Value, data: Obj, isVisible: boolean) => React.ReactNode
@@ -75,6 +75,30 @@ export default class FTable extends QueryParams<
 	TableProps
 > {
 	trackedName = 'FTable'
+	shouldComponentUpdate(nextProps: TableProps, nextState: typeof this.state) {
+		this.trackedProps =
+			nextProps.triggerUpdateID !== undefined ? ['triggerUpdateID', 'isLoading'] : undefined
+		super.shouldComponentUpdate(nextProps, nextState, false)
+
+		const isLoadingChanged = this.props.isLoading !== nextProps.isLoading
+		const triggerUpdateIDChanged = this.props.triggerUpdateID !== nextProps.triggerUpdateID
+
+		let render = false
+		if (nextProps.triggerUpdateID !== undefined) {
+			if (isLoadingChanged || triggerUpdateIDChanged) {
+				render = true
+			}
+		} else render = this.deepEqualityCheck(nextProps, nextState)
+
+		if (render) {
+			if (isLoadingChanged && !nextProps.isLoading) {
+				this.isLoadingID = uuid.v1()
+				if (this.scrollYRef) this.scrollYRef.scrollTop = 0
+			}
+			super.trackRender()
+		}
+		return render
+	}
 
 	state = {
 		uuid: uuid.v1(),
@@ -92,29 +116,6 @@ export default class FTable extends QueryParams<
 	}
 
 	isLoadingID: string | undefined = undefined
-	shouldComponentUpdate(nextProps: TableProps, nextState: typeof this.state) {
-		this.trackedProps =
-			nextProps.triggerUpdateID !== undefined ? ['triggerUpdateID', 'isLoading'] : undefined
-		super.shouldComponentUpdate(nextProps, nextState)
-
-		const isLoadingChanged = this.props.isLoading !== nextProps.isLoading
-		const triggerUpdateIDChanged = this.props.triggerUpdateID !== nextProps.triggerUpdateID
-
-		if (
-			(isLoadingChanged ||
-				triggerUpdateIDChanged ||
-				nextProps.triggerUpdateID === undefined) &&
-			!nextProps.isLoading
-		) {
-			if (isLoadingChanged) {
-				this.isLoadingID = uuid.v1()
-				if (this.scrollYRef) this.scrollYRef.scrollTop = 0
-			}
-			return true
-		}
-
-		return false
-	}
 
 	componentDidMount() {
 		this.setState({ containment: document.getElementById('custom-table-' + this.state.uuid) })
@@ -420,6 +421,11 @@ export default class FTable extends QueryParams<
 												...(overrideStyle && overrideStyle.rowWrapperStyle),
 											}
 
+											const expandContent =
+												(!sR || sR.expandContent) &&
+												props.expandContent &&
+												props.expandContent(d)
+
 											return this.state.containment ? (
 												<VisibilitySensor
 													intervalCheck={true}
@@ -453,11 +459,7 @@ export default class FTable extends QueryParams<
 																isVisible={isVisible}
 																style={style}
 																rowStyle={rS}
-																expandContent={
-																	(!sR || sR.expandContent) &&
-																	props.expandContent &&
-																	props.expandContent(d)
-																}
+																expandContent={expandContent}
 																cellPadding={cellPadding}
 																cellPaddingY={cellPaddingY}
 															>
@@ -625,20 +627,22 @@ class Row extends TrackedComponent<RowProps> {
 		this.trackedProps =
 			nextProps.triggerUpdateID !== undefined ? ['triggerUpdateID', 'isVisible'] : undefined
 		this.trackedState = nextProps.triggerUpdateID !== undefined ? ['isOpen'] : undefined
-		super.shouldComponentUpdate(nextProps, nextState)
+		super.shouldComponentUpdate(nextProps, nextState, false)
 
 		if (this.props.isLoadingID !== nextProps.isLoadingID) {
 			this.state.isOpen = false
 			nextState.isOpen = false
 		}
 
-		return (
+		const render =
 			nextProps.triggerUpdateID === undefined ||
 			this.props.triggerUpdateID !== nextProps.triggerUpdateID ||
 			this.props.isVisible !== nextProps.isVisible ||
 			this.state.isOpen !== nextState.isOpen ||
 			this.props.isLoadingID !== nextProps.isLoadingID
-		)
+
+		if (render) this.trackRender()
+		return render
 	}
 
 	render() {
@@ -687,6 +691,7 @@ class Row extends TrackedComponent<RowProps> {
 				)}
 				{this.props.expandContent && (
 					<Animated
+						trackedName={'FTable/Row ' + (this.props.trackedName || '')}
 						animateOffscreen
 						duration={0.25}
 						effects={['fade', 'height']}

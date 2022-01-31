@@ -45,7 +45,6 @@ module.exports = {
 	rules: {
 		'jest/valid-describe': 'off',
 		//
-		'react/jsx-no-bind': ['warn', { ignoreRefs: true }],
 		'react/no-array-index-key': 'warn',
 		'react/no-redundant-should-component-update': 'error',
 		'react/no-unused-prop-types': 'error',

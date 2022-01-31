@@ -67,6 +67,10 @@ export default class Dashboard extends TrackedComponent<
 	{ open: boolean; entryMaxWidth: number; showHeaderBackground: boolean }
 > {
 	trackedName = 'Dashboard'
+	shouldComponentUpdate(nextProps: DashboardProps, nextState: typeof this.state) {
+		super.shouldComponentUpdate(nextProps, nextState, false)
+		return this.deepEqualityCheck(nextProps, nextState)
+	}
 
 	state = {
 		open: false,
@@ -83,9 +87,11 @@ export default class Dashboard extends TrackedComponent<
 	handleScroll() {
 		const scrollTop = document.body.scrollTop || document.documentElement.scrollTop
 
-		this.setState({
-			showHeaderBackground: scrollTop > 50,
-		})
+		const showHeaderBackground = scrollTop > 50
+		if (showHeaderBackground !== this.state.showHeaderBackground)
+			this.setState({
+				showHeaderBackground: showHeaderBackground,
+			})
 	}
 	componentDidMount() {
 		window.addEventListener('scroll', this.handleScroll)
@@ -121,6 +127,14 @@ export default class Dashboard extends TrackedComponent<
 
 		const textColor = this.props.textColor
 
+		const routes = this.props.routes.filter((e) => !e.mobileTab && !e.hidden)
+		const mobileRoutes = this.props.routes.filter((e) => !e.desktopTab && !e.hidden)
+		//
+		const subRoutes = this.props.routes.filter((e) => e.subRoutes)
+		const otherRoutes = this.props.routes.filter((e) => !e.notRoute && !e.subRoutes)
+
+		const toggleOpenDesktop = (open?: boolean) => this.toggleOpen(open, true)
+
 		return (
 			<MediaQuery minWidth={this.props.bigScreenWidth || 1450}>
 				{(bigScreen) => {
@@ -128,6 +142,58 @@ export default class Dashboard extends TrackedComponent<
 						<MediaQuery minWidth={config.mobileWidthTrigger}>
 							{(desktop) => {
 								const headerHeight = desktop ? 90 : 50
+
+								const desktopStyle: React.CSSProperties = {
+									width:
+										bigScreen || this.props.alwaysOpen
+											? openWidth
+											: this.state.entryMaxWidth,
+									transition: `width 500ms`,
+									position: 'fixed',
+									left: 0,
+									bottom: 0,
+									top: 0,
+									zIndex: 2,
+									backgroundColor: this.props.color,
+								}
+								const mobileStyle: React.CSSProperties = {
+									transition:
+										'border-width .5s, box-shadow .5s, backgroundColor .5s',
+									backgroundColor: this.props.color,
+									boxShadow: this.state.showHeaderBackground
+										? styles.mediumShadow
+										: undefined,
+									borderBottomStyle: 'solid',
+									borderWidth: 1,
+									borderColor: styles.colors.borderColor,
+
+									position: 'fixed',
+									top: 0,
+									zIndex: 30,
+								}
+
+								const pageStyle = desktop
+									? {
+											marginLeft:
+												bigScreen || this.props.alwaysOpen
+													? openWidth
+													: closedWidth,
+											minHeight: '100vh',
+											height: 1,
+											maxWidth:
+												'calc(100vw - ' + closedWidth.toString() + 'px)',
+									  }
+									: undefined
+
+								const mobileDrawerStyle = {
+									display: 'flex',
+									alignItems: 'center',
+									minWidth: desktop ? 48 : 30,
+									marginBottom: this.state.showHeaderBackground ? 10 : 15,
+									marginTop: this.state.showHeaderBackground ? 10 : 15,
+									transition: 'margin-top .5s, margin-bottom .5s',
+								}
+
 								return (
 									<div className='flex-col justify-center'>
 										{desktop ? (
@@ -145,24 +211,13 @@ export default class Dashboard extends TrackedComponent<
 												}
 											>
 												<Animated
+													trackedName='Dashboard'
 													animateOffscreen
 													effects={['fade', 'left']}
 													distance={closedWidth}
 													duration={0.75}
 													//
-													style={{
-														width:
-															bigScreen || this.props.alwaysOpen
-																? openWidth
-																: this.state.entryMaxWidth,
-														transition: `width 500ms`,
-														position: 'fixed',
-														left: 0,
-														bottom: 0,
-														top: 0,
-														zIndex: 2,
-														backgroundColor: this.props.color,
-													}}
+													style={desktopStyle}
 												>
 													<Menu
 														pageProps={this.props.pageProps}
@@ -183,14 +238,11 @@ export default class Dashboard extends TrackedComponent<
 																: this.state.entryMaxWidth
 														}
 														headerHeight={headerHeight}
-														routes={this.props.routes.filter(
-															(e) => !e.mobileTab && !e.hidden
-														)}
-														toggleOpen={(open) =>
-															this.toggleOpen(
-																open,
-																bigScreen || this.props.alwaysOpen
-															)
+														routes={routes}
+														toggleOpen={
+															bigScreen || this.props.alwaysOpen
+																? toggleOpenDesktop
+																: this.toggleOpen
 														}
 													/>
 												</Animated>
@@ -208,28 +260,14 @@ export default class Dashboard extends TrackedComponent<
 													}}
 												>
 													<Animated
+														trackedName='Dashboard'
 														animateOffscreen
 														effects={['fade', 'down']}
 														distance={mobileHeight}
 														duration={0.75}
 														//
 														className='blur-background w-full flex-col items-center'
-														style={{
-															transition:
-																'border-width .5s, box-shadow .5s, backgroundColor .5s',
-															backgroundColor: this.props.color,
-															boxShadow: this.state
-																.showHeaderBackground
-																? styles.mediumShadow
-																: undefined,
-															borderBottomStyle: 'solid',
-															borderWidth: 1,
-															borderColor: styles.colors.borderColor,
-
-															position: 'fixed',
-															top: 0,
-															zIndex: 30,
-														}}
+														style={mobileStyle}
 													>
 														<div
 															className='flex justify-between w-full'
@@ -290,26 +328,9 @@ export default class Dashboard extends TrackedComponent<
 															</button>
 
 															<MobileDrawer
-																style={{
-																	display: 'flex',
-																	alignItems: 'center',
-																	minWidth: desktop ? 48 : 30,
-																	marginBottom: this.state
-																		.showHeaderBackground
-																		? 10
-																		: 15,
-																	marginTop: this.state
-																		.showHeaderBackground
-																		? 10
-																		: 15,
-																	transition:
-																		'margin-top .5s, margin-bottom .5s',
-																}}
+																style={mobileDrawerStyle}
 																background={this.props.color}
-																links={this.props.routes.filter(
-																	(e) =>
-																		!e.desktopTab && !e.hidden
-																)}
+																links={mobileRoutes}
 																path={this.props.path}
 																headerHeight={
 																	this.state.showHeaderBackground
@@ -317,9 +338,7 @@ export default class Dashboard extends TrackedComponent<
 																		: mobileHeightTop
 																}
 																textColor={textColor}
-																toggleOpen={(open) =>
-																	this.toggleOpen(open)
-																}
+																toggleOpen={this.toggleOpen}
 																pageProps={this.props.pageProps}
 															></MobileDrawer>
 														</div>
@@ -328,92 +347,84 @@ export default class Dashboard extends TrackedComponent<
 											</div>
 										)}
 
-										<div
-											style={
-												desktop
-													? {
-															marginLeft:
-																bigScreen || this.props.alwaysOpen
-																	? openWidth
-																	: closedWidth,
-															minHeight: '100vh',
-															height: 1,
-															maxWidth:
-																'calc(100vw - ' +
-																closedWidth.toString() +
-																'px)',
-													  }
-													: undefined
-											}
-										>
+										<div style={pageStyle}>
 											<Switch>
-												{this.props.routes
-													.filter((e) => e.subRoutes)
-													.map((route) => {
-														const foundDefaultSubroute = route.subRoutes
-															? route.subRoutes.find(
-																	(e) => e.defaultRoute
-															  ) || route.subRoutes.find((e) => e.id)
-															: undefined
-														let defaultSubroute: string | undefined
-														if (foundDefaultSubroute)
-															defaultSubroute =
-																foundDefaultSubroute.id
+												{subRoutes.map((route) => {
+													const foundDefaultSubroute = route.subRoutes
+														? route.subRoutes.find(
+																(e) => e.defaultRoute
+														  ) || route.subRoutes.find((e) => e.id)
+														: undefined
+													let defaultSubroute: string | undefined
+													if (foundDefaultSubroute)
+														defaultSubroute = foundDefaultSubroute.id
 
-														return (
-															<Route
-																key={
-																	this.props.path +
-																	route.id +
-																	(route.params || '')
-																}
-																path={this.props.path + route.id}
-																exact={
-																	route.notExact ? false : true
-																}
-															>
-																{(route.subRoutes || []).map(
-																	(sub) => {
-																		const Page = sub.page
+													return (
+														<Route
+															key={
+																this.props.path +
+																route.id +
+																(route.params || '')
+															}
+															path={this.props.path + route.id}
+															exact={route.notExact ? false : true}
+														>
+															{(route.subRoutes || []).map((sub) => {
+																const Page = sub.page
 
-																		return (
-																			<Route
-																				key={
-																					this.props
-																						.path +
-																					route.id +
-																					'/' +
-																					sub.id +
-																					(sub.params ||
-																						'')
+																return (
+																	<Route
+																		key={
+																			this.props.path +
+																			route.id +
+																			'/' +
+																			sub.id +
+																			(sub.params || '')
+																		}
+																		path={
+																			this.props.path +
+																			route.id +
+																			'/' +
+																			sub.id +
+																			(sub.params || '')
+																		}
+																		exact={
+																			sub.notExact
+																				? false
+																				: true
+																		}
+																		render={({ match }) => (
+																			<Suspense
+																				fallback={
+																					<div></div>
 																				}
-																				path={
-																					this.props
-																						.path +
-																					route.id +
-																					'/' +
-																					sub.id +
-																					(sub.params ||
-																						'')
-																				}
-																				exact={
-																					sub.notExact
-																						? false
-																						: true
-																				}
-																				render={({
-																					match,
-																				}) => (
-																					<Suspense
-																						fallback={
-																							<div></div>
-																						}
-																					>
-																						{/* @ts-ignore */}
-																						<WrapperComponent
+																			>
+																				{/* @ts-ignore */}
+																				<WrapperComponent
+																					parentTitle={
+																						route.name ||
+																						''
+																					}
+																					overrideHeader={
+																						sub.overrideHeader
+																					}
+																					title={sub.name}
+																				>
+																					{Page /* @ts-ignore */ ? (
+																						<Page
+																							params={
+																								match.params
+																							}
+																							path={
+																								this
+																									.props
+																									.path
+																							}
+																							{...this
+																								.props
+																								.pageProps}
 																							parentTitle={
-																								route.name ||
-																								''
+																								route.name
 																							}
 																							overrideHeader={
 																								sub.overrideHeader
@@ -421,114 +432,81 @@ export default class Dashboard extends TrackedComponent<
 																							title={
 																								sub.name
 																							}
-																						>
-																							{Page /* @ts-ignore */ ? (
-																								<Page
-																									params={
-																										match.params
-																									}
-																									path={
-																										this
-																											.props
-																											.path
-																									}
-																									{...this
-																										.props
-																										.pageProps}
-																									parentTitle={
-																										route.name
-																									}
-																									overrideHeader={
-																										sub.overrideHeader
-																									}
-																									title={
-																										sub.name
-																									}
-																								></Page>
-																							) : (
-																								<div></div>
-																							)}
-																						</WrapperComponent>
-																					</Suspense>
-																				)}
-																			></Route>
-																		)
-																	}
-																)}
+																						></Page>
+																					) : (
+																						<div></div>
+																					)}
+																				</WrapperComponent>
+																			</Suspense>
+																		)}
+																	></Route>
+																)
+															})}
 
-																{/*//! Shouldn't be exact, but doesn't work without it... */}
-																{defaultSubroute && (
-																	<Route exact path={'/'}>
-																		<Redirect
-																			to={
-																				this.props.path +
-																				route.id +
-																				'/' +
-																				defaultSubroute
-																			}
-																		/>
-																	</Route>
-																)}
-															</Route>
-														)
-													})}
-												{this.props.routes
-													.filter((e) => !e.notRoute && !e.subRoutes)
-													.map((route) => {
-														const Page = route.page
-														return (
-															<Route
-																key={
-																	this.props.path +
-																	route.id +
-																	(route.params || '')
-																}
-																path={
-																	this.props.path +
-																	route.id +
-																	(route.params || '')
-																}
-																exact={
-																	route.notExact ? false : true
-																}
-																render={({ match }) => (
-																	<Suspense
-																		fallback={<div></div>}
+															{/*//! Shouldn't be exact, but doesn't work without it... */}
+															{defaultSubroute && (
+																<Route exact path={'/'}>
+																	<Redirect
+																		to={
+																			this.props.path +
+																			route.id +
+																			'/' +
+																			defaultSubroute
+																		}
+																	/>
+																</Route>
+															)}
+														</Route>
+													)
+												})}
+												{otherRoutes.map((route) => {
+													const Page = route.page
+													return (
+														<Route
+															key={
+																this.props.path +
+																route.id +
+																(route.params || '')
+															}
+															path={
+																this.props.path +
+																route.id +
+																(route.params || '')
+															}
+															exact={route.notExact ? false : true}
+															render={({ match }) => (
+																<Suspense fallback={<div></div>}>
+																	{/* @ts-ignore */}
+																	<WrapperComponent
+																		overrideHeader={
+																			route.overrideHeader
+																		}
+																		title={route.name}
 																	>
-																		{/* @ts-ignore */}
-																		<WrapperComponent
-																			overrideHeader={
-																				route.overrideHeader
-																			}
-																			title={route.name}
-																		>
-																			{Page /* @ts-ignore */ ? (
-																				<Page
-																					params={
-																						match.params
-																					}
-																					path={
-																						this.props
-																							.path
-																					}
-																					{...this.props
-																						.pageProps}
-																					overrideHeader={
-																						route.overrideHeader
-																					}
-																					title={
-																						route.name
-																					}
-																				></Page>
-																			) : (
-																				<div></div>
-																			)}
-																		</WrapperComponent>
-																	</Suspense>
-																)}
-															></Route>
-														)
-													})}
+																		{Page /* @ts-ignore */ ? (
+																			<Page
+																				params={
+																					match.params
+																				}
+																				path={
+																					this.props.path
+																				}
+																				{...this.props
+																					.pageProps}
+																				overrideHeader={
+																					route.overrideHeader
+																				}
+																				title={route.name}
+																			></Page>
+																		) : (
+																			<div></div>
+																		)}
+																	</WrapperComponent>
+																</Suspense>
+															)}
+														></Route>
+													)
+												})}
 												{defaultRoute && (
 													<Route path={'/'}>
 														<Redirect
@@ -565,6 +543,10 @@ type MenuProps = {
 }
 class Menu extends TrackedComponent<MenuProps> {
 	trackedName = 'Dashboard/Menu'
+	shouldComponentUpdate(nextProps: MenuProps, nextState: typeof this.state) {
+		super.shouldComponentUpdate(nextProps, nextState, false)
+		return this.deepEqualityCheck(nextProps, nextState)
+	}
 
 	constructor(props: MenuProps) {
 		super(props)
@@ -862,6 +844,7 @@ class Menu extends TrackedComponent<MenuProps> {
 							<div key={entry.id + (entry.params || '')}>
 								{output}
 								<Animated
+									trackedName='Dashboard/Menu'
 									animateOffscreen
 									duration={0.25}
 									effects={['fade', 'height']}
