@@ -15,6 +15,7 @@ import Slider from 'core/components/Slider'
 import config from 'core/config'
 import styles from 'core/styles'
 import { Form, Formik } from 'formik'
+import { css } from 'glamor'
 import React, { Component } from 'react'
 import MediaQuery from 'react-responsive'
 import { Section } from './ComponentsViewer'
@@ -109,7 +110,19 @@ export default class Inputs extends Component {
 								<div>
 									Inline Input:{' '}
 									<span>
-										<input type='email' placeholder='someone@gmail.com'></input>
+										<input
+											{...css({
+												'::placeholder': {
+													userSelect: 'none',
+													color: config.replaceAlpha(
+														styles.colors.black,
+														global.nightMode ? 0.25 : 0.5
+													),
+												},
+											})}
+											type='email'
+											placeholder='someone@gmail.com'
+										></input>
 									</span>
 								</div>
 								<sp />
@@ -339,7 +352,7 @@ export default class Inputs extends Component {
 													<Field
 														component={FInput}
 														required
-														invalidType='bottom'
+														invalidType='label'
 														invalidMessage='Min. 12 characters'
 														validate={(value) =>
 															(value as string).length >= 12
@@ -353,7 +366,7 @@ export default class Inputs extends Component {
 														component={Dropdown}
 														required
 														name='dropdown'
-														invalidType='bottom'
+														invalidType='label'
 														isSearchable={true}
 														placeholder={'Value'}
 														erasable

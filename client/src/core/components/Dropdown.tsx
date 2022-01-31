@@ -78,10 +78,8 @@ type Props = {
 	dropdownIndicator?: React.ReactNode
 	customInput?: boolean
 	//
-	invalid?: string
 	isDisabled?: boolean
 	placeholder?: string
-	name?: string
 	value?: string
 	bufferInterval?: number
 	//
@@ -101,7 +99,16 @@ type Props = {
 	form?: FormikProps<Obj>
 	onChange?: (value: string | undefined) => void
 	onBlur?: (event: React.FocusEvent<HTMLInputElement, Element>) => void
-}
+} & (
+	| {
+			name: string
+			invalid?: string
+	  }
+	| {
+			name?: undefined
+			invalid?: undefined
+	  }
+)
 export default class Dropdown extends TrackedComponent<Props> {
 	trackedName = 'Dropdown'
 	shouldComponentUpdate(nextProps: Props, nextState: typeof this.state) {

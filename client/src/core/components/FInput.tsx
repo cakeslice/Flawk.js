@@ -148,10 +148,8 @@ type Props = {
 	autoComplete?: string
 	placeholder?: string
 	required?: boolean | string
-	invalid?: string
 	isDisabled?: boolean
 	simpleDisabled?: boolean
-	name?: string
 	bufferedInput?: boolean
 	bufferInterval?: number
 	type?: React.HTMLInputTypeAttribute
@@ -204,6 +202,16 @@ type Props = {
 		| {
 				value: number | string
 				isControlled: boolean
+		  }
+	) &
+	(
+		| {
+				name: string
+				invalid?: string
+		  }
+		| {
+				name?: undefined
+				invalid?: undefined
 		  }
 	)
 export default class FInput extends TrackedComponent<Props> {

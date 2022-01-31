@@ -31,9 +31,7 @@ type Props = {
 	appearance?: Appearance
 	isDisabled?: boolean
 	simpleDisabled?: boolean
-	name?: string
 	isLoading?: boolean
-	invalid?: string
 	noInvalidLabel?: boolean
 	onClick?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
 	onBlur?: (event: React.FocusEvent<HTMLButtonElement, Element>) => void
@@ -67,6 +65,16 @@ type Props = {
 		| {
 				type: 'submit'
 				formErrors: FormikErrors<unknown>
+		  }
+	) &
+	(
+		| {
+				name: string
+				invalid?: string
+		  }
+		| {
+				name?: undefined
+				invalid?: undefined
 		  }
 	)
 export default class FButton extends TrackedComponent<Props> {
