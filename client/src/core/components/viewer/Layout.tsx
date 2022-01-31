@@ -226,10 +226,9 @@ export default class Layout extends QueryParams {
 										specialRows={[
 											{
 												key: 'special',
-												selector: 'title',
-												row: (value, data) => (
+												row: (data) => (
 													<div>
-														<b>{data.id + ': ' + value}</b>
+														<b>{data.id + ': ' + data.title}</b>
 													</div>
 												),
 												style: {

@@ -24,10 +24,9 @@ import * as uuid from 'uuid'
 type Value = string | number | boolean | undefined
 export type SpecialRow = {
 	key: string
-	selector: string
 	style?: React.CSSProperties
 	expandContent?: boolean
-	row: (value: Value, data: Obj) => React.ReactNode
+	row: (data: Obj) => React.ReactNode
 }
 export type Column = {
 	name?: React.ReactNode
@@ -464,13 +463,7 @@ export default class FTable extends QueryParams<
 																cellPaddingY={cellPaddingY}
 															>
 																{d.specialRow && sR
-																	? sR.row(
-																			_.get(
-																				d,
-																				sR.selector
-																			) as Value,
-																			d
-																	  )
+																	? sR.row(d)
 																	: props.columns &&
 																	  props.columns
 																			.filter((c) =>

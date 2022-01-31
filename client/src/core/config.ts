@@ -326,7 +326,7 @@ export default {
 	changeLang: _changeLang,
 	text: _text,
 	localize: (obj: string | Obj, lang?: string) => {
-		let output = 'NOT A STRING'
+		let output
 
 		if (typeof obj === 'string') output = obj
 		else {
@@ -334,6 +334,7 @@ export default {
 			if (typeof s === 'string') output = s
 		}
 
+		if (output === undefined) output = "COULDN'T PARSE (" + JSON.stringify(obj) + ')'
 		return Parser(output)
 	},
 
