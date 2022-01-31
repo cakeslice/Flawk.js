@@ -45,7 +45,9 @@ export default {
 			: 'Open-source web app boilerplate'
 	},
 	description: () => {
-		return global.lang && global.lang.text === 'pt' ? '...' : '...'
+		return global.lang && global.lang.text === 'pt'
+			? 'Open-source web app boilerplate'
+			: 'Open-source web app boilerplate'
 	},
 
 	//

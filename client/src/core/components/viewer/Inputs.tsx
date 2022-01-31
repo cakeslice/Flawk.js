@@ -156,8 +156,8 @@ export default class Inputs extends Component {
 								<sp />
 								<sp />
 								<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
-									<FInput label='Date Picker' datePicker></FInput>
-									<FInput label='Time Picker' timeInput></FInput>
+									<FInput label='Date' datePicker></FInput>
+									<FInput label='Time' timeInput></FInput>
 								</div>
 							</div>
 						</Section>
@@ -200,6 +200,7 @@ export default class Inputs extends Component {
 										options={dropdownOptions}
 									/>
 									<Dropdown
+										name='dropdown'
 										label={'Invalid Label'}
 										placeholder={'#123'}
 										erasable
@@ -210,6 +211,7 @@ export default class Inputs extends Component {
 								<sp />
 								<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
 									<Dropdown
+										name='dropdown'
 										defaultValue={'accept'}
 										placeholder={'Invalid Bottom'}
 										erasable
@@ -219,6 +221,7 @@ export default class Inputs extends Component {
 									/>
 
 									<Dropdown
+										name='dropdown'
 										menuPlacement='top'
 										placeholder={'Invalid Right'}
 										erasable
