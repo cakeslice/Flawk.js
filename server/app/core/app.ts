@@ -40,6 +40,12 @@ import validator from 'validator'
 import winston from 'winston'
 import { Loggly } from 'winston-loggly-bulk'
 
+const purpleColor = '\x1b[35m%s\x1b[0m'
+const blueColor = '\x1b[36m%s\x1b[0m'
+const yellowColor = '\x1b[33m%s\x1b[0m'
+const greenColor = '\x1b[32m%s\x1b[0m'
+const redColor = '\x1b[31m%s\x1b[0m'
+
 cachegoose(mongoose, {
 	//engine: 'redis',    /* If you don't specify the redis engine,      */
 	//port: 6379,         /* the query results will be cached in memory. */
@@ -568,7 +574,7 @@ function addPath(path: Path, tag: string) {
 	}
 }
 async function generateOpenApi() {
-	console.log('Generating OpenAPI spec...\n')
+	console.log('Generating OpenAPI spec...')
 
 	const obj = {
 		openapi: '3.0.0',
@@ -778,23 +784,23 @@ async function generateOpenApi() {
 	const src = fs.readFileSync(file).toString()
 	const newApi = JSON.stringify(obj, null, 2)
 	if (src !== newApi) {
-		console.log('Spec changed! Writing to file\n')
+		console.log('Spec changed! Writing to file\n\n')
 		fs.writeFileSync(file, newApi)
-	} else console.log('No changes detected\n')
+	} else console.log('No changes detected\n\n')
 }
 
 function setup() {
 	initLogging()
 
-	console.log('\x1b[35m%s\x1b[0m', '\n#### Flawk.js ####\n')
+	console.log(purpleColor, '\n#### Flawk.js ####\n')
 
-	if (config.jest) console.log('\x1b[33m%s\x1b[0m', '----- JEST TESTING -----\n')
+	if (config.jest) console.log(yellowColor, '----- JEST TESTING -----\n')
 	console.log(
-		'\x1b[36m%s\x1b[0m',
+		blueColor,
 		'Environment: ' + (config.prod ? 'production' : config.staging ? 'staging' : 'development')
 	)
-	console.log('\x1b[36m%s\x1b[0m', 'Build: ' + '@' + global.buildNumber)
-	console.log('\x1b[36m%s\x1b[0m', 'Running on NodeJS ' + process.version + '\n')
+	console.log(blueColor, 'Build: ' + '@' + global.buildNumber)
+	console.log(blueColor, 'Running on NodeJS ' + process.version + '\n\n')
 
 	// CORS
 	const corsOptions: cors.CorsOptions = {
@@ -1060,7 +1066,7 @@ function setup() {
 						data: structure,
 					})
 				} catch (e) {
-					console.error('Failed to get structure: ' + s.schema.collection.name)
+					console.error(redColor, 'Failed to get structure: ' + s.schema.collection.name)
 				}
 			}
 		}
@@ -1082,7 +1088,7 @@ function setup() {
 				return split[split.length - 1] === file.replace('.ts', '').replace('.js', '')
 			})
 		)
-			console.log('\x1b[33m%s\x1b[0m', '--- MISSING ' + file + ' in routes configuration')
+			console.error(redColor, '--- MISSING ' + file + ' in routes configuration')
 	})
 	fs.readdirSync('./app/project/routes/private').forEach((file) => {
 		if (
@@ -1091,7 +1097,7 @@ function setup() {
 				return split[split.length - 1] === file.replace('.ts', '').replace('.js', '')
 			})
 		)
-			console.log('\x1b[33m%s\x1b[0m', '--- MISSING ' + file + ' in routes configuration')
+			console.error(redColor, '--- MISSING ' + file + ' in routes configuration')
 	})
 
 	for (let i = 0; i < config.publicRoutes.length; i++) {
@@ -1102,10 +1108,7 @@ function setup() {
 			app.use(config.path + '/', route)
 			//console.log('Loading ' + '/project' + config.publicRoutes[i])
 		} else {
-			console.log(
-				'\x1b[33m%s\x1b[0m',
-				'--- FAILED to load ' + '/project' + config.publicRoutes[i]
-			)
+			console.error(redColor, '--- FAILED to load ' + '/project' + config.publicRoutes[i])
 		}
 	}
 	for (let i = 0; i < config.routes.length; i++) {
@@ -1116,7 +1119,7 @@ function setup() {
 			app.use(config.path + '/', route)
 			//console.log('Loading ' + '/project' + config.routes[i])
 		} else {
-			console.log('\x1b[33m%s\x1b[0m', '--- FAILED to load ' + '/project' + config.routes[i])
+			console.error(redColor, '--- FAILED to load ' + '/project' + config.routes[i])
 		}
 	}
 	console.log('')
@@ -1214,8 +1217,9 @@ async function onDatabaseConnected() {
 	console.log('Connected to database:')
 	const mongoAdmin = mongoose.connection.db.admin()
 	mongoAdmin.buildInfo(function (err, info) {
+		console.log(yellowColor, `MongoDB target: 4.4.10`)
 		console.log(`MongoDB version: ${info ? (info.version as string) : 'Unknown'}`)
-		console.log(`Mongoose version: ${mongoose.version}\n`)
+		console.log(`Mongoose version: ${mongoose.version}\n\n`)
 	})
 
 	await updateDatabaseStructures()
@@ -1235,10 +1239,7 @@ async function listen() {
 	}
 
 	const server = app.listen(config.port, () => {
-		console.log(
-			'\x1b[32m%s\x1b[0m',
-			'Listening to requests on port ' + config.port.toString() + '\n'
-		)
+		console.log(greenColor, 'Listening to requests on port ' + config.port.toString() + '\n\n')
 	})
 
 	if (config.websocketSupport) {

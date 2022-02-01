@@ -146,11 +146,11 @@ export function clientSocketMessage(clientID: string, channel: string, data: Obj
 
 export function init() {
 	if (!config.websocketSupport) {
-		console.log('Sockets are disabled...\n')
+		console.log('Websockets are disabled')
 		return
 	}
 
-	console.log('Initializing sockets...\n')
+	console.log('Websockets are enabled')
 
 	global.clientSockets.on('connection', (socket: Socket) => {
 		if (config.debugSockets) console.log('[SOCKET.IO] New socket connection: ' + socket.id)
