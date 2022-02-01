@@ -41,10 +41,10 @@ export default {
 	replyTo: undefined, // ! Don't use "noreply" e-mails, bad for delivery!
 	adminEmails: [
 		{
-			email: 'someone@something.com',
+			email: 'jose@cakeslice.dev',
 		},
 	],
-	developerEmail: 'someone@something.com',
+	developerEmail: 'jose@cakeslice.dev',
 
 	routes: _routes,
 	publicRoutes: _publicRoutes,

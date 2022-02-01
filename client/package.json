@@ -6,9 +6,9 @@
 		"node": "16.13.0"
 	},
 	"scripts": {
-		"env:dev": "env-cmd -f ./_env/flawk_dev.env",
-		"env:staging": "env-cmd -f ./_env/flawk_staging.env",
-		"env:prod": "env-cmd -f ./_env/flawk_prod.env",
+		"env:dev": "env-cmd -f ./_env/dev.env",
+		"env:staging": "env-cmd -f ./_env/staging.env",
+		"env:prod": "env-cmd -f ./_env/prod.env",
 		"- MAIN SCRIPTS -": "-----------------------------",
 		"start:dev": "npm run env:dev npm run startLocal",
 		"start:staging": "npm run env:staging npm run startLocal",

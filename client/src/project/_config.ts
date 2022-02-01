@@ -36,7 +36,7 @@ export default {
 	publicMaxWidth: 1281.5,
 
 	title: () => {
-		return global.lang && global.lang.text === 'pt' ? 'Flawk.js' : 'Flawk.js'
+		return 'Flawk.js'
 	},
 	separator: ' | ',
 	phrase: () => {

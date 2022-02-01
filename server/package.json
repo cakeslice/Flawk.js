@@ -6,8 +6,8 @@
 		"node": "16.13.0"
 	},
 	"scripts": {
-		"env:dev": "env-cmd -f ./_env/flawk_dev.env",
-		"env:build": "env-cmd -f ./_env/flawk_build.env",
+		"env:dev": "env-cmd -f ./_env/dev.env",
+		"env:build": "env-cmd -f ./_env/build.env",
 		"- MAIN SCRIPTS -": "-----------------------------",
 		"start:dev": "npm run env:dev npm run startLocal",
 		"build_local": "npm run env:build npm run buildLocal",
