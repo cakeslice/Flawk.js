@@ -14,6 +14,7 @@ import styles from 'core/styles'
 import { GlamorProps, Obj } from 'flawk-types'
 import { css } from 'glamor'
 import React from 'react'
+import FocusLock from 'react-focus-lock'
 import { Link } from 'react-router-dom'
 
 type Props = {
@@ -29,10 +30,6 @@ type Props = {
 }
 export default class MobileDrawer extends TrackedComponent<Props> {
 	trackedName = 'MobileDrawer'
-	shouldComponentUpdate(nextProps: Props, nextState: typeof this.state) {
-		super.shouldComponentUpdate(nextProps, nextState, false)
-		return this.deepEqualityCheck(nextProps, nextState)
-	}
 
 	state = {
 		isOpen: false,
@@ -55,318 +52,333 @@ export default class MobileDrawer extends TrackedComponent<Props> {
 		const selectedRoute = global.routerHistory().location.pathname.toString()
 
 		return (
-			<div
-				style={{
-					position: 'fixed',
-					left: 0,
-					top: this.props.headerHeight,
-					minHeight: 'calc(100vh - ' + this.props.headerHeight.toString() + 'px)',
-					overflowY: 'scroll',
-					overflowX: 'hidden',
-					width: '100%',
-					height: '100%',
-					backgroundColor: this.props.background,
-				}}
-			>
-				<div style={{ minHeight: 30 }}></div>
-				{this.props.links.map((link, i, arr) => {
-					if (link.notRoute && link.tab)
-						return (
-							<div
-								key={link.id + (link.params || '')}
-								style={{ display: 'contents' }}
-							>
-								{link.tab({
-									...this.props.pageProps,
-									isOpen: this.state.isOpen,
-									toggleOpen: this.props.toggleOpen,
-								})}
+			<FocusLock>
+				<div
+					style={{
+						position: 'fixed',
+						left: 0,
+						top: this.props.headerHeight,
+						minHeight: 'calc(100vh - ' + this.props.headerHeight.toString() + 'px)',
+						overflowY: 'scroll',
+						overflowX: 'hidden',
+						width: '100%',
+						height: '100%',
+						backgroundColor: this.props.background,
+					}}
+				>
+					<div style={{ minHeight: 30 }}></div>
+					{this.props.links.map((link, i, arr) => {
+						if (link.notRoute && link.tab)
+							return (
+								<div
+									key={link.id + (link.params || '')}
+									style={{ display: 'contents' }}
+								>
+									{link.tab({
+										...this.props.pageProps,
+										isOpen: this.state.isOpen,
+										toggleOpen: this.props.toggleOpen,
+									})}
+								</div>
+							)
+
+						const last = arr.length - 1 === i
+
+						const outputCSS: React.CSSProperties & GlamorProps = {
+							':focus-visible': {
+								outline: 'none',
+								backgroundColor: 'rgba(127,127,127,.15)',
+							},
+							':hover': {
+								textDecoration: 'none',
+								backgroundColor: 'rgba(127,127,127,.15)',
+							},
+							':active': {
+								backgroundColor: 'rgba(127,127,127,.25)',
+							},
+						}
+						const outputStyle: React.CSSProperties = {
+							userSelect: 'none',
+							color: this.props.textColor || styles.colors.black,
+							display: 'flex',
+							flexDirection: 'row',
+							alignItems: 'center',
+							paddingLeft: 25,
+							paddingRight: 25,
+							width: '100%',
+							height: 59,
+
+							boxShadow: last ? '0 4px 4px 0 rgba(0, 0, 0, 0.075)' : '',
+							borderBottom: !last
+								? 'solid 1px ' + styles.colors.lineColor
+								: undefined,
+						}
+						const output = (
+							<div key={link.id + (link.params || '')}>
+								{!link.notRoute ? (
+									<Link
+										className={this.props.className}
+										{...css(outputCSS)}
+										style={outputStyle}
+										onClick={() => {
+											if (link.onClick) {
+												link.onClick()
+											}
+											if (!link.subRoutes || link.subRoutes.length === 0)
+												this.changeState(false)
+											else this.changeState(true)
+										}}
+										to={
+											this.props.path
+												? this.props.path +
+												  link.id +
+												  (link.subRoutes ? '/' + link.subRoutes[0].id : '')
+												: link.id +
+												  (link.subRoutes ? '/' + link.subRoutes[0].id : '')
+										}
+									>
+										{link.customIcon ? (
+											<div>
+												{link.customIcon(
+													selectedRoute.includes('/' + link.id)
+												)}
+											</div>
+										) : (
+											<div
+												style={{
+													display: 'flex',
+													alignItems: 'center',
+													width: iconSize,
+												}}
+											>
+												{selectedRoute.includes('/' + link.id) ? (
+													<img
+														src={link.iconActive || link.icon}
+														style={{
+															height: iconSize,
+															width: iconSize,
+														}}
+													></img>
+												) : (
+													<img
+														src={link.icon}
+														style={{
+															opacity: 0.5,
+															filter: 'grayscale(100%)',
+															width: iconSize,
+															height: iconSize,
+														}}
+													></img>
+												)}
+											</div>
+										)}
+										<div
+											style={{
+												marginLeft: 10,
+												fontSize: styles.defaultFontSize,
+												lineHeight: 1.64,
+												fontWeight: selectedRoute.includes('/' + link.id)
+													? 'bold'
+													: undefined,
+												color: selectedRoute.includes('/' + link.id)
+													? this.props.textColor || styles.colors.main
+													: undefined,
+												opacity: selectedRoute.includes('/' + link.id)
+													? 1
+													: 0.5,
+											}}
+										>
+											{link.name ? config.localize(link.name) : ''}
+										</div>
+									</Link>
+								) : (
+									<a
+										className={this.props.className}
+										{...css(outputCSS)}
+										style={outputStyle}
+										onClick={() => {
+											if (link.onClick) {
+												link.onClick()
+											}
+											if (!link.subRoutes || link.subRoutes.length === 0)
+												this.changeState(false)
+											else this.changeState(true)
+										}}
+									>
+										{link.customIcon ? (
+											<div>
+												{link.customIcon(
+													selectedRoute.includes('/' + link.id)
+												)}
+											</div>
+										) : (
+											<div
+												style={{
+													display: 'flex',
+													alignItems: 'center',
+													width: iconSize,
+												}}
+											>
+												{selectedRoute.includes('/' + link.id) ? (
+													<img
+														src={link.iconActive || link.icon}
+														style={{
+															height: iconSize,
+															width: iconSize,
+														}}
+													></img>
+												) : (
+													<img
+														src={link.icon}
+														style={{
+															opacity: 0.5,
+															filter: 'grayscale(100%)',
+															width: iconSize,
+															height: iconSize,
+														}}
+													></img>
+												)}
+											</div>
+										)}
+										<div
+											style={{
+												marginLeft: 10,
+												fontSize: styles.defaultFontSize,
+												lineHeight: 1.64,
+												fontWeight: selectedRoute.includes('/' + link.id)
+													? 'bold'
+													: undefined,
+												color: selectedRoute.includes('/' + link.id)
+													? this.props.textColor || styles.colors.main
+													: this.props.textColor,
+												opacity: selectedRoute.includes('/' + link.id)
+													? 1
+													: 0.5,
+											}}
+										>
+											{link.name ? config.localize(link.name) : ''}
+										</div>
+									</a>
+								)}
+
+								{last ? (
+									''
+								) : (
+									<div
+										style={{
+											height: 1,
+											minWidth: '100%',
+										}}
+									/>
+								)}
 							</div>
 						)
 
-					const last = arr.length - 1 === i
-
-					const outputCSS: React.CSSProperties & GlamorProps = {
-						':focus-visible': {
-							outline: 'none',
-							backgroundColor: 'rgba(127,127,127,.15)',
-						},
-						':hover': {
-							textDecoration: 'none',
-							backgroundColor: 'rgba(127,127,127,.15)',
-						},
-						':active': {
-							backgroundColor: 'rgba(127,127,127,.25)',
-						},
-					}
-					const outputStyle: React.CSSProperties = {
-						userSelect: 'none',
-						color: this.props.textColor || styles.colors.black,
-						display: 'flex',
-						flexDirection: 'row',
-						alignItems: 'center',
-						paddingLeft: 25,
-						paddingRight: 25,
-						width: '100%',
-						height: 59,
-
-						boxShadow: last ? '0 4px 4px 0 rgba(0, 0, 0, 0.075)' : '',
-						borderBottom: !last ? 'solid 1px ' + styles.colors.lineColor : undefined,
-					}
-					const output = (
-						<div key={link.id + (link.params || '')}>
-							{!link.notRoute ? (
-								<Link
-									className={this.props.className}
-									{...css(outputCSS)}
-									style={outputStyle}
-									onClick={() => {
-										if (link.onClick) {
-											link.onClick()
-										}
-										if (!link.subRoutes || link.subRoutes.length === 0)
-											this.changeState(false)
-										else this.changeState(true)
-									}}
-									to={
-										this.props.path
-											? this.props.path +
-											  link.id +
-											  (link.subRoutes ? '/' + link.subRoutes[0].id : '')
-											: link.id +
-											  (link.subRoutes ? '/' + link.subRoutes[0].id : '')
-									}
-								>
-									{link.customIcon ? (
-										<div>
-											{link.customIcon(selectedRoute.includes('/' + link.id))}
-										</div>
-									) : (
-										<div
-											style={{
-												display: 'flex',
-												alignItems: 'center',
-												width: iconSize,
-											}}
-										>
-											{selectedRoute.includes('/' + link.id) ? (
-												<img
-													src={link.iconActive || link.icon}
-													style={{
-														height: iconSize,
-														width: iconSize,
-													}}
-												></img>
-											) : (
-												<img
-													src={link.icon}
-													style={{
-														opacity: 0.5,
-														filter: 'grayscale(100%)',
-														width: iconSize,
-														height: iconSize,
-													}}
-												></img>
-											)}
-										</div>
-									)}
-									<div
-										style={{
-											marginLeft: 10,
-											fontSize: styles.defaultFontSize,
-											lineHeight: 1.64,
-											fontWeight: selectedRoute.includes('/' + link.id)
-												? 'bold'
-												: undefined,
-											color: selectedRoute.includes('/' + link.id)
-												? this.props.textColor || styles.colors.main
-												: undefined,
-											opacity: selectedRoute.includes('/' + link.id)
-												? 1
-												: 0.5,
-										}}
+						if (link.subRoutes)
+							return (
+								<div key={link.id + (link.params || '')}>
+									{output}
+									<Animated
+										animateOffscreen
+										duration={0.25}
+										effects={['fade', 'height']}
+										controlled={selectedRoute.includes('/' + link.id)}
 									>
-										{link.name ? config.localize(link.name) : ''}
-									</div>
-								</Link>
-							) : (
-								<a
-									className={this.props.className}
-									{...css(outputCSS)}
-									style={outputStyle}
-									onClick={() => {
-										if (link.onClick) {
-											link.onClick()
-										}
-										if (!link.subRoutes || link.subRoutes.length === 0)
-											this.changeState(false)
-										else this.changeState(true)
-									}}
-								>
-									{link.customIcon ? (
-										<div>
-											{link.customIcon(selectedRoute.includes('/' + link.id))}
-										</div>
-									) : (
-										<div
-											style={{
-												display: 'flex',
-												alignItems: 'center',
-												width: iconSize,
-											}}
-										>
-											{selectedRoute.includes('/' + link.id) ? (
-												<img
-													src={link.iconActive || link.icon}
-													style={{
-														height: iconSize,
-														width: iconSize,
-													}}
-												></img>
-											) : (
-												<img
-													src={link.icon}
-													style={{
-														opacity: 0.5,
-														filter: 'grayscale(100%)',
-														width: iconSize,
-														height: iconSize,
-													}}
-												></img>
-											)}
-										</div>
-									)}
-									<div
-										style={{
-											marginLeft: 10,
-											fontSize: styles.defaultFontSize,
-											lineHeight: 1.64,
-											fontWeight: selectedRoute.includes('/' + link.id)
-												? 'bold'
-												: undefined,
-											color: selectedRoute.includes('/' + link.id)
-												? this.props.textColor || styles.colors.main
-												: this.props.textColor,
-											opacity: selectedRoute.includes('/' + link.id)
-												? 1
-												: 0.5,
-										}}
-									>
-										{link.name ? config.localize(link.name) : ''}
-									</div>
-								</a>
-							)}
-
-							{last ? (
-								''
-							) : (
-								<div
-									style={{
-										height: 1,
-										minWidth: '100%',
-									}}
-								/>
-							)}
-						</div>
-					)
-
-					if (link.subRoutes)
-						return (
-							<div key={link.id + (link.params || '')}>
-								{output}
-								<Animated
-									trackedName='MobileDrawer'
-									animateOffscreen
-									duration={0.25}
-									effects={['fade', 'height']}
-									controlled={selectedRoute.includes('/' + link.id)}
-								>
-									{link.subRoutes &&
-										link.subRoutes.map((sub, i) => (
-											<div key={link.id + '/' + sub.id + (sub.params || '')}>
-												<Link
-													{...css({
-														':focus-visible': {
-															outline: 'none',
-															backgroundColor:
-																'rgba(127,127,127,.15)',
-														},
-														':hover': {
-															textDecoration: 'none',
-															backgroundColor:
-																'rgba(127,127,127,.15)',
-														},
-														':active': {
-															backgroundColor:
-																'rgba(127,127,127,.25)',
-														},
-													})}
-													style={{
-														display: 'flex',
-														flexDirection: 'row',
-														justifyContent: 'space-between',
-														alignItems: 'center',
-														paddingLeft: 35,
-														paddingRight: 35,
-														width: '100%',
-														height: 59,
-
-														boxShadow: last
-															? '0 4px 4px 0 rgba(0, 0, 0, 0.075)'
-															: '',
-														borderBottom: !last
-															? 'solid 1px ' + styles.colors.lineColor
-															: undefined,
-													}}
-													onClick={() => {
-														if (link.onClick) {
-															link.onClick()
-														}
-														this.changeState(false)
-													}}
-													to={
-														link.notRoute
-															? ''
-															: this.props.path
-															? this.props.path +
-															  link.id +
-															  '/' +
-															  sub.id
-															: link.id + '/' + sub.id
+										{link.subRoutes &&
+											link.subRoutes.map((sub, i) => (
+												<div
+													key={
+														link.id + '/' + sub.id + (sub.params || '')
 													}
 												>
-													<div
+													<Link
+														{...css({
+															':focus-visible': {
+																outline: 'none',
+																backgroundColor:
+																	'rgba(127,127,127,.15)',
+															},
+															':hover': {
+																textDecoration: 'none',
+																backgroundColor:
+																	'rgba(127,127,127,.15)',
+															},
+															':active': {
+																backgroundColor:
+																	'rgba(127,127,127,.25)',
+															},
+														})}
 														style={{
-															fontSize: styles.defaultFontSize - 1,
-															lineHeight: 1.64,
-															color:
-																this.props.textColor ||
-																styles.colors.black,
-															marginLeft: 20,
-															opacity: selectedRoute.includes(
-																'/' + link.id + '/' + sub.id
-															)
-																? 1
-																: 0.5,
-															fontWeight: selectedRoute.includes(
-																'/' + link.id + '/' + sub.id
-															)
-																? 'bold'
+															display: 'flex',
+															flexDirection: 'row',
+															justifyContent: 'space-between',
+															alignItems: 'center',
+															paddingLeft: 35,
+															paddingRight: 35,
+															width: '100%',
+															height: 59,
+
+															boxShadow: last
+																? '0 4px 4px 0 rgba(0, 0, 0, 0.075)'
+																: '',
+															borderBottom: !last
+																? 'solid 1px ' +
+																  styles.colors.lineColor
 																: undefined,
 														}}
+														onClick={() => {
+															if (link.onClick) {
+																link.onClick()
+															}
+															this.changeState(false)
+														}}
+														to={
+															link.notRoute
+																? ''
+																: this.props.path
+																? this.props.path +
+																  link.id +
+																  '/' +
+																  sub.id
+																: link.id + '/' + sub.id
+														}
 													>
-														{sub.name ? config.localize(sub.name) : ''}
-													</div>
-												</Link>
-											</div>
-										))}
-								</Animated>
-							</div>
-						)
-					else return output
-				})}
-				<div style={{ minHeight: 30 }}></div>
-			</div>
+														<div
+															style={{
+																fontSize:
+																	styles.defaultFontSize - 1,
+																lineHeight: 1.64,
+																color:
+																	this.props.textColor ||
+																	styles.colors.black,
+																marginLeft: 20,
+																opacity: selectedRoute.includes(
+																	'/' + link.id + '/' + sub.id
+																)
+																	? 1
+																	: 0.5,
+																fontWeight: selectedRoute.includes(
+																	'/' + link.id + '/' + sub.id
+																)
+																	? 'bold'
+																	: undefined,
+															}}
+														>
+															{sub.name
+																? config.localize(sub.name)
+																: ''}
+														</div>
+													</Link>
+												</div>
+											))}
+									</Animated>
+								</div>
+							)
+						else return output
+					})}
+					<div style={{ minHeight: 30 }}></div>
+				</div>
+			</FocusLock>
 		)
 	}
 	changeState = (newState?: boolean) => {

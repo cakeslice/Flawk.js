@@ -394,7 +394,7 @@ class Login extends Component<PropsFromRedux & { desktop?: boolean }> {
 									<Field
 										component={FInput}
 										required
-										autoFocus
+										//autoFocus
 										label={'E-mail'}
 										type={'email'}
 										name='email'
@@ -494,7 +494,7 @@ class Register extends Component<PropsFromRedux & { desktop?: boolean }> {
 										<Field
 											component={FInput}
 											required
-											autoFocus
+											//autoFocus
 											label={'Verification code'}
 											type={'number'}
 											name='verificationCode'
@@ -595,7 +595,7 @@ class Register extends Component<PropsFromRedux & { desktop?: boolean }> {
 											<Field
 												component={FInput}
 												required
-												autoFocus
+												//autoFocus
 												label={'First name'}
 												name='firstName'
 											/>
@@ -610,7 +610,7 @@ class Register extends Component<PropsFromRedux & { desktop?: boolean }> {
 											<Field
 												component={FInput}
 												required
-												autoFocus
+												//autoFocus
 												label={'E-mail'}
 												type={'email'}
 												autoComplete='new-email'
@@ -763,7 +763,7 @@ class Forgot extends Component<PropsFromRedux & { desktop?: boolean }> {
 										<Field
 											component={FInput}
 											required
-											autoFocus
+											//autoFocus
 											label={'New password'}
 											name='newPassword'
 											autoComplete='new-password'
@@ -869,7 +869,7 @@ class Forgot extends Component<PropsFromRedux & { desktop?: boolean }> {
 										<Field
 											component={FInput}
 											required
-											autoFocus
+											//autoFocus
 											label={'E-mail'}
 											type={'email'}
 											name='email'
