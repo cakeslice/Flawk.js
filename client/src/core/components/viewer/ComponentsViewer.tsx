@@ -251,7 +251,7 @@ export const Section: React.FC<{
 								{!top && <sp />}
 								<Anchor id={id} updateHash>
 									<div className={(tablet ? 'flex' : 'flex-col') + ' w-full'}>
-										<div className={code && 'flex-child-fix grow'}>
+										<div className={code && 'grow'}>
 											<div className='flex'>
 												<h4>{title}</h4>
 												{tags && <div style={{ minWidth: 15 }} />}
