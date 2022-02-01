@@ -82,6 +82,7 @@ export default class Dashboard extends TrackedComponent<
 		super(props)
 
 		this.handleScroll = this.handleScroll.bind(this)
+		this.toggleOpen = this.toggleOpen.bind(this)
 	}
 
 	handleScroll() {
