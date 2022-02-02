@@ -156,7 +156,7 @@ export default class FTable extends QueryParams<
 		const rowStyle: React.CSSProperties & GlamorProps = {
 			...styles.card,
 			borderStyle: 'none',
-			borderRadius: styles.defaultBorderRadius,
+			borderRadius: 6,
 			boxShadow: 'rgba(0, 0, 0, 0.04) 0px 2px 4px 0px, rgba(0, 0, 0, 0.04) 0px 6px 4px 0px',
 			margin: 0,
 			padding: 0,

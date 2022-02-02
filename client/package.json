@@ -65,6 +65,7 @@
 		"abortcontroller-polyfill": "^1.7.3",
 		"body-scroll-lock": "^3.1.5",
 		"canvas-to-blob": "^1.0.0",
+		"color-blend": "^3.0.1",
 		"countries-list": "^2.6.1",
 		"formik": "^2.2.9",
 		"framer-motion": "^4.1.17",

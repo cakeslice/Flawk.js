@@ -165,6 +165,7 @@ export default class Header extends Component<HeaderProps> {
 								{desktop && <div></div>}
 
 								<button
+									className='flex items-center'
 									type='button'
 									onClick={() => global.routerHistory().push('/')}
 								>

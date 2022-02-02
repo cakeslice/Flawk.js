@@ -7,6 +7,7 @@
 
 import * as Sentry from '@sentry/react'
 import { disableBodyScroll } from 'body-scroll-lock'
+import { normal } from 'color-blend'
 import { countries, Country } from 'countries-list'
 import { KeyObject, Obj } from 'flawk-types'
 import hexRgb from 'hex-rgb'
@@ -232,6 +233,35 @@ console.error = (...x) => {
 	if (!supress) realError(...x)
 }
 
+const colorToRgba = (color: string) => {
+	let c = color
+	if (c.includes('#')) {
+		const rgba = hexRgb(c)
+		c = 'rgba(' + rgba.red + ',' + rgba.green + ',' + rgba.blue + ',' + rgba.alpha + ')'
+	}
+	if (c.includes('rgb(')) c = c.replace('rgb(', 'rgba(').replace(')', ', 1)')
+	return c
+}
+const rgbaToObj = (color: string) => {
+	let c = color
+	if (c.includes('rgba(')) {
+		c = c.replace('rgba(', '').replace(')', '')
+		const rgba = c.split(',')
+		return {
+			r: Number.parseInt(rgba[0]),
+			g: Number.parseInt(rgba[1]),
+			b: Number.parseInt(rgba[2]),
+			a: Number.parseFloat(rgba[3]),
+		}
+	}
+	return {
+		r: 0,
+		g: 0,
+		b: 0,
+		a: 1,
+	}
+}
+
 export default {
 	prod: _prod,
 	staging: _staging,
@@ -362,13 +392,15 @@ export default {
 	},
 
 	replaceAlpha(color: string, amount: number) {
-		let c = color
-		if (c.includes('#')) {
-			const rgba = hexRgb(c)
-			c = 'rgba(' + rgba.red + ',' + rgba.green + ',' + rgba.blue + ',' + rgba.alpha + ')'
-		}
-		if (c.includes('rgb(')) c = c.replace('rgb(', 'rgba(').replace(')', ', 1)')
+		const c = colorToRgba(color)
 		return c.replace(/[^,]+(?=\))/, amount.toString())
+	},
+	overlayColor(background: string, color: string) {
+		const c1 = rgbaToObj(colorToRgba(background))
+		const c2 = rgbaToObj(colorToRgba(color))
+
+		const c = normal(c1, c2)
+		return 'rgba(' + c.r + ',' + c.g + ',' + c.b + ',' + c.a + ')'
 	},
 
 	prettierConfig: {

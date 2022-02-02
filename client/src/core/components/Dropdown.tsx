@@ -218,7 +218,7 @@ export default class Dropdown extends TrackedComponent<Props> {
 			boxSizing: 'border-box',
 			borderColor: styles.colors.borderColor,
 			boxShadow: '0 2px 4px 0 rgba(0, 0, 0, 0.025), 0 2px 4px 0 rgba(0, 0, 0, 0.025)',
-			borderRadius: styles.defaultBorderRadius,
+			borderRadius: 6,
 		}
 		const indicatorStyle = {
 			paddingRight: 3,
@@ -269,7 +269,10 @@ export default class Dropdown extends TrackedComponent<Props> {
 				}),
 
 			...(this.props.isDisabled && {
-				background: config.replaceAlpha(styles.colors.black, global.nightMode ? 0.05 : 0.1),
+				background: config.overlayColor(
+					styles.colors.white,
+					config.replaceAlpha(styles.colors.black, global.nightMode ? 0.05 : 0.1)
+				),
 				color: config.replaceAlpha(styles.colors.black, global.nightMode ? 0.25 : 0.5),
 				borderColor: config.replaceAlpha(
 					styles.colors.black,

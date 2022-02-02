@@ -148,7 +148,7 @@ export default class FButton extends TrackedComponent<Props> {
 			whiteSpace: 'nowrap',
 			textOverflow: 'ellipsis',
 
-			transition: 'background 200ms, border-color 200ms',
+			transition: 'background 200ms, border-color 200ms, opacity 200ms',
 
 			justifyContent: 'center',
 			alignItems: 'center',
@@ -172,20 +172,26 @@ export default class FButton extends TrackedComponent<Props> {
 				opacity: 1,
 				outline: 'none',
 				borderColor: styles.colors.main,
-				background: styles.colors.mainVeryLight,
+				background: config.overlayColor(styles.colors.white, styles.colors.mainVeryLight),
 			},
 			...(!this.props.isDisabled && {
 				':checked': {
 					opacity: 1,
 					borderColor: styles.colors.main,
 					color: styles.colors.main,
-					background: styles.colors.mainVeryLight,
+					background: config.overlayColor(
+						styles.colors.white,
+						styles.colors.mainVeryLight
+					),
 				},
 				':hover': {
 					opacity: 1,
 					borderColor: styles.colors.main,
 					color: styles.colors.main,
-					background: styles.colors.mainVeryLight,
+					background: config.overlayColor(
+						styles.colors.white,
+						styles.colors.mainVeryLight
+					),
 				},
 				':active': {
 					opacity: 1,
@@ -208,14 +214,20 @@ export default class FButton extends TrackedComponent<Props> {
 					':focus-visible': {
 						outline: 'none',
 						borderColor: styles.colors.whiteDay,
-						background: styles.colors.mainLight,
+						background: config.overlayColor(
+							styles.colors.white,
+							styles.colors.mainLight
+						),
 					},
 					...(!global.nightMode && {
 						':focus-visible': {
 							outline: 'none',
 							borderStyle: 'dashed',
 							borderColor: styles.colors.whiteDay,
-							background: styles.colors.mainLight,
+							background: config.overlayColor(
+								styles.colors.white,
+								styles.colors.mainLight
+							),
 						},
 					}),
 					':checked': {
@@ -224,7 +236,10 @@ export default class FButton extends TrackedComponent<Props> {
 					},
 					':hover': {
 						borderColor: styles.colors.main,
-						background: styles.colors.mainLight,
+						background: config.overlayColor(
+							styles.colors.white,
+							styles.colors.mainLight
+						),
 					},
 					':active': {
 						borderColor: styles.colors.main,
@@ -292,7 +307,7 @@ export default class FButton extends TrackedComponent<Props> {
 									: styles.colors.mainVeryLight),
 							/* background: invalid
 						? 'rgba(254, 217, 219, 0.5)'
-						: styles.colors.mainVeryLight, */
+						: config.overlayColor(styles.colors.white, styles.colors.mainVeryLight), */
 							borderColor: invalid ? styles.colors.red : styles.colors.mainLight,
 						},
 						':active': {
@@ -312,9 +327,9 @@ export default class FButton extends TrackedComponent<Props> {
 			}),
 			...(this.props.isDisabled &&
 				!this.props.simpleDisabled && {
-					background: config.replaceAlpha(
-						styles.colors.black,
-						global.nightMode ? 0.05 : 0.1
+					background: config.overlayColor(
+						styles.colors.white,
+						config.replaceAlpha(styles.colors.black, global.nightMode ? 0.05 : 0.1)
 					),
 					color: config.replaceAlpha(styles.colors.black, global.nightMode ? 0.25 : 0.5),
 					borderColor: config.replaceAlpha(
