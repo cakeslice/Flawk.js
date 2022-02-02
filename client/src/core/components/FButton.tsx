@@ -128,7 +128,7 @@ export default class FButton extends TrackedComponent<Props> {
 
 			letterSpacing: 0.4,
 
-			borderRadius: styles.defaultBorderRadius,
+			borderRadius: styles.buttonBorderRadius,
 			borderStyle: 'solid',
 			borderWidth: '1px',
 			boxSizing: 'border-box',

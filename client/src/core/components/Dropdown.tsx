@@ -180,7 +180,7 @@ export default class Dropdown extends TrackedComponent<Props> {
 
 		const defaultContainerStyle = {
 			...defaultStyle,
-			borderRadius: styles.defaultBorderRadius,
+			borderRadius: styles.inputBorder === 'bottom' ? 0 : styles.defaultBorderRadius,
 			borderTopStyle: styles.inputBorder === 'full' ? 'solid' : 'none',
 			borderBottomStyle:
 				styles.inputBorder === 'full' || styles.inputBorder === 'bottom' ? 'solid' : 'none',
@@ -199,6 +199,8 @@ export default class Dropdown extends TrackedComponent<Props> {
 			//
 
 			':hover': {
+				borderRadius:
+					styles.inputBorder === 'bottom' ? styles.defaultBorderRadius : undefined,
 				borderColor: config.replaceAlpha(styles.colors.black, global.nightMode ? 0.3 : 0.3),
 			},
 			activeBorderColor: styles.colors.mainLight,
@@ -263,6 +265,8 @@ export default class Dropdown extends TrackedComponent<Props> {
 							? styles.inputBorderFactorNight
 							: styles.inputBorderFactorDay
 					),
+					borderRadius:
+						styles.inputBorder === 'bottom' ? styles.defaultBorderRadius : undefined,
 					':hover': { borderColor: styles.colors.red },
 					':focus': { borderColor: styles.colors.red },
 					':active': { borderColor: styles.colors.red },
@@ -274,6 +278,8 @@ export default class Dropdown extends TrackedComponent<Props> {
 					config.replaceAlpha(styles.colors.black, global.nightMode ? 0.05 : 0.1)
 				),
 				color: config.replaceAlpha(styles.colors.black, global.nightMode ? 0.25 : 0.5),
+				borderRadius:
+					styles.inputBorder === 'bottom' ? styles.defaultBorderRadius : undefined,
 				borderColor: config.replaceAlpha(
 					styles.colors.black,
 					global.nightMode ? 0.05 : 0.1
@@ -285,6 +291,8 @@ export default class Dropdown extends TrackedComponent<Props> {
 			...(!this.props.isDisabled &&
 				invalid && {
 					borderColor: styles.colors.red,
+					borderRadius:
+						styles.inputBorder === 'bottom' ? styles.defaultBorderRadius : undefined,
 					cursor: 'default',
 				}),
 		}
@@ -505,6 +513,10 @@ export default class Dropdown extends TrackedComponent<Props> {
 											...(this.props.style && this.props.style.menu),
 											...((isFocused || selectProps.menuIsOpen) && {
 												':hover': {
+													borderRadius:
+														styles.inputBorder === 'bottom'
+															? styles.defaultBorderRadius
+															: undefined,
 													borderColor:
 														!this.props.isDisabled && invalid
 															? styles.colors.red
@@ -522,6 +534,10 @@ export default class Dropdown extends TrackedComponent<Props> {
 															  )
 															: defaultContainerStyle.activeShadowColor)
 													: undefined,
+												borderRadius:
+													styles.inputBorder === 'bottom'
+														? styles.defaultBorderRadius
+														: undefined,
 												borderColor:
 													!this.props.isDisabled && invalid
 														? styles.colors.red
@@ -532,6 +548,10 @@ export default class Dropdown extends TrackedComponent<Props> {
 											}),
 											...(selectProps.menuIsOpen && {
 												':hover': {
+													borderRadius:
+														styles.inputBorder === 'bottom'
+															? styles.defaultBorderRadius
+															: undefined,
 													borderColor:
 														!this.props.isDisabled && invalid
 															? styles.colors.red
@@ -549,6 +569,10 @@ export default class Dropdown extends TrackedComponent<Props> {
 															  )
 															: defaultContainerStyle.activeShadowColor)
 													: undefined,
+												borderRadius:
+													styles.inputBorder === 'bottom'
+														? styles.defaultBorderRadius
+														: undefined,
 												borderColor:
 													!this.props.isDisabled && invalid
 														? styles.colors.red

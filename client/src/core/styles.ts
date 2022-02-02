@@ -43,6 +43,8 @@ export default {
 	// @ts-ignore
 	defaultBorderRadius: 6,
 	// @ts-ignore
+	buttonBorderRadius: 6,
+	// @ts-ignore
 	defaultFontSize: 14,
 	// @ts-ignore
 	defaultFontBold: 700,

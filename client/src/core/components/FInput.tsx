@@ -283,7 +283,7 @@ export default class FInput extends TrackedComponent<Props> {
 			textAlign: this.props.center ? 'center' : 'left',
 			fontWeight: styles.inputFontWeight || undefined,
 
-			borderRadius: styles.defaultBorderRadius,
+			borderRadius: styles.inputBorder === 'bottom' ? 0 : styles.defaultBorderRadius,
 			borderTopStyle: styles.inputBorder === 'full' ? 'solid' : 'none',
 			borderBottomStyle:
 				styles.inputBorder === 'full' || styles.inputBorder === 'bottom' ? 'solid' : 'none',
@@ -317,6 +317,8 @@ export default class FInput extends TrackedComponent<Props> {
 			},
 			...(!this.props.isDisabled && {
 				':hover': {
+					borderRadius:
+						styles.inputBorder === 'bottom' ? styles.defaultBorderRadius : undefined,
 					borderColor:
 						!this.props.isDisabled && invalid
 							? styles.colors.red
@@ -325,6 +327,8 @@ export default class FInput extends TrackedComponent<Props> {
 							: '',
 				},
 				':focus': {
+					borderRadius:
+						styles.inputBorder === 'bottom' ? styles.defaultBorderRadius : undefined,
 					outline: 'none',
 					boxShadow: styles.inputBoxShadow
 						? '0 0 0 2px ' +
@@ -336,7 +340,8 @@ export default class FInput extends TrackedComponent<Props> {
 				},
 			}),
 			background: styles.inputBackground || styles.colors.white,
-			transition: 'background 200ms, border-color 200ms, box-shadow 200ms',
+			transition:
+				'background 200ms, border-color 200ms, box-shadow 200ms, border-radius 200ms',
 		}
 
 		let finalStyle: React.CSSProperties & GlamorProps = {
@@ -361,6 +366,8 @@ export default class FInput extends TrackedComponent<Props> {
 							? styles.inputBorderFactorNight
 							: styles.inputBorderFactorDay
 					),
+					borderRadius:
+						styles.inputBorder === 'bottom' ? styles.defaultBorderRadius : undefined,
 					':focus': {
 						...finalStyle[':focus'],
 						borderColor: styles.colors.red,
@@ -377,6 +384,8 @@ export default class FInput extends TrackedComponent<Props> {
 						styles.colors.black,
 						global.nightMode ? 0.05 : 0.1
 					),
+					borderRadius:
+						styles.inputBorder === 'bottom' ? styles.defaultBorderRadius : undefined,
 					opacity: 0.75,
 				}),
 		}
