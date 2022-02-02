@@ -20,7 +20,7 @@ import React, { Component } from 'react'
 import MediaQuery from 'react-responsive'
 import { Section } from './ComponentsViewer'
 
-const dropdownOptions = [
+const simpleOptions = [
 	{
 		value: 'yes',
 		label: 'Yes',
@@ -39,15 +39,34 @@ export default class Inputs extends Component {
 	state: { checked?: boolean } = {}
 
 	render() {
+		const dropdownOptions = (function o() {
+			const p = [
+				{
+					value: 'disabled',
+					label: 'Disabled',
+					isDisabled: true,
+				},
+			]
+			p.push({
+				value: 'long',
+				label: 'Long option is very very long',
+				isDisabled: false,
+			})
+			for (let i = 0; i < 60; i++) {
+				p.push({
+					value: 'option' + i.toString(),
+					label: 'Option ' + i.toString(),
+					isDisabled: false,
+				})
+			}
+			return p
+		})()
+
 		return (
 			<MediaQuery minWidth={config.mobileWidthTrigger}>
 				{(desktop) => (
 					<div>
-						<Section
-							title='Input field'
-							tags={['<input>', '<FInput/>', '<FButton checkbox/>']}
-							top
-						>
+						<Section title='Input field' tags={['<input>', '<FInput/>']} top>
 							<div style={{ ...styles.card, maxWidth: 783 }}>
 								<div className='wrapMarginTopLeft flex flex-wrap justify-start items-end'>
 									<FInput
@@ -56,76 +75,65 @@ export default class Inputs extends Component {
 										autoComplete='new-email'
 										defaultValue={'someone@gmail.com'}
 										placeholder={'you@gmail.com'}
-									></FInput>
+									/>
 									<FInput
 										type='password'
 										autoComplete='new-password'
 										label={'Password'}
 										placeholder={'******'}
-									></FInput>
-									<FInput
-										type='number'
-										label={'Number'}
-										placeholder={'1337'}
-									></FInput>
-
-									<FInput
-										label='Invalid Label'
-										invalid={'*'}
-										name='input'
-										placeholder={'someone@gmail'}
-									></FInput>
+									/>
+									<FInput type='number' label={'Number'} placeholder={'1337'} />
+									<FInput isDisabled simpleDisabled label='Simple Disabled' />
 								</div>
 								<sp />
 								<div className='wrapMarginTopLeft flex flex-wrap justify-start items-start'>
 									<FInput
-										isDisabled
-										label='Disabled'
+										label='Invalid Label'
+										invalid={'*'}
 										placeholder={'Long placeholder really long...'}
-									></FInput>
-									<FInput
-										isDisabled
-										simpleDisabled
 										name='input'
-										label='Simple Disabled'
-										placeholder={'...'}
-									></FInput>
-
+									/>
 									<FInput
 										name='input'
 										emptyLabel
 										invalidType='bottom'
 										invalid={'Wrong format'}
 										placeholder={'Invalid Bottom'}
-									></FInput>
+									/>
 									<FInput
 										emptyLabel
 										invalid={'*'}
 										name='input'
 										invalidType={'right'}
 										placeholder={'Invalid Right'}
+									/>
+									<FInput isDisabled label='Disabled' />
+								</div>
+								<sp />
+								<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+									<div>
+										Inline Input:{' '}
+										<span>
+											<input
+												{...css({
+													'::placeholder': {
+														userSelect: 'none',
+														color: config.replaceAlpha(
+															styles.colors.black,
+															global.nightMode ? 0.25 : 0.5
+														),
+													},
+												})}
+												type='email'
+												placeholder='someone@gmail.com'
+											></input>
+										</span>
+									</div>
+									<FInput
+										placeholder='Full width'
+										style={{ flexGrow: 1 }}
 									></FInput>
 								</div>
-								<sp />
-								<div>
-									Inline Input:{' '}
-									<span>
-										<input
-											{...css({
-												'::placeholder': {
-													userSelect: 'none',
-													color: config.replaceAlpha(
-														styles.colors.black,
-														global.nightMode ? 0.25 : 0.5
-													),
-												},
-											})}
-											type='email'
-											placeholder='someone@gmail.com'
-										></input>
-									</span>
-								</div>
-								<sp />
 								<sp />
 								<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
 									<FInput
@@ -137,40 +145,36 @@ export default class Inputs extends Component {
 								<sp />
 								<sp />
 								<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
-									<FButton defaultChecked={true} checkbox={'Checkbox'}></FButton>
-									<FButton
-										appearance={'primary'}
-										checked={this.state.checked}
-										onChange={(e) => {
-											this.setState({ checked: e })
-										}}
-										checkbox={'Primary'}
-									></FButton>
-									<FButton
-										appearance={'secondary'}
-										checked={this.state.checked}
-										onChange={(e) => {
-											this.setState({ checked: e })
-										}}
-										checkbox={'Secondary'}
-									></FButton>
-									<FButton
-										checked={this.state.checked}
-										isDisabled
-										checkbox={'Disabled'}
-									></FButton>
-									<FButton
-										checked={this.state.checked}
-										isDisabled
-										simpleDisabled
-										checkbox={'Simple Disabled'}
-									></FButton>
+									<FInput label='Date' datePicker />
+									<FInput label='Time' timeInput />
+								</div>
+							</div>
+							<sp />
+							<div style={{ ...styles.outlineCard, width: 'fit-content' }}>
+								<tag>Normal</tag>
+								<sp />
+								<div className='wrapMarginTopLeft flex flex-wrap justify-start items-end'>
+									<FInput placeholder={'Default'} />
+									<FInput eventOverride='hover' placeholder={'Hover'} />
+									<FInput eventOverride='focus' placeholder={'Focus'} />
 								</div>
 								<sp />
+								<tag>Invalid</tag>
 								<sp />
-								<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
-									<FInput label='Date' datePicker></FInput>
-									<FInput label='Time' timeInput></FInput>
+								<div className='wrapMarginTopLeft flex flex-wrap justify-start items-end'>
+									<FInput name='input' invalid='*' placeholder={'Default'} />
+									<FInput
+										name='input'
+										invalid='*'
+										eventOverride='hover'
+										placeholder={'Hover'}
+									/>
+									<FInput
+										name='input'
+										invalid='*'
+										eventOverride='focus'
+										placeholder={'Focus'}
+									/>
 								</div>
 							</div>
 						</Section>
@@ -178,52 +182,16 @@ export default class Inputs extends Component {
 							<div style={{ ...styles.card, maxWidth: 783 }}>
 								<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
 									<Dropdown
-										label='Active'
-										placeholder={'Long placeholder really long'}
-										erasable
-										options={(function o() {
-											const p = [
-												{
-													value: 'disabled',
-													label: 'Disabled',
-													isDisabled: true,
-												},
-											]
-											p.push({
-												value: 'long',
-												label: 'Long option is very very long',
-												isDisabled: false,
-											})
-											for (let i = 0; i < 60; i++) {
-												p.push({
-													value: 'option' + i.toString(),
-													label: 'Option ' + i.toString(),
-													isDisabled: false,
-												})
-											}
-											return p
-										})()}
-									/>
-
-									<Dropdown
-										isDisabled
-										label={'Disabled'}
-										defaultValue={'accept'}
-										placeholder={'Value'}
-										options={dropdownOptions}
-									/>
-									<Dropdown
 										name='dropdown'
 										label={'Invalid Label'}
-										placeholder={'#123'}
 										erasable
+										placeholder={'Long placeholder really long'}
 										invalid={'*'}
 										options={dropdownOptions}
+										isSearchable
 									/>
-								</div>
-								<sp />
-								<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
 									<Dropdown
+										emptyLabel
 										name='dropdown'
 										defaultValue={'accept'}
 										placeholder={'Invalid Bottom'}
@@ -231,9 +199,11 @@ export default class Inputs extends Component {
 										invalidType='bottom'
 										invalid={'Not allowed'}
 										options={dropdownOptions}
+										isSearchable
 									/>
 
 									<Dropdown
+										emptyLabel
 										name='dropdown'
 										menuPlacement='top'
 										placeholder={'Invalid Right'}
@@ -241,37 +211,103 @@ export default class Inputs extends Component {
 										invalid={'*'}
 										invalidType={'right'}
 										options={dropdownOptions}
+										isSearchable
 									/>
-
 									<Dropdown
-										customInput
-										style={{ menu: { left: 0 } }}
-										options={[
-											{
-												value: 'edit',
-												label: 'Edit',
-											},
-											{
-												value: 'delete',
-												label: 'Delete',
-												style: { color: styles.colors.red },
-											},
-										]}
+										isDisabled
+										label={'Disabled'}
+										options={dropdownOptions}
+										isSearchable
 									/>
 								</div>
 								<sp />
 								<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+									<div className='flex items-center' style={{ paddingRight: 10 }}>
+										<p style={{ paddingBottom: 4.5 }}>Custom Input:</p>{' '}
+										<Dropdown
+											customInput
+											style={{ menu: { left: 0 } }}
+											options={[
+												{
+													value: 'edit',
+													label: 'Edit',
+												},
+												{
+													value: 'delete',
+													label: 'Delete',
+													style: { color: styles.colors.red },
+												},
+											]}
+										/>
+									</div>
 									<Dropdown
 										dropdownIndicator={
 											<div className='flex items-center justify-center'>
 												<img style={{ height: 20 }} src={logo}></img>
 											</div>
 										}
-										style={{ width: '100%' }}
-										label={'Full width'}
+										placeholder={'Custom indicator'}
 										defaultValue={'accept'}
-										placeholder={'Value'}
 										options={dropdownOptions}
+									/>
+									<Dropdown
+										style={{ flexGrow: 1 }}
+										isSearchable
+										placeholder={'Full width'}
+										defaultValue={'accept'}
+										options={dropdownOptions}
+									/>
+								</div>
+							</div>
+							<sp />
+							<div style={{ ...styles.outlineCard, width: 'fit-content' }}>
+								<tag>Normal</tag>
+								<sp />
+								<div className='wrapMarginTopLeft flex flex-wrap justify-start items-end'>
+									<Dropdown
+										placeholder={'Default'}
+										options={simpleOptions}
+										isSearchable
+									/>
+									<Dropdown
+										eventOverride='hover'
+										placeholder={'Hover'}
+										options={simpleOptions}
+										isSearchable
+									/>
+									<Dropdown
+										eventOverride='focus'
+										placeholder={'Focus'}
+										options={simpleOptions}
+										isSearchable
+									/>
+								</div>
+								<sp />
+								<tag>Invalid</tag>
+								<sp />
+								<div className='wrapMarginTopLeft flex flex-wrap justify-start items-end'>
+									<Dropdown
+										name='input'
+										invalid='*'
+										placeholder={'Default'}
+										options={simpleOptions}
+										isSearchable
+									/>
+									<Dropdown
+										name='input'
+										invalid='*'
+										eventOverride='hover'
+										placeholder={'Hover'}
+										options={simpleOptions}
+										isSearchable
+									/>
+									<Dropdown
+										name='input'
+										invalid='*'
+										eventOverride='focus'
+										placeholder={'Focus'}
+										options={simpleOptions}
+										isSearchable
 									/>
 								</div>
 							</div>

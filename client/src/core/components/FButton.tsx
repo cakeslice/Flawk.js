@@ -29,12 +29,12 @@ type Props = {
 	style?: React.CSSProperties
 	children?: React.ReactNode
 	appearance?: Appearance
-	isDisabled?: boolean
-	simpleDisabled?: boolean
-	isLoading?: boolean
 	noInvalidLabel?: boolean
+	//
 	onClick?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
 	onBlur?: (event: React.FocusEvent<HTMLButtonElement, Element>) => void
+	//
+	eventOverride?: 'focus' | 'hover' | 'active' | 'focus-visible'
 } & (
 	| {
 			checkbox?: undefined
@@ -45,8 +45,10 @@ type Props = {
 			field?: undefined
 			form?: undefined
 			onChange?: undefined
+			name?: undefined
+			invalid?: undefined
 	  }
-	| {
+	| ({
 			checkbox: React.ReactNode
 			checked?: boolean
 			defaultChecked?: boolean
@@ -55,7 +57,18 @@ type Props = {
 			field?: FieldInputProps<Obj>
 			form?: FormikProps<Obj>
 			onChange?: (checked: boolean) => void
-	  }
+	  } & (
+			| {
+					name: string
+					invalid?: string
+					isDisabled?: undefined
+			  }
+			| {
+					name?: string
+					invalid?: undefined
+					isDisabled?: boolean
+			  }
+	  ))
 ) &
 	(
 		| {
@@ -69,12 +82,14 @@ type Props = {
 	) &
 	(
 		| {
-				name: string
-				invalid?: string
+				isDisabled?: boolean
+				simpleDisabled?: boolean
+				isLoading?: undefined
 		  }
 		| {
-				name?: undefined
-				invalid?: undefined
+				isDisabled?: undefined
+				simpleDisabled?: undefined
+				isLoading?: boolean
 		  }
 	)
 export default class FButton extends TrackedComponent<Props> {
@@ -129,9 +144,10 @@ export default class FButton extends TrackedComponent<Props> {
 			letterSpacing: 0.4,
 
 			borderRadius: styles.buttonBorderRadius,
-			borderStyle: 'solid',
+			borderStyle: styles.buttonBorder,
 			borderWidth: '1px',
 			boxSizing: 'border-box',
+			boxShadow: 'none',
 			overflow: 'hidden',
 
 			cursor: 'pointer',
@@ -148,7 +164,7 @@ export default class FButton extends TrackedComponent<Props> {
 			whiteSpace: 'nowrap',
 			textOverflow: 'ellipsis',
 
-			transition: 'background 200ms, border-color 200ms, opacity 200ms',
+			transition: 'background 200ms, border-color 200ms, opacity 200ms, box-shadow 200ms',
 
 			justifyContent: 'center',
 			alignItems: 'center',
@@ -157,9 +173,6 @@ export default class FButton extends TrackedComponent<Props> {
 			//
 
 			background: styles.inputBackground || styles.colors.white,
-			':hover': {},
-			':active': {},
-			':checked': {},
 
 			loadingColor: config.replaceAlpha(styles.colors.black, 0.2),
 			color: config.replaceAlpha(styles.colors.black, global.nightMode ? 0.5 : 0.75),
@@ -172,34 +185,22 @@ export default class FButton extends TrackedComponent<Props> {
 				opacity: 1,
 				outline: 'none',
 				borderColor: styles.colors.main,
+				color: styles.colors.main,
 				background: config.overlayColor(styles.colors.white, styles.colors.mainVeryLight),
 			},
-			...(!this.props.isDisabled && {
-				':checked': {
-					opacity: 1,
-					borderColor: styles.colors.main,
-					color: styles.colors.main,
-					background: config.overlayColor(
-						styles.colors.white,
-						styles.colors.mainVeryLight
-					),
-				},
-				':hover': {
-					opacity: 1,
-					borderColor: styles.colors.main,
-					color: styles.colors.main,
-					background: config.overlayColor(
-						styles.colors.white,
-						styles.colors.mainVeryLight
-					),
-				},
-				':active': {
-					opacity: 1,
-					borderColor: styles.colors.main,
-					color: styles.colors.main,
-					background: styles.colors.white,
-				},
-			}),
+			':hover': {
+				opacity: 1,
+				borderColor: styles.colors.main,
+				color: styles.colors.main,
+				boxShadow: '0 0 0 2px ' + styles.colors.mainVeryLight,
+			},
+			':active': {
+				opacity: 1,
+				borderColor: styles.colors.main,
+				color: styles.colors.main,
+				background: styles.colors.white,
+				boxShadow: 'none',
+			},
 		}
 
 		let finalStyle: React.CSSProperties &
@@ -210,42 +211,29 @@ export default class FButton extends TrackedComponent<Props> {
 				borderColor: styles.colors.main,
 				color: styles.colors.whiteDay,
 				loadingColor: config.replaceAlpha(styles.colors.whiteDay, 0.6),
-				...(!this.props.isDisabled && {
-					':focus-visible': {
-						outline: 'none',
-						borderColor: styles.colors.whiteDay,
-						background: config.overlayColor(
-							styles.colors.white,
-							styles.colors.mainLight
-						),
-					},
-					...(!global.nightMode && {
-						':focus-visible': {
-							outline: 'none',
-							borderStyle: 'dashed',
-							borderColor: styles.colors.whiteDay,
-							background: config.overlayColor(
-								styles.colors.white,
-								styles.colors.mainLight
-							),
-						},
-					}),
-					':checked': {
-						borderColor: styles.colors.main,
-						background: styles.colors.main,
-					},
-					':hover': {
-						borderColor: styles.colors.main,
-						background: config.overlayColor(
-							styles.colors.white,
-							styles.colors.mainLight
-						),
-					},
-					':active': {
-						borderColor: styles.colors.main,
-						background: styles.colors.main,
-					},
-				}),
+				':focus-visible': {
+					...mainStyle[':focus-visible'],
+					color: styles.colors.whiteDay,
+					borderColor: styles.colors.whiteDay,
+					background: config.overlayColor(
+						styles.colors.white,
+						!global.nightMode
+							? config.replaceAlpha(styles.colors.mainLight, 0.75)
+							: styles.colors.mainLight
+					),
+				},
+				':hover': {
+					...mainStyle[':hover'],
+					color: styles.colors.whiteDay,
+					borderColor: styles.colors.main,
+					background: config.overlayColor(styles.colors.white, styles.colors.mainLight),
+				},
+				':active': {
+					...mainStyle[':active'],
+					color: styles.colors.whiteDay,
+					borderColor: styles.colors.main,
+					background: styles.colors.main,
+				},
 			}),
 			...(this.props.appearance === 'secondary' && {
 				borderColor: styles.colors.mainLight,
@@ -262,59 +250,17 @@ export default class FButton extends TrackedComponent<Props> {
 			if (checked !== undefined) this.state.checked = checked // eslint-disable-line
 
 			if (!this.state.checked) finalStyle.background = styles.colors.white
-			if (!this.props.isDisabled) {
-				if (this.props.appearance === 'primary') {
-					finalStyle.color = styles.colors.whiteDay
-					finalStyle.borderColor = styles.colors.main
-				} else if (this.props.appearance === 'secondary') {
-					finalStyle.color = styles.colors.main
-					finalStyle.borderColor = styles.colors.main
-				} else {
-					finalStyle.color = styles.colors.black
-					finalStyle = {
-						...finalStyle,
-						':focus-visible': {
-							outline: 'none',
-							borderColor: styles.colors.whiteDay,
-						},
-						...(!global.nightMode && {
-							':focus-visible': {
-								outline: 'none',
-								borderStyle: 'dashed',
-								borderColor: styles.colors.whiteDay,
-							},
-						}),
-						':checked': {
-							borderColor: styles.colors.main,
-						},
-						':hover': {
-							borderColor:
-								!this.props.isDisabled && invalid
-									? styles.colors.red
-									: !this.props.isDisabled
-									? config.replaceAlpha(
-											styles.colors.black,
-											global.nightMode ? 0.3 : 0.3
-									  )
-									: '',
-						},
-						':focus': {
-							outline: 'none',
-							boxShadow:
-								'0 0 0 2px ' +
-								(invalid
-									? config.replaceAlpha(styles.colors.red, 0.1)
-									: styles.colors.mainVeryLight),
-							/* background: invalid
-						? 'rgba(254, 217, 219, 0.5)'
-						: config.overlayColor(styles.colors.white, styles.colors.mainVeryLight), */
-							borderColor: invalid ? styles.colors.red : styles.colors.mainLight,
-						},
-						':active': {
-							borderColor: styles.colors.main,
-						},
-					}
-				}
+
+			finalStyle[':hover'] = {
+				...finalStyle[':hover'],
+				...(invalid && {
+					borderColor: styles.colors.red,
+					boxShadow: '0 0 0 2px ' + config.replaceAlpha(styles.colors.red, 0.1),
+				}),
+			}
+			finalStyle[':focus-visible'] = {
+				...finalStyle[':hover'],
+				outline: 'none',
 			}
 		}
 
@@ -322,11 +268,9 @@ export default class FButton extends TrackedComponent<Props> {
 			...finalStyle,
 
 			...this.props.style,
-			...(this.props.isDisabled && {
-				cursor: 'default',
-			}),
 			...(this.props.isDisabled &&
 				!this.props.simpleDisabled && {
+					boxShadow: 'none',
 					background: config.overlayColor(
 						styles.colors.white,
 						config.replaceAlpha(styles.colors.black, global.nightMode ? 0.05 : 0.1)
@@ -337,27 +281,50 @@ export default class FButton extends TrackedComponent<Props> {
 						global.nightMode ? 0.05 : 0.1
 					),
 				}),
-			...(!this.props.isDisabled &&
-				invalid && {
-					boxShadow: '0 0 0 2px ' + config.replaceAlpha(styles.colors.red, 0.1),
-					borderColor: config.replaceAlpha(
-						styles.colors.red,
-						global.nightMode
-							? styles.inputBorderFactorNight
-							: styles.inputBorderFactorDay
-					),
-					':focus': {
-						...finalStyle[':focus'],
-						borderColor: styles.colors.red,
-					},
-				}),
-			...(this.props.isLoading && { opacity: 0.75 }),
+			...(invalid && {
+				boxShadow: '0 0 0 2px ' + config.replaceAlpha(styles.colors.red, 0.1),
+				borderColor: config.replaceAlpha(
+					styles.colors.red,
+					global.nightMode ? styles.inputBorderFactorNight : styles.inputBorderFactorDay
+				),
+				':focus-visible': {
+					...finalStyle[':focus-visible'],
+					borderColor: styles.colors.red,
+				},
+			}),
+			...(this.props.isDisabled && {
+				cursor: 'default',
+				':hover': {},
+				':focus-visible': {},
+				':active': {},
+				':focus': {},
+			}),
+			...(this.props.isLoading && {
+				cursor: 'default',
+				':active': {},
+			}),
+		}
+
+		if (this.props.checkbox)
+			finalStyle = {
+				...finalStyle,
+				':focus-visible': {
+					outline: 'none',
+				},
+				':focus': finalStyle[':focus-visible'],
+			}
+
+		let overridenStyle: React.CSSProperties = {}
+		if (this.props.eventOverride) {
+			overridenStyle = { ...finalStyle }
+			// @ts-ignore
+			finalStyle = { ...finalStyle, ...finalStyle[':' + this.props.eventOverride] }
 		}
 
 		return (
 			<MediaQuery minWidth={config.mobileWidthTrigger}>
 				{(desktop) => (
-					<div style={{ width: finalStyle.width }}>
+					<div style={{ width: finalStyle.width, flexGrow: finalStyle.flexGrow }}>
 						<div style={{ display: 'flex', alignItems: 'flex-start' }}>
 							<button
 								className='f-button'
@@ -420,16 +387,28 @@ export default class FButton extends TrackedComponent<Props> {
 											maxHeight: 10,
 										}}
 									>
-										{checkedIcon(finalStyle.color as string)}
+										{checkedIcon(
+											(this.props.eventOverride
+												? overridenStyle.color
+												: finalStyle.color) as string
+										)}
 									</div>
 								)}
-								{this.props.isLoading ? (
+								{this.props.isLoading && !this.props.checkbox ? (
 									<div>
 										<div style={{ maxHeight: 0, opacity: 0 }}>
 											{this.props.children}
 										</div>
 										<div className='flex items-center justify-center'>
-											<Loading color={finalStyle.color} noDelay size={18.5} />
+											<Loading
+												color={
+													this.props.eventOverride
+														? overridenStyle.color
+														: finalStyle.color
+												}
+												noDelay
+												size={18.5}
+											/>
 										</div>
 									</div>
 								) : (

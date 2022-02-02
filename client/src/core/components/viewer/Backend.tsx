@@ -1097,8 +1097,11 @@ class Settings extends Component<PropsFromRedux & { desktop?: boolean }> {
 									<FButton
 										type='submit'
 										formErrors={errors}
-										isDisabled={!dirty}
-										isLoading={isSubmitting || this.props.fetchingUser}
+										{...(!dirty
+											? { isDisabled: true }
+											: isSubmitting || this.props.fetchingUser
+											? { isLoading: true }
+											: {})}
 										appearance='primary'
 									>
 										{'Save'}

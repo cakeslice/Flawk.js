@@ -17,6 +17,7 @@ import React, { Component } from 'react'
 import MediaQuery from 'react-responsive'
 import { Link } from 'react-router-dom'
 import * as uuid from 'uuid'
+import Dropdown from '../Dropdown'
 import { Section } from './ComponentsViewer'
 
 // eslint-disable-next-line
@@ -31,6 +32,8 @@ export default class Style extends Component<Props> {
 	state = {
 		animationTrigger: true,
 		animationUUID: undefined,
+		//
+		buttonOption: 'default',
 	}
 
 	toggleAnimation() {
@@ -179,109 +182,7 @@ export default class Style extends Component<Props> {
 									</p>
 								</div>
 							</Section>
-							<Section title='Button' tags={['<button/>', '<FButton/>']}>
-								<div
-									className='wrapMarginTopLeft flex flex-wrap justify-start'
-									style={{
-										...styles.card,
-										paddingBottom: 10,
-										paddingRight: 10,
-										maxWidth: 950,
-									}}
-								>
-									<FButton isLoading style={{ minWidth: 50 }}></FButton>
-									<FButton
-										isLoading
-										appearance='primary'
-										style={{ minWidth: 50 }}
-									>
-										Loading
-									</FButton>
-									<FButton
-										isLoading
-										appearance='secondary'
-										style={{ minWidth: 50 }}
-									>
-										Loading
-									</FButton>
-									<FButton style={{ minWidth: 50 }}>Default</FButton>
-									<FButton
-										appearance='primary'
-										style={{
-											minWidth: 50,
-										}}
-									>
-										Primary
-									</FButton>
-									<FButton
-										appearance='secondary'
-										style={{
-											minWidth: 50,
-										}}
-									>
-										Secondary
-									</FButton>
-									{styles.extraButtons.map((e) => (
-										<FButton
-											key={'button_' + e.buttonType}
-											appearance={e.buttonType}
-										>
-											{config.capitalizeAll(
-												e.buttonType.replaceAll('_', ' ')
-											)}
-										</FButton>
-									))}
-									<FButton
-										isDisabled
-										style={{
-											minWidth: 50,
-										}}
-									>
-										Default Disabled
-									</FButton>
-									<FButton
-										appearance='primary'
-										isDisabled
-										style={{
-											minWidth: 50,
-										}}
-									>
-										Primary Disabled
-									</FButton>
-									<FButton
-										appearance='secondary'
-										isDisabled
-										style={{
-											minWidth: 50,
-										}}
-									>
-										Secondary Disabled
-									</FButton>
-									<FButton
-										appearance='secondary'
-										isDisabled
-										simpleDisabled
-										style={{
-											minWidth: 50,
-										}}
-									>
-										Simple Disabled
-									</FButton>
-									<FButton
-										style={{
-											minWidth: 100,
-											justifyContent: 'space-between',
-										}}
-									>
-										<div>Icon</div>
-										<img
-											style={{ maxHeight: 15, marginLeft: 7.5 }}
-											src={logo}
-										></img>
-									</FButton>
-									<button type='button'>Basic</button>
-								</div>
-							</Section>
+
 							<Section title='Color' tags={['styles.colors']}>
 								<div className='wrapMarginBigTopLeft flex flex-wrap justify-start'>
 									<div>
@@ -479,6 +380,334 @@ export default class Style extends Component<Props> {
 								</div>
 							</Section>
 
+							<Section title='Button' tags={['<button/>', '<FButton/>']}>
+								<div
+									style={{
+										...styles.card,
+										maxWidth: 950,
+										paddingBottom: 10,
+										paddingRight: 10,
+									}}
+								>
+									<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+										<FButton style={{ minWidth: 50 }}>Default</FButton>
+										<FButton
+											appearance='primary'
+											style={{
+												minWidth: 50,
+											}}
+										>
+											Primary
+										</FButton>
+										<FButton
+											appearance='secondary'
+											style={{
+												minWidth: 50,
+											}}
+										>
+											Secondary
+										</FButton>
+										{styles.extraButtons.map((e) => (
+											<FButton
+												key={'button_' + e.buttonType}
+												appearance={e.buttonType}
+											>
+												{config.capitalizeAll(
+													e.buttonType.replaceAll('_', ' ')
+												)}
+											</FButton>
+										))}
+									</div>
+									<sp />
+									<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+										<FButton
+											style={{
+												minWidth: 100,
+												justifyContent: 'space-between',
+											}}
+										>
+											<div>Icon</div>
+											<img
+												style={{ maxHeight: 15, marginLeft: 7.5 }}
+												src={logo}
+											></img>
+										</FButton>
+										<FButton isLoading style={{ minWidth: 50 }}>
+											Loading
+										</FButton>
+										<button type='button'>Basic</button>
+										<FButton style={{ flexGrow: 1 }}>Full width</FButton>
+									</div>
+								</div>
+								<sp />
+								<sp />
+								<Dropdown
+									label='Appearance'
+									value={this.state.buttonOption}
+									onChange={(e) => this.setState({ buttonOption: e })}
+									options={[
+										{ label: 'Default', value: 'default' },
+										{ label: 'Primary', value: 'primary' },
+										{ label: 'Secondary', value: 'secondary' },
+									].concat(
+										styles.extraButtons.map((e) => {
+											return {
+												label: config.capitalizeAll(
+													e.buttonType.replaceAll('_', ' ')
+												),
+												value: e.buttonType,
+											}
+										})
+									)}
+								></Dropdown>
+								<sp />
+								<sp />
+								<div
+									style={{ maxWidth: 1100 }}
+									className='wrapMarginBigTopLeft flex flex-wrap justify-start'
+								>
+									<div>
+										<tag>Normal</tag>
+										<sp />
+										<div
+											style={{
+												...styles.outlineCard,
+												paddingBottom: 10,
+												paddingRight: 10,
+												maxWidth: 950,
+											}}
+										>
+											<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+												<FButton
+													appearance={this.state.buttonOption}
+													style={{ minWidth: 50 }}
+												>
+													Default
+												</FButton>
+												<FButton
+													eventOverride='hover'
+													appearance={this.state.buttonOption}
+													style={{ minWidth: 50 }}
+												>
+													Hover
+												</FButton>
+												<FButton
+													eventOverride='active'
+													appearance={this.state.buttonOption}
+													style={{ minWidth: 50 }}
+												>
+													Active
+												</FButton>
+												<FButton
+													eventOverride='focus-visible'
+													appearance={this.state.buttonOption}
+													style={{ minWidth: 50 }}
+												>
+													Focus
+												</FButton>
+												<FButton
+													isDisabled
+													appearance={this.state.buttonOption}
+													style={{ minWidth: 50 }}
+												>
+													Disabled
+												</FButton>
+												<FButton
+													isDisabled
+													simpleDisabled
+													appearance={this.state.buttonOption}
+													style={{ minWidth: 50 }}
+												>
+													Simple Disabled
+												</FButton>
+											</div>
+											<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+												<div className='flex'>
+													<FButton
+														checkbox
+														appearance={this.state.buttonOption}
+													/>
+													<FButton
+														checkbox={'Default'}
+														defaultChecked={true}
+														appearance={this.state.buttonOption}
+													/>
+												</div>{' '}
+												<div className='flex'>
+													<FButton
+														checkbox
+														eventOverride='hover'
+														appearance={this.state.buttonOption}
+													/>
+													<FButton
+														checkbox={'Hover'}
+														defaultChecked={true}
+														eventOverride='hover'
+														appearance={this.state.buttonOption}
+													/>
+												</div>{' '}
+												{/* <div className='flex'>
+													<FButton
+														checkbox
+														eventOverride='focus'
+														appearance={this.state.buttonOption}
+													/>
+													<FButton
+														checkbox={'Focus'}
+														defaultChecked={true}
+														eventOverride='focus'
+														appearance={this.state.buttonOption}
+													/>
+												</div>{' '} */}
+												<div className='flex'>
+													<FButton
+														isDisabled
+														checkbox
+														appearance={this.state.buttonOption}
+													/>
+													<FButton
+														isDisabled
+														checkbox={'Disabled'}
+														defaultChecked={true}
+														appearance={this.state.buttonOption}
+													/>
+												</div>{' '}
+												<div className='flex'>
+													<FButton
+														isDisabled
+														simpleDisabled
+														checkbox
+														appearance={this.state.buttonOption}
+													/>
+													<FButton
+														isDisabled
+														simpleDisabled
+														checkbox={'Simple Disabled'}
+														defaultChecked={true}
+														appearance={this.state.buttonOption}
+													/>
+												</div>{' '}
+											</div>
+										</div>
+									</div>
+
+									<div>
+										<tag>Invalid</tag>
+										<sp />
+										<div
+											style={{
+												...styles.outlineCard,
+												paddingBottom: 10,
+												paddingRight: 10,
+												maxWidth: 950,
+											}}
+										>
+											<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+												<div className='flex'>
+													<FButton
+														name='checkbox'
+														invalid='*'
+														checkbox
+														appearance={this.state.buttonOption}
+													/>
+													<FButton
+														name='checkbox'
+														invalid='*'
+														checkbox={'Default'}
+														defaultChecked={true}
+														appearance={this.state.buttonOption}
+													/>
+												</div>{' '}
+												<div className='flex'>
+													<FButton
+														name='checkbox'
+														invalid='*'
+														checkbox
+														eventOverride='hover'
+														appearance={this.state.buttonOption}
+													/>
+													<FButton
+														name='checkbox'
+														invalid='*'
+														checkbox={'Hover'}
+														defaultChecked={true}
+														eventOverride='hover'
+														appearance={this.state.buttonOption}
+													/>
+												</div>
+												{/* {' '}
+												<div className='flex'>
+													<FButton
+														name='checkbox'
+														invalid='*'
+														checkbox
+														eventOverride='focus'
+														appearance={this.state.buttonOption}
+													/>
+													<FButton
+														name='checkbox'
+														invalid='*'
+														checkbox={'Focus'}
+														defaultChecked={true}
+														eventOverride='focus'
+														appearance={this.state.buttonOption}
+													/>
+												</div> */}
+											</div>
+										</div>
+									</div>
+
+									<div>
+										<tag>Loading</tag>
+										<sp />
+										<div
+											className='wrapMarginTopLeft flex flex-wrap justify-start'
+											style={{
+												...styles.outlineCard,
+												paddingBottom: 10,
+												paddingRight: 10,
+												maxWidth: 950,
+											}}
+										>
+											<div className='flex-col items-center'>
+												<FButton
+													isLoading
+													appearance={this.state.buttonOption}
+													style={{ minWidth: 50 }}
+												>
+													Default
+												</FButton>
+												<div style={{ minHeight: 5 }} />
+												<div>Default</div>
+											</div>
+											<div className='flex-col items-center'>
+												<FButton
+													isLoading
+													eventOverride='hover'
+													appearance={this.state.buttonOption}
+													style={{ minWidth: 50 }}
+												>
+													Hover
+												</FButton>
+												<div style={{ minHeight: 5 }} />
+												<div>Hover</div>
+											</div>
+											<div className='flex-col items-center'>
+												<FButton
+													isLoading
+													eventOverride='focus-visible'
+													appearance={this.state.buttonOption}
+													style={{ minWidth: 50 }}
+												>
+													Focus
+												</FButton>
+												<div style={{ minHeight: 5 }} />
+												<div>Focus</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</Section>
 							<Section
 								title='Animation'
 								tags={['transition', '<Animated/>', '<motion.div/>']}

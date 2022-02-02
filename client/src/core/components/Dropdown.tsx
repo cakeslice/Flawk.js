@@ -53,8 +53,8 @@ const DropdownIndicator = ({ children, ...rest }: DropdownIndicatorProps<unknown
 						? 1
 						: rest.isFocused
 						? 0.75
-						: 0.25,
-					':hover': { opacity: dropdownIndicator ? 1 : 0.75 },
+						: 0.33,
+					':hover': { opacity: 0.75 },
 				})}
 			>
 				{dropdownIndicator || dots(styles.colors.black)}
@@ -78,7 +78,6 @@ type Props = {
 	dropdownIndicator?: React.ReactNode
 	customInput?: boolean
 	//
-	isDisabled?: boolean
 	placeholder?: string
 	value?: string
 	bufferInterval?: number
@@ -99,14 +98,18 @@ type Props = {
 	form?: FormikProps<Obj>
 	onChange?: (value: string | undefined) => void
 	onBlur?: (event: React.FocusEvent<HTMLInputElement, Element>) => void
+	//
+	eventOverride?: 'focus' | 'hover'
 } & (
 	| {
 			name: string
 			invalid?: string
+			isDisabled?: undefined
 	  }
 	| {
-			name?: undefined
+			name?: string
 			invalid?: undefined
+			isDisabled?: boolean
 	  }
 )
 export default class Dropdown extends TrackedComponent<Props> {
@@ -195,14 +198,22 @@ export default class Dropdown extends TrackedComponent<Props> {
 			minHeight: styles.inputHeight,
 			minWidth: 150,
 			width: '100%',
+			transition:
+				'background 200ms, border-color 200ms, box-shadow 200ms, border-radius 200ms',
 
 			//
 
-			':hover': {
-				borderRadius:
-					styles.inputBorder === 'bottom' ? styles.defaultBorderRadius : undefined,
-				borderColor: config.replaceAlpha(styles.colors.black, global.nightMode ? 0.3 : 0.3),
-			},
+			...(!this.props.isDisabled && {
+				':hover': {
+					...(styles.inputBorder === 'bottom' && {
+						borderRadius: styles.defaultBorderRadius,
+					}),
+					borderColor: config.replaceAlpha(
+						styles.colors.black,
+						global.nightMode ? 0.3 : 0.3
+					),
+				},
+			}),
 			activeBorderColor: styles.colors.mainLight,
 			activeShadowColor: styles.colors.mainVeryLight,
 			activeBackground: styles.inputBackground || styles.colors.white,
@@ -223,6 +234,8 @@ export default class Dropdown extends TrackedComponent<Props> {
 			borderRadius: 6,
 		}
 		const indicatorStyle = {
+			cursor: 'pointer',
+			opacity: this.props.dropdownIndicator || this.props.customInput ? 1 : 0.75,
 			paddingRight: 3,
 			paddingLeft: 4,
 			paddingTop: 0,
@@ -265,8 +278,9 @@ export default class Dropdown extends TrackedComponent<Props> {
 							? styles.inputBorderFactorNight
 							: styles.inputBorderFactorDay
 					),
-					borderRadius:
-						styles.inputBorder === 'bottom' ? styles.defaultBorderRadius : undefined,
+					...(styles.inputBorder === 'bottom' && {
+						borderRadius: styles.defaultBorderRadius,
+					}),
 					':hover': { borderColor: styles.colors.red },
 					':focus': { borderColor: styles.colors.red },
 					':active': { borderColor: styles.colors.red },
@@ -278,8 +292,9 @@ export default class Dropdown extends TrackedComponent<Props> {
 					config.replaceAlpha(styles.colors.black, global.nightMode ? 0.05 : 0.1)
 				),
 				color: config.replaceAlpha(styles.colors.black, global.nightMode ? 0.25 : 0.5),
-				borderRadius:
-					styles.inputBorder === 'bottom' ? styles.defaultBorderRadius : undefined,
+				...(styles.inputBorder === 'bottom' && {
+					borderRadius: styles.defaultBorderRadius,
+				}),
 				borderColor: config.replaceAlpha(
 					styles.colors.black,
 					global.nightMode ? 0.05 : 0.1
@@ -291,8 +306,9 @@ export default class Dropdown extends TrackedComponent<Props> {
 			...(!this.props.isDisabled &&
 				invalid && {
 					borderColor: styles.colors.red,
-					borderRadius:
-						styles.inputBorder === 'bottom' ? styles.defaultBorderRadius : undefined,
+					...(styles.inputBorder === 'bottom' && {
+						borderRadius: styles.defaultBorderRadius,
+					}),
 					cursor: 'default',
 				}),
 		}
@@ -307,424 +323,449 @@ export default class Dropdown extends TrackedComponent<Props> {
 
 		return (
 			<MediaQuery minWidth={config.mobileWidthTrigger}>
-				{(desktop) => (
-					<div
-						style={{
-							width:
-								(this.props.style &&
-									this.props.style.width &&
-									(this.props.style.width as number | string)) ||
-								(!this.props.customInput && defaultWidth(desktop)) ||
-								undefined,
-						}}
-					>
-						{label && (
-							<div
-								style={{
-									display: 'flex',
-									justifyContent: 'space-between',
-									letterSpacing: 0.4,
-									textAlign:
-										typeof label === 'string' && label.length === 1
-											? 'end'
-											: undefined,
-									fontSize: styles.defaultFontSize,
-									whiteSpace: 'nowrap',
-									...styles.inputLabelStyle,
-									...this.props.labelStyle,
-									opacity: 1,
-								}}
-							>
-								<label
-									htmlFor={name}
+				{(desktop) => {
+					const width =
+						(this.props.style &&
+							this.props.style.width !== undefined &&
+							(this.props.style.width as React.CSSProperties['width'])) ||
+						(!this.props.customInput && defaultWidth(desktop)) ||
+						undefined
+
+					return (
+						<div
+							style={{
+								width: width,
+								flexGrow:
+									(this.props.style &&
+										this.props.style.flexGrow !== undefined &&
+										(this.props.style
+											.flexGrow as React.CSSProperties['flexGrow'])) ||
+									undefined,
+							}}
+						>
+							{label && (
+								<div
 									style={{
-										opacity: global.nightMode
-											? styles.inputLabelOpacityNight
-											: styles.inputLabelOpacityDay,
-										...(styles.inputLabelStyle &&
-											styles.inputLabelStyle.opacity && {
-												opacity: styles.inputLabelStyle.opacity,
-											}),
-										...(this.props.labelStyle &&
-											this.props.labelStyle.opacity && {
-												opacity: this.props.labelStyle.opacity,
-											}),
+										display: 'flex',
+										justifyContent: 'space-between',
+										letterSpacing: 0.4,
+										textAlign:
+											typeof label === 'string' && label.length === 1
+												? 'end'
+												: undefined,
+										fontSize: styles.defaultFontSize,
+										whiteSpace: 'nowrap',
+										...styles.inputLabelStyle,
+										...this.props.labelStyle,
+										opacity: 1,
 									}}
 								>
-									{label}
-								</label>
-								{invalidType === 'label' &&
-									name &&
-									!this.props.isDisabled &&
-									invalid &&
-									invalid.length > 0 && (
-										<span
-											style={{
-												marginLeft: 7.5,
+									<label
+										htmlFor={name}
+										style={{
+											opacity: global.nightMode
+												? styles.inputLabelOpacityNight
+												: styles.inputLabelOpacityDay,
+											...(styles.inputLabelStyle &&
+												styles.inputLabelStyle.opacity && {
+													opacity: styles.inputLabelStyle.opacity,
+												}),
+											...(this.props.labelStyle &&
+												this.props.labelStyle.opacity && {
+													opacity: this.props.labelStyle.opacity,
+												}),
+										}}
+									>
+										{label}
+									</label>
+									{invalidType === 'label' &&
+										name &&
+										!this.props.isDisabled &&
+										invalid &&
+										invalid.length > 0 && (
+											<span
+												style={{
+													marginLeft: 7.5,
 
-												fontSize: styles.invalidFontSize,
-												fontWeight: styles.invalidFontWeight,
-												color: styles.colors.red,
-											}}
+													fontSize: styles.invalidFontSize,
+													fontWeight: styles.invalidFontWeight,
+													color: styles.colors.red,
+												}}
+											>
+												{invalid}
+											</span>
+										)}
+								</div>
+							)}
+							{label && <div style={{ minHeight: 5 }}></div>}
+							<div style={{ display: 'flex' }}>
+								<Select
+									// Custom props (access with props.selectProps)
+									// @ts-ignore
+									dropdownIndicator={this.props.dropdownIndicator}
+									//
+									noOptionsMessage={() => config.text('common.noOptions')}
+									loadingMessage={() => config.text('common.searching')}
+									menuPortalTarget={
+										!this.props.noPortal ? document.body : undefined
+									}
+									isClearable={this.props.erasable}
+									isDisabled={this.props.isDisabled}
+									menuPlacement={this.props.menuPlacement}
+									isSearchable={this.props.isSearchable === true ? true : false}
+									onChange={(output) => {
+										const o = output as { value: string } | undefined
+
+										if (formIK && name && formIK.setFieldValue)
+											formIK.setFieldValue(
+												name,
+												o
+													? o.value === ''
+														? undefined
+														: o.value
+													: undefined
+											)
+
+										this.props.onChange &&
+											this.props.onChange(
+												o
+													? o.value === ''
+														? undefined
+														: o.value
+													: undefined
+											)
+									}}
+									onBlur={(output) => {
+										const o = output as React.FocusEvent<
+											HTMLInputElement,
+											Element
 										>
-											{invalid}
-										</span>
-									)}
-							</div>
-						)}
-						{label && <div style={{ minHeight: 5 }}></div>}
-						<div style={{ display: 'flex' }}>
-							<Select
-								// Custom props (access with props.selectProps)
-								// @ts-ignore
-								dropdownIndicator={this.props.dropdownIndicator}
-								//
-								noOptionsMessage={() => config.text('common.noOptions')}
-								loadingMessage={() => config.text('common.searching')}
-								menuPortalTarget={!this.props.noPortal ? document.body : undefined}
-								isClearable={this.props.erasable}
-								isDisabled={this.props.isDisabled}
-								menuPlacement={this.props.menuPlacement}
-								isSearchable={this.props.isSearchable === true ? true : false}
-								onChange={(output) => {
-									const o = output as { value: string } | undefined
 
-									if (formIK && name && formIK.setFieldValue)
-										formIK.setFieldValue(
-											name,
-											o ? (o.value === '' ? undefined : o.value) : undefined
+										if (formIK && name && formIK.setFieldTouched)
+											setTimeout(() => {
+												if (formIK) formIK.setFieldTouched(name, true)
+											})
+
+										this.props.onBlur && this.props.onBlur(o)
+									}}
+									placeholder={this.props.placeholder}
+									value={
+										this.state.loadedOptions
+											? this.state.loadedOptions.filter(
+													(option) => option.value === value
+											  )
+											: this.props.options &&
+											  this.props.options.filter(
+													(option) => option.value === value
+											  )
+									}
+									defaultValue={
+										this.props.defaultValue &&
+										this.props.options &&
+										this.props.options.filter(
+											(option) => option.value === this.props.defaultValue
 										)
-
-									this.props.onChange &&
-										this.props.onChange(
-											o ? (o.value === '' ? undefined : o.value) : undefined
-										)
-								}}
-								onBlur={(output) => {
-									const o = output as React.FocusEvent<HTMLInputElement, Element>
-
-									if (formIK && name && formIK.setFieldTouched)
-										setTimeout(() => {
-											if (formIK) formIK.setFieldTouched(name, true)
-										})
-
-									this.props.onBlur && this.props.onBlur(o)
-								}}
-								placeholder={this.props.placeholder}
-								value={
-									this.state.loadedOptions
-										? this.state.loadedOptions.filter(
-												(option) => option.value === value
-										  )
-										: this.props.options &&
-										  this.props.options.filter(
-												(option) => option.value === value
-										  )
-								}
-								defaultValue={
-									this.props.defaultValue &&
-									this.props.options &&
-									this.props.options.filter(
-										(option) => option.value === this.props.defaultValue
-									)
-								}
-								components={
-									this.props.dropdownIndicator || this.props.customInput
-										? {
-												DropdownIndicator,
-										  }
-										: undefined
-								}
-								styles={{
-									menuPortal: (base): CSSObjectWithLabel => ({
-										...base,
-										zIndex: 9999,
-									}),
-									container: (styles): CSSObjectWithLabel => {
-										return {
-											...styles,
-											flex: 1,
-										}
-									},
-									valueContainer: (styles): CSSObjectWithLabel => {
-										return {
-											...styles,
-											paddingRight: 0,
-											...(this.props.button && {
-												display: 'flex',
-												justifyContent: 'center',
-												alignItems: 'center',
-											}),
-										}
-									},
-									input: (styles): CSSObjectWithLabel => {
-										return {
-											...styles,
-											...(this.props.style && this.props.style.input),
-											padding: 0,
-											margin: 0,
-										}
-									},
-									clearIndicator: (styles): CSSObjectWithLabel => {
-										return {
-											...styles,
-											...indicatorStyle,
-										}
-									},
-									indicatorsContainer: (styles): CSSObjectWithLabel => {
-										return {
-											...styles,
-											...indicatorStyle,
-											paddingLeft: 0,
-										}
-									},
-									dropdownIndicator: (s): CSSObjectWithLabel => {
-										return {
-											...s,
-											...indicatorStyle,
-										}
-									},
-									indicatorSeparator: (s): CSSObjectWithLabel => {
-										return {
-											...s,
-											background: indicatorStyle.color,
-											...(styles.dropdown && styles.dropdown.indicator),
-										}
-									},
-									placeholder: (s): CSSObjectWithLabel => {
-										return {
-											...s,
-											...defaultPlaceholderStyle,
-											...(this.props.button && {
-												color: styles.colors.black,
-												fontWeight: styles.buttonFontWeight,
-												marginLeft: 15,
-												width: 'auto',
-											}),
-										}
-									},
-									control: (
-										internalStyle,
-										{ selectProps, isFocused }
-									): CSSObjectWithLabel => {
-										return {
-											...internalStyle,
-											...defaultContainerStyle,
-											...(this.props.style && this.props.style.menu),
-											...((isFocused || selectProps.menuIsOpen) && {
-												':hover': {
-													borderRadius:
-														styles.inputBorder === 'bottom'
-															? styles.defaultBorderRadius
-															: undefined,
-													borderColor:
-														!this.props.isDisabled && invalid
-															? styles.colors.red
-															: (this.props.style &&
-																	this.props.style
-																		.activeBorderColor) ||
-															  defaultContainerStyle.activeBorderColor,
-												},
-												boxShadow: styles.inputBoxShadow
-													? '0 0 2px ' +
-													  (!this.props.isDisabled && invalid
-															? config.replaceAlpha(
-																	styles.colors.red,
-																	0.1
-															  )
-															: defaultContainerStyle.activeShadowColor)
-													: undefined,
-												borderRadius:
-													styles.inputBorder === 'bottom'
-														? styles.defaultBorderRadius
-														: undefined,
-												borderColor:
-													!this.props.isDisabled && invalid
-														? styles.colors.red
-														: (this.props.style &&
-																this.props.style
-																	.activeBorderColor) ||
-														  defaultContainerStyle.activeBorderColor,
-											}),
-											...(selectProps.menuIsOpen && {
-												':hover': {
-													borderRadius:
-														styles.inputBorder === 'bottom'
-															? styles.defaultBorderRadius
-															: undefined,
-													borderColor:
-														!this.props.isDisabled && invalid
-															? styles.colors.red
-															: (this.props.style &&
-																	this.props.style
-																		.activeBorderColor) ||
-															  defaultContainerStyle.activeBorderColor,
-												},
-												boxShadow: styles.inputBoxShadow
-													? '0 0 0 2px ' +
-													  (!this.props.isDisabled && invalid
-															? config.replaceAlpha(
-																	styles.colors.red,
-																	0.1
-															  )
-															: defaultContainerStyle.activeShadowColor)
-													: undefined,
-												borderRadius:
-													styles.inputBorder === 'bottom'
-														? styles.defaultBorderRadius
-														: undefined,
-												borderColor:
-													!this.props.isDisabled && invalid
-														? styles.colors.red
-														: (this.props.style &&
-																this.props.style
-																	.activeBorderColor) ||
-														  defaultContainerStyle.activeBorderColor,
-												background:
-													(this.props.style &&
-														this.props.style.activeBackground) ||
-													defaultContainerStyle.activeBackground,
-											}),
-											...conditionalContainerStyle,
-										}
-									},
-									menu: (internalStyle): CSSObjectWithLabel => {
-										return {
-											...internalStyle,
-											...defaultMenuStyle,
-											...(styles.dropdown && styles.dropdown.menu),
-											...(this.props.style && this.props.style.menu),
-										}
-									},
-									singleValue: (internalStyle, { data }): CSSObjectWithLabel => {
-										// eslint-disable-next-line
-										const d = data as Option
-										return {
-											...internalStyle,
-											...defaultInputStyle,
-											...(this.props.button && {
-												color: styles.colors.black,
-												fontWeight: styles.buttonFontWeight,
-												marginLeft: 15,
-												width: 'auto',
-											}),
-											fontWeight: styles.dropdownFontWeight,
-											...(this.props.style && this.props.style.input),
-											...conditionalInputStyle,
-											...(d && d.style),
-										}
-									},
-									option: (
-										internalStyle,
-										{ data, isDisabled, isFocused, isSelected }
-									): CSSObjectWithLabel => {
-										// eslint-disable-next-line
-										const d = data as Option
-										return {
-											...internalStyle,
-											...defaultStyle,
-											...{
-												backgroundColor: d.isDisabled
-													? config.replaceAlpha(
-															styles.colors.black,
-															global.nightMode ? 0.025 : 0.05
-													  )
-													: isSelected
-													? styles.colors.mainVeryLight
-													: isFocused
-													? config.replaceAlpha(
-															styles.colors.black,
-															global.nightMode ? 0.05 : 0.1
-													  )
-													: undefined,
-												color: isSelected
-													? styles.colors.black
-													: isDisabled
-													? config.replaceAlpha(
-															styles.colors.black,
-															global.nightMode ? 0.25 : 0.5
-													  )
-													: undefined,
-												fontWeight: isSelected ? 700 : 400,
-												opacity: d.isDisabled ? 0.75 : undefined,
-												cursor: d.isDisabled ? 'default' : 'pointer',
-
-												':active': {
-													fontWeight: !d.isDisabled ? 700 : undefined,
-													backgroundColor: !d.isDisabled
-														? styles.colors.mainVeryLight
-														: undefined,
-												},
-											},
-											...d.style,
-										}
-									},
-
-									...(this.props.customInput && {
-										valueContainer: (): CSSObjectWithLabel => {
-											return { maxWidth: 0, maxHeight: 0 }
-										},
-										singleValue: (): CSSObjectWithLabel => {
-											return { maxWidth: 0, overflow: 'hidden' }
-										},
-										control: (
-											internalStyle,
-											{ isFocused }
-										): CSSObjectWithLabel => {
+									}
+									components={
+										this.props.dropdownIndicator || this.props.customInput
+											? {
+													DropdownIndicator,
+											  }
+											: undefined
+									}
+									styles={{
+										menuPortal: (base): CSSObjectWithLabel => ({
+											...base,
+											zIndex: 9999,
+										}),
+										container: (styles): CSSObjectWithLabel => {
 											return {
-												cursor: 'pointer',
+												...styles,
+												width: width,
+												flex: 1,
 											}
 										},
-										input: (): CSSObjectWithLabel => {
+										valueContainer: (styles): CSSObjectWithLabel => {
 											return {
-												maxWidth: 0,
+												...styles,
+												paddingRight: 0,
+												...(this.props.button && {
+													display: 'flex',
+													justifyContent: 'center',
+													alignItems: 'center',
+												}),
 											}
 										},
-										indicatorSeparator: (): CSSObjectWithLabel => {
-											return { maxWidth: 0, maxHeight: 0 }
+										input: (styles): CSSObjectWithLabel => {
+											return {
+												...styles,
+												...(this.props.style && this.props.style.input),
+												padding: 0,
+												margin: 0,
+											}
+										},
+										clearIndicator: (styles): CSSObjectWithLabel => {
+											return {
+												...styles,
+												...indicatorStyle,
+											}
 										},
 										indicatorsContainer: (styles): CSSObjectWithLabel => {
 											return {
-												padding: 8,
+												...styles,
+												...indicatorStyle,
+												paddingLeft: 0,
 											}
 										},
-										placeholder: (): CSSObjectWithLabel => {
+										dropdownIndicator: (s): CSSObjectWithLabel => {
 											return {
-												maxWidth: 0,
-												overflow: 'hidden',
+												...s,
+												...indicatorStyle,
 											}
 										},
-										menu: (internalStyles): CSSObjectWithLabel => {
+										indicatorSeparator: (s): CSSObjectWithLabel => {
 											return {
-												...internalStyles,
+												...s,
+												background: indicatorStyle.color,
+												...(styles.dropdown && styles.dropdown.indicator),
+											}
+										},
+										placeholder: (s): CSSObjectWithLabel => {
+											return {
+												...s,
+												...defaultPlaceholderStyle,
+												...(this.props.button && {
+													color: styles.colors.black,
+													fontWeight: styles.buttonFontWeight,
+													marginLeft: 15,
+													width: 'auto',
+												}),
+											}
+										},
+										control: (
+											internalStyle,
+											{ selectProps, isFocused }
+										): CSSObjectWithLabel => {
+											let output: CSSObjectWithLabel = {
+												...internalStyle,
+												...defaultContainerStyle,
+												...(this.props.style && this.props.style.menu),
+												...(!this.props.isDisabled &&
+													(isFocused ||
+														selectProps.menuIsOpen ||
+														this.props.eventOverride === 'focus') && {
+														':hover': {
+															...(styles.inputBorder === 'bottom' && {
+																borderRadius:
+																	styles.defaultBorderRadius,
+															}),
+															borderColor:
+																!this.props.isDisabled && invalid
+																	? styles.colors.red
+																	: (this.props.style &&
+																			this.props.style
+																				.activeBorderColor) ||
+																	  defaultContainerStyle.activeBorderColor,
+														},
+														boxShadow: styles.inputBoxShadow
+															? '0 0 0 2px ' +
+															  (!this.props.isDisabled && invalid
+																	? config.replaceAlpha(
+																			styles.colors.red,
+																			0.1
+																	  )
+																	: defaultContainerStyle.activeShadowColor)
+															: undefined,
+														...(styles.inputBorder === 'bottom' && {
+															borderRadius:
+																styles.defaultBorderRadius,
+														}),
+														borderColor:
+															!this.props.isDisabled && invalid
+																? styles.colors.red
+																: (this.props.style &&
+																		this.props.style
+																			.activeBorderColor) ||
+																  defaultContainerStyle.activeBorderColor,
+														background:
+															(this.props.style &&
+																this.props.style
+																	.activeBackground) ||
+															defaultContainerStyle.activeBackground,
+													}),
+												...conditionalContainerStyle,
+											}
+
+											if (this.props.eventOverride)
+												output = {
+													...output,
+													// @ts-ignore
+													...output[':' + this.props.eventOverride],
+												}
+
+											return output
+										},
+										menu: (internalStyle): CSSObjectWithLabel => {
+											return {
+												...internalStyle,
 												...defaultMenuStyle,
 												...(styles.dropdown && styles.dropdown.menu),
-												width: 150,
-												left: -137,
-												top: -10,
 												...(this.props.style && this.props.style.menu),
 											}
 										},
-									}),
-								}}
-								filterOption={
-									this.props.searchFunction
-										? this.props.searchFunction
-										: this.props.loadOptions
-										? () => {
-												return true
-										  }
-										: undefined
-								}
-								onInputChange={(value?: string) => {
-									this.handleChangeBuffered(value === '' ? undefined : value)
-								}}
-								options={this.state.loadedOptions || this.props.options}
-							></Select>
-							{invalidType === 'right' && name && (
-								<div style={{ minWidth: 16, display: 'flex' }}>
+										singleValue: (
+											internalStyle,
+											{ data }
+										): CSSObjectWithLabel => {
+											// eslint-disable-next-line
+											const d = data as Option
+											return {
+												...internalStyle,
+												...defaultInputStyle,
+												...(this.props.button && {
+													color: styles.colors.black,
+													fontWeight: styles.buttonFontWeight,
+													marginLeft: 15,
+													width: 'auto',
+												}),
+												fontWeight: styles.dropdownFontWeight,
+												...(this.props.style && this.props.style.input),
+												...conditionalInputStyle,
+												...(d && d.style),
+											}
+										},
+										option: (
+											internalStyle,
+											{ data, isDisabled, isFocused, isSelected }
+										): CSSObjectWithLabel => {
+											// eslint-disable-next-line
+											const d = data as Option
+											return {
+												...internalStyle,
+												...defaultStyle,
+												...{
+													backgroundColor: d.isDisabled
+														? config.replaceAlpha(
+																styles.colors.black,
+																global.nightMode ? 0.025 : 0.05
+														  )
+														: isSelected
+														? styles.colors.mainVeryLight
+														: isFocused
+														? config.replaceAlpha(
+																styles.colors.black,
+																global.nightMode ? 0.05 : 0.1
+														  )
+														: undefined,
+													color: isSelected
+														? styles.colors.black
+														: isDisabled
+														? config.replaceAlpha(
+																styles.colors.black,
+																global.nightMode ? 0.25 : 0.5
+														  )
+														: undefined,
+													fontWeight: isSelected ? 700 : 400,
+													opacity: d.isDisabled ? 0.75 : undefined,
+													cursor: d.isDisabled ? 'default' : 'pointer',
+
+													':active': {
+														fontWeight: !d.isDisabled ? 700 : undefined,
+														backgroundColor: !d.isDisabled
+															? styles.colors.mainVeryLight
+															: undefined,
+													},
+												},
+												...d.style,
+											}
+										},
+
+										...(this.props.customInput && {
+											valueContainer: (): CSSObjectWithLabel => {
+												return { maxWidth: 0, maxHeight: 0 }
+											},
+											singleValue: (): CSSObjectWithLabel => {
+												return { maxWidth: 0, overflow: 'hidden' }
+											},
+											control: (
+												internalStyle,
+												{ isFocused }
+											): CSSObjectWithLabel => {
+												return {
+													cursor: 'pointer',
+												}
+											},
+											input: (): CSSObjectWithLabel => {
+												return {
+													maxWidth: 0,
+												}
+											},
+											indicatorSeparator: (): CSSObjectWithLabel => {
+												return { maxWidth: 0, maxHeight: 0 }
+											},
+											indicatorsContainer: (styles): CSSObjectWithLabel => {
+												return {
+													padding: 8,
+												}
+											},
+											placeholder: (): CSSObjectWithLabel => {
+												return {
+													maxWidth: 0,
+													overflow: 'hidden',
+												}
+											},
+											menu: (internalStyles): CSSObjectWithLabel => {
+												return {
+													...internalStyles,
+													...defaultMenuStyle,
+													...(styles.dropdown && styles.dropdown.menu),
+													width: 150,
+													left: -137,
+													top: -10,
+													...(this.props.style && this.props.style.menu),
+												}
+											},
+										}),
+									}}
+									filterOption={
+										this.props.searchFunction
+											? this.props.searchFunction
+											: this.props.loadOptions
+											? () => {
+													return true
+											  }
+											: undefined
+									}
+									onInputChange={(value?: string) => {
+										this.handleChangeBuffered(value === '' ? undefined : value)
+									}}
+									options={this.state.loadedOptions || this.props.options}
+								></Select>
+								{invalidType === 'right' && name && (
+									<div style={{ minWidth: 16, display: 'flex' }}>
+										{!this.props.isDisabled &&
+											invalid &&
+											invalid.length > 0 && (
+												<div style={{ minWidth: 7.5 }}></div>
+											)}
+										{!this.props.isDisabled && invalid && invalid.length > 0 && (
+											<p
+												style={{
+													fontSize: styles.invalidFontSize,
+													fontWeight: styles.invalidFontWeight,
+													color: styles.colors.red,
+												}}
+											>
+												{invalid}
+											</p>
+										)}
+									</div>
+								)}
+							</div>
+							{invalidType === 'bottom' && name && (
+								<div style={{ minHeight: 26 }}>
 									{!this.props.isDisabled && invalid && invalid.length > 0 && (
-										<div style={{ minWidth: 7.5 }}></div>
+										<div style={{ minHeight: 5 }}></div>
 									)}
 									{!this.props.isDisabled && invalid && invalid.length > 0 && (
 										<p
@@ -740,26 +781,8 @@ export default class Dropdown extends TrackedComponent<Props> {
 								</div>
 							)}
 						</div>
-						{invalidType === 'bottom' && name && (
-							<div style={{ minHeight: 26 }}>
-								{!this.props.isDisabled && invalid && invalid.length > 0 && (
-									<div style={{ minHeight: 5 }}></div>
-								)}
-								{!this.props.isDisabled && invalid && invalid.length > 0 && (
-									<p
-										style={{
-											fontSize: styles.invalidFontSize,
-											fontWeight: styles.invalidFontWeight,
-											color: styles.colors.red,
-										}}
-									>
-										{invalid}
-									</p>
-								)}
-							</div>
-						)}
-					</div>
-				)}
+					)
+				}}
 			</MediaQuery>
 		)
 	}

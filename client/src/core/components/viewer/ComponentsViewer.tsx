@@ -253,7 +253,7 @@ export const Section: React.FC<{
 									<div className={(tablet ? 'flex' : 'flex-col') + ' w-full'}>
 										<div className={code && 'grow'}>
 											<div className='flex'>
-												<h4>{title}</h4>
+												<h3>{title}</h3>
 												{tags && <div style={{ minWidth: 15 }} />}
 												{tags && (
 													<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
@@ -267,7 +267,16 @@ export const Section: React.FC<{
 																	marginLeft: 5,
 																}}
 															>
-																<tag>{tag}</tag>
+																<tag
+																	style={{
+																		background:
+																			styles.colors.black,
+																		color: styles.colors.white,
+																		opacity: 0.33,
+																	}}
+																>
+																	{tag}
+																</tag>
 															</div>
 														))}
 													</div>

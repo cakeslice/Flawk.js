@@ -38,6 +38,7 @@ export default {
 			':focus-visible': {
 				outline: 'none',
 				borderColor: 'rgba(250,61,91,1)',
+				boxShadow: '0 0 0 2px ' + 'rgba(250,61,91,.1)',
 			},
 			':hover': {
 				opacity: 1,
@@ -60,6 +61,7 @@ export default {
 			':focus-visible': {
 				outline: 'none',
 				background: 'rgba(250,61,91,.5)',
+				boxShadow: '0 0 0 2px ' + 'rgba(250,61,91,.1)',
 			},
 			':hover': {
 				opacity: 1,
@@ -83,6 +85,7 @@ export default {
 			':focus-visible': {
 				outline: 'none',
 				borderColor: 'white',
+				boxShadow: 'none',
 			},
 			':hover': {
 				borderColor: 'white',

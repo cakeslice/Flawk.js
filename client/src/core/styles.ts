@@ -43,8 +43,6 @@ export default {
 	// @ts-ignore
 	defaultBorderRadius: 6,
 	// @ts-ignore
-	buttonBorderRadius: 6,
-	// @ts-ignore
 	defaultFontSize: 14,
 	// @ts-ignore
 	defaultFontBold: 700,
@@ -82,6 +80,10 @@ export default {
 	// Button Config
 
 	// @ts-ignore
+	buttonBorderRadius: 6,
+	// @ts-ignore
+	buttonBorder: 'solid' as React.CSSProperties['borderStyle'],
+	// @ts-ignore
 	buttonFontWeight: undefined,
 	// @ts-ignore
 	extraButtons: [
@@ -92,6 +94,7 @@ export default {
 			':focus-visible': {
 				outline: 'none',
 				borderColor: _red,
+				boxShadow: '0 0 0 2px ' + config.replaceAlpha(_red, 0.1),
 			},
 			':hover': {
 				opacity: 1,
@@ -114,6 +117,7 @@ export default {
 			':focus-visible': {
 				outline: 'none',
 				background: config.replaceAlpha(_red, 0.5),
+				boxShadow: '0 0 0 2px ' + config.replaceAlpha(_red, 0.1),
 			},
 			':hover': {
 				opacity: 1,

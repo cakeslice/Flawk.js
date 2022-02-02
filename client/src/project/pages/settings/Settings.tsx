@@ -198,10 +198,11 @@ class Settings extends Component<DashboardProps> {
 												<FButton
 													type='submit'
 													formErrors={errors}
-													isDisabled={!dirty}
-													isLoading={
-														isSubmitting || this.props.fetchingUser
-													}
+													{...(!dirty
+														? { isDisabled: true }
+														: isSubmitting || this.props.fetchingUser
+														? { isLoading: true }
+														: {})}
 													appearance='primary'
 												>
 													{'Save'}

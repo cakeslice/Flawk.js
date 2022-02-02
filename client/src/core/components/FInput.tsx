@@ -148,7 +148,6 @@ type Props = {
 	autoComplete?: string
 	placeholder?: string
 	required?: boolean | string
-	isDisabled?: boolean
 	simpleDisabled?: boolean
 	bufferedInput?: boolean
 	bufferInterval?: number
@@ -163,6 +162,8 @@ type Props = {
 	onBlur?: (event: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>) => void
 	onFocus?: (event: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>) => void
 	onKeyPress?: (event: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => void
+	//
+	eventOverride?: 'focus' | 'hover'
 } & (
 	| {
 			textArea?: boolean
@@ -208,10 +209,12 @@ type Props = {
 		| {
 				name: string
 				invalid?: string
+				isDisabled?: undefined
 		  }
 		| {
-				name?: undefined
+				name?: string
 				invalid?: undefined
+				isDisabled?: boolean
 		  }
 	)
 export default class FInput extends TrackedComponent<Props> {
@@ -284,6 +287,8 @@ export default class FInput extends TrackedComponent<Props> {
 			fontWeight: styles.inputFontWeight || undefined,
 
 			borderRadius: styles.inputBorder === 'bottom' ? 0 : styles.defaultBorderRadius,
+			borderTopLeftRadius: styles.defaultBorderRadius,
+			borderTopRightRadius: styles.defaultBorderRadius,
 			borderTopStyle: styles.inputBorder === 'full' ? 'solid' : 'none',
 			borderBottomStyle:
 				styles.inputBorder === 'full' || styles.inputBorder === 'bottom' ? 'solid' : 'none',
@@ -315,30 +320,27 @@ export default class FInput extends TrackedComponent<Props> {
 				color: config.replaceAlpha(styles.colors.black, global.nightMode ? 0.25 : 0.5),
 				opacity: 1,
 			},
-			...(!this.props.isDisabled && {
-				':hover': {
-					borderRadius:
-						styles.inputBorder === 'bottom' ? styles.defaultBorderRadius : undefined,
-					borderColor:
-						!this.props.isDisabled && invalid
-							? styles.colors.red
-							: !this.props.isDisabled
-							? config.replaceAlpha(styles.colors.black, global.nightMode ? 0.3 : 0.3)
-							: '',
-				},
-				':focus': {
-					borderRadius:
-						styles.inputBorder === 'bottom' ? styles.defaultBorderRadius : undefined,
-					outline: 'none',
-					boxShadow: styles.inputBoxShadow
-						? '0 0 0 2px ' +
-						  (invalid
-								? config.replaceAlpha(styles.colors.red, 0.1)
-								: styles.colors.mainVeryLight)
-						: undefined,
-					borderColor: invalid ? styles.colors.red : styles.colors.mainLight,
-				},
-			}),
+			':hover': {
+				...(styles.inputBorder === 'bottom' && {
+					borderRadius: styles.defaultBorderRadius,
+				}),
+				borderColor: invalid
+					? styles.colors.red
+					: config.replaceAlpha(styles.colors.black, global.nightMode ? 0.3 : 0.3),
+			},
+			':focus': {
+				...(styles.inputBorder === 'bottom' && {
+					borderRadius: styles.defaultBorderRadius,
+				}),
+				outline: 'none',
+				boxShadow: styles.inputBoxShadow
+					? '0 0 0 2px ' +
+					  (invalid
+							? config.replaceAlpha(styles.colors.red, 0.1)
+							: styles.colors.mainVeryLight)
+					: undefined,
+				borderColor: invalid ? styles.colors.red : styles.colors.mainLight,
+			},
 			background: styles.inputBackground || styles.colors.white,
 			transition:
 				'background 200ms, border-color 200ms, box-shadow 200ms, border-radius 200ms',
@@ -355,24 +357,22 @@ export default class FInput extends TrackedComponent<Props> {
 		}
 		finalStyle = {
 			...finalStyle,
-			...(!this.props.isDisabled &&
-				invalid && {
-					boxShadow: styles.inputBoxShadow
-						? '0 0 0 2px ' + config.replaceAlpha(styles.colors.red, 0.1)
-						: undefined,
-					borderColor: config.replaceAlpha(
-						styles.colors.red,
-						global.nightMode
-							? styles.inputBorderFactorNight
-							: styles.inputBorderFactorDay
-					),
-					borderRadius:
-						styles.inputBorder === 'bottom' ? styles.defaultBorderRadius : undefined,
-					':focus': {
-						...finalStyle[':focus'],
-						borderColor: styles.colors.red,
-					},
+			...(invalid && {
+				boxShadow: styles.inputBoxShadow
+					? '0 0 0 2px ' + config.replaceAlpha(styles.colors.red, 0.1)
+					: undefined,
+				borderColor: config.replaceAlpha(
+					styles.colors.red,
+					global.nightMode ? styles.inputBorderFactorNight : styles.inputBorderFactorDay
+				),
+				...(styles.inputBorder === 'bottom' && {
+					borderRadius: styles.defaultBorderRadius,
 				}),
+				':focus': {
+					...finalStyle[':focus'],
+					borderColor: styles.colors.red,
+				},
+			}),
 			...(this.props.isDisabled &&
 				!this.props.simpleDisabled && {
 					background: config.overlayColor(
@@ -384,10 +384,16 @@ export default class FInput extends TrackedComponent<Props> {
 						styles.colors.black,
 						global.nightMode ? 0.05 : 0.1
 					),
-					borderRadius:
-						styles.inputBorder === 'bottom' ? styles.defaultBorderRadius : undefined,
+					...(styles.inputBorder === 'bottom' && {
+						borderRadius: styles.defaultBorderRadius,
+					}),
 					opacity: 0.75,
 				}),
+			...(this.props.isDisabled && {
+				cursor: 'default',
+				':hover': {},
+				':focus': {},
+			}),
 		}
 
 		const label = this.props.label || (this.props.emptyLabel ? '\u200c' : undefined)
@@ -482,12 +488,17 @@ export default class FInput extends TrackedComponent<Props> {
 			},
 		}
 
+		if (this.props.eventOverride)
+			// @ts-ignore
+			finalStyle = { ...finalStyle, ...finalStyle[':' + this.props.eventOverride] }
+
 		return (
 			<MediaQuery minWidth={config.mobileWidthTrigger}>
 				{(desktop) => (
 					<div
 						style={{
 							width: finalStyle.width || defaultWidth(desktop),
+							flexGrow: finalStyle.flexGrow,
 						}}
 					>
 						{label && (
