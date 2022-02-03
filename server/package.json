@@ -19,17 +19,18 @@
 		"buildLocal": "npm run auditCI && npm run testCI && npm run buildCI",
 		"buildPushDocker": "npm run buildLocal && cross-env-shell docker image build -t $DOCKER_IMAGE . -f Dockerfile.local && cross-env-shell docker push $DOCKER_IMAGE && cross-env-shell docker run caprover/cli-caprover:v2.1.1 caprover deploy --caproverUrl $CAPROVER_URL --caproverPassword $CAPROVER_PASSWORD --caproverApp $CAPROVER_APP --imageName $DOCKER_IMAGE && cross-env-shell docker image rm $DOCKER_IMAGE",
 		"- EXTRA SCRIPTS -": "-----------------------------",
-		"precommit": "lint-staged",
+		"precommit": "npm-run-all --aggregate-output --parallel auditCI lintTypescriptCI checkStaged",
 		"postinstall": "cd .. && git config core.hooksPath ./git-hooks",
 		"test": "cross-env JEST=true jest --coverage --runInBand",
 		"testCI": "cross-env JEST=true jest --bail --runInBand",
 		"prettierFix": "prettier --write ./app",
 		"prettierCI": "prettier --check ./",
-		"lintCI": "eslint --quiet ./",
-		"lintTypescriptCI": "tsc --noEmit",
+		"lintCI": "eslint --quiet --cache ./",
+		"lintTypescriptCI": "tsc --noEmit --incremental",
 		"auditFix": "npm audit fix",
 		"auditCI": "npm audit --audit-level=high",
-		"generateDatabase": "mtgen --no-populate-overload -o ./app/project/database.gen.ts ./app/project/database.ts && node ./app/core/internal/fixMtgen.js && prettier --write ./app/project/database.gen.ts"
+		"generateDatabase": "mtgen --no-populate-overload -o ./app/project/database.gen.ts ./app/project/database.ts && node ./app/core/internal/fixMtgen.js && prettier --write ./app/project/database.gen.ts",
+		"checkStaged": "lint-staged"
 	},
 	"dependencies": {
 		"@awaitjs/express": "^0.9.0",
@@ -119,7 +120,7 @@
 	},
 	"lint-staged": {
 		"*.{js,jsx,css,less,scss,md,ts,tsx}": [
-			"eslint --quiet",
+			"eslint --cache --quiet",
 			"prettier --check",
 			"cross-env JEST=true jest --bail --runInBand --findRelatedTests"
 		]

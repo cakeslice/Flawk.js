@@ -19,6 +19,7 @@ yarn-error.log*
 *.env
 
 .eslintcache
+tsconfig.tsbuildinfo
 
 resources/android/icon
 resources/android/splash

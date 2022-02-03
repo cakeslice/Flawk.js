@@ -34,7 +34,7 @@
 		"buildPushDocker": "npm run buildLocal && cross-env-shell docker image build -t $DOCKER_IMAGE . -f Dockerfile.local && cross-env-shell docker push $DOCKER_IMAGE && cross-env-shell docker run caprover/cli-caprover:v2.1.1 caprover deploy --caproverUrl $CAPROVER_URL --caproverPassword $CAPROVER_PASSWORD --caproverApp $CAPROVER_APP --imageName $DOCKER_IMAGE && cross-env-shell docker image rm $DOCKER_IMAGE",
 		"buildAndroid": "npm run buildLocal && npx cap sync && cd android && gradlew bundleRelease && cd .. && cross-env-shell jarsigner -keystore ./_env/android_keystore.env -storepass $ANDROID_KEYSTORE_PASS ./android/app/build/outputs/bundle/release/app-release.aab $ANDROID_KEYSTORE_ALIAS",
 		"- EXTRA SCRIPTS -": "-----------------------------",
-		"precommit": "lint-staged",
+		"precommit": "npm-run-all --aggregate-output --parallel auditCI lintTypescriptCI checkStaged",
 		"postinstall": "cd .. && git config core.hooksPath ./git-hooks",
 		"eject": "react-scripts eject",
 		"test": "cross-env CI=true react-scripts test --env=jsdom --coverage",
@@ -43,11 +43,12 @@
 		"cypressCI": "npx cypress run",
 		"prettierFix": "prettier --write ./src",
 		"prettierCI": "prettier --check ./",
-		"lintCI": "eslint --quiet ./",
-		"lintTypescriptCI": "tsc --noEmit",
+		"lintCI": "eslint --cache --quiet ./",
+		"lintTypescriptCI": "tsc --noEmit --incremental",
 		"auditFix": "npm audit fix && npm run auditCI",
 		"auditCI": "npm audit --production --audit-level=high",
-		"addPreloadLinks": "babel-node ./src/core/internal/addPreloadLinks.js"
+		"addPreloadLinks": "babel-node ./src/core/internal/addPreloadLinks.js",
+		"checkStaged": "lint-staged"
 	},
 	"dependencies": {
 		"@capacitor/android": "^3.3.2",
@@ -159,6 +160,7 @@
 		"eslint-plugin-security": "^1.4.0",
 		"glamor": "^2.20.40",
 		"lint-staged": "^12.1.2",
+		"npm-run-all": "^4.1.5",
 		"prettier": "^2.4.1",
 		"react-scripts": "5.0.0",
 		"sass": "^1.43.4",
@@ -166,7 +168,7 @@
 	},
 	"lint-staged": {
 		"*.{js,jsx,css,less,scss,md,ts,tsx}": [
-			"eslint --quiet",
+			"eslint --cache --quiet",
 			"prettier --check",
 			"cross-env CI=true react-scripts test --env=jsdom --findRelatedTests --bail"
 		]

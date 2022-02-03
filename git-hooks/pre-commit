@@ -3,66 +3,26 @@
 # BACKEND CHECKS
 ###########################
 
-npm run auditCI --prefix ./server
-AUDIT_EXIT="$?"
-
-if [[ "${AUDIT_EXIT}" == 0 ]]; then
-  printf "\nSUCCESS: BACKEND/audit\n"
-else
-  printf "\nCOMMIT FAILED: Fix BACKEND/audit errors and try again\n"
-  exit 1
-fi
-
-npm run lintTypescriptCI --prefix ./server
-TYPESCRIPT_EXIT="$?"
-
-if [[ "${TYPESCRIPT_EXIT}" == 0 ]]; then
-  printf "\nSUCCESS: BACKEND/typescript\n"
-else
-  printf "\nCOMMIT FAILED: Fix BACKEND/typescript errors and try again\n"
-  exit 1
-fi
-
 npm run precommit --prefix ./server
-PRECOMMIT_EXIT="$?"
+BACKEND_EXIT="$?"
 
-if [[ "${PRECOMMIT_EXIT}" == 0 ]]; then
-  printf "\nSUCCESS: BACKEND/precommit\n"
+if [[ "${BACKEND_EXIT}" == 0 ]]; then
+  printf "\nSUCCESS: BACKEND\n"
 else
-  printf "\nCOMMIT FAILED: Fix BACKEND/precommit errors and try again\n"
+  printf "\nCOMMIT FAILED: Fix BACKEND errors and try again\n"
   exit 1
 fi
 
 # FRONTEND CHECKS
 ###########################
 
-npm run auditCI --prefix ./client
-AUDIT_EXIT="$?"
-
-if [[ "${AUDIT_EXIT}" == 0 ]]; then
-  printf "\nSUCCESS: FRONTEND/audit\n"
-else
-  printf "\nCOMMIT FAILED: Fix FRONTEND/audit errors and try again\n"
-  exit 1
-fi
-
-npm run lintTypescriptCI --prefix ./client
-TYPESCRIPT_EXIT="$?"
-
-if [[ "${TYPESCRIPT_EXIT}" == 0 ]]; then
-  printf "\nSUCCESS: FRONTEND/typescript\n"
-else
-  printf "\nCOMMIT FAILED: Fix FRONTEND/typescript errors and try again\n"
-  exit 1
-fi
-
 npm run precommit --prefix ./client
-PRECOMMIT_EXIT="$?"
+FRONTEND_EXIT="$?"
 
-if [[ "${PRECOMMIT_EXIT}" == 0 ]]; then
-  printf "\nSUCCESS: FRONTEND/precommit\n"
+if [[ "${FRONTEND_EXIT}" == 0 ]]; then
+  printf "\nSUCCESS: FRONTEND\n"
 else
-  printf "\nCOMMIT FAILED: Fix FRONTEND/precommit errors and try again\n"
+  printf "\nCOMMIT FAILED: Fix FRONTEND errors and try again\n"
   exit 1
 fi
 
