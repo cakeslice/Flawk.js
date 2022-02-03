@@ -108,6 +108,12 @@ export default class Style extends Component<Props> {
 									</h3>
 									<hr />
 									<sp />
+									<h4>
+										{'One more title '}
+										<span>
+											<tag>h4</tag>
+										</span>
+									</h4>
 									<i>
 										Italic ipsum dolor sit amet,{' '}
 										<Tooltip
@@ -179,7 +185,27 @@ export default class Style extends Component<Props> {
 									<sp />
 									<p>
 										Press <kbd>Enter</kbd> to continue...
-									</p>
+									</p>{' '}
+									<sp />
+									<hr />
+									<sp />
+									<div className='wrapMarginBigTopLeft flex flex-wrap justify-start'>
+										<div style={{ maxWidth: 150 }}>
+											<h1>Line height</h1>
+										</div>
+										<div style={{ maxWidth: 100 }}>
+											<h2>Line height</h2>
+										</div>
+										<div style={{ maxWidth: 65 }}>
+											<h3>Line height</h3>
+										</div>
+										<div style={{ maxWidth: 60 }}>
+											<h4>Line height</h4>
+										</div>
+										<div style={{ maxWidth: 30 }}>
+											<p>Line height</p>
+										</div>
+									</div>
 								</div>
 							</Section>
 

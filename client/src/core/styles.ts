@@ -76,6 +76,8 @@ export default {
 
 	// @ts-ignore
 	inputHeight: 31,
+	// @ts-ignore
+	inputPaddingLeft: 10,
 
 	// Button Config
 

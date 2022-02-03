@@ -15,12 +15,7 @@ export default class Main extends Component {
 		return (
 			<MediaQuery minWidth={config.mobileWidthTrigger}>
 				{(desktop) => (
-					<div
-						style={{
-							overflow: 'hidden',
-							position: 'relative',
-						}}
-					>
+					<div>
 						<div
 							className='flex-col items-center justify-center text-center'
 							style={{
@@ -62,10 +57,13 @@ export default class Main extends Component {
 								Open-source web app boilerplate
 							</p>
 						</div>
+
 						<br />
+
 						<div className='flex-col items-center justify-center'>
 							<b>* WORK IN PROGRESS *</b>
 						</div>
+
 						<br />
 
 						<div className='wrapMargin flex flex-wrap justify-center'>
@@ -87,31 +85,7 @@ export default class Main extends Component {
 							</FButton>
 						</div>
 
-						{/*<Animated effects={['fade', 'up']} delay={0.5} duration={0.75}>
-								<div
-									className='flex-col items-center justify-between'
-									id='about'
-									style={{
-										marginTop: desktop ? 133 : 133 / 2,
-										background: styles.colors.main,
-										padding: 60,
-										paddingLeft: 15,
-										paddingRight: 15,
-										minHeight: 300,
-									}}
-								>
-									<h3
-										style={{
-											maxWidth: 800,
-											color: styles.colors.whiteDay,
-											textAlign: 'center',
-										}}
-									>
-										Features
-									</h3>
-									<sp />
-								</div>
-							</Animated> */}
+						<div style={{ minHeight: 200 }} />
 					</div>
 				)}
 			</MediaQuery>

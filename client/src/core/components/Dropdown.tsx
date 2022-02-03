@@ -485,10 +485,12 @@ export default class Dropdown extends TrackedComponent<Props> {
 												flex: 1,
 											}
 										},
-										valueContainer: (styles): CSSObjectWithLabel => {
+										valueContainer: (s): CSSObjectWithLabel => {
 											return {
-												...styles,
+												...s,
+												padding: 2,
 												paddingRight: 0,
+												paddingLeft: styles.inputPaddingLeft,
 												...(this.props.button && {
 													display: 'flex',
 													justifyContent: 'center',

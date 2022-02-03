@@ -112,6 +112,7 @@
 		"mongodb-memory-server": "^8.0.2",
 		"mongoose-tsgen": "^8.4.7",
 		"nodemon": "^2.0.15",
+		"npm-run-all": "^4.1.5",
 		"prettier": "^2.4.1",
 		"replace-in-file": "^6.3.2",
 		"ts-jest": "^27.0.7",

@@ -300,9 +300,9 @@ export default class FInput extends TrackedComponent<Props> {
 			minHeight: styles.inputHeight,
 			minWidth: 66,
 
-			padding: this.props.textArea ? 10 : 0,
+			padding: this.props.textArea ? 10 : undefined,
 			margin: 0,
-			paddingLeft: this.props.center ? 0 : 10,
+			paddingLeft: this.props.center ? undefined : styles.inputPaddingLeft,
 
 			whiteSpace: this.props.textArea ? undefined : 'nowrap',
 			textOverflow: this.props.textArea ? undefined : 'ellipsis',

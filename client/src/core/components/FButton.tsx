@@ -155,9 +155,7 @@ export default class FButton extends TrackedComponent<Props> {
 			minHeight: !this.props.checkbox ? styles.inputHeight : 20,
 			minWidth: !this.props.checkbox ? 100 : 20,
 
-			padding: !this.props.checkbox ? 12 : undefined,
-			paddingTop: 0,
-			paddingBottom: 0,
+			padding: !this.props.checkbox ? '0px 12px 0px 12px' : undefined,
 			margin: 0,
 
 			userSelect: 'none',

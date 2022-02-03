@@ -347,19 +347,19 @@ class PublicWrapper extends Component<{ auth?: boolean; desktop: boolean }> {
 			<div
 				className={this.props.desktop ? 'flex-col justify-center items-center' : undefined}
 				style={{
-					marginTop: !this.props.desktop ? 30 : undefined,
+					marginTop: this.props.auth ? (!this.props.desktop ? 30 : undefined) : undefined,
 					height: this.props.auth && this.props.desktop ? '80vh' : undefined,
 					padding: this.props.auth && !this.props.desktop ? '5vw' : undefined,
 					width: this.props.auth ? (!this.props.desktop ? '100%' : undefined) : '100%',
 				}}
 			>
 				{this.props.children}
-				<sp />
-				<sp />
-				<sp />
-				<sp />
-				<sp />
-				<sp />
+				{this.props.auth && <sp />}
+				{this.props.auth && <sp />}
+				{this.props.auth && <sp />}
+				{this.props.auth && <sp />}
+				{this.props.auth && <sp />}
+				{this.props.auth && <sp />}
 			</div>
 		)
 	}
