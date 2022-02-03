@@ -302,17 +302,17 @@ export default function Router(): React.ReactNode {
 								<Header landingPage={landingPage} fillSpace />
 								<Switch>
 									<Route exact path='/login'>
-										<PublicWrapper desktop={desktop}>
+										<PublicWrapper auth desktop={desktop}>
 											<Login />
 										</PublicWrapper>
 									</Route>
 									<Route exact path='/signup'>
-										<PublicWrapper desktop={desktop}>
+										<PublicWrapper auth desktop={desktop}>
 											<Register />
 										</PublicWrapper>
 									</Route>
 									<Route exact path='/forgot'>
-										<PublicWrapper desktop={desktop}>
+										<PublicWrapper auth desktop={desktop}>
 											<Forgot />
 										</PublicWrapper>
 									</Route>
@@ -324,6 +324,7 @@ export default function Router(): React.ReactNode {
 												effects={['fade']}
 												duration={0.5}
 												delay={0.75}
+												style={{ width: '100%' }}
 											>
 												<Main />
 											</Animated>
@@ -340,16 +341,16 @@ export default function Router(): React.ReactNode {
 	)
 }
 
-class PublicWrapper extends Component<{ desktop: boolean }> {
+class PublicWrapper extends Component<{ auth?: boolean; desktop: boolean }> {
 	render() {
 		return (
 			<div
 				className={this.props.desktop ? 'flex-col justify-center items-center' : undefined}
 				style={{
 					marginTop: !this.props.desktop ? 30 : undefined,
-					height: this.props.desktop ? '80vh' : undefined,
-					padding: !this.props.desktop ? '5vw' : undefined,
-					width: !this.props.desktop ? '100%' : undefined,
+					height: this.props.auth && this.props.desktop ? '80vh' : undefined,
+					padding: this.props.auth && !this.props.desktop ? '5vw' : undefined,
+					width: this.props.auth ? (!this.props.desktop ? '100%' : undefined) : '100%',
 				}}
 			>
 				{this.props.children}

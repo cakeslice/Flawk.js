@@ -19,11 +19,6 @@
 }
 
 :root {
-	--main: rgba(51, 108, 251, 1);
-
-	--font: 'Roboto';
-	--fontAlt: 'PT Sans';
-
 	--safe-area-inset-top: 0px;
 	--safe-area-inset-right: 0px;
 	--safe-area-inset-bottom: 0px;
@@ -535,7 +530,6 @@ kbd {
 	border-style: solid;
 	box-shadow: 0 20px 32px -8px rgba(0, 0, 0, 0.1), 0 4px 8px 0 rgba(0, 0, 0, 0.05),
 		0 6px 20px 0 rgba(0, 0, 0, 0.05);
-	box-sizing: border-box;
 }
 .Toastify__toast--default {
 	background: #fff;
@@ -545,7 +539,6 @@ kbd {
 	border-style: solid;
 	box-shadow: 0 20px 32px -8px rgba(0, 0, 0, 0.1), 0 4px 8px 0 rgba(0, 0, 0, 0.05),
 		0 6px 20px 0 rgba(0, 0, 0, 0.05);
-	box-sizing: border-box;
 }
 .Toastify__toast-container--top-left {
 	top: 1em;
@@ -572,14 +565,10 @@ kbd {
 }
 .rdtPicker {
 	user-select: none;
-	display: none;
-	position: absolute;
 
 	width: 210px;
 	min-width: 0%;
 	padding: 0px;
-	margin-top: 1px;
-	z-index: 99999 !important;
 
 	font-size: 12px;
 
@@ -601,30 +590,10 @@ kbd {
 	background: rgba(30, 30, 30, 1);
 	border: 1px solid rgba(255, 255, 255, 0.1);
 }
-.rdtOpen .rdtPicker {
-	display: block;
-}
-.rdtStatic .rdtPicker {
-	box-shadow: none;
-	position: static;
-}
 
-.rdtPicker .rdtTimeToggle {
-	text-align: center;
-}
-
-.rdtPicker table {
-	width: 100%;
-	margin: 0;
-}
 .rdtPicker td,
 .rdtPicker th {
-	text-align: center;
-	height: 28px;
 	vertical-align: middle;
-}
-.rdtPicker td {
-	cursor: pointer;
 }
 .rdtPicker td.rdtDay:hover,
 .rdtPicker td.rdtHour:hover,
@@ -633,22 +602,10 @@ kbd {
 .rdtPicker .rdtTimeToggle:hover {
 	background: rgba(127, 127, 127, 0.15);
 	border-radius: 6px;
-	cursor: pointer;
-}
-.rdtPicker td.rdtOld,
-.rdtPicker td.rdtNew {
-	color: #999999;
-}
-.rdtPicker td.rdtToday {
-	position: relative;
 }
 .rdtPicker td.rdtToday:before {
-	content: '';
-	display: inline-block;
-	border-left: 7px solid transparent;
 	border-bottom: 7px solid var(--main);
 	border-top-color: rgba(127, 127, 127, 0.15);
-	position: absolute;
 	bottom: 2px;
 	right: 2px;
 	opacity: 0.75;
@@ -671,8 +628,6 @@ kbd {
 }
 .rdtPicker td.rdtDisabled,
 .rdtPicker td.rdtDisabled:hover {
-	background: none;
-	color: #999999;
 	border-radius: 6px;
 	cursor: not-allowed;
 }
@@ -680,14 +635,10 @@ kbd {
 	border-bottom: 1px solid rgba(127, 127, 127, 0.15);
 }
 .rdtPicker th.rdtSwitch {
-	width: 100px;
 	font-weight: 700;
 }
 .rdtPicker .dow {
-	width: 14.2857%;
 	opacity: 0.5;
-	border-bottom: none;
-	cursor: default;
 }
 .rdtPicker thead tr:first-of-type th:hover {
 	background: rgba(127, 127, 127, 0.15);
@@ -707,12 +658,6 @@ td.rdtYear:hover {
 .lb-container .lb-header {
 	background: rgba(0, 0, 0, 0.15);
 	box-shadow: none;
-}
-
-//
-
-.ReactCollapse--collapse {
-	transition: height 500ms;
 }
 
 //
