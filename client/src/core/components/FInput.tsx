@@ -78,7 +78,6 @@ const DatePicker = (props: {
 	onBlur?: (event: React.FocusEvent<HTMLInputElement, Element>) => void
 	onFocus?: (event: React.FocusEvent<HTMLInputElement, Element>) => void
 	onKeyPress?: (event: React.KeyboardEvent<HTMLInputElement>) => void
-	finalStyle?: React.CSSProperties & GlamorProps
 	isControlled?: boolean
 	isDisabled?: boolean
 	name?: string
@@ -95,6 +94,7 @@ const DatePicker = (props: {
 				<div
 					style={{
 						animation: 'openDown 0.2s ease-in-out',
+						color: styles.colors.black,
 					}}
 					className={
 						'rdtPickerCustom ' + (global.nightMode ? 'rdtPickerNight' : 'rdtPickerDay')
@@ -314,6 +314,7 @@ export default class FInput extends TrackedComponent<Props> {
 				global.nightMode ? styles.inputBorderFactorNight : styles.inputBorderFactorDay
 			),
 			opacity: 1,
+
 			'::placeholder': {
 				userSelect: 'none',
 				fontWeight: 400,
@@ -324,9 +325,7 @@ export default class FInput extends TrackedComponent<Props> {
 				...(styles.inputBorder === 'bottom' && {
 					borderRadius: styles.defaultBorderRadius,
 				}),
-				borderColor: invalid
-					? styles.colors.red
-					: config.replaceAlpha(styles.colors.black, global.nightMode ? 0.3 : 0.3),
+				borderColor: config.replaceAlpha(styles.colors.black, global.nightMode ? 0.3 : 0.3),
 			},
 			':focus': {
 				...(styles.inputBorder === 'bottom' && {
@@ -334,12 +333,9 @@ export default class FInput extends TrackedComponent<Props> {
 				}),
 				outline: 'none',
 				boxShadow: styles.inputBoxShadow
-					? '0 0 0 2px ' +
-					  (invalid
-							? config.replaceAlpha(styles.colors.red, 0.1)
-							: styles.colors.mainVeryLight)
+					? '0 0 0 2px ' + styles.colors.mainVeryLight
 					: undefined,
-				borderColor: invalid ? styles.colors.red : styles.colors.mainLight,
+				borderColor: styles.colors.mainLight,
 			},
 			background: styles.inputBackground || styles.colors.white,
 			transition:
@@ -354,12 +350,27 @@ export default class FInput extends TrackedComponent<Props> {
 				display: 'flex',
 			},
 			...this.props.style,
+			'::placeholder': {
+				...mainStyle['::placeholder'],
+				// @ts-ignore
+				...(this.props.style && this.props.style['::placeholder']),
+			},
+			':hover': {
+				...mainStyle[':hover'],
+				// @ts-ignore
+				...(this.props.style && this.props.style[':hover']),
+			},
+			':focus': {
+				...mainStyle[':focus'],
+				// @ts-ignore
+				...(this.props.style && this.props.style[':focus']),
+			},
 		}
 		finalStyle = {
 			...finalStyle,
 			...(invalid && {
 				boxShadow: styles.inputBoxShadow
-					? '0 0 0 2px ' + config.replaceAlpha(styles.colors.red, 0.1)
+					? '0 0 0 2px ' + config.replaceAlpha(styles.colors.red, 0.2)
 					: undefined,
 				borderColor: config.replaceAlpha(
 					styles.colors.red,
@@ -368,9 +379,15 @@ export default class FInput extends TrackedComponent<Props> {
 				...(styles.inputBorder === 'bottom' && {
 					borderRadius: styles.defaultBorderRadius,
 				}),
+				':hover': {
+					borderColor: styles.colors.red,
+				},
 				':focus': {
 					...finalStyle[':focus'],
 					borderColor: styles.colors.red,
+					...(styles.inputBoxShadow && {
+						boxShadow: '0 0 0 2px ' + config.replaceAlpha(styles.colors.red, 0.2),
+					}),
 				},
 			}),
 			...(this.props.isDisabled &&
@@ -562,7 +579,6 @@ export default class FInput extends TrackedComponent<Props> {
 									{...commonProps}
 									{...datePickerValueProps}
 									{...inputEventProps}
-									finalStyle={finalStyle}
 									inputStyle={{
 										...finalStyle,
 										width: finalStyle.width || defaultWidth(desktop),

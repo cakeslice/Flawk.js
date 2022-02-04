@@ -253,7 +253,7 @@ export default class FButton extends TrackedComponent<Props> {
 				...finalStyle[':hover'],
 				...(invalid && {
 					borderColor: styles.colors.red,
-					boxShadow: '0 0 0 2px ' + config.replaceAlpha(styles.colors.red, 0.1),
+					boxShadow: '0 0 0 2px ' + config.replaceAlpha(styles.colors.red, 0.2),
 				}),
 			}
 			finalStyle[':focus-visible'] = {
@@ -266,6 +266,17 @@ export default class FButton extends TrackedComponent<Props> {
 			...finalStyle,
 
 			...this.props.style,
+			':hover': {
+				...finalStyle[':hover'],
+				// @ts-ignore
+				...(this.props.style && this.props.style[':hover']),
+			},
+			':focus-visible': {
+				...finalStyle[':focus-visible'],
+				// @ts-ignore
+				...(this.props.style && this.props.style[':focus-visible']),
+			},
+
 			...(this.props.isDisabled &&
 				!this.props.simpleDisabled && {
 					boxShadow: 'none',
@@ -280,7 +291,7 @@ export default class FButton extends TrackedComponent<Props> {
 					),
 				}),
 			...(invalid && {
-				boxShadow: '0 0 0 2px ' + config.replaceAlpha(styles.colors.red, 0.1),
+				boxShadow: '0 0 0 2px ' + config.replaceAlpha(styles.colors.red, 0.2),
 				borderColor: config.replaceAlpha(
 					styles.colors.red,
 					global.nightMode ? styles.inputBorderFactorNight : styles.inputBorderFactorDay

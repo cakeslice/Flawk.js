@@ -263,7 +263,7 @@ export const Section: React.FC<{
 																style={{
 																	display: 'flex',
 																	position: 'relative',
-																	top: -3,
+																	top: 1,
 																	marginLeft: 5,
 																}}
 															>

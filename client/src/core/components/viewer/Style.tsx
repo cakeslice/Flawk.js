@@ -189,11 +189,11 @@ export default class Style extends Component<Props> {
 									<sp />
 									<hr />
 									<sp />
-									<div className='wrapMarginBigTopLeft flex flex-wrap justify-start'>
+									<div className='wrapMarginBigTopLeft flex flex-wrap justify-between'>
 										<div style={{ maxWidth: 150 }}>
 											<h1>Line height</h1>
 										</div>
-										<div style={{ maxWidth: 100 }}>
+										<div style={{ maxWidth: 110 }}>
 											<h2>Line height</h2>
 										</div>
 										<div style={{ maxWidth: 85 }}>

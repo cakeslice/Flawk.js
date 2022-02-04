@@ -241,6 +241,12 @@ export default class Inputs extends Component {
 										/>
 									</div>
 									<Dropdown
+										button
+										placeholder={'Button'}
+										defaultValue={'accept'}
+										options={dropdownOptions}
+									/>
+									<Dropdown
 										dropdownIndicator={
 											<div className='flex items-center justify-center'>
 												<img style={{ height: 20 }} src={logo}></img>
