@@ -511,6 +511,7 @@ export default class FInput extends TrackedComponent<Props> {
 										typeof label === 'string' && label.length === 1
 											? 'end'
 											: undefined,
+									// @ts-ignore
 									fontSize: styles.defaultFontSize,
 									whiteSpace: 'nowrap',
 									...styles.inputLabelStyle,

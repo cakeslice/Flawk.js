@@ -196,7 +196,7 @@ export default class Style extends Component<Props> {
 										<div style={{ maxWidth: 100 }}>
 											<h2>Line height</h2>
 										</div>
-										<div style={{ maxWidth: 65 }}>
+										<div style={{ maxWidth: 85 }}>
 											<h3>Line height</h3>
 										</div>
 										<div style={{ maxWidth: 60 }}>

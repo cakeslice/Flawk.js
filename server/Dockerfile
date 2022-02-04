@@ -98,7 +98,7 @@
 #     Also Disable Default Push Registry
 # Make sure the captain definition path is the right one:
 #     ./server/captain-definition for backend
-#     ./client/captain-definition for frontend)
+#     ./client/captain-definition for frontend
 
 # ----- Simple flow
 # Add DNS A record for app URL

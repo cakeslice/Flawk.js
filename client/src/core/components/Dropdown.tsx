@@ -353,6 +353,7 @@ export default class Dropdown extends TrackedComponent<Props> {
 											typeof label === 'string' && label.length === 1
 												? 'end'
 												: undefined,
+										// @ts-ignore
 										fontSize: styles.defaultFontSize,
 										whiteSpace: 'nowrap',
 										...styles.inputLabelStyle,
@@ -552,6 +553,7 @@ export default class Dropdown extends TrackedComponent<Props> {
 												...internalStyle,
 												...defaultContainerStyle,
 												...(this.props.style && this.props.style.menu),
+												...this.props.style,
 												...(!this.props.isDisabled &&
 													(isFocused ||
 														selectProps.menuIsOpen ||
