@@ -238,7 +238,21 @@ export default class Dropdown extends TrackedComponent<Props> {
 			styles.inputAppearances.forEach((b) => {
 				if (this.props.appearance === b.name) {
 					// @ts-ignore
-					defaultContainerStyle = { ...defaultContainerStyle, ...b }
+					defaultContainerStyle = {
+						...defaultContainerStyle,
+						...b,
+						':hover': {
+							// @ts-ignore
+							...defaultContainerStyle[':hover'],
+							// @ts-ignore
+							...b[':hover'],
+						},
+						':focus': {
+							...defaultContainerStyle[':focus'],
+							// @ts-ignore
+							...b[':focus'],
+						},
+					}
 					// @ts-ignore
 					defaultPlaceholderStyle = { ...defaultPlaceholderStyle, ...b['::placeholder'] }
 				}
@@ -290,7 +304,7 @@ export default class Dropdown extends TrackedComponent<Props> {
 			...finalStyle,
 			...(this.props.isDisabled && /* !this.props.simpleDisabled && */ {
 				background: config.overlayColor(
-					styles.colors.white,
+					styles.inputBackground || styles.colors.white,
 					config.replaceAlpha(styles.colors.black, global.nightMode ? 0.1 : 0.1)
 				),
 				color: config.replaceAlpha(styles.colors.black, global.nightMode ? 0.5 : 0.5),

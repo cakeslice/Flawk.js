@@ -188,6 +188,7 @@ export default class FButton extends TrackedComponent<Props> {
 			},
 			':hover': {
 				opacity: 1,
+				outline: 'none',
 				borderColor: styles.colors.main,
 				color: styles.colors.main,
 				boxShadow: '0 0 0 2px ' + styles.colors.mainVeryLight,
@@ -242,35 +243,27 @@ export default class FButton extends TrackedComponent<Props> {
 		let usageBackground = false
 		styles.buttonAppearances &&
 			styles.buttonAppearances.forEach((b) => {
-				if (this.props.appearance === b.name) {
-					finalStyle = { ...finalStyle, ...b }
+				if (
+					this.props.appearance === b.name ||
+					(this.props.appearance === undefined && b.name === 'default')
+				) {
+					finalStyle = {
+						...finalStyle,
+						...b,
+						':hover': {
+							...finalStyle[':hover'],
+							// @ts-ignore
+							...b[':hover'],
+						},
+						':focus-visible': {
+							...finalStyle[':focus-visible'],
+							// @ts-ignore
+							...b[':focus-visible'],
+						},
+					}
 					usageBackground = b.usageBackground ? true : false
 				}
 			})
-
-		if (this.props.checkbox) {
-			if (checked !== undefined) this.state.checked = checked // eslint-disable-line
-
-			if (!this.state.checked)
-				finalStyle.background = usageBackground
-					? config.overlayColor(
-							styles.colors.white,
-							config.replaceAlpha(styles.colors.black, global.nightMode ? 0.05 : 0.75)
-					  )
-					: styles.colors.white
-
-			finalStyle[':hover'] = {
-				...finalStyle[':hover'],
-				...(invalid && {
-					borderColor: styles.colors.red,
-					boxShadow: '0 0 0 2px ' + config.replaceAlpha(styles.colors.red, 0.2),
-				}),
-			}
-			finalStyle[':focus-visible'] = {
-				...finalStyle[':hover'],
-				outline: 'none',
-			}
-		}
 
 		finalStyle = {
 			...finalStyle,
@@ -286,12 +279,39 @@ export default class FButton extends TrackedComponent<Props> {
 				// @ts-ignore
 				...(this.props.style && this.props.style[':focus-visible']),
 			},
+		}
+
+		if (this.props.checkbox) {
+			if (checked !== undefined) this.state.checked = checked // eslint-disable-line
+
+			if (!this.state.checked)
+				finalStyle.background = usageBackground
+					? config.overlayColor(
+							styles.inputBackground || styles.colors.white,
+							config.replaceAlpha(styles.colors.black, global.nightMode ? 0.05 : 0.75)
+					  )
+					: styles.inputBackground || styles.colors.white
+
+			finalStyle[':hover'] = {
+				...finalStyle[':hover'],
+				...(invalid && {
+					borderColor: styles.colors.red,
+					boxShadow: '0 0 0 2px ' + config.replaceAlpha(styles.colors.red, 0.2),
+				}),
+			}
+			finalStyle[':focus-visible'] = {
+				...finalStyle[':hover'],
+			}
+		}
+
+		finalStyle = {
+			...finalStyle,
 
 			...(this.props.isDisabled &&
 				!this.props.simpleDisabled && {
 					boxShadow: 'none',
 					background: config.overlayColor(
-						styles.colors.white,
+						styles.inputBackground || styles.colors.white,
 						config.replaceAlpha(styles.colors.black, global.nightMode ? 0.1 : 0.1)
 					),
 					color: config.replaceAlpha(styles.colors.black, global.nightMode ? 0.5 : 0.5),
@@ -337,6 +357,9 @@ export default class FButton extends TrackedComponent<Props> {
 		let overridenStyle: React.CSSProperties = {}
 		if (this.props.eventOverride) {
 			overridenStyle = { ...finalStyle }
+			if (this.props.eventOverride === 'active')
+				// @ts-ignore
+				finalStyle = { ...finalStyle, ...finalStyle[':hover'] }
 			// @ts-ignore
 			finalStyle = { ...finalStyle, ...finalStyle[':' + this.props.eventOverride] }
 		}

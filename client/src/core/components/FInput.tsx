@@ -345,7 +345,26 @@ export default class FInput extends TrackedComponent<Props> {
 
 		styles.inputAppearances &&
 			styles.inputAppearances.forEach((b) => {
-				if (this.props.appearance === b.name) mainStyle = { ...mainStyle, ...b }
+				if (this.props.appearance === b.name)
+					mainStyle = {
+						...mainStyle,
+						...b,
+						'::placeholder': {
+							...mainStyle['::placeholder'],
+							// @ts-ignore
+							...b['::placeholder'],
+						},
+						':hover': {
+							...mainStyle[':hover'],
+							// @ts-ignore
+							...b[':hover'],
+						},
+						':focus': {
+							...mainStyle[':focus'],
+							// @ts-ignore
+							...b[':focus'],
+						},
+					}
 			})
 
 		let finalStyle: React.CSSProperties & GlamorProps = {
@@ -403,7 +422,7 @@ export default class FInput extends TrackedComponent<Props> {
 			...(this.props.isDisabled &&
 				!this.props.simpleDisabled && {
 					background: config.overlayColor(
-						styles.colors.white,
+						styles.inputBackground || styles.colors.white,
 						config.replaceAlpha(styles.colors.black, global.nightMode ? 0.1 : 0.1)
 					),
 					color: config.replaceAlpha(styles.colors.black, global.nightMode ? 0.5 : 0.5),

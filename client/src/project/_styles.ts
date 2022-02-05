@@ -35,23 +35,28 @@ export default {
 			name: 'action',
 			usageBackground: 'rgba(30,30,30,1)',
 
-			color: 'white',
+			color: 'black',
 			fontWeight: 'bold',
 			minWidth: 128,
 			borderColor: 'transparent',
 
 			transition: 'background 200ms, border-color 200ms, filter 200ms',
 			':focus-visible': {
+				color: 'white',
 				outline: 'none',
 				borderColor: 'white',
 				boxShadow: 'none',
+				background: 'linear-gradient(90deg, #FB28B0 0%, #FC263C 100%)',
 			},
 			':hover': {
+				color: 'white',
 				borderColor: 'white',
 				opacity: 1,
+				boxShadow: 'none',
 				filter: 'drop-shadow(0px 0px 20px rgba(250, 40, 116, 0.71))',
 			},
 			':active': {
+				color: 'black',
 				borderColor: 'white',
 				filter: 'drop-shadow(0px 0px 20px rgba(250, 40, 116, 0))',
 			},
