@@ -16,6 +16,7 @@ import config from 'core/config'
 import styles from 'core/styles'
 import { Form, Formik } from 'formik'
 import { css } from 'glamor'
+import _ from 'lodash'
 import React, { Component } from 'react'
 import MediaQuery from 'react-responsive'
 import { Section } from './ComponentsViewer'
@@ -36,7 +37,31 @@ const simpleOptions = [
 ]
 
 export default class Inputs extends Component {
-	state: { checked?: boolean } = {}
+	state: { checked?: boolean; inputAppearance: string; usageBackground?: string } = {
+		inputAppearance: 'default',
+	}
+
+	appearanceDropdown = () => (
+		<Dropdown
+			label='Appearance'
+			value={this.state.inputAppearance}
+			onChange={(e) => {
+				const appearance = _.find(styles.inputAppearances, { name: e })
+				this.setState({
+					inputAppearance: e,
+					usageBackground: appearance && appearance.usageBackground,
+				})
+			}}
+			options={[{ label: 'Default', value: 'default' }].concat(
+				styles.inputAppearances.map((e) => {
+					return {
+						label: config.capitalizeAll(e.name.replaceAll('_', ' ')),
+						value: e.name,
+					}
+				})
+			)}
+		></Dropdown>
+	)
 
 	render() {
 		const dropdownOptions = (function o() {
@@ -61,6 +86,17 @@ export default class Inputs extends Component {
 			}
 			return p
 		})()
+
+		const appearanceStyle = {
+			...styles.outlineCard,
+			background: this.state.usageBackground,
+			color:
+				this.state.usageBackground &&
+				config.invertColor(this.state.usageBackground, styles.colors.whiteDay),
+			paddingBottom: 10,
+			paddingRight: 10,
+			maxWidth: 950,
+		}
 
 		return (
 			<MediaQuery minWidth={config.mobileWidthTrigger}>
@@ -150,31 +186,82 @@ export default class Inputs extends Component {
 								</div>
 							</div>
 							<sp />
-							<div style={{ ...styles.outlineCard, width: 'fit-content' }}>
-								<tag>Normal</tag>
-								<sp />
-								<div className='wrapMarginTopLeft flex flex-wrap justify-start items-end'>
-									<FInput placeholder={'Default'} />
-									<FInput eventOverride='hover' placeholder={'Hover'} />
-									<FInput eventOverride='focus' placeholder={'Focus'} />
+							<sp />
+							{this.appearanceDropdown()}
+							<sp />
+							<sp />
+							<div
+								style={{ maxWidth: 1100 }}
+								className='wrapMarginBigTopLeft flex flex-wrap justify-start'
+							>
+								<div>
+									<tag>Normal</tag>
+									<sp />
+									<div style={appearanceStyle}>
+										<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+											<FInput
+												label={'Label'}
+												appearance={this.state.inputAppearance}
+												placeholder={'Default'}
+											/>
+											<FInput
+												label={'Label'}
+												appearance={this.state.inputAppearance}
+												eventOverride='hover'
+												placeholder={'Hover'}
+											/>
+											<FInput
+												label={'Label'}
+												appearance={this.state.inputAppearance}
+												eventOverride='focus'
+												placeholder={'Focus'}
+											/>
+											<FInput
+												label={'Label'}
+												isDisabled
+												appearance={this.state.inputAppearance}
+												placeholder={'Disabled'}
+											/>
+											<FInput
+												label={'Label'}
+												isDisabled
+												simpleDisabled
+												appearance={this.state.inputAppearance}
+												placeholder={'Simple Disabled'}
+											/>
+										</div>
+									</div>
 								</div>
-								<sp />
-								<tag>Invalid</tag>
-								<sp />
-								<div className='wrapMarginTopLeft flex flex-wrap justify-start items-end'>
-									<FInput name='input' invalid='*' placeholder={'Default'} />
-									<FInput
-										name='input'
-										invalid='*'
-										eventOverride='hover'
-										placeholder={'Hover'}
-									/>
-									<FInput
-										name='input'
-										invalid='*'
-										eventOverride='focus'
-										placeholder={'Focus'}
-									/>
+								<div>
+									<tag>Invalid</tag>
+									<sp />
+									<div style={appearanceStyle}>
+										<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+											<FInput
+												label={'Label'}
+												name='input'
+												invalid='*'
+												appearance={this.state.inputAppearance}
+												placeholder={'Default'}
+											/>
+											<FInput
+												label={'Label'}
+												name='input'
+												invalid='*'
+												appearance={this.state.inputAppearance}
+												eventOverride='hover'
+												placeholder={'Hover'}
+											/>
+											<FInput
+												label={'Label'}
+												name='input'
+												invalid='*'
+												appearance={this.state.inputAppearance}
+												eventOverride='focus'
+												placeholder={'Focus'}
+											/>
+										</div>
+									</div>
 								</div>
 							</div>
 						</Section>
@@ -266,55 +353,89 @@ export default class Inputs extends Component {
 								</div>
 							</div>
 							<sp />
-							<div style={{ ...styles.outlineCard, width: 'fit-content' }}>
-								<tag>Normal</tag>
-								<sp />
-								<div className='wrapMarginTopLeft flex flex-wrap justify-start items-end'>
-									<Dropdown
-										placeholder={'Default'}
-										options={simpleOptions}
-										isSearchable
-									/>
-									<Dropdown
-										eventOverride='hover'
-										placeholder={'Hover'}
-										options={simpleOptions}
-										isSearchable
-									/>
-									<Dropdown
-										eventOverride='focus'
-										placeholder={'Focus'}
-										options={simpleOptions}
-										isSearchable
-									/>
+							<sp />
+							{this.appearanceDropdown()}
+							<sp />
+							<sp />
+							<div
+								style={{ maxWidth: 1100 }}
+								className='wrapMarginBigTopLeft flex flex-wrap justify-start'
+							>
+								<div>
+									<tag>Normal</tag>
+									<sp />
+									<div style={appearanceStyle}>
+										<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+											<Dropdown
+												label={'Label'}
+												appearance={this.state.inputAppearance}
+												placeholder={'Default'}
+												options={simpleOptions}
+												isSearchable
+											/>
+											<Dropdown
+												label={'Label'}
+												appearance={this.state.inputAppearance}
+												eventOverride='hover'
+												placeholder={'Hover'}
+												options={simpleOptions}
+												isSearchable
+											/>
+											<Dropdown
+												label={'Label'}
+												appearance={this.state.inputAppearance}
+												eventOverride='focus'
+												placeholder={'Focus'}
+												options={simpleOptions}
+												isSearchable
+											/>
+											<Dropdown
+												label={'Label'}
+												isDisabled
+												appearance={this.state.inputAppearance}
+												placeholder={'Disabled'}
+												options={simpleOptions}
+												isSearchable
+											/>
+										</div>
+									</div>
 								</div>
-								<sp />
-								<tag>Invalid</tag>
-								<sp />
-								<div className='wrapMarginTopLeft flex flex-wrap justify-start items-end'>
-									<Dropdown
-										name='input'
-										invalid='*'
-										placeholder={'Default'}
-										options={simpleOptions}
-										isSearchable
-									/>
-									<Dropdown
-										name='input'
-										invalid='*'
-										eventOverride='hover'
-										placeholder={'Hover'}
-										options={simpleOptions}
-										isSearchable
-									/>
-									<Dropdown
-										name='input'
-										invalid='*'
-										eventOverride='focus'
-										placeholder={'Focus'}
-										options={simpleOptions}
-										isSearchable
-									/>
+								<div>
+									<tag>Invalid</tag>
+									<sp />
+									<div style={appearanceStyle}>
+										<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+											<Dropdown
+												label={'Label'}
+												appearance={this.state.inputAppearance}
+												name='input'
+												invalid='*'
+												placeholder={'Default'}
+												options={simpleOptions}
+												isSearchable
+											/>
+											<Dropdown
+												label={'Label'}
+												appearance={this.state.inputAppearance}
+												name='input'
+												invalid='*'
+												eventOverride='hover'
+												placeholder={'Hover'}
+												options={simpleOptions}
+												isSearchable
+											/>
+											<Dropdown
+												label={'Label'}
+												appearance={this.state.inputAppearance}
+												name='input'
+												invalid='*'
+												eventOverride='focus'
+												placeholder={'Focus'}
+												options={simpleOptions}
+												isSearchable
+											/>
+										</div>
+									</div>
 								</div>
 							</div>
 						</Section>

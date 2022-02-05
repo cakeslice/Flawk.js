@@ -110,12 +110,12 @@ export default class Notifications extends TrackedComponent<Props> {
 				}}
 			>
 				<div>
-					<div
+					<button
+						type='button'
 						onClick={async () => {
 							await config.setStateAsync(this, { open: !this.state.open })
 							await this.fetchNotifications()
 						}}
-						style={{ cursor: 'pointer', userSelect: 'none' }}
 					>
 						{bell(
 							this.state.open
@@ -125,7 +125,7 @@ export default class Notifications extends TrackedComponent<Props> {
 								: 'rgba(176,176,176,1)',
 							unread ? styles.colors.red : 'transparent'
 						)}
-					</div>
+					</button>
 
 					{this.state.open && (
 						<div style={{ maxWidth: 0, maxHeight: 0 }}>
@@ -160,12 +160,13 @@ export default class Notifications extends TrackedComponent<Props> {
 									>
 										{this.state.data && this.state.data.length > 0 ? (
 											this.state.data.map((n) => (
-												<div
+												<button
+													type='button'
 													key={n._id}
-													style={{ cursor: 'pointer' }}
 													onClick={async () => {
 														await this.readNotification(n._id)
 													}}
+													style={{ width: '100%' }}
 												>
 													<div
 														style={{
@@ -174,6 +175,7 @@ export default class Notifications extends TrackedComponent<Props> {
 															display: 'flex',
 															minHeight: 60,
 															alignItems: 'center',
+															textAlign: 'left',
 														}}
 													>
 														<div
@@ -205,7 +207,7 @@ export default class Notifications extends TrackedComponent<Props> {
 																: '<p>N/A</p>'
 														)}
 													</div>
-												</div>
+												</button>
 											))
 										) : (
 											<div

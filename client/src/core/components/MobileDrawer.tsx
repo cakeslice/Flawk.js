@@ -144,33 +144,35 @@ export default class MobileDrawer extends TrackedComponent<Props> {
 												)}
 											</div>
 										) : (
-											<div
-												style={{
-													display: 'flex',
-													alignItems: 'center',
-													width: iconSize,
-												}}
-											>
-												{selectedRoute.includes('/' + link.id) ? (
-													<img
-														src={link.iconActive || link.icon}
-														style={{
-															height: iconSize,
-															width: iconSize,
-														}}
-													></img>
-												) : (
-													<img
-														src={link.icon}
-														style={{
-															opacity: 0.5,
-															filter: 'grayscale(100%)',
-															width: iconSize,
-															height: iconSize,
-														}}
-													></img>
-												)}
-											</div>
+											(link.icon || link.iconActive) && (
+												<div
+													style={{
+														display: 'flex',
+														alignItems: 'center',
+														width: iconSize,
+													}}
+												>
+													{selectedRoute.includes('/' + link.id) ? (
+														<img
+															src={link.iconActive || link.icon}
+															style={{
+																height: iconSize,
+																width: iconSize,
+															}}
+														></img>
+													) : (
+														<img
+															src={link.icon}
+															style={{
+																opacity: 0.5,
+																filter: 'grayscale(100%)',
+																width: iconSize,
+																height: iconSize,
+															}}
+														></img>
+													)}
+												</div>
+											)
 										)}
 										<div
 											style={{

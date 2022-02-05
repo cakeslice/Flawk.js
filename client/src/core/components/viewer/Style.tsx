@@ -13,6 +13,7 @@ import config from 'core/config'
 import styles from 'core/styles'
 import { motion } from 'framer-motion'
 import { css } from 'glamor'
+import _ from 'lodash'
 import React, { Component } from 'react'
 import MediaQuery from 'react-responsive'
 import { Link } from 'react-router-dom'
@@ -33,7 +34,8 @@ export default class Style extends Component<Props> {
 		animationTrigger: true,
 		animationUUID: undefined,
 		//
-		buttonOption: 'default',
+		buttonAppearance: 'default',
+		usageBackground: undefined as undefined | string,
 	}
 
 	toggleAnimation() {
@@ -49,6 +51,17 @@ export default class Style extends Component<Props> {
 			minWidth: 20,
 			minHeight: 20,
 			border: '1px solid rgba(127,127,127,.5)',
+		}
+
+		const appearanceStyle = {
+			...styles.outlineCard,
+			background: this.state.usageBackground,
+			color:
+				this.state.usageBackground &&
+				config.invertColor(this.state.usageBackground, styles.colors.whiteDay),
+			paddingBottom: 10,
+			paddingRight: 10,
+			maxWidth: 950,
 		}
 
 		return (
@@ -189,7 +202,12 @@ export default class Style extends Component<Props> {
 									<sp />
 									<hr />
 									<sp />
-									<div className='wrapMarginBigTopLeft flex flex-wrap justify-between'>
+									<div
+										className={
+											'wrapMarginBigTopLeft flex flex-wrap ' +
+											(desktop ? 'justify-between' : 'flex-start')
+										}
+									>
 										<div style={{ maxWidth: 150 }}>
 											<h1>Line height</h1>
 										</div>
@@ -433,14 +451,9 @@ export default class Style extends Component<Props> {
 										>
 											Secondary
 										</FButton>
-										{styles.extraButtons.map((e) => (
-											<FButton
-												key={'button_' + e.buttonType}
-												appearance={e.buttonType}
-											>
-												{config.capitalizeAll(
-													e.buttonType.replaceAll('_', ' ')
-												)}
+										{styles.buttonAppearances.map((e) => (
+											<FButton key={'button_' + e.name} appearance={e.name}>
+												{config.capitalizeAll(e.name.replaceAll('_', ' '))}
 											</FButton>
 										))}
 									</div>
@@ -469,19 +482,28 @@ export default class Style extends Component<Props> {
 								<sp />
 								<Dropdown
 									label='Appearance'
-									value={this.state.buttonOption}
-									onChange={(e) => this.setState({ buttonOption: e })}
+									value={this.state.buttonAppearance}
+									onChange={(e) => {
+										const appearance = _.find(styles.buttonAppearances, {
+											name: e,
+										})
+										this.setState({
+											buttonAppearance: e,
+											usageBackground:
+												appearance && appearance.usageBackground,
+										})
+									}}
 									options={[
 										{ label: 'Default', value: 'default' },
 										{ label: 'Primary', value: 'primary' },
 										{ label: 'Secondary', value: 'secondary' },
 									].concat(
-										styles.extraButtons.map((e) => {
+										styles.buttonAppearances.map((e) => {
 											return {
 												label: config.capitalizeAll(
-													e.buttonType.replaceAll('_', ' ')
+													e.name.replaceAll('_', ' ')
 												),
-												value: e.buttonType,
+												value: e.name,
 											}
 										})
 									)}
@@ -495,45 +517,38 @@ export default class Style extends Component<Props> {
 									<div>
 										<tag>Normal</tag>
 										<sp />
-										<div
-											style={{
-												...styles.outlineCard,
-												paddingBottom: 10,
-												paddingRight: 10,
-												maxWidth: 950,
-											}}
-										>
+										<div style={appearanceStyle}>
 											<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
 												<FButton
-													appearance={this.state.buttonOption}
+													appearance={this.state.buttonAppearance}
 													style={{ minWidth: 50 }}
 												>
 													Default
 												</FButton>
 												<FButton
 													eventOverride='hover'
-													appearance={this.state.buttonOption}
+													appearance={this.state.buttonAppearance}
 													style={{ minWidth: 50 }}
 												>
 													Hover
 												</FButton>
 												<FButton
 													eventOverride='active'
-													appearance={this.state.buttonOption}
+													appearance={this.state.buttonAppearance}
 													style={{ minWidth: 50 }}
 												>
 													Active
 												</FButton>
 												<FButton
 													eventOverride='focus-visible'
-													appearance={this.state.buttonOption}
+													appearance={this.state.buttonAppearance}
 													style={{ minWidth: 50 }}
 												>
 													Focus
 												</FButton>
 												<FButton
 													isDisabled
-													appearance={this.state.buttonOption}
+													appearance={this.state.buttonAppearance}
 													style={{ minWidth: 50 }}
 												>
 													Disabled
@@ -541,7 +556,7 @@ export default class Style extends Component<Props> {
 												<FButton
 													isDisabled
 													simpleDisabled
-													appearance={this.state.buttonOption}
+													appearance={this.state.buttonAppearance}
 													style={{ minWidth: 50 }}
 												>
 													Simple Disabled
@@ -551,51 +566,51 @@ export default class Style extends Component<Props> {
 												<div className='flex'>
 													<FButton
 														checkbox
-														appearance={this.state.buttonOption}
+														appearance={this.state.buttonAppearance}
 													/>
 													<FButton
 														checkbox={'Default'}
 														defaultChecked={true}
-														appearance={this.state.buttonOption}
+														appearance={this.state.buttonAppearance}
 													/>
 												</div>{' '}
 												<div className='flex'>
 													<FButton
 														checkbox
 														eventOverride='hover'
-														appearance={this.state.buttonOption}
+														appearance={this.state.buttonAppearance}
 													/>
 													<FButton
 														checkbox={'Hover'}
 														defaultChecked={true}
 														eventOverride='hover'
-														appearance={this.state.buttonOption}
+														appearance={this.state.buttonAppearance}
 													/>
 												</div>{' '}
 												{/* <div className='flex'>
 													<FButton
 														checkbox
 														eventOverride='focus'
-														appearance={this.state.buttonOption}
+														appearance={this.state.buttonAppearance}
 													/>
 													<FButton
 														checkbox={'Focus'}
 														defaultChecked={true}
 														eventOverride='focus'
-														appearance={this.state.buttonOption}
+														appearance={this.state.buttonAppearance}
 													/>
 												</div>{' '} */}
 												<div className='flex'>
 													<FButton
 														isDisabled
 														checkbox
-														appearance={this.state.buttonOption}
+														appearance={this.state.buttonAppearance}
 													/>
 													<FButton
 														isDisabled
 														checkbox={'Disabled'}
 														defaultChecked={true}
-														appearance={this.state.buttonOption}
+														appearance={this.state.buttonAppearance}
 													/>
 												</div>{' '}
 												<div className='flex'>
@@ -603,14 +618,14 @@ export default class Style extends Component<Props> {
 														isDisabled
 														simpleDisabled
 														checkbox
-														appearance={this.state.buttonOption}
+														appearance={this.state.buttonAppearance}
 													/>
 													<FButton
 														isDisabled
 														simpleDisabled
 														checkbox={'Simple Disabled'}
 														defaultChecked={true}
-														appearance={this.state.buttonOption}
+														appearance={this.state.buttonAppearance}
 													/>
 												</div>{' '}
 											</div>
@@ -620,28 +635,21 @@ export default class Style extends Component<Props> {
 									<div>
 										<tag>Invalid</tag>
 										<sp />
-										<div
-											style={{
-												...styles.outlineCard,
-												paddingBottom: 10,
-												paddingRight: 10,
-												maxWidth: 950,
-											}}
-										>
+										<div style={appearanceStyle}>
 											<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
 												<div className='flex'>
 													<FButton
 														name='checkbox'
 														invalid='*'
 														checkbox
-														appearance={this.state.buttonOption}
+														appearance={this.state.buttonAppearance}
 													/>
 													<FButton
 														name='checkbox'
 														invalid='*'
 														checkbox={'Default'}
 														defaultChecked={true}
-														appearance={this.state.buttonOption}
+														appearance={this.state.buttonAppearance}
 													/>
 												</div>{' '}
 												<div className='flex'>
@@ -650,7 +658,7 @@ export default class Style extends Component<Props> {
 														invalid='*'
 														checkbox
 														eventOverride='hover'
-														appearance={this.state.buttonOption}
+														appearance={this.state.buttonAppearance}
 													/>
 													<FButton
 														name='checkbox'
@@ -658,7 +666,7 @@ export default class Style extends Component<Props> {
 														checkbox={'Hover'}
 														defaultChecked={true}
 														eventOverride='hover'
-														appearance={this.state.buttonOption}
+														appearance={this.state.buttonAppearance}
 													/>
 												</div>
 												{/* {' '}
@@ -668,7 +676,7 @@ export default class Style extends Component<Props> {
 														invalid='*'
 														checkbox
 														eventOverride='focus'
-														appearance={this.state.buttonOption}
+														appearance={this.state.buttonAppearance}
 													/>
 													<FButton
 														name='checkbox'
@@ -676,7 +684,7 @@ export default class Style extends Component<Props> {
 														checkbox={'Focus'}
 														defaultChecked={true}
 														eventOverride='focus'
-														appearance={this.state.buttonOption}
+														appearance={this.state.buttonAppearance}
 													/>
 												</div> */}
 											</div>
@@ -688,17 +696,12 @@ export default class Style extends Component<Props> {
 										<sp />
 										<div
 											className='wrapMarginTopLeft flex flex-wrap justify-start'
-											style={{
-												...styles.outlineCard,
-												paddingBottom: 10,
-												paddingRight: 10,
-												maxWidth: 950,
-											}}
+											style={appearanceStyle}
 										>
 											<div className='flex-col items-center'>
 												<FButton
 													isLoading
-													appearance={this.state.buttonOption}
+													appearance={this.state.buttonAppearance}
 													style={{ minWidth: 50 }}
 												>
 													Default
@@ -710,7 +713,7 @@ export default class Style extends Component<Props> {
 												<FButton
 													isLoading
 													eventOverride='hover'
-													appearance={this.state.buttonOption}
+													appearance={this.state.buttonAppearance}
 													style={{ minWidth: 50 }}
 												>
 													Hover
@@ -722,7 +725,7 @@ export default class Style extends Component<Props> {
 												<FButton
 													isLoading
 													eventOverride='focus-visible'
-													appearance={this.state.buttonOption}
+													appearance={this.state.buttonAppearance}
 													style={{ minWidth: 50 }}
 												>
 													Focus

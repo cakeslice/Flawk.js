@@ -12,7 +12,6 @@ import TrackedComponent from './TrackedComponent'
 
 type Props = {
 	id: string
-	scrollOffset?: number
 	updateOffset?: number
 	updateHash?: boolean
 	children?: React.ReactNode
@@ -26,10 +25,8 @@ export default class Anchor extends TrackedComponent<Props> {
 
 	componentDidMount() {
 		if (window.location.hash) {
-			navigation.scrollToHash(
-				window.location.hash.replace('#', ''),
-				this.props.scrollOffset || 150
-			)
+			// Don't use a scroll offset because it should be consistent with the same on <ScrollToTop/>
+			navigation.scrollToHash(window.location.hash.replace('#', ''), 150)
 		}
 	}
 

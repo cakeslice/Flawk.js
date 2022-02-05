@@ -68,6 +68,7 @@ type Props = {
 		input?: CSSObjectWithLabel
 		menu?: CSSObjectWithLabel
 	}
+	appearance?: string
 	invalidType?: 'bottom' | 'label' | 'right'
 	label?: React.ReactNode
 	labelStyle?: React.CSSProperties
@@ -179,7 +180,7 @@ export default class Dropdown extends TrackedComponent<Props> {
 			cursor: this.props.isSearchable === true ? 'text' : 'pointer',
 		}
 
-		const defaultContainerStyle = {
+		let defaultContainerStyle: CSSObjectWithLabel = {
 			...defaultStyle,
 			borderRadius: styles.inputBorder === 'bottom' ? 0 : styles.defaultBorderRadius,
 			borderTopLeftRadius: styles.defaultBorderRadius,
@@ -222,41 +223,8 @@ export default class Dropdown extends TrackedComponent<Props> {
 			transition:
 				'background 200ms, border-color 200ms, box-shadow 200ms, border-radius 200ms',
 		}
-		const defaultMenuStyle: CSSObjectWithLabel = {
-			animation:
-				(this.props.menuPlacement === 'top' ? 'openUp' : 'openDown') + ' 0.2s ease-in-out',
-			background: styles.colors.white,
-			borderStyle: 'solid',
-			borderWidth: '1px',
-			boxSizing: 'border-box',
-			borderColor: styles.colors.borderColor,
-			boxShadow: '0 2px 4px 0 rgba(0, 0, 0, 0.025), 0 2px 4px 0 rgba(0, 0, 0, 0.025)',
-			borderRadius: 6,
-		}
-		const indicatorStyle = {
-			cursor: 'pointer',
-			opacity: this.props.dropdownIndicator || this.props.customInput ? 1 : 0.75,
-			paddingRight: 3,
-			paddingLeft: 4,
-			paddingTop: 0,
-			paddingBottom: 0,
-			color: global.nightMode ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)',
-			':hover': {
-				color: global.nightMode ? 'rgba(255, 255, 255, 0.35)' : 'rgba(0, 0, 0, 0.35)',
-			},
-			':focus': {
-				color: global.nightMode ? 'rgba(255, 255, 255, 0.25)' : 'rgba(0, 0, 0, 0.25)',
-			},
-			':active': {
-				color: global.nightMode ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)',
-			},
-		}
-		const defaultInputStyle = {
-			...defaultStyle,
-			padding: 0,
-		}
 
-		const defaultPlaceholderStyle: CSSObjectWithLabel = {
+		let defaultPlaceholderStyle: CSSObjectWithLabel = {
 			color: config.replaceAlpha(styles.colors.black, global.nightMode ? 0.25 : 0.5),
 			opacity: 1,
 			overflow: 'hidden',
@@ -264,18 +232,17 @@ export default class Dropdown extends TrackedComponent<Props> {
 			textOverflow: 'ellipsis',
 			width: '100%',
 			userSelect: 'none',
-			...(this.props.style && this.props.style['::placeholder']),
 		}
 
-		const conditionalInputStyle = {
-			...(!this.props.isDisabled &&
-				invalid && {
-					borderColor: styles.colors.red,
-					...(styles.inputBorder === 'bottom' && {
-						borderRadius: styles.defaultBorderRadius,
-					}),
-				}),
-		}
+		styles.inputAppearances &&
+			styles.inputAppearances.forEach((b) => {
+				if (this.props.appearance === b.name) {
+					// @ts-ignore
+					defaultContainerStyle = { ...defaultContainerStyle, ...b }
+					// @ts-ignore
+					defaultPlaceholderStyle = { ...defaultPlaceholderStyle, ...b['::placeholder'] }
+				}
+			})
 
 		// @ts-ignore
 		let finalStyle: CSSObjectWithLabel = {
@@ -293,6 +260,7 @@ export default class Dropdown extends TrackedComponent<Props> {
 				...(this.props.style && this.props.style[':focus']),
 			},
 		}
+		const color = finalStyle.color as string | undefined
 		finalStyle = {
 			...finalStyle,
 			...(invalid && {
@@ -317,12 +285,19 @@ export default class Dropdown extends TrackedComponent<Props> {
 					}),
 				},
 			}),
+		}
+		finalStyle = {
+			...finalStyle,
 			...(this.props.isDisabled && /* !this.props.simpleDisabled && */ {
 				background: config.overlayColor(
 					styles.colors.white,
 					config.replaceAlpha(styles.colors.black, global.nightMode ? 0.05 : 0.1)
 				),
 				color: config.replaceAlpha(styles.colors.black, global.nightMode ? 0.25 : 0.5),
+				'::placeholder': {
+					...finalStyle['::placeholder'],
+					color: config.replaceAlpha(styles.colors.black, global.nightMode ? 0.25 : 0.5),
+				},
 				borderColor: config.replaceAlpha(
 					styles.colors.black,
 					global.nightMode ? 0.05 : 0.1
@@ -337,6 +312,54 @@ export default class Dropdown extends TrackedComponent<Props> {
 				':hover': {},
 				':focus': {},
 			}),
+		}
+
+		defaultPlaceholderStyle = {
+			...defaultPlaceholderStyle,
+			...finalStyle['::placeholder'],
+		}
+
+		const defaultMenuStyle: CSSObjectWithLabel = {
+			animation:
+				(this.props.menuPlacement === 'top' ? 'openUp' : 'openDown') + ' 0.2s ease-in-out',
+			background: styles.colors.white,
+			borderStyle: 'solid',
+			borderWidth: '1px',
+			boxSizing: 'border-box',
+			borderColor: styles.colors.borderColor,
+			boxShadow: '0 2px 4px 0 rgba(0, 0, 0, 0.025), 0 2px 4px 0 rgba(0, 0, 0, 0.025)',
+			borderRadius: 6,
+		}
+		const indicatorStyle = {
+			cursor: 'pointer',
+			opacity: this.props.dropdownIndicator || this.props.customInput ? 1 : 0.75,
+			paddingRight: 3,
+			paddingLeft: 4,
+			paddingTop: 0,
+			paddingBottom: 0,
+			color: color && config.replaceAlpha(color, 0.5),
+			':hover': {
+				color: color && config.replaceAlpha(color, 0.35),
+			},
+			':focus': {
+				color: color && config.replaceAlpha(color, 0.25),
+			},
+			':active': {
+				color: color && config.replaceAlpha(color, 0.5),
+			},
+		}
+		const defaultInputStyle = {
+			...defaultStyle,
+			padding: 0,
+		}
+		const conditionalInputStyle = {
+			...(!this.props.isDisabled &&
+				invalid && {
+					borderColor: styles.colors.red,
+					...(styles.inputBorder === 'bottom' && {
+						borderRadius: styles.defaultBorderRadius,
+					}),
+				}),
 		}
 
 		const label = this.props.label || (this.props.emptyLabel ? '\u200c' : undefined)

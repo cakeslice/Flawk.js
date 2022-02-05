@@ -30,51 +30,10 @@ export default {
 	font: _font,
 	fontAlt: _fontAlt,
 
-	extraButtons: [
+	buttonAppearances: [
 		{
-			buttonType: 'delete',
-			transition: 'background 200ms, border-color 200ms, color 200ms',
-			color: 'rgba(250,61,91,1)',
-			':focus-visible': {
-				outline: 'none',
-				borderColor: 'rgba(250,61,91,1)',
-				boxShadow: '0 0 0 2px ' + 'rgba(250,61,91,.1)',
-			},
-			':hover': {
-				opacity: 1,
-				color: 'white',
-				borderColor: 'rgba(250,61,91,1)',
-				background: 'rgba(250,61,91,.5)',
-			},
-			':active': {
-				color: 'white',
-				background: 'rgba(250,61,91,1)',
-				borderColor: 'rgba(250,61,91,1)',
-			},
-		},
-		{
-			buttonType: 'delete_primary',
-			color: 'white',
-			borderColor: 'rgba(250,61,91,1)',
-			background: 'rgba(250,61,91,1)',
-
-			':focus-visible': {
-				outline: 'none',
-				background: 'rgba(250,61,91,.5)',
-				boxShadow: '0 0 0 2px ' + 'rgba(250,61,91,.1)',
-			},
-			':hover': {
-				opacity: 1,
-				background: 'rgba(250,61,91,.5)',
-			},
-
-			':active': {
-				borderColor: 'rgba(250,61,91,1)',
-				background: 'rgba(250,61,91,1)',
-			},
-		},
-		{
-			buttonType: 'action',
+			name: 'action',
+			usageBackground: 'rgba(30,30,30,1)',
 
 			color: 'white',
 			fontWeight: 'bold',

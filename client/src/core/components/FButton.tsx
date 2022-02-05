@@ -24,9 +24,9 @@ const scrollToErrors = (errors: FormikErrors<unknown>) => {
 	}
 }
 
-export type Appearance = 'primary' | 'secondary' | string // We need to support string for custom appearances declared in styles.extraButtons
+export type Appearance = 'primary' | 'secondary' | string // We need to support string for custom appearances declared in styles.buttonAppearances
 type Props = {
-	style?: React.CSSProperties
+	style?: React.CSSProperties & GlamorProps
 	children?: React.ReactNode
 	appearance?: Appearance
 	noInvalidLabel?: boolean
@@ -202,7 +202,7 @@ export default class FButton extends TrackedComponent<Props> {
 		}
 
 		let finalStyle: React.CSSProperties &
-			GlamorProps & { loadingColor?: string; buttonType?: string } = {
+			GlamorProps & { loadingColor?: string; name?: string } = {
 			...mainStyle,
 			...(this.props.appearance === 'primary' && {
 				background: styles.colors.main,
@@ -239,15 +239,22 @@ export default class FButton extends TrackedComponent<Props> {
 			}),
 		}
 
-		styles.extraButtons &&
-			styles.extraButtons.forEach((b) => {
-				if (this.props.appearance === b.buttonType) finalStyle = { ...finalStyle, ...b }
+		let usageBackground = false
+		styles.buttonAppearances &&
+			styles.buttonAppearances.forEach((b) => {
+				if (this.props.appearance === b.name) {
+					finalStyle = { ...finalStyle, ...b }
+					usageBackground = b.usageBackground ? true : false
+				}
 			})
 
 		if (this.props.checkbox) {
 			if (checked !== undefined) this.state.checked = checked // eslint-disable-line
 
-			if (!this.state.checked) finalStyle.background = styles.colors.white
+			if (!this.state.checked)
+				finalStyle.background = usageBackground
+					? config.replaceAlpha(styles.colors.white, 0.15)
+					: styles.colors.white
 
 			finalStyle[':hover'] = {
 				...finalStyle[':hover'],
@@ -289,6 +296,7 @@ export default class FButton extends TrackedComponent<Props> {
 						styles.colors.black,
 						global.nightMode ? 0.05 : 0.1
 					),
+					opacity: 0.75,
 				}),
 			...(invalid && {
 				boxShadow: '0 0 0 2px ' + config.replaceAlpha(styles.colors.red, 0.2),

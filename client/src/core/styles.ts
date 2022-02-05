@@ -87,53 +87,6 @@ export default {
 	buttonBorder: 'solid' as React.CSSProperties['borderStyle'],
 	// @ts-ignore
 	buttonFontWeight: undefined,
-	// @ts-ignore
-	extraButtons: [
-		{
-			buttonType: 'delete',
-			transition: 'background 200ms, border-color 200ms, color 200ms',
-			color: _red,
-			':focus-visible': {
-				outline: 'none',
-				borderColor: _red,
-				boxShadow: '0 0 0 2px ' + config.replaceAlpha(_red, 0.1),
-			},
-			':hover': {
-				opacity: 1,
-				color: 'white',
-				background: config.replaceAlpha(_red, 0.5),
-				borderColor: _red,
-			},
-			':active': {
-				color: 'white',
-				borderColor: _red,
-				background: _red,
-			},
-		},
-		{
-			buttonType: 'delete_primary',
-			color: 'white',
-			borderColor: _red,
-			background: _red,
-
-			':focus-visible': {
-				outline: 'none',
-				background: config.replaceAlpha(_red, 0.5),
-				boxShadow: '0 0 0 2px ' + config.replaceAlpha(_red, 0.1),
-			},
-			':hover': {
-				opacity: 1,
-				background: config.replaceAlpha(_red, 0.5),
-			},
-			':active': {
-				borderColor: _red,
-				background: _red,
-			},
-		},
-	] as ({
-		buttonType: string
-	} & GlamorProps &
-		React.CSSProperties)[],
 
 	// Modal Config
 
@@ -343,4 +296,80 @@ export default {
 	//
 
 	...config.projectStyles,
+
+	//
+
+	// @ts-ignore
+	buttonAppearances: (config.projectStyles.buttonAppearances || []).concat([
+		{
+			name: 'delete',
+			transition: 'background 200ms, border-color 200ms, color 200ms',
+			color: _red,
+			':focus-visible': {
+				outline: 'none',
+				borderColor: _red,
+				boxShadow: '0 0 0 2px ' + config.replaceAlpha(_red, 0.1),
+			},
+			':hover': {
+				opacity: 1,
+				color: 'white',
+				background: config.replaceAlpha(_red, 0.5),
+				borderColor: _red,
+			},
+			':active': {
+				color: 'white',
+				borderColor: _red,
+				background: _red,
+			},
+		},
+		{
+			name: 'delete_primary',
+			color: 'white',
+			borderColor: _red,
+			background: _red,
+
+			':focus-visible': {
+				outline: 'none',
+				background: config.replaceAlpha(_red, 0.5),
+				boxShadow: '0 0 0 2px ' + config.replaceAlpha(_red, 0.1),
+			},
+			':hover': {
+				opacity: 1,
+				background: config.replaceAlpha(_red, 0.5),
+			},
+			':active': {
+				borderColor: _red,
+				background: _red,
+			},
+		},
+	]) as ({
+		name: string
+		usageBackground?: string
+	} & GlamorProps &
+		React.CSSProperties)[],
+	// @ts-ignore
+	inputAppearances: (config.projectStyles.inputAppearances || []).concat([
+		{
+			name: 'dark',
+			usageBackground: _black,
+			color: _white,
+			background: 'transparent',
+			'caret-color': config.replaceAlpha(_white, 0.5),
+			'::placeholder': {
+				color: config.replaceAlpha(_white, 0.5),
+			},
+			':hover': {
+				borderColor: config.replaceAlpha(_white, 0.25),
+			},
+			':focus': {
+				borderColor: config.replaceAlpha(_white, 0.5),
+				boxShadow: '0 0 0 2px ' + config.replaceAlpha(_white, 0.25),
+			},
+			borderColor: _white,
+		},
+	]) as ({
+		name: string
+		usageBackground?: string
+	} & GlamorProps &
+		React.CSSProperties)[],
 }

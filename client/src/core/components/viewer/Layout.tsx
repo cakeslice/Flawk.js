@@ -351,7 +351,7 @@ export default class Layout extends QueryParams {
 								</div>
 							</Section>
 							<Section title='Pagination' tags={['<Paginate/>']}>
-								{this.state.data && desktop && (
+								{this.state.data && (
 									<Paginate
 										onClick={async (e) => {
 											this.setQueryParams({

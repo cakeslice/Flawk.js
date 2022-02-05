@@ -7,7 +7,7 @@
 
 import * as Sentry from '@sentry/react'
 import { disableBodyScroll } from 'body-scroll-lock'
-import { normal } from 'color-blend'
+import { difference, normal } from 'color-blend'
 import { countries, Country } from 'countries-list'
 import { KeyObject, Obj } from 'flawk-types'
 import hexRgb from 'hex-rgb'
@@ -400,6 +400,13 @@ export default {
 		const c2 = rgbaToObj(colorToRgba(color))
 
 		const c = normal(c1, c2)
+		return 'rgba(' + c.r + ',' + c.g + ',' + c.b + ',' + c.a + ')'
+	},
+	invertColor(background: string, color: string) {
+		const c1 = rgbaToObj(colorToRgba(background))
+		const c2 = rgbaToObj(colorToRgba(color))
+
+		const c = difference(c1, c2)
 		return 'rgba(' + c.r + ',' + c.g + ',' + c.b + ',' + c.a + ')'
 	},
 

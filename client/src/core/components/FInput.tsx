@@ -134,6 +134,7 @@ const DatePicker = (props: {
 
 type Props = {
 	style?: React.CSSProperties
+	appearance?: string
 	center?: boolean
 	invalidType?: 'bottom' | 'label' | 'right'
 	label?: React.ReactNode
@@ -280,7 +281,7 @@ export default class FInput extends TrackedComponent<Props> {
 
 		const controlled = this.props.isControlled || formIK
 
-		const mainStyle: React.CSSProperties & GlamorProps = {
+		let mainStyle: React.CSSProperties & GlamorProps = {
 			fontSize: styles.defaultFontSize,
 			fontFamily: styles.font,
 			textAlign: this.props.center ? 'center' : 'left',
@@ -342,6 +343,11 @@ export default class FInput extends TrackedComponent<Props> {
 				'background 200ms, border-color 200ms, box-shadow 200ms, border-radius 200ms',
 		}
 
+		styles.inputAppearances &&
+			styles.inputAppearances.forEach((b) => {
+				if (this.props.appearance === b.name) mainStyle = { ...mainStyle, ...b }
+			})
+
 		let finalStyle: React.CSSProperties & GlamorProps = {
 			...mainStyle,
 			...{
@@ -389,7 +395,11 @@ export default class FInput extends TrackedComponent<Props> {
 						boxShadow: '0 0 0 2px ' + config.replaceAlpha(styles.colors.red, 0.2),
 					}),
 				},
+				opacity: 0.75,
 			}),
+		}
+		finalStyle = {
+			...finalStyle,
 			...(this.props.isDisabled &&
 				!this.props.simpleDisabled && {
 					background: config.overlayColor(
@@ -397,6 +407,13 @@ export default class FInput extends TrackedComponent<Props> {
 						config.replaceAlpha(styles.colors.black, global.nightMode ? 0.05 : 0.1)
 					),
 					color: config.replaceAlpha(styles.colors.black, global.nightMode ? 0.25 : 0.5),
+					'::placeholder': {
+						...finalStyle['::placeholder'],
+						color: config.replaceAlpha(
+							styles.colors.black,
+							global.nightMode ? 0.25 : 0.5
+						),
+					},
 					borderColor: config.replaceAlpha(
 						styles.colors.black,
 						global.nightMode ? 0.05 : 0.1
