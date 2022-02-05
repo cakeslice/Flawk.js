@@ -119,7 +119,6 @@ export default class Inputs extends Component {
 										placeholder={'******'}
 									/>
 									<FInput type='number' label={'Number'} placeholder={'1337'} />
-									<FInput isDisabled simpleDisabled label='Simple Disabled' />
 								</div>
 								<sp />
 								<div className='wrapMarginTopLeft flex flex-wrap justify-start items-start'>
@@ -143,7 +142,6 @@ export default class Inputs extends Component {
 										invalidType={'right'}
 										placeholder={'Invalid Right'}
 									/>
-									<FInput isDisabled label='Disabled' />
 								</div>
 								<sp />
 								<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
@@ -297,12 +295,6 @@ export default class Inputs extends Component {
 										erasable
 										invalid={'*'}
 										invalidType={'right'}
-										options={dropdownOptions}
-										isSearchable
-									/>
-									<Dropdown
-										isDisabled
-										label={'Disabled'}
 										options={dropdownOptions}
 										isSearchable
 									/>

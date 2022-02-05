@@ -253,7 +253,10 @@ export default class FButton extends TrackedComponent<Props> {
 
 			if (!this.state.checked)
 				finalStyle.background = usageBackground
-					? config.replaceAlpha(styles.colors.white, 0.15)
+					? config.overlayColor(
+							styles.colors.white,
+							config.replaceAlpha(styles.colors.black, global.nightMode ? 0.05 : 0.75)
+					  )
 					: styles.colors.white
 
 			finalStyle[':hover'] = {
@@ -289,12 +292,12 @@ export default class FButton extends TrackedComponent<Props> {
 					boxShadow: 'none',
 					background: config.overlayColor(
 						styles.colors.white,
-						config.replaceAlpha(styles.colors.black, global.nightMode ? 0.05 : 0.1)
+						config.replaceAlpha(styles.colors.black, global.nightMode ? 0.1 : 0.1)
 					),
-					color: config.replaceAlpha(styles.colors.black, global.nightMode ? 0.25 : 0.5),
+					color: config.replaceAlpha(styles.colors.black, global.nightMode ? 0.5 : 0.5),
 					borderColor: config.replaceAlpha(
 						styles.colors.black,
-						global.nightMode ? 0.05 : 0.1
+						global.nightMode ? 0.1 : 0.1
 					),
 					opacity: 0.75,
 				}),

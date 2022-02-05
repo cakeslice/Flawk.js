@@ -291,17 +291,14 @@ export default class Dropdown extends TrackedComponent<Props> {
 			...(this.props.isDisabled && /* !this.props.simpleDisabled && */ {
 				background: config.overlayColor(
 					styles.colors.white,
-					config.replaceAlpha(styles.colors.black, global.nightMode ? 0.05 : 0.1)
+					config.replaceAlpha(styles.colors.black, global.nightMode ? 0.1 : 0.1)
 				),
-				color: config.replaceAlpha(styles.colors.black, global.nightMode ? 0.25 : 0.5),
+				color: config.replaceAlpha(styles.colors.black, global.nightMode ? 0.5 : 0.5),
 				'::placeholder': {
 					...finalStyle['::placeholder'],
-					color: config.replaceAlpha(styles.colors.black, global.nightMode ? 0.25 : 0.5),
+					color: config.replaceAlpha(styles.colors.black, global.nightMode ? 0.5 : 0.5),
 				},
-				borderColor: config.replaceAlpha(
-					styles.colors.black,
-					global.nightMode ? 0.05 : 0.1
-				),
+				borderColor: config.replaceAlpha(styles.colors.black, global.nightMode ? 0.1 : 0.1),
 				...(styles.inputBorder === 'bottom' && {
 					borderRadius: styles.defaultBorderRadius,
 				}),
