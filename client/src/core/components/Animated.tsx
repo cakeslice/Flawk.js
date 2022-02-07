@@ -196,7 +196,7 @@ export default class Animated extends TrackedComponent<Props> {
 					? props.controlled && this.state.mounted
 						? 'show'
 						: 'hidden'
-					: skipFirstTrigger && !props.triggerID
+					: skipFirstTrigger && props.triggerID === undefined
 					? 'hidden'
 					: 'show'
 
@@ -253,7 +253,7 @@ export default class Animated extends TrackedComponent<Props> {
 								? 'show'
 								: 'hidden'
 							: this.state.visible
-							? skipFirstTrigger && !props.triggerID
+							? skipFirstTrigger && props.triggerID === undefined
 								? 'hidden'
 								: 'show'
 							: 'hidden'

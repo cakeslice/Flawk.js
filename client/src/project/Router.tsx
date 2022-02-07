@@ -345,21 +345,36 @@ class PublicWrapper extends Component<{ auth?: boolean; desktop: boolean }> {
 	render() {
 		return (
 			<div
-				className={this.props.desktop ? 'flex-col justify-center items-center' : undefined}
 				style={{
-					marginTop: this.props.auth ? (!this.props.desktop ? 30 : undefined) : undefined,
-					height: this.props.auth && this.props.desktop ? '80vh' : undefined,
-					padding: this.props.auth && !this.props.desktop ? '5vw' : undefined,
-					width: this.props.auth ? (!this.props.desktop ? '100%' : undefined) : '100%',
+					paddingTop: this.props.auth
+						? !this.props.desktop
+							? 30
+							: undefined
+						: undefined,
 				}}
 			>
-				{this.props.children}
-				{this.props.auth && <sp />}
-				{this.props.auth && <sp />}
-				{this.props.auth && <sp />}
-				{this.props.auth && <sp />}
-				{this.props.auth && <sp />}
-				{this.props.auth && <sp />}
+				<div
+					className={
+						this.props.desktop ? 'flex-col justify-center items-center' : undefined
+					}
+					style={{
+						minHeight: this.props.auth ? '80vh' : undefined,
+						padding: this.props.auth && !this.props.desktop ? '5vw' : undefined,
+						width: this.props.auth
+							? !this.props.desktop
+								? '100%'
+								: undefined
+							: '100%',
+					}}
+				>
+					{this.props.children}
+					{this.props.auth && <sp />}
+					{this.props.auth && <sp />}
+					{this.props.auth && <sp />}
+					{this.props.auth && <sp />}
+					{this.props.auth && <sp />}
+					{this.props.auth && <sp />}
+				</div>
 			</div>
 		)
 	}

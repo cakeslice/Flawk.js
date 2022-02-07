@@ -19,7 +19,8 @@ const scrollToErrors = (errors: FormikErrors<unknown>) => {
 	const errorKeys = Object.keys(errors)
 	if (errorKeys.length > 0) {
 		setTimeout(() => {
-			document.getElementsByName(errorKeys[0])[0].focus()
+			if (document.getElementsByName(errorKeys[0])[0])
+				document.getElementsByName(errorKeys[0])[0].focus()
 		}, 10)
 	}
 }
@@ -76,7 +77,7 @@ type Props = {
 				formErrors?: FormikErrors<unknown>
 		  }
 		| {
-				type: 'submit'
+				type: 'submit' | 'button'
 				formErrors: FormikErrors<unknown>
 		  }
 	) &
@@ -478,10 +479,8 @@ export default class FButton extends TrackedComponent<Props> {
 						</div>
 						{name && !this.props.noInvalidLabel && (
 							<div style={{ minHeight: 26 }}>
-								{!this.props.isDisabled && invalid && (
-									<div style={{ minHeight: 5 }}></div>
-								)}
-								{!this.props.isDisabled && invalid && (
+								{invalid && <div style={{ minHeight: 5 }}></div>}
+								{invalid && (
 									<p
 										style={{
 											fontSize: styles.invalidFontSize,

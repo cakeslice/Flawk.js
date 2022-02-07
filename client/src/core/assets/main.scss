@@ -480,6 +480,17 @@ kbd {
 
 // Animations
 
+@keyframes shadowPulse {
+	0% {
+		box-shadow: 0 0 0 2px rgba(127, 127, 127, 0);
+	}
+	25% {
+		box-shadow: 0 0 0 4px rgba(127, 127, 127, 0.25);
+	}
+	100% {
+		box-shadow: 0 0 0 2px rgba(127, 127, 127, 0);
+	}
+}
 @keyframes heartbeat {
 	to {
 		opacity: 1;

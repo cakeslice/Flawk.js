@@ -395,6 +395,9 @@ export default class Dropdown extends TrackedComponent<Props> {
 						<div
 							style={{
 								width: width,
+								maxWidth: this.props.style
+									? (this.props.style.maxWidth as React.CSSProperties['maxWidth'])
+									: undefined,
 								flexGrow:
 									(this.props.style &&
 										this.props.style.flexGrow !== undefined &&
@@ -441,7 +444,6 @@ export default class Dropdown extends TrackedComponent<Props> {
 									</label>
 									{invalidType === 'label' &&
 										name &&
-										!this.props.isDisabled &&
 										invalid &&
 										invalid.length > 0 && (
 											<span

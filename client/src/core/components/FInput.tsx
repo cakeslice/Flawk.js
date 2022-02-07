@@ -108,10 +108,13 @@ const DatePicker = (props: {
 		utc={props.utc}
 		locale={global.lang.moment}
 		timeFormat={false}
-		value={props.value}
+		value={
+			props.value && props.value.includes && props.value.includes('T')
+				? new Date(props.value)
+				: props.value
+		}
 		onChange={props.onChange}
 		renderInput={(p) => {
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 			return (
 				<input
 					{...css(props.inputStyle)}
@@ -551,6 +554,7 @@ export default class FInput extends TrackedComponent<Props> {
 					<div
 						style={{
 							width: finalStyle.width || defaultWidth(desktop),
+							maxWidth: finalStyle.maxWidth,
 							flexGrow: finalStyle.flexGrow,
 						}}
 					>
@@ -590,22 +594,18 @@ export default class FInput extends TrackedComponent<Props> {
 								>
 									{label}
 								</label>
-								{invalidType === 'label' &&
-									name &&
-									!this.props.isDisabled &&
-									invalid &&
-									invalid.length > 0 && (
-										<span
-											style={{
-												marginLeft: 7.5,
-												fontSize: styles.invalidFontSize,
-												fontWeight: styles.invalidFontWeight,
-												color: styles.colors.red,
-											}}
-										>
-											{invalid}
-										</span>
-									)}
+								{invalidType === 'label' && name && invalid && invalid.length > 0 && (
+									<span
+										style={{
+											marginLeft: 7.5,
+											fontSize: styles.invalidFontSize,
+											fontWeight: styles.invalidFontWeight,
+											color: styles.colors.red,
+										}}
+									>
+										{invalid}
+									</span>
+								)}
 							</div>
 						)}
 						{label && <div style={{ minHeight: 5 }}></div>}

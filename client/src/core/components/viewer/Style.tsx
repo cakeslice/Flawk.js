@@ -768,6 +768,15 @@ export default class Style extends Component<Props> {
 									>
 										<tag>animation</tag>
 									</div>
+									<div
+										onClick={this.toggleAnimation}
+										style={{
+											...animationCard,
+											animation: 'shadowPulse 1s infinite',
+										}}
+									>
+										<tag>animation</tag>
+									</div>
 								</div>
 								<sp />
 								<tag>{'<Animated/>'}</tag>

@@ -6,6 +6,12 @@
  */
 
 export default {
+	invalid: {
+		email: { pt: 'Email inválido', en: 'Invalid email' },
+		password: { pt: 'Min. 6 caracteres', en: 'Min. 6 characters' },
+		date: { pt: 'Data inválida', en: 'Invalid date' },
+	},
+
 	common: {
 		searching: { pt: 'A procurar...', en: 'Searching...' },
 		cancel: { pt: 'Cancelar', en: 'Cancel' },
