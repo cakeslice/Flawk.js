@@ -20,7 +20,18 @@ import MediaQuery from 'react-responsive'
 import Collapsible from '../Collapsible'
 import { Section } from './ComponentsViewer'
 
-export default class Layout extends QueryParams {
+export default class Layout extends QueryParams<
+	{
+		page: number
+		limit: number
+		sort?: string
+		order?: 'asc' | 'desc'
+		search?: string
+		startDate?: Date
+		endDate?: Date
+	},
+	{ horizontalDashboard: boolean; toggleDashboardLayout: () => void }
+> {
 	state = {
 		data: undefined as
 			| {
@@ -151,7 +162,19 @@ export default class Layout extends QueryParams {
 						<div>
 							{this.exampleModal()}
 							{this.confirmModal()}
-							<Section title='Flex wrap/grow' top code={codeFlexGrow}>
+							<Section title='Dashboard' top tags={['<Dashboard/>']}>
+								<FButton
+									onClick={async () => {
+										this.props.toggleDashboardLayout()
+									}}
+									style={{
+										minWidth: 50,
+									}}
+								>
+									{!this.props.horizontalDashboard ? 'Top' : 'Side'} menu
+								</FButton>
+							</Section>
+							<Section title='Flex wrap/grow' code={codeFlexGrow}>
 								<div style={{ ...styles.card }}>
 									<div className='wrapMargin flex flex-wrap'>
 										<div style={fixedExample}></div>

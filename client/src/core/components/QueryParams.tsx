@@ -69,14 +69,12 @@ export default class QueryParams<
 
 	UNSAFE_componentWillMount() {
 		window.addEventListener('popstate', this.locationUpdate)
-		window.addEventListener('pushstate', this.locationUpdate)
 
 		this._parsedDefaultParams = this._getAndParseSearch(this.defaultQueryParams as Obj)
 		this.forceUpdate()
 	}
 	componentWillUnmount() {
 		window.removeEventListener('popstate', this.locationUpdate)
-		window.removeEventListener('pushstate', this.locationUpdate)
 	}
 	locationUpdate() {
 		this.forceUpdate()

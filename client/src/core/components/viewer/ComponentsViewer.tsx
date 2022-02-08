@@ -24,50 +24,94 @@ const Style = React.lazy(() => import('core/components/viewer/Style'))
 const Backend = React.lazy(() => import('core/components/viewer/Backend'))
 const API = React.lazy(() => import('core/components/viewer/API'))
 
+const iconWrapper = (icon: (color: string) => React.ReactNode, active: boolean, size?: number) => (
+	<div
+		className='flex items-center justify-center'
+		style={{
+			width: 25,
+			opacity: active ? 1 : 0.5,
+		}}
+	>
+		<div className='flex items-center justify-center' style={{ width: size || 25 }}>
+			{icon(active ? styles.colors.main : styles.colors.black)}
+		</div>
+	</div>
+)
+
 export default class ComponentsViewer extends Component {
+	state = {
+		horizontalDashboard: false,
+	}
+
+	componentDidMount() {
+		if (global.localStorage.getItem('horizontalDashboard') === 'true')
+			this.setState({ horizontalDashboard: true })
+	}
+
 	render() {
-		const routes: Array<DashboardRoute> = [
+		let routes: Array<DashboardRoute> = [
 			{
 				id: 'logo',
 				desktopTab: true,
 				notRoute: true,
-				tab: (props) => (
-					<div>
-						<div className='flex justify-center items-center'>
-							<div
-								className='flex items-center'
-								style={{
-									display: 'flex',
-									alignItems: 'center',
-									height: 120,
-								}}
-							>
-								<button
-									type='button'
-									onClick={() => global.routerHistory().push('/')}
-								>
-									<img
-										style={{
-											objectFit: 'contain',
-											maxHeight: props.isOpen ? 50 : 30,
-											minHeight: props.isOpen ? 50 : 30,
-											transition: `min-height 500ms, max-height 500ms`,
-										}}
-										src={logo}
-									></img>
-								</button>
-							</div>
-						</div>
+				tab: (props) =>
+					this.state.horizontalDashboard ? (
 						<div
+							className='flex items-center h-full'
 							style={{
-								height: 1,
-								background: styles.colors.lineColor,
-								width: '100%',
+								minWidth: 90,
 							}}
-						></div>
-						<div style={{ minHeight: 20 }}></div>
-					</div>
-				),
+						>
+							<button
+								type='button'
+								style={{ display: 'flex', alignItems: 'center' }}
+								onClick={() => global.routerHistory().push('/')}
+							>
+								<img
+									style={{
+										objectFit: 'contain',
+										maxHeight: 25,
+										minHeight: 25,
+									}}
+									src={logo}
+								></img>
+							</button>
+						</div>
+					) : (
+						<div>
+							<div className='flex justify-center items-center'>
+								<div
+									className='flex items-center'
+									style={{
+										height: 120,
+									}}
+								>
+									<button
+										type='button'
+										onClick={() => global.routerHistory().push('/')}
+									>
+										<img
+											style={{
+												objectFit: 'contain',
+												maxHeight: props.isOpen ? 50 : 30,
+												minHeight: props.isOpen ? 50 : 30,
+												transition: `min-height 500ms, max-height 500ms`,
+											}}
+											src={logo}
+										></img>
+									</button>
+								</div>
+							</div>
+							<div
+								style={{
+									height: 1,
+									background: styles.colors.lineColor,
+									width: '100%',
+								}}
+							></div>
+							<div style={{ minHeight: 20 }}></div>
+						</div>
+					),
 			},
 			{
 				defaultRoute: true,
@@ -134,6 +178,7 @@ export default class ComponentsViewer extends Component {
 							height: 1,
 							background: styles.colors.lineColor,
 							width: '100%',
+							opacity: this.state.horizontalDashboard ? 0 : 1,
 						}}
 					></div>
 				),
@@ -165,39 +210,54 @@ export default class ComponentsViewer extends Component {
 				),
 				id: 'dark_mode',
 			},
-			{
+		]
+
+		if (this.state.horizontalDashboard)
+			routes = [
+				{
+					id: 'top_space',
+					notRoute: true,
+					tab: (props) => <div style={{ minWidth: '5%' }} />,
+					desktopTab: true,
+				},
+				...routes,
+				{
+					id: 'bottom_space',
+					notRoute: true,
+					tab: (props) => <div style={{ minWidth: '5%' }} />,
+					desktopTab: true,
+				},
+			]
+		else
+			routes.push({
 				id: 'bottom',
 				notRoute: true,
 				tab: (props) => <div style={{ height: 40 }} />,
-			},
-		]
+			})
 
 		return (
 			<Dashboard
+				horizontal={this.state.horizontalDashboard}
 				textColor={styles.colors.black}
 				path={'/components/'}
 				color={styles.colors.white}
 				logo={logo}
 				wrapperComponent={Wrapper}
 				routes={routes}
+				pageProps={{
+					horizontalDashboard: this.state.horizontalDashboard,
+					toggleDashboardLayout: () => {
+						global.localStorage.setItem(
+							'horizontalDashboard',
+							!this.state.horizontalDashboard ? 'true' : 'false'
+						)
+						this.setState({ horizontalDashboard: !this.state.horizontalDashboard })
+					},
+				}}
 			></Dashboard>
 		)
 	}
 }
-
-const iconWrapper = (icon: (color: string) => React.ReactNode, active: boolean, size?: number) => (
-	<div
-		className='flex items-center justify-center'
-		style={{
-			width: 25,
-			opacity: active ? 1 : 0.5,
-		}}
-	>
-		<div className='flex items-center justify-center' style={{ width: size || 25 }}>
-			{icon(active ? styles.colors.main : styles.colors.black)}
-		</div>
-	</div>
-)
 
 class Wrapper extends Component<{ children: React.ReactNode }> {
 	render() {

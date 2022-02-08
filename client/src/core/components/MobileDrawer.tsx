@@ -37,12 +37,18 @@ export default class MobileDrawer extends TrackedComponent<Props> {
 	constructor(props: Props) {
 		super(props)
 
-		window.onpopstate = (event) => {
-			this.forceUpdate()
-		}
+		this.locationUpdate = this.locationUpdate.bind(this)
+	}
+	locationUpdate() {
+		this.forceUpdate()
+	}
+
+	componentDidMount() {
+		window.addEventListener('popstate', this.locationUpdate)
 	}
 
 	componentWillUnmount() {
+		window.removeEventListener('popstate', this.locationUpdate)
 		clearAllBodyScrollLocks()
 	}
 
@@ -68,6 +74,17 @@ export default class MobileDrawer extends TrackedComponent<Props> {
 				>
 					<div style={{ minHeight: 30 }}></div>
 					{this.props.links.map((link, i, arr) => {
+						const textStyle: React.CSSProperties = {
+							marginLeft: 10,
+							fontSize: styles.defaultFontSize,
+							lineHeight: 1.64,
+							fontWeight: selectedRoute.includes('/' + link.id) ? 'bold' : undefined,
+							color: selectedRoute.includes('/' + link.id)
+								? this.props.textColor || styles.colors.main
+								: this.props.textColor,
+							opacity: selectedRoute.includes('/' + link.id) ? 1 : 0.5,
+						}
+
 						if (link.notRoute && link.tab)
 							return (
 								<div
@@ -174,22 +191,7 @@ export default class MobileDrawer extends TrackedComponent<Props> {
 												</div>
 											)
 										)}
-										<div
-											style={{
-												marginLeft: 10,
-												fontSize: styles.defaultFontSize,
-												lineHeight: 1.64,
-												fontWeight: selectedRoute.includes('/' + link.id)
-													? 'bold'
-													: undefined,
-												color: selectedRoute.includes('/' + link.id)
-													? this.props.textColor || styles.colors.main
-													: undefined,
-												opacity: selectedRoute.includes('/' + link.id)
-													? 1
-													: 0.5,
-											}}
-										>
+										<div style={textStyle}>
 											{link.name ? config.localize(link.name) : ''}
 										</div>
 									</Link>
@@ -242,22 +244,7 @@ export default class MobileDrawer extends TrackedComponent<Props> {
 												)}
 											</div>
 										)}
-										<div
-											style={{
-												marginLeft: 10,
-												fontSize: styles.defaultFontSize,
-												lineHeight: 1.64,
-												fontWeight: selectedRoute.includes('/' + link.id)
-													? 'bold'
-													: undefined,
-												color: selectedRoute.includes('/' + link.id)
-													? this.props.textColor || styles.colors.main
-													: this.props.textColor,
-												opacity: selectedRoute.includes('/' + link.id)
-													? 1
-													: 0.5,
-											}}
-										>
+										<div style={textStyle}>
 											{link.name ? config.localize(link.name) : ''}
 										</div>
 									</a>

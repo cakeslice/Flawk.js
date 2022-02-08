@@ -59,6 +59,8 @@ type DashboardProps = {
 	textColor?: string
 	entryStyle?: Obj
 	dontFillSpace?: boolean
+	horizontal?: boolean
+	horizontalHeight?: number
 	logoStyle?: Obj
 	bigScreenWidth?: number
 }
@@ -114,6 +116,8 @@ export default class Dashboard extends TrackedComponent<
 		return <div>{props.children}</div>
 	}
 	render() {
+		const horizontalHeight = this.props.horizontalHeight || 43
+
 		const openWidth = this.props.openWidth || 176
 		const closedWidth = this.props.closedWidth || 60
 
@@ -145,14 +149,22 @@ export default class Dashboard extends TrackedComponent<
 								const headerHeight = desktop ? 90 : 50
 
 								const desktopStyle: React.CSSProperties = {
-									width:
-										bigScreen || this.props.alwaysOpen
-											? openWidth
-											: this.state.entryMaxWidth,
-									transition: `width 500ms`,
+									...(this.props.horizontal
+										? {
+												height: horizontalHeight,
+												right: 0,
+												transition: 'height 500ms',
+										  }
+										: {
+												width:
+													bigScreen || this.props.alwaysOpen
+														? openWidth
+														: this.state.entryMaxWidth,
+												transition: 'width 500ms',
+												bottom: 0,
+										  }),
 									position: 'fixed',
 									left: 0,
-									bottom: 0,
 									top: 0,
 									zIndex: 2,
 									backgroundColor: this.props.color,
@@ -174,16 +186,26 @@ export default class Dashboard extends TrackedComponent<
 								}
 
 								const pageStyle = desktop
-									? {
-											marginLeft:
-												bigScreen || this.props.alwaysOpen
-													? openWidth
-													: closedWidth,
-											minHeight: '100vh',
-											height: 1,
-											maxWidth:
-												'calc(100vw - ' + closedWidth.toString() + 'px)',
-									  }
+									? this.props.horizontal
+										? {
+												minHeight:
+													'calc(100vh - ' +
+													horizontalHeight.toString() +
+													'px)',
+												marginTop: horizontalHeight,
+										  }
+										: {
+												marginLeft:
+													bigScreen || this.props.alwaysOpen
+														? openWidth
+														: closedWidth,
+												minHeight: '100vh',
+												height: 1,
+												maxWidth:
+													'calc(100vw - ' +
+													closedWidth.toString() +
+													'px)',
+										  }
 									: undefined
 
 								const mobileDrawerStyle = {
@@ -196,7 +218,7 @@ export default class Dashboard extends TrackedComponent<
 								}
 
 								return (
-									<div className='flex-col justify-center'>
+									<div className={'flex-col justify-center'}>
 										{desktop ? (
 											<div
 												className='flex'
@@ -214,7 +236,10 @@ export default class Dashboard extends TrackedComponent<
 												<Animated
 													trackedName='Dashboard'
 													animateOffscreen
-													effects={['fade', 'left']}
+													effects={[
+														'fade',
+														this.props.horizontal ? 'down' : 'left',
+													]}
 													distance={closedWidth}
 													duration={0.75}
 													//
@@ -239,6 +264,8 @@ export default class Dashboard extends TrackedComponent<
 																: this.state.entryMaxWidth
 														}
 														headerHeight={headerHeight}
+														desktop={desktop}
+														horizontal={this.props.horizontal}
 														routes={routes}
 														toggleOpen={
 															bigScreen || this.props.alwaysOpen
@@ -530,6 +557,7 @@ export default class Dashboard extends TrackedComponent<
 
 type MenuProps = {
 	pageProps?: Obj
+	desktop?: boolean
 	path: string
 	logo: string
 	isOpen: boolean
@@ -539,6 +567,7 @@ type MenuProps = {
 	textColor?: string
 	entryMaxWidth: number
 	headerHeight: number
+	horizontal?: boolean
 	routes: Array<DashboardRoute>
 	toggleOpen: (open?: boolean) => void
 }
@@ -552,14 +581,17 @@ class Menu extends TrackedComponent<MenuProps> {
 	constructor(props: MenuProps) {
 		super(props)
 
-		window.onpopstate = (event) => {
-			this.forceUpdate()
-		}
+		this.locationUpdate = this.locationUpdate.bind(this)
+	}
+	locationUpdate() {
+		this.forceUpdate()
 	}
 
 	componentDidMount() {
+		window.addEventListener('popstate', this.locationUpdate)
+
 		if (this.props.isHover) {
-			config.disableScroll()
+			if (!this.props.horizontal) config.disableScroll()
 		} else {
 			clearAllBodyScrollLocks()
 		}
@@ -567,13 +599,14 @@ class Menu extends TrackedComponent<MenuProps> {
 	componentDidUpdate(prevProps: MenuProps) {
 		if (this.props.isHover !== prevProps.isHover) {
 			if (this.props.isHover) {
-				config.disableScroll()
+				if (!this.props.horizontal) config.disableScroll()
 			} else {
 				clearAllBodyScrollLocks()
 			}
 		}
 	}
 	componentWillUnmount() {
+		window.removeEventListener('popstate', this.locationUpdate)
 		clearAllBodyScrollLocks()
 	}
 
@@ -601,23 +634,45 @@ class Menu extends TrackedComponent<MenuProps> {
 				fontSize: fontSize,
 				padding: 0,
 				display: 'flex',
-				height: 40,
+				...(this.props.horizontal
+					? {
+							paddingLeft: 12,
+							paddingRight: 12,
+							alignItems: 'center',
+							justifyContent: 'center',
+							height: '100%',
+							width: '100%',
+					  }
+					: {
+							paddingLeft: 12,
+							alignItems: 'center',
+							justifyContent: 'flex-start',
+							height: 40,
+							width: '100%',
+					  }),
 				color: this.props.textColor || styles.colors.black,
-				alignItems: 'center',
-				width: '100%',
-				paddingLeft: 12,
-				justifyContent: 'flex-start',
 				...this.props.entryStyle,
 			}
 		}
 
+		const isOpen = this.props.horizontal ? true : this.props.isOpen
+
 		return (
 			<div
-				className='flex-col justify-start'
+				className={this.props.horizontal ? 'flex items-center' : 'flex-col justify-start'}
 				style={{
-					height: '100%',
-					overflowY: 'auto',
-					overflowX: 'hidden',
+					...(this.props.horizontal
+						? {
+								width: '100%',
+								height: '100%',
+								overflowY: 'hidden',
+								overflowX: 'auto',
+						  }
+						: {
+								height: '100%',
+								overflowY: 'auto',
+								overflowX: 'hidden',
+						  }),
 					color: this.props.textColor || styles.colors.black,
 					background: this.props.color,
 					borderRightStyle: 'solid',
@@ -627,6 +682,31 @@ class Menu extends TrackedComponent<MenuProps> {
 				}}
 			>
 				{this.props.routes.map((entry, i) => {
+					const textStyle: React.CSSProperties = {
+						whiteSpace: 'nowrap',
+						fontSize:
+							this.props.entryStyle && this.props.entryStyle.fontSize
+								? (this.props.entryStyle.fontSize as string | number)
+								: fontSize,
+						opacity: isOpen ? (selectedRoute.includes('/' + entry.id) ? 1 : 0.5) : 0,
+						color:
+							isOpen && selectedRoute.includes('/' + entry.id)
+								? this.props.textColor || styles.colors.main
+								: this.props.textColor,
+						fontWeight:
+							isOpen && selectedRoute.includes('/' + entry.id) ? 'bold' : undefined,
+						...(this.props.horizontal
+							? {
+									transition: `opacity 500ms, margin-left 500ms`,
+									marginLeft: isOpen ? 10 : 0,
+							  }
+							: {
+									marginLeft: isOpen ? 10 : 0,
+									maxWidth: isOpen ? 'auto' : 0,
+									transition: `opacity 500ms, margin-left 500ms, max-width 500ms`,
+							  }),
+					}
+
 					if (entry.notRoute && entry.tab)
 						return (
 							<div
@@ -636,7 +716,7 @@ class Menu extends TrackedComponent<MenuProps> {
 								{entry.tab({
 									...this.props.pageProps,
 									toggleOpen: this.props.toggleOpen,
-									isOpen: this.props.isOpen,
+									isOpen: isOpen,
 								})}
 							</div>
 						)
@@ -644,22 +724,62 @@ class Menu extends TrackedComponent<MenuProps> {
 					const output = (
 						<div
 							key={entry.id + (entry.params || '')}
-							style={{
-								marginTop:
-									this.props.entryStyle && this.props.entryStyle.marginTop
-										? (this.props.entryStyle.marginTop as number | string)
-										: 10,
-								marginBottom:
-									this.props.entryStyle && this.props.entryStyle.marginBottom
-										? (this.props.entryStyle.marginBottom as number | string)
-										: 10,
-								paddingLeft: selectedRoute.includes('/' + entry.id) ? '2px' : '5px',
-								borderLeft: selectedRoute.includes('/' + entry.id)
-									? this.props.entryStyle && this.props.entryStyle.selectedBorder
-										? (this.props.entryStyle.selectedBorder as string)
-										: 'rgba(127,127,127,.5)' + ' solid 3px'
-									: undefined,
-							}}
+							style={
+								this.props.horizontal
+									? {
+											height: '100%',
+											marginLeft:
+												this.props.entryStyle &&
+												this.props.entryStyle.marginTop
+													? (this.props.entryStyle.marginTop as
+															| number
+															| string)
+													: 10,
+											marginRight:
+												this.props.entryStyle &&
+												this.props.entryStyle.marginBottom
+													? (this.props.entryStyle.marginBottom as
+															| number
+															| string)
+													: 10,
+											paddingTop: selectedRoute.includes('/' + entry.id)
+												? '2px'
+												: '5px',
+											borderTop: selectedRoute.includes('/' + entry.id)
+												? this.props.entryStyle &&
+												  this.props.entryStyle.selectedBorder
+													? (this.props.entryStyle
+															.selectedBorder as string)
+													: 'rgba(127,127,127,.5)' + ' solid 3px'
+												: undefined,
+									  }
+									: {
+											marginTop:
+												this.props.entryStyle &&
+												this.props.entryStyle.marginTop
+													? (this.props.entryStyle.marginTop as
+															| number
+															| string)
+													: 10,
+											marginBottom:
+												this.props.entryStyle &&
+												this.props.entryStyle.marginBottom
+													? (this.props.entryStyle.marginBottom as
+															| number
+															| string)
+													: 10,
+											paddingLeft: selectedRoute.includes('/' + entry.id)
+												? '2px'
+												: '5px',
+											borderLeft: selectedRoute.includes('/' + entry.id)
+												? this.props.entryStyle &&
+												  this.props.entryStyle.selectedBorder
+													? (this.props.entryStyle
+															.selectedBorder as string)
+													: 'rgba(127,127,127,.5)' + ' solid 3px'
+												: undefined,
+									  }
+							}
 						>
 							{entry.notRoute ? (
 								<a
@@ -710,39 +830,7 @@ class Menu extends TrackedComponent<MenuProps> {
 									)}
 									<div>
 										{entry.name && (
-											<p
-												style={{
-													whiteSpace: 'nowrap',
-													fontSize:
-														this.props.entryStyle &&
-														this.props.entryStyle.fontSize
-															? (this.props.entryStyle.fontSize as
-																	| string
-																	| number)
-															: fontSize,
-													transition: `opacity 500ms, margin-left 500ms, max-width 500ms`,
-													opacity: this.props.isOpen
-														? selectedRoute.includes('/' + entry.id)
-															? 1
-															: 0.5
-														: 0,
-													fontWeight:
-														this.props.isOpen &&
-														selectedRoute.includes('/' + entry.id)
-															? 'bold'
-															: undefined,
-													color:
-														this.props.isOpen &&
-														selectedRoute.includes('/' + entry.id)
-															? this.props.textColor ||
-															  styles.colors.main
-															: undefined,
-													marginLeft: this.props.isOpen ? 10 : 0,
-													maxWidth: this.props.isOpen ? 'auto' : 0,
-												}}
-											>
-												{config.localize(entry.name)}
-											</p>
+											<p style={textStyle}>{config.localize(entry.name)}</p>
 										)}
 									</div>
 								</a>
@@ -800,39 +888,7 @@ class Menu extends TrackedComponent<MenuProps> {
 									)}
 									<div>
 										{entry.name && (
-											<p
-												style={{
-													whiteSpace: 'nowrap',
-													fontSize:
-														this.props.entryStyle &&
-														this.props.entryStyle.fontSize
-															? (this.props.entryStyle.fontSize as
-																	| string
-																	| number)
-															: fontSize,
-													transition: `opacity 500ms, margin-left 500ms, max-width 500ms`,
-													opacity: this.props.isOpen
-														? selectedRoute.includes('/' + entry.id)
-															? 1
-															: 0.5
-														: 0,
-													color:
-														this.props.isOpen &&
-														selectedRoute.includes('/' + entry.id)
-															? this.props.textColor ||
-															  styles.colors.main
-															: undefined,
-													fontWeight:
-														this.props.isOpen &&
-														selectedRoute.includes('/' + entry.id)
-															? 'bold'
-															: undefined,
-													marginLeft: this.props.isOpen ? 10 : 0,
-													maxWidth: this.props.isOpen ? 'auto' : 0,
-												}}
-											>
-												{config.localize(entry.name)}
-											</p>
+											<p style={textStyle}>{config.localize(entry.name)}</p>
 										)}
 									</div>
 								</Link>
@@ -857,7 +913,7 @@ class Menu extends TrackedComponent<MenuProps> {
 												<Link
 													{...css({
 														backgroundColor:
-															this.props.isOpen &&
+															isOpen &&
 															selectedRoute.includes(
 																'/' + entry.id + '/' + sub.id
 															) &&
@@ -924,7 +980,7 @@ class Menu extends TrackedComponent<MenuProps> {
 																				1) ||
 																		fontSize - 1,
 																	transition: `opacity 500ms, margin-left 500ms, max-width 500ms`,
-																	opacity: this.props.isOpen
+																	opacity: isOpen
 																		? selectedRoute.includes(
 																				'/' +
 																					entry.id +
@@ -935,7 +991,7 @@ class Menu extends TrackedComponent<MenuProps> {
 																			: 0.5
 																		: 0,
 																	fontWeight:
-																		this.props.isOpen &&
+																		isOpen &&
 																		selectedRoute.includes(
 																			'/' +
 																				entry.id +
@@ -944,7 +1000,7 @@ class Menu extends TrackedComponent<MenuProps> {
 																		)
 																			? 'bold'
 																			: undefined,
-																	marginLeft: this.props.isOpen
+																	marginLeft: isOpen
 																		? this.props.entryStyle &&
 																		  this.props.entryStyle
 																				.paddingLeftSubRoute
@@ -954,9 +1010,7 @@ class Menu extends TrackedComponent<MenuProps> {
 																					| number)
 																			: 40
 																		: 20,
-																	maxWidth: this.props.isOpen
-																		? 'auto'
-																		: 0,
+																	maxWidth: isOpen ? 'auto' : 0,
 																}}
 															>
 																{config.localize(sub.name)}
