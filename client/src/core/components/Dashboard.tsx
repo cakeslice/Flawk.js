@@ -46,7 +46,6 @@ export type DashboardRoute = {
 }
 
 type DashboardProps = {
-	// @ts-ignore
 	wrapperComponent: React.ReactNode
 	path: string
 	color: string
@@ -659,15 +658,16 @@ class MenuClass extends TrackedComponent<MenuProps> {
 								height: '100%',
 								overflowY: 'hidden',
 								overflowX: 'auto',
+								borderBottomStyle: 'solid',
 						  }
 						: {
 								height: '100%',
 								overflowY: 'auto',
 								overflowX: 'hidden',
+								borderRightStyle: 'solid',
 						  }),
 					color: this.props.textColor || styles.colors.black,
 					background: this.props.color,
-					borderRightStyle: 'solid',
 					borderWidth: 1,
 					borderColor: styles.colors.borderColor,
 					boxShadow: 'rgba(0, 0, 0, 0.075) 0px 0px 15px 2px',
@@ -724,13 +724,6 @@ class MenuClass extends TrackedComponent<MenuProps> {
 												this.props.entryStyle &&
 												this.props.entryStyle.marginTop
 													? (this.props.entryStyle.marginTop as
-															| number
-															| string)
-													: 10,
-											marginRight:
-												this.props.entryStyle &&
-												this.props.entryStyle.marginBottom
-													? (this.props.entryStyle.marginBottom as
 															| number
 															| string)
 													: 10,
@@ -890,18 +883,38 @@ class MenuClass extends TrackedComponent<MenuProps> {
 
 					if (entry.subRoutes)
 						return (
-							<div key={entry.id + (entry.params || '')}>
+							<div
+								className={this.props.horizontal ? 'flex h-full' : undefined}
+								key={entry.id + (entry.params || '')}
+							>
 								{output}
 								<Animated
 									trackedName='Dashboard/Menu'
 									animateOffscreen
 									duration={0.25}
-									effects={['fade', 'height']}
+									effects={
+										this.props.horizontal
+											? ['fade', 'width']
+											: ['fade', 'height']
+									}
+									className={this.props.horizontal ? 'flex' : undefined}
 									controlled={selectedRoute.includes('/' + entry.id)}
 								>
 									{entry.subRoutes &&
 										entry.subRoutes.map((sub, i) => (
-											<div key={entry.id + '/' + sub.id + (sub.params || '')}>
+											<div
+												className={
+													this.props.horizontal ? 'h-full' : undefined
+												}
+												style={
+													this.props.horizontal
+														? {
+																marginLeft: 5,
+														  }
+														: {}
+												}
+												key={entry.id + '/' + sub.id + (sub.params || '')}
+											>
 												<Link
 													{...css({
 														backgroundColor:
@@ -927,23 +940,58 @@ class MenuClass extends TrackedComponent<MenuProps> {
 														fontSize: fontSize,
 														padding: 0,
 														display: 'flex',
-														// @ts-ignore
-														height: 35,
 														color:
 															this.props.textColor ||
 															styles.colors.black,
 														alignItems: 'center',
 														width: '100%',
-														paddingLeft: 12,
 														justifyContent: 'flex-start',
-														...this.props.entryStyle,
-														...(this.props.entryStyle &&
-														this.props.entryStyle.heightSubRoute
+														...(this.props.horizontal
 															? {
-																	height: this.props.entryStyle
-																		.heightSubRoute,
+																	height: '100%',
+																	paddingRight: 12,
+																	paddingLeft: 12,
+																	paddingTop:
+																		selectedRoute.includes(
+																			'/' +
+																				entry.id +
+																				'/' +
+																				sub.id
+																		)
+																			? '2px'
+																			: '5px',
+																	borderTop:
+																		selectedRoute.includes(
+																			'/' +
+																				entry.id +
+																				'/' +
+																				sub.id
+																		)
+																			? this.props
+																					.entryStyle &&
+																			  this.props.entryStyle
+																					.selectedBorder
+																				? (this.props
+																						.entryStyle
+																						.selectedBorder as string)
+																				: 'rgba(127,127,127,.5)' +
+																				  ' solid 3px'
+																			: undefined,
 															  }
-															: { height: 35 }),
+															: {
+																	height: 35,
+																	paddingLeft: 12,
+															  }),
+														...this.props.entryStyle,
+														...(!this.props.horizontal &&
+															(this.props.entryStyle &&
+															this.props.entryStyle.heightSubRoute
+																? {
+																		height: this.props
+																			.entryStyle
+																			.heightSubRoute,
+																  }
+																: { height: 35 })),
 													})}
 													onClick={() => {
 														if (sub.onClick) {
@@ -971,7 +1019,6 @@ class MenuClass extends TrackedComponent<MenuProps> {
 																				.fontSize as number) -
 																				1) ||
 																		fontSize - 1,
-																	transition: `opacity 500ms, margin-left 500ms, max-width 500ms`,
 																	opacity: isOpen
 																		? selectedRoute.includes(
 																				'/' +
@@ -992,17 +1039,27 @@ class MenuClass extends TrackedComponent<MenuProps> {
 																		)
 																			? 'bold'
 																			: undefined,
-																	marginLeft: isOpen
-																		? this.props.entryStyle &&
-																		  this.props.entryStyle
-																				.paddingLeftSubRoute
-																			? (this.props.entryStyle
-																					.paddingLeftSubRoute as
-																					| string
-																					| number)
-																			: 40
-																		: 20,
-																	maxWidth: isOpen ? 'auto' : 0,
+																	...(this.props.horizontal
+																		? {
+																				transition: `opacity 500ms, margin-left 500ms`,
+																		  }
+																		: {
+																				marginLeft: isOpen
+																					? this.props
+																							.entryStyle &&
+																					  this.props
+																							.entryStyle
+																							.paddingLeftSubRoute
+																						? (this
+																								.props
+																								.entryStyle
+																								.paddingLeftSubRoute as
+																								| string
+																								| number)
+																						: 40
+																					: 20,
+																				transition: `opacity 500ms, margin-left 500ms, max-width 500ms`,
+																		  }),
 																}}
 															>
 																{config.localize(sub.name)}
