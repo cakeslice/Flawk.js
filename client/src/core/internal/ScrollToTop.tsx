@@ -11,10 +11,10 @@ import { RouteComponentProps, withRouter } from 'react-router'
 
 type Props = {
 	location: Location
-}
-class ScrollToTop extends TrackedComponent<Props & RouteComponentProps> {
+} & RouteComponentProps
+class ScrollToTop extends TrackedComponent<Props> {
 	trackedName = 'ScrollToTop'
-	shouldComponentUpdate(nextProps: Props & RouteComponentProps, nextState: typeof this.state) {
+	shouldComponentUpdate(nextProps: Props, nextState: typeof this.state) {
 		super.shouldComponentUpdate(nextProps, nextState, false)
 		return this.deepEqualityCheck(nextProps, nextState)
 	}

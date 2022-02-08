@@ -15,47 +15,35 @@ import { GlamorProps, Obj } from 'flawk-types'
 import { css } from 'glamor'
 import React from 'react'
 import FocusLock from 'react-focus-lock'
-import { Link } from 'react-router-dom'
+import { Link, RouteComponentProps, withRouter } from 'react-router-dom'
 
 type Props = {
 	className?: string
-	pageProps?: Obj
 	style?: React.CSSProperties
 	textColor?: string
 	headerHeight: number
 	background?: string
-	links: DashboardRoute[]
 	path?: string
 	toggleOpen?: (open?: boolean) => void
-}
-export default class MobileDrawer extends TrackedComponent<Props> {
+	//
+	pageProps?: Obj
+	links: DashboardRoute[]
+} & RouteComponentProps
+class MobileDrawer extends TrackedComponent<Props> {
 	trackedName = 'MobileDrawer'
 
 	state = {
 		isOpen: false,
 	}
-	constructor(props: Props) {
-		super(props)
-
-		this.locationUpdate = this.locationUpdate.bind(this)
-	}
-	locationUpdate() {
-		this.forceUpdate()
-	}
-
-	componentDidMount() {
-		window.addEventListener('popstate', this.locationUpdate)
-	}
 
 	componentWillUnmount() {
-		window.removeEventListener('popstate', this.locationUpdate)
 		clearAllBodyScrollLocks()
 	}
 
 	renderList = () => {
 		const iconSize = 25
 
-		const selectedRoute = global.routerHistory().location.pathname.toString()
+		const selectedRoute = this.props.location.pathname.toString()
 
 		return (
 			<FocusLock>
@@ -402,6 +390,7 @@ export default class MobileDrawer extends TrackedComponent<Props> {
 		)
 	}
 }
+export default withRouter(MobileDrawer)
 
 function burger(color: string) {
 	return (

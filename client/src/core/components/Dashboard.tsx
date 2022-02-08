@@ -15,7 +15,7 @@ import { Obj } from 'flawk-types'
 import { css } from 'glamor'
 import React, { Suspense } from 'react'
 import MediaQuery from 'react-responsive'
-import { Link, Redirect, Route, Switch } from 'react-router-dom'
+import { Link, Redirect, Route, RouteComponentProps, Switch, withRouter } from 'react-router-dom'
 
 const mobileHeight = 55
 const mobileHeightTop = 65
@@ -246,8 +246,6 @@ export default class Dashboard extends TrackedComponent<
 													style={desktopStyle}
 												>
 													<Menu
-														pageProps={this.props.pageProps}
-														path={this.props.path}
 														logo={this.props.logo}
 														isOpen={
 															bigScreen ||
@@ -266,12 +264,15 @@ export default class Dashboard extends TrackedComponent<
 														headerHeight={headerHeight}
 														desktop={desktop}
 														horizontal={this.props.horizontal}
-														routes={routes}
 														toggleOpen={
 															bigScreen || this.props.alwaysOpen
 																? toggleOpenDesktop
 																: this.toggleOpen
 														}
+														//
+														pageProps={this.props.pageProps}
+														path={this.props.path}
+														routes={routes}
 													/>
 												</Animated>
 											</div>
@@ -358,8 +359,6 @@ export default class Dashboard extends TrackedComponent<
 															<MobileDrawer
 																style={mobileDrawerStyle}
 																background={this.props.color}
-																links={mobileRoutes}
-																path={this.props.path}
 																headerHeight={
 																	this.state.showHeaderBackground
 																		? mobileHeight
@@ -367,7 +366,10 @@ export default class Dashboard extends TrackedComponent<
 																}
 																textColor={textColor}
 																toggleOpen={this.toggleOpen}
+																//
 																pageProps={this.props.pageProps}
+																path={this.props.path}
+																links={mobileRoutes}
 															></MobileDrawer>
 														</div>
 													</Animated>
@@ -556,7 +558,6 @@ export default class Dashboard extends TrackedComponent<
 }
 
 type MenuProps = {
-	pageProps?: Obj
 	desktop?: boolean
 	path: string
 	logo: string
@@ -568,28 +569,20 @@ type MenuProps = {
 	entryMaxWidth: number
 	headerHeight: number
 	horizontal?: boolean
-	routes: Array<DashboardRoute>
 	toggleOpen: (open?: boolean) => void
-}
-class Menu extends TrackedComponent<MenuProps> {
+	//
+	pageProps?: Obj
+	routes: Array<DashboardRoute>
+	location: Location
+} & RouteComponentProps
+class MenuClass extends TrackedComponent<MenuProps> {
 	trackedName = 'Dashboard/Menu'
 	shouldComponentUpdate(nextProps: MenuProps, nextState: typeof this.state) {
 		super.shouldComponentUpdate(nextProps, nextState, false)
 		return this.deepEqualityCheck(nextProps, nextState)
 	}
 
-	constructor(props: MenuProps) {
-		super(props)
-
-		this.locationUpdate = this.locationUpdate.bind(this)
-	}
-	locationUpdate() {
-		this.forceUpdate()
-	}
-
 	componentDidMount() {
-		window.addEventListener('popstate', this.locationUpdate)
-
 		if (this.props.isHover) {
 			if (!this.props.horizontal) config.disableScroll()
 		} else {
@@ -606,7 +599,6 @@ class Menu extends TrackedComponent<MenuProps> {
 		}
 	}
 	componentWillUnmount() {
-		window.removeEventListener('popstate', this.locationUpdate)
 		clearAllBodyScrollLocks()
 	}
 
@@ -614,7 +606,7 @@ class Menu extends TrackedComponent<MenuProps> {
 		const iconSize = 25
 		const fontSize = styles.defaultFontSize
 
-		const selectedRoute = global.routerHistory().location.pathname.toString()
+		const selectedRoute = this.props.location.pathname.toString()
 
 		const entryStyle = (entry: { id: string }) => {
 			return {
@@ -1029,3 +1021,4 @@ class Menu extends TrackedComponent<MenuProps> {
 		)
 	}
 }
+const Menu = withRouter(MenuClass)
