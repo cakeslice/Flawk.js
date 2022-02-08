@@ -15,12 +15,14 @@ import { css } from 'glamor'
 import React from 'react'
 import MediaQuery from 'react-responsive'
 
-const scrollToErrors = (errors: FormikErrors<unknown>) => {
+const scrollToErrors = (errors: FormikErrors<unknown>, thisElement: HTMLElement | null) => {
 	const errorKeys = Object.keys(errors)
-	if (errorKeys.length > 0) {
+	if (errorKeys.length > 0 && thisElement) {
 		setTimeout(() => {
-			if (document.getElementsByName(errorKeys[0])[0])
-				document.getElementsByName(errorKeys[0])[0].focus()
+			const el = document.getElementsByName(errorKeys[0])
+			if (el[0] && el[0].closest('form') === thisElement.closest('form')) {
+				el[0].focus()
+			}
 		}, 10)
 	}
 }
@@ -98,6 +100,17 @@ export default class FButton extends TrackedComponent<Props> {
 	shouldComponentUpdate(nextProps: Props, nextState: typeof this.state) {
 		super.shouldComponentUpdate(nextProps, nextState, false)
 		return this.deepEqualityCheck(nextProps, nextState)
+	}
+
+	constructor(props: Props) {
+		super(props)
+
+		this.setButtonRef = this.setButtonRef.bind(this)
+	}
+
+	buttonRef: HTMLElement | null = null
+	setButtonRef(instance: HTMLElement | null) {
+		this.buttonRef = instance
 	}
 
 	timer: ReturnType<typeof setTimeout> | undefined = undefined
@@ -371,6 +384,7 @@ export default class FButton extends TrackedComponent<Props> {
 					<div style={{ width: finalStyle.width, flexGrow: finalStyle.flexGrow }}>
 						<div style={{ display: 'flex', alignItems: 'flex-start' }}>
 							<button
+								ref={this.setButtonRef}
 								className='f-button'
 								{...css({
 									...finalStyle,
@@ -383,7 +397,7 @@ export default class FButton extends TrackedComponent<Props> {
 									if (this.props.isLoading || this.props.isDisabled) return
 
 									if (this.props.formErrors) {
-										scrollToErrors(this.props.formErrors)
+										scrollToErrors(this.props.formErrors, this.buttonRef)
 									}
 
 									if (this.props.checkbox) {

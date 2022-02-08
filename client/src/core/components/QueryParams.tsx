@@ -57,12 +57,28 @@ export default class QueryParams<
 	// eslint-disable-next-line
 	P = {}
 > extends TrackedComponent<P> {
+	constructor(props: P) {
+		super(props)
+
+		this.locationUpdate = this.locationUpdate.bind(this)
+	}
+
 	defaultQueryParams: T = {} as T
 	// @ts-ignore
 	private _parsedDefaultParams: Record<keyof T, string> = {}
 
 	UNSAFE_componentWillMount() {
+		window.addEventListener('popstate', this.locationUpdate)
+		window.addEventListener('pushstate', this.locationUpdate)
+
 		this._parsedDefaultParams = this._getAndParseSearch(this.defaultQueryParams as Obj)
+		this.forceUpdate()
+	}
+	componentWillUnmount() {
+		window.removeEventListener('popstate', this.locationUpdate)
+		window.removeEventListener('pushstate', this.locationUpdate)
+	}
+	locationUpdate() {
 		this.forceUpdate()
 	}
 

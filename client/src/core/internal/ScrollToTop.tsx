@@ -19,10 +19,6 @@ class ScrollToTop extends TrackedComponent<Props & RouteComponentProps> {
 		return this.deepEqualityCheck(nextProps, nextState)
 	}
 
-	constructor(props: Props & RouteComponentProps) {
-		super(props)
-	}
-
 	scrollToTop() {
 		window.scrollTo(0, 0)
 	}
