@@ -105,6 +105,7 @@ const DatePicker = (props: {
 			)
 		}}
 		//
+		closeOnSelect={true}
 		utc={props.utc}
 		locale={global.lang.moment}
 		timeFormat={false}
