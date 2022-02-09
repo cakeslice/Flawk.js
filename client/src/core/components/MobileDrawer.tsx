@@ -62,8 +62,10 @@ class MobileDrawer extends TrackedComponent<Props> {
 				>
 					<div style={{ minHeight: 30 }}></div>
 					{this.props.links.map((link, i, arr) => {
+						const hasIcon = link.customIcon || link.icon || link.iconActive
+
 						const textStyle: React.CSSProperties = {
-							marginLeft: 10,
+							marginLeft: hasIcon ? 10 : 0,
 							fontSize: styles.defaultFontSize,
 							lineHeight: 1.64,
 							fontWeight: selectedRoute.includes('/' + link.id) ? 'bold' : undefined,
@@ -102,6 +104,41 @@ class MobileDrawer extends TrackedComponent<Props> {
 								backgroundColor: 'rgba(127,127,127,.25)',
 							},
 						}
+
+						const icon = link.customIcon ? (
+							<div>{link.customIcon(selectedRoute.includes('/' + link.id))}</div>
+						) : link.icon || link.iconActive ? (
+							<div
+								style={{
+									display: 'flex',
+									alignItems: 'center',
+									width: iconSize,
+								}}
+							>
+								{selectedRoute.includes('/' + link.id) ? (
+									<img
+										src={link.iconActive || link.icon}
+										style={{
+											height: iconSize,
+											width: iconSize,
+										}}
+									></img>
+								) : (
+									<img
+										src={link.icon}
+										style={{
+											opacity: 0.5,
+											filter: 'grayscale(100%)',
+											width: iconSize,
+											height: iconSize,
+										}}
+									></img>
+								)}
+							</div>
+						) : (
+							<div />
+						)
+
 						const outputStyle: React.CSSProperties = {
 							userSelect: 'none',
 							color: this.props.textColor || styles.colors.black,
@@ -142,43 +179,7 @@ class MobileDrawer extends TrackedComponent<Props> {
 												  (link.subRoutes ? '/' + link.subRoutes[0].id : '')
 										}
 									>
-										{link.customIcon ? (
-											<div>
-												{link.customIcon(
-													selectedRoute.includes('/' + link.id)
-												)}
-											</div>
-										) : (
-											(link.icon || link.iconActive) && (
-												<div
-													style={{
-														display: 'flex',
-														alignItems: 'center',
-														width: iconSize,
-													}}
-												>
-													{selectedRoute.includes('/' + link.id) ? (
-														<img
-															src={link.iconActive || link.icon}
-															style={{
-																height: iconSize,
-																width: iconSize,
-															}}
-														></img>
-													) : (
-														<img
-															src={link.icon}
-															style={{
-																opacity: 0.5,
-																filter: 'grayscale(100%)',
-																width: iconSize,
-																height: iconSize,
-															}}
-														></img>
-													)}
-												</div>
-											)
-										)}
+										{icon}
 										<div style={textStyle}>
 											{link.name ? config.localize(link.name) : ''}
 										</div>
@@ -197,41 +198,7 @@ class MobileDrawer extends TrackedComponent<Props> {
 											else this.changeState(true)
 										}}
 									>
-										{link.customIcon ? (
-											<div>
-												{link.customIcon(
-													selectedRoute.includes('/' + link.id)
-												)}
-											</div>
-										) : (
-											<div
-												style={{
-													display: 'flex',
-													alignItems: 'center',
-													width: iconSize,
-												}}
-											>
-												{selectedRoute.includes('/' + link.id) ? (
-													<img
-														src={link.iconActive || link.icon}
-														style={{
-															height: iconSize,
-															width: iconSize,
-														}}
-													></img>
-												) : (
-													<img
-														src={link.icon}
-														style={{
-															opacity: 0.5,
-															filter: 'grayscale(100%)',
-															width: iconSize,
-															height: iconSize,
-														}}
-													></img>
-												)}
-											</div>
-										)}
+										{icon}
 										<div style={textStyle}>
 											{link.name ? config.localize(link.name) : ''}
 										</div>

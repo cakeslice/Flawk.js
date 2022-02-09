@@ -681,6 +681,8 @@ class MenuClass extends TrackedComponent<MenuProps> {
 				}}
 			>
 				{this.props.routes.map((entry, i) => {
+					const hasIcon = entry.customIcon || entry.icon || entry.iconActive
+
 					const textStyle: React.CSSProperties = {
 						whiteSpace: 'nowrap',
 						fontSize:
@@ -697,10 +699,10 @@ class MenuClass extends TrackedComponent<MenuProps> {
 						...(this.props.horizontal
 							? {
 									transition: `opacity 500ms, margin-left 500ms`,
-									marginLeft: isOpen ? 10 : 0,
+									marginLeft: isOpen && hasIcon ? 10 : 0,
 							  }
 							: {
-									marginLeft: isOpen ? 10 : 0,
+									marginLeft: isOpen && hasIcon ? 10 : 0,
 									maxWidth: isOpen ? 'auto' : 0,
 									transition: `opacity 500ms, margin-left 500ms, max-width 500ms`,
 							  }),
@@ -719,6 +721,39 @@ class MenuClass extends TrackedComponent<MenuProps> {
 								})}
 							</div>
 						)
+
+					const icon = entry.customIcon ? (
+						<div>{entry.customIcon(selectedRoute.includes('/' + entry.id))}</div>
+					) : entry.iconActive || entry.icon ? (
+						<div
+							style={{
+								display: 'flex',
+								alignItems: 'center',
+							}}
+						>
+							{selectedRoute.includes('/' + entry.id) ? (
+								<img
+									src={entry.iconActive || entry.icon}
+									style={{
+										height: iconSize,
+										width: iconSize,
+									}}
+								></img>
+							) : (
+								<img
+									src={entry.icon}
+									style={{
+										opacity: 0.5,
+										filter: 'grayscale(100%)',
+										width: iconSize,
+										height: iconSize,
+									}}
+								></img>
+							)}
+						</div>
+					) : (
+						<div />
+					)
 
 					const output = (
 						<div
@@ -786,40 +821,7 @@ class MenuClass extends TrackedComponent<MenuProps> {
 										else this.props.toggleOpen(true)
 									}}
 								>
-									{entry.customIcon ? (
-										<div>
-											{entry.customIcon(
-												selectedRoute.includes('/' + entry.id)
-											)}
-										</div>
-									) : (
-										<div
-											style={{
-												display: 'flex',
-												alignItems: 'center',
-											}}
-										>
-											{selectedRoute.includes('/' + entry.id) ? (
-												<img
-													src={entry.iconActive || entry.icon}
-													style={{
-														height: iconSize,
-														width: iconSize,
-													}}
-												></img>
-											) : (
-												<img
-													src={entry.icon}
-													style={{
-														opacity: 0.5,
-														filter: 'grayscale(100%)',
-														width: iconSize,
-														height: iconSize,
-													}}
-												></img>
-											)}
-										</div>
-									)}
+									{icon}
 									<div>
 										{entry.name && (
 											<p style={textStyle}>{config.localize(entry.name)}</p>
@@ -843,40 +845,7 @@ class MenuClass extends TrackedComponent<MenuProps> {
 										(entry.subRoutes ? '/' + entry.subRoutes[0].id : '')
 									}
 								>
-									{entry.customIcon ? (
-										<div>
-											{entry.customIcon(
-												selectedRoute.includes('/' + entry.id)
-											)}
-										</div>
-									) : (
-										<div
-											style={{
-												display: 'flex',
-												alignItems: 'center',
-											}}
-										>
-											{selectedRoute.includes('/' + entry.id) ? (
-												<img
-													src={entry.iconActive || entry.icon}
-													style={{
-														height: iconSize,
-														width: iconSize,
-													}}
-												></img>
-											) : (
-												<img
-													src={entry.icon}
-													style={{
-														opacity: 0.5,
-														filter: 'grayscale(100%)',
-														width: iconSize,
-														height: iconSize,
-													}}
-												></img>
-											)}
-										</div>
-									)}
+									{icon}
 									<div>
 										{entry.name && (
 											<p style={textStyle}>{config.localize(entry.name)}</p>
@@ -891,7 +860,7 @@ class MenuClass extends TrackedComponent<MenuProps> {
 						return (
 							<div
 								className={
-									this.props.horizontal ? 'flex h-full items-center' : undefined
+									this.props.horizontal ? 'flex h-full items-end' : undefined
 								}
 								key={entry.id + (entry.params || '')}
 							>
@@ -905,7 +874,7 @@ class MenuClass extends TrackedComponent<MenuProps> {
 											? ['fade', 'width']
 											: ['fade', 'height']
 									}
-									className={this.props.horizontal ? 'flex h-full' : undefined}
+									className={this.props.horizontal ? 'flex' : undefined}
 									controlled={selectedRoute.includes('/' + entry.id)}
 								>
 									{entry.subRoutes &&
