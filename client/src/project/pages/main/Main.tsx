@@ -28,6 +28,7 @@ export default class Main extends Component {
 										maxWidth: 800,
 										paddingLeft: 20,
 										paddingRight: 20,
+										lineHeight: 1.1,
 										fontSize: 62,
 									}}
 								>
@@ -39,6 +40,7 @@ export default class Main extends Component {
 										maxWidth: 800,
 										paddingLeft: 20,
 										paddingRight: 20,
+										lineHeight: 1.1,
 										fontSize: 52,
 									}}
 								>

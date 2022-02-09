@@ -359,6 +359,7 @@ kbd {
 }
 .grow {
 	flex-grow: 1;
+	overflow: hidden;
 }
 .items-start {
 	align-items: flex-start;

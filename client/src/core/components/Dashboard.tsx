@@ -22,6 +22,12 @@ const mobileHeightTop = 65
 const desktopHeight = 55
 const desktopHeightTop = 65
 
+type EntryStyle = {
+	paddingLeftSubRoute: React.CSSProperties['paddingLeft']
+	heightSubRoute: React.CSSProperties['height']
+	selectedBorder: React.CSSProperties['border']
+}
+
 export type TabProps = Obj & { toggleOpen?: (open?: boolean) => void; isOpen: boolean }
 
 export type DashboardRoute = {
@@ -46,17 +52,16 @@ export type DashboardRoute = {
 }
 
 type DashboardProps = {
+	style?: React.CSSProperties
 	wrapperComponent: React.ReactNode
 	path: string
-	color: string
 	logo: string
 	routes: Array<DashboardRoute>
 	pageProps?: Obj
 	alwaysOpen?: boolean
 	closedWidth?: number
 	openWidth?: number
-	textColor?: string
-	entryStyle?: Obj
+	entryStyle?: React.CSSProperties & EntryStyle
 	dontFillSpace?: boolean
 	horizontal?: boolean
 	horizontalHeight?: number
@@ -129,8 +134,6 @@ export default class Dashboard extends TrackedComponent<
 		let defaultRoute: string | undefined
 		if (foundDefaultRoute) defaultRoute = foundDefaultRoute.id
 
-		const textColor = this.props.textColor
-
 		const routes = this.props.routes.filter((e) => !e.mobileTab && !e.hidden)
 		const mobileRoutes = this.props.routes.filter((e) => !e.desktopTab && !e.hidden)
 		//
@@ -166,12 +169,10 @@ export default class Dashboard extends TrackedComponent<
 									left: 0,
 									top: 0,
 									zIndex: 2,
-									backgroundColor: this.props.color,
 								}
 								const mobileStyle: React.CSSProperties = {
 									transition:
-										'border-width .5s, box-shadow .5s, backgroundColor .5s',
-									backgroundColor: this.props.color,
+										'border-width .5s, box-shadow .5s, background-color .5s',
 									boxShadow: this.state.showHeaderBackground
 										? styles.mediumShadow
 										: undefined,
@@ -182,6 +183,8 @@ export default class Dashboard extends TrackedComponent<
 									position: 'fixed',
 									top: 0,
 									zIndex: 30,
+									background: styles.colors.white,
+									...this.props.style,
 								}
 
 								const pageStyle = desktop
@@ -207,13 +210,27 @@ export default class Dashboard extends TrackedComponent<
 										  }
 									: undefined
 
-								const mobileDrawerStyle = {
+								const mobileBurgerStyle = {
 									display: 'flex',
 									alignItems: 'center',
 									minWidth: desktop ? 48 : 30,
 									marginBottom: this.state.showHeaderBackground ? 10 : 15,
 									marginTop: this.state.showHeaderBackground ? 10 : 15,
 									transition: 'margin-top .5s, margin-bottom .5s',
+								}
+								const mobileMenuStyle = {
+									...(this.props.style &&
+										this.props.style.background && {
+											background: this.props.style.background,
+										}),
+									...(this.props.style &&
+										this.props.style.backgroundColor && {
+											backgroundColor: this.props.style.backgroundColor,
+										}),
+									...(this.props.style &&
+										this.props.style.color && {
+											color: this.props.style.color,
+										}),
 								}
 
 								return (
@@ -245,6 +262,7 @@ export default class Dashboard extends TrackedComponent<
 													style={desktopStyle}
 												>
 													<Menu
+														style={this.props.style}
 														logo={this.props.logo}
 														isOpen={
 															bigScreen ||
@@ -253,8 +271,6 @@ export default class Dashboard extends TrackedComponent<
 														}
 														isHover={this.state.open}
 														entryStyle={this.props.entryStyle}
-														color={this.props.color}
-														textColor={textColor}
 														entryMaxWidth={
 															bigScreen || this.props.alwaysOpen
 																? openWidth
@@ -357,14 +373,13 @@ export default class Dashboard extends TrackedComponent<
 															</button>
 
 															<MobileDrawer
-																style={mobileDrawerStyle}
-																background={this.props.color}
+																burgerStyle={mobileBurgerStyle}
+																menuStyle={mobileMenuStyle}
 																headerHeight={
 																	this.state.showHeaderBackground
 																		? mobileHeight
 																		: mobileHeightTop
 																}
-																textColor={textColor}
 																toggleOpen={this.toggleOpen}
 																//
 																pageProps={this.props.pageProps}
@@ -558,14 +573,13 @@ export default class Dashboard extends TrackedComponent<
 }
 
 type MenuProps = {
+	style?: React.CSSProperties
 	desktop?: boolean
 	path: string
 	logo: string
 	isOpen: boolean
 	isHover: boolean
-	entryStyle?: Obj
-	color: string
-	textColor?: string
+	entryStyle?: React.CSSProperties & EntryStyle
 	entryMaxWidth: number
 	headerHeight: number
 	horizontal?: boolean
@@ -614,6 +628,11 @@ class MenuClass extends TrackedComponent<MenuProps> {
 				backgroundColor: selectedRoute.includes('/' + entry.id)
 					? 'rgba(127,127,127,.05)'
 					: undefined,
+				fontSize: fontSize,
+				padding: 0,
+				display: 'flex',
+				alignItems: 'center',
+				color: 'inherit',
 				':focus-visible': {
 					outline: 'none',
 					backgroundColor: 'rgba(127,127,127,.15)',
@@ -625,16 +644,12 @@ class MenuClass extends TrackedComponent<MenuProps> {
 				':active': {
 					backgroundColor: 'rgba(127,127,127,.25)',
 				},
-				fontSize: fontSize,
-				padding: 0,
-				display: 'flex',
 				...(this.props.horizontal
 					? {
 							paddingLeft: 12,
 							paddingRight: 12,
 							paddingTop: 10,
-							paddingBottom: 10,
-							alignItems: 'center',
+							paddingBottom: selectedRoute.includes('/' + entry.id) ? 7 : 10,
 							justifyContent: 'center',
 							height: '100%',
 							width: '100%',
@@ -643,12 +658,10 @@ class MenuClass extends TrackedComponent<MenuProps> {
 					  }
 					: {
 							paddingLeft: 12,
-							alignItems: 'center',
 							justifyContent: 'flex-start',
 							height: 40,
 							width: '100%',
 					  }),
-				color: this.props.textColor || styles.colors.black,
 				...this.props.entryStyle,
 			}
 		}
@@ -673,11 +686,12 @@ class MenuClass extends TrackedComponent<MenuProps> {
 								overflowX: 'hidden',
 								borderRightStyle: 'solid',
 						  }),
-					color: this.props.textColor || styles.colors.black,
-					background: this.props.color,
+					color: styles.colors.black,
 					borderWidth: 1,
 					borderColor: styles.colors.borderColor,
 					boxShadow: 'rgba(0, 0, 0, 0.075) 0px 0px 15px 2px',
+					background: styles.colors.white,
+					...this.props.style,
 				}}
 			>
 				{this.props.routes.map((entry, i) => {
@@ -692,10 +706,9 @@ class MenuClass extends TrackedComponent<MenuProps> {
 						opacity: isOpen ? (selectedRoute.includes('/' + entry.id) ? 1 : 0.5) : 0,
 						color:
 							isOpen && selectedRoute.includes('/' + entry.id)
-								? this.props.textColor || styles.colors.main
-								: this.props.textColor,
-						fontWeight:
-							isOpen && selectedRoute.includes('/' + entry.id) ? 'bold' : undefined,
+								? (this.props.style && this.props.style.color) || styles.colors.main
+								: 'inherit',
+						fontWeight: isOpen && selectedRoute.includes('/' + entry.id) ? 'bold' : 500,
 						...(this.props.horizontal
 							? {
 									transition: `opacity 500ms, margin-left 500ms`,
@@ -769,17 +782,13 @@ class MenuClass extends TrackedComponent<MenuProps> {
 															| number
 															| string)
 													: 10,
-											marginTop: selectedRoute.includes('/' + entry.id)
-												? '5px'
-												: '8px',
-											borderTop: selectedRoute.includes('/' + entry.id)
+											borderBottom: selectedRoute.includes('/' + entry.id)
 												? this.props.entryStyle &&
 												  this.props.entryStyle.selectedBorder
 													? (this.props.entryStyle
 															.selectedBorder as string)
 													: 'rgba(127,127,127,.5)' + ' solid 3px'
 												: undefined,
-											borderRadius: 8,
 									  }
 									: {
 											marginTop:
@@ -874,7 +883,7 @@ class MenuClass extends TrackedComponent<MenuProps> {
 											? ['fade', 'width']
 											: ['fade', 'height']
 									}
-									className={this.props.horizontal ? 'flex' : undefined}
+									className={this.props.horizontal ? 'flex items-end' : undefined}
 									controlled={selectedRoute.includes('/' + entry.id)}
 								>
 									{entry.subRoutes &&
@@ -894,50 +903,26 @@ class MenuClass extends TrackedComponent<MenuProps> {
 											>
 												<Link
 													{...css({
+														...entryStyle(entry),
 														backgroundColor:
 															isOpen &&
 															selectedRoute.includes(
 																'/' + entry.id + '/' + sub.id
 															) &&
 															'rgba(127,127,127,.05)',
-														':focus-visible': {
-															outline: 'none',
-															backgroundColor:
-																'rgba(127,127,127,.15)',
-														},
-														':hover': {
-															textDecoration: 'none',
-															backgroundColor:
-																'rgba(127,127,127,.15)',
-														},
-														':active': {
-															backgroundColor:
-																'rgba(127,127,127,.25)',
-														},
-														fontSize: fontSize,
-														padding: 0,
-														display: 'flex',
-														color:
-															this.props.textColor ||
-															styles.colors.black,
-														alignItems: 'center',
-														width: '100%',
-														justifyContent: 'flex-start',
 														...(this.props.horizontal
 															? {
-																	height: '100%',
-																	paddingRight: 12,
-																	paddingLeft: 12,
-																	marginTop:
+																	paddingTop: 3,
+																	paddingBottom:
 																		selectedRoute.includes(
 																			'/' +
 																				entry.id +
 																				'/' +
 																				sub.id
 																		)
-																			? '2px'
-																			: '5px',
-																	borderTop:
+																			? 0
+																			: 3,
+																	borderBottom:
 																		selectedRoute.includes(
 																			'/' +
 																				entry.id +
@@ -954,14 +939,10 @@ class MenuClass extends TrackedComponent<MenuProps> {
 																				: 'rgba(127,127,127,.5)' +
 																				  ' solid 3px'
 																			: undefined,
-																	borderTopLeftRadius: 8,
-																	borderTopRightRadius: 8,
 															  }
 															: {
 																	height: 35,
-																	paddingLeft: 12,
 															  }),
-														...this.props.entryStyle,
 														...(!this.props.horizontal &&
 															(this.props.entryStyle &&
 															this.props.entryStyle.heightSubRoute
@@ -1017,7 +998,7 @@ class MenuClass extends TrackedComponent<MenuProps> {
 																				sub.id
 																		)
 																			? 'bold'
-																			: undefined,
+																			: 500,
 																	...(this.props.horizontal
 																		? {
 																				transition: `opacity 500ms, margin-left 500ms`,

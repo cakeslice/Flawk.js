@@ -273,7 +273,7 @@ export default function Router(): React.ReactNode {
 								<Dashboard
 									wrapperComponent={DashboardWrapper}
 									path={'/dashboard/'}
-									color={styles.colors.white}
+									style={{ background: styles.colors.white }}
 									logo={logo}
 									routes={user ? routes : []}
 									// Redux props
@@ -389,7 +389,7 @@ class DashboardWrapper extends Component<{ title: string; children: Element }> {
 						style={{
 							display: 'flex',
 							justifyContent: 'center',
-							padding: desktop ? 40 : 20,
+							padding: desktop ? '5%' : '5%',
 							...(!desktop && { paddingTop: 40, paddingBottom: 40 }),
 							//
 							paddingTop: desktop ? 80 : 40,
@@ -398,7 +398,7 @@ class DashboardWrapper extends Component<{ title: string; children: Element }> {
 						<div
 							style={{
 								width: '100%',
-								maxWidth: 1200,
+								//maxWidth: 1200,
 								marginBottom: 160,
 							}}
 						>

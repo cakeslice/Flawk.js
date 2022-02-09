@@ -240,9 +240,8 @@ export default class ComponentsViewer extends Component {
 			<Dashboard
 				horizontal={this.state.horizontalDashboard}
 				horizontalHeight={50}
-				textColor={styles.colors.black}
 				path={'/components/'}
-				color={styles.colors.white}
+				style={{ color: styles.colors.black, background: styles.colors.white }}
 				logo={logo}
 				wrapperComponent={Wrapper}
 				routes={routes}
@@ -270,7 +269,7 @@ class Wrapper extends Component<{ children: React.ReactNode }> {
 						style={{
 							display: 'flex',
 							justifyContent: 'center',
-							padding: desktop ? 40 : 20,
+							padding: desktop ? '5%' : '5%',
 							...(!desktop && { paddingTop: 40, paddingBottom: 40 }),
 							//
 							paddingTop: desktop ? 80 : 40,
@@ -279,7 +278,7 @@ class Wrapper extends Component<{ children: React.ReactNode }> {
 						<div
 							style={{
 								width: '100%',
-								maxWidth: 1200,
+								//maxWidth: 1200,
 								marginBottom: 160,
 							}}
 						>

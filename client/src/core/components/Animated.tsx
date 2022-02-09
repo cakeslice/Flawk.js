@@ -122,8 +122,8 @@ export default class Animated extends TrackedComponent<Props> {
 					break
 				case 'right':
 					inAndOut = true
-					finalIn.y = 0
-					finalOut.y = props.distance || 50
+					finalIn.x = 0
+					finalOut.x = props.distance || 50
 					break
 				case 'up-scale':
 					keepMounted = false

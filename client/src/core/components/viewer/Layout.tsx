@@ -220,7 +220,7 @@ export default class Layout extends QueryParams<
 										></FInput>
 										<FInput
 											name='manual_search'
-											style={{ width: 210 }}
+											style={{ maxWidth: 210, width: '100%' }}
 											defaultValue={this.queryParams.search}
 											onChange={(e) => {
 												this.setQueryParams({
