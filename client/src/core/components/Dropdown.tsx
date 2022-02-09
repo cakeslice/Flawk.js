@@ -235,7 +235,7 @@ export default class Dropdown extends TrackedComponent<Props> {
 		}
 
 		styles.inputAppearances &&
-			styles.inputAppearances.forEach((b) => {
+			styles.inputAppearances().forEach((b) => {
 				if (this.props.appearance === b.name) {
 					// @ts-ignore
 					defaultContainerStyle = {

@@ -153,7 +153,7 @@ export default class FButton extends TrackedComponent<Props> {
 		const mainStyle: React.CSSProperties & GlamorProps & { loadingColor?: string } = {
 			fontSize: styles.defaultFontSize,
 			fontFamily: styles.font,
-			fontWeight: styles.buttonFontWeight || undefined,
+			fontWeight: styles.buttonFontWeight || 500,
 
 			letterSpacing: 0.4,
 
@@ -256,7 +256,7 @@ export default class FButton extends TrackedComponent<Props> {
 
 		let usageBackground = false
 		styles.buttonAppearances &&
-			styles.buttonAppearances.forEach((b) => {
+			styles.buttonAppearances().forEach((b) => {
 				if (
 					this.props.appearance === b.name ||
 					(this.props.appearance === undefined && b.name === 'default')

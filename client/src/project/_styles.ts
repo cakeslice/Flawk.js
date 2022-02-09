@@ -30,12 +30,12 @@ export default {
 	font: _font,
 	fontAlt: _fontAlt,
 
-	buttonAppearances: [
+	buttonAppearances: () => [
 		{
 			name: 'action',
 			usageBackground: 'rgba(30,30,30,1)',
 
-			color: 'black',
+			color: global.nightMode ? 'white' : 'black',
 			fontWeight: 'bold',
 			minWidth: 128,
 			borderColor: 'transparent',

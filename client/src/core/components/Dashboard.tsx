@@ -1035,7 +1035,7 @@ class MenuClass extends TrackedComponent<MenuProps> {
 																								.paddingLeftSubRoute as
 																								| string
 																								| number)
-																						: 40
+																						: 36
 																					: 20,
 																				transition: `opacity 500ms, margin-left 500ms, max-width 500ms`,
 																		  }),

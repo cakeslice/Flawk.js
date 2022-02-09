@@ -52,7 +52,7 @@ export default {
 	// @ts-ignore
 	invalidFontSize: 13,
 	// @ts-ignore
-	invalidFontWeight: 700,
+	invalidFontWeight: 500,
 	// @ts-ignore
 	inputFontWeight: undefined,
 	// @ts-ignore
@@ -300,76 +300,98 @@ export default {
 	//
 
 	// @ts-ignore
-	buttonAppearances: (config.projectStyles.buttonAppearances || []).concat([
-		{
-			name: 'delete',
-			transition: 'background 200ms, border-color 200ms, color 200ms',
-			color: _red,
-			':focus-visible': {
-				outline: 'none',
-				borderColor: _red,
-				boxShadow: '0 0 0 2px ' + config.replaceAlpha(_red, 0.1),
-			},
-			':hover': {
-				opacity: 1,
-				color: 'white',
-				background: config.replaceAlpha(_red, 0.5),
-				borderColor: _red,
-			},
-			':active': {
-				color: 'white',
-				borderColor: _red,
-				background: _red,
-			},
-		},
-		{
-			name: 'delete_primary',
-			color: 'white',
-			borderColor: _red,
-			background: _red,
+	buttonAppearances: () => {
+		const base: ({
+			name: string
+			usageBackground?: string
+		} & GlamorProps &
+			React.CSSProperties)[] =
+			// @ts-ignore
+			(config.projectStyles.buttonAppearances && config.projectStyles.buttonAppearances()) ||
+			[]
 
-			':focus-visible': {
-				outline: 'none',
-				background: config.replaceAlpha(_red, 0.5),
-				boxShadow: '0 0 0 2px ' + config.replaceAlpha(_red, 0.1),
+		return base.concat([
+			{
+				name: 'delete',
+				transition: 'background 200ms, border-color 200ms, color 200ms',
+				color: _red,
+				':focus-visible': {
+					outline: 'none',
+					borderColor: _red,
+					boxShadow: undefined,
+					background: config.replaceAlpha(_red, 0.5),
+					color: _white,
+				},
+				':hover': {
+					opacity: 1,
+					color: _white,
+					background: config.replaceAlpha(_red, 0.5),
+					boxShadow: '0 0 0 2px ' + config.replaceAlpha(_red, 0.1),
+					borderColor: _red,
+				},
+				':active': {
+					color: _white,
+					borderColor: _red,
+					background: _red,
+				},
 			},
-			':hover': {
-				opacity: 1,
-				background: config.replaceAlpha(_red, 0.5),
-			},
-			':active': {
+			{
+				name: 'delete_primary',
+				color: _white,
 				borderColor: _red,
 				background: _red,
+
+				':focus-visible': {
+					outline: 'none',
+					background: config.replaceAlpha(_red, 0.5),
+					boxShadow: undefined,
+					color: _white,
+					borderColor: _red,
+				},
+				':hover': {
+					opacity: 1,
+					background: config.replaceAlpha(_red, 0.5),
+					boxShadow: '0 0 0 2px ' + config.replaceAlpha(_red, 0.1),
+					color: _white,
+					borderColor: _red,
+				},
+				':active': {
+					borderColor: _red,
+					background: _red,
+					color: _white,
+					boxShadow: undefined,
+				},
 			},
-		},
-	]) as ({
-		name: string
-		usageBackground?: string
-	} & GlamorProps &
-		React.CSSProperties)[],
+		])
+	},
 	// @ts-ignore
-	inputAppearances: (config.projectStyles.inputAppearances || []).concat([
-		{
-			name: 'dark',
-			usageBackground: _black,
-			color: _white,
-			background: 'transparent',
-			'caret-color': config.replaceAlpha(_white, 0.5),
-			'::placeholder': {
-				color: config.replaceAlpha(_white, 0.5),
+	inputAppearances: () => {
+		const base: ({
+			name: string
+			usageBackground?: string
+		} & GlamorProps &
+			React.CSSProperties)[] =
+			// @ts-ignore
+			(config.projectStyles.inputAppearances && config.projectStyles.inputAppearances()) || []
+		return base.concat([
+			{
+				name: 'dark',
+				usageBackground: _black,
+				color: _white,
+				background: 'transparent',
+				caretColor: config.replaceAlpha(_white, 0.5),
+				'::placeholder': {
+					color: config.replaceAlpha(_white, 0.5),
+				},
+				':hover': {
+					borderColor: config.replaceAlpha(_white, 0.25),
+				},
+				':focus': {
+					borderColor: config.replaceAlpha(_white, 0.5),
+					boxShadow: '0 0 0 2px ' + config.replaceAlpha(_white, 0.25),
+				},
+				borderColor: _white,
 			},
-			':hover': {
-				borderColor: config.replaceAlpha(_white, 0.25),
-			},
-			':focus': {
-				borderColor: config.replaceAlpha(_white, 0.5),
-				boxShadow: '0 0 0 2px ' + config.replaceAlpha(_white, 0.25),
-			},
-			borderColor: _white,
-		},
-	]) as ({
-		name: string
-		usageBackground?: string
-	} & GlamorProps &
-		React.CSSProperties)[],
+		])
+	},
 }

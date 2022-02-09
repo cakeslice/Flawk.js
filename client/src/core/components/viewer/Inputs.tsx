@@ -41,27 +41,31 @@ export default class Inputs extends Component {
 		inputAppearance: 'default',
 	}
 
-	appearanceDropdown = () => (
-		<Dropdown
-			label='Appearance'
-			value={this.state.inputAppearance}
-			onChange={(e) => {
-				const appearance = _.find(styles.inputAppearances, { name: e })
-				this.setState({
-					inputAppearance: e,
-					usageBackground: appearance && appearance.usageBackground,
-				})
-			}}
-			options={[{ label: 'Default', value: 'default' }].concat(
-				styles.inputAppearances.map((e) => {
-					return {
-						label: config.capitalizeAll(e.name.replaceAll('_', ' ')),
-						value: e.name,
-					}
-				})
-			)}
-		></Dropdown>
-	)
+	appearanceDropdown = () => {
+		const appearances = styles.inputAppearances()
+
+		return (
+			<Dropdown
+				label='Appearance'
+				value={this.state.inputAppearance}
+				onChange={(e) => {
+					const appearance = _.find(appearances, { name: e })
+					this.setState({
+						inputAppearance: e,
+						usageBackground: appearance && appearance.usageBackground,
+					})
+				}}
+				options={[{ label: 'Default', value: 'default' }].concat(
+					appearances.map((e) => {
+						return {
+							label: config.capitalizeAll(e.name.replaceAll('_', ' ')),
+							value: e.name,
+						}
+					})
+				)}
+			></Dropdown>
+		)
+	}
 
 	render() {
 		const dropdownOptions = (function o() {

@@ -451,7 +451,7 @@ export default class Style extends Component<Props> {
 										>
 											Secondary
 										</FButton>
-										{styles.buttonAppearances.map((e) => (
+										{styles.buttonAppearances().map((e) => (
 											<FButton key={'button_' + e.name} appearance={e.name}>
 												{config.capitalizeAll(e.name.replaceAll('_', ' '))}
 											</FButton>
@@ -484,7 +484,7 @@ export default class Style extends Component<Props> {
 									label='Appearance'
 									value={this.state.buttonAppearance}
 									onChange={(e) => {
-										const appearance = _.find(styles.buttonAppearances, {
+										const appearance = _.find(styles.buttonAppearances(), {
 											name: e,
 										})
 										this.setState({
@@ -498,7 +498,7 @@ export default class Style extends Component<Props> {
 										{ label: 'Primary', value: 'primary' },
 										{ label: 'Secondary', value: 'secondary' },
 									].concat(
-										styles.buttonAppearances.map((e) => {
+										styles.buttonAppearances().map((e) => {
 											return {
 												label: config.capitalizeAll(
 													e.name.replaceAll('_', ' ')

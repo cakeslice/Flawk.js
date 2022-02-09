@@ -348,7 +348,7 @@ export default class FInput extends TrackedComponent<Props> {
 		}
 
 		styles.inputAppearances &&
-			styles.inputAppearances.forEach((b) => {
+			styles.inputAppearances().forEach((b) => {
 				if (this.props.appearance === b.name)
 					mainStyle = {
 						...mainStyle,

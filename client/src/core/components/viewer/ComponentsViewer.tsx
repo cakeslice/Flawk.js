@@ -239,7 +239,7 @@ export default class ComponentsViewer extends Component {
 		return (
 			<Dashboard
 				horizontal={this.state.horizontalDashboard}
-				horizontalHeight={60}
+				horizontalHeight={50}
 				textColor={styles.colors.black}
 				path={'/components/'}
 				color={styles.colors.white}
