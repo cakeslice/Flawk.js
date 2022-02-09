@@ -11,7 +11,7 @@ import MobileDrawer from 'core/components/MobileDrawer'
 import TrackedComponent from 'core/components/TrackedComponent'
 import config from 'core/config'
 import styles from 'core/styles'
-import { Obj } from 'flawk-types'
+import { GlamorProps, Obj } from 'flawk-types'
 import { css } from 'glamor'
 import React, { Suspense } from 'react'
 import MediaQuery from 'react-responsive'
@@ -327,6 +327,7 @@ export default class Dashboard extends TrackedComponent<
 															}}
 														>
 															<button
+																className='flex items-center'
 																type='button'
 																onClick={() =>
 																	global.routerHistory().push('/')
@@ -346,8 +347,8 @@ export default class Dashboard extends TrackedComponent<
 															>
 																<img
 																	style={{
-																		maxWidth: desktop ? 48 : 30,
-																		minWidth: desktop ? 48 : 30,
+																		maxHeight: 30,
+																		minHeight: 30,
 																		objectFit: 'contain',
 																		...this.props.logoStyle,
 																	}}
@@ -602,15 +603,17 @@ class MenuClass extends TrackedComponent<MenuProps> {
 	}
 
 	render() {
-		const iconSize = 25
+		const iconSize = 20
 		const fontSize = styles.defaultFontSize
 
 		const selectedRoute = this.props.location.pathname.toString()
 
-		const entryStyle = (entry: { id: string }) => {
+		const entryStyle = (entry: { id: string }): React.CSSProperties & GlamorProps => {
 			return {
 				userSelect: 'none',
-				backgroundColor: selectedRoute.includes('/' + entry.id) && 'rgba(127,127,127,.05)',
+				backgroundColor: selectedRoute.includes('/' + entry.id)
+					? 'rgba(127,127,127,.05)'
+					: undefined,
 				':focus-visible': {
 					outline: 'none',
 					backgroundColor: 'rgba(127,127,127,.15)',
@@ -629,10 +632,14 @@ class MenuClass extends TrackedComponent<MenuProps> {
 					? {
 							paddingLeft: 12,
 							paddingRight: 12,
+							paddingTop: 10,
+							paddingBottom: 10,
 							alignItems: 'center',
 							justifyContent: 'center',
 							height: '100%',
 							width: '100%',
+							borderTopLeftRadius: 8,
+							borderTopRightRadius: 8,
 					  }
 					: {
 							paddingLeft: 12,
@@ -719,7 +726,7 @@ class MenuClass extends TrackedComponent<MenuProps> {
 							style={
 								this.props.horizontal
 									? {
-											height: '100%',
+											alignSelf: 'flex-end',
 											marginLeft:
 												this.props.entryStyle &&
 												this.props.entryStyle.marginTop
@@ -727,9 +734,9 @@ class MenuClass extends TrackedComponent<MenuProps> {
 															| number
 															| string)
 													: 10,
-											paddingTop: selectedRoute.includes('/' + entry.id)
-												? '2px'
-												: '5px',
+											marginTop: selectedRoute.includes('/' + entry.id)
+												? '5px'
+												: '8px',
 											borderTop: selectedRoute.includes('/' + entry.id)
 												? this.props.entryStyle &&
 												  this.props.entryStyle.selectedBorder
@@ -737,6 +744,7 @@ class MenuClass extends TrackedComponent<MenuProps> {
 															.selectedBorder as string)
 													: 'rgba(127,127,127,.5)' + ' solid 3px'
 												: undefined,
+											borderRadius: 8,
 									  }
 									: {
 											marginTop:
@@ -789,7 +797,6 @@ class MenuClass extends TrackedComponent<MenuProps> {
 											style={{
 												display: 'flex',
 												alignItems: 'center',
-												width: iconSize,
 											}}
 										>
 											{selectedRoute.includes('/' + entry.id) ? (
@@ -847,7 +854,6 @@ class MenuClass extends TrackedComponent<MenuProps> {
 											style={{
 												display: 'flex',
 												alignItems: 'center',
-												width: iconSize,
 											}}
 										>
 											{selectedRoute.includes('/' + entry.id) ? (
@@ -884,7 +890,9 @@ class MenuClass extends TrackedComponent<MenuProps> {
 					if (entry.subRoutes)
 						return (
 							<div
-								className={this.props.horizontal ? 'flex h-full' : undefined}
+								className={
+									this.props.horizontal ? 'flex h-full items-center' : undefined
+								}
 								key={entry.id + (entry.params || '')}
 							>
 								{output}
@@ -897,7 +905,7 @@ class MenuClass extends TrackedComponent<MenuProps> {
 											? ['fade', 'width']
 											: ['fade', 'height']
 									}
-									className={this.props.horizontal ? 'flex' : undefined}
+									className={this.props.horizontal ? 'flex h-full' : undefined}
 									controlled={selectedRoute.includes('/' + entry.id)}
 								>
 									{entry.subRoutes &&
@@ -951,7 +959,7 @@ class MenuClass extends TrackedComponent<MenuProps> {
 																	height: '100%',
 																	paddingRight: 12,
 																	paddingLeft: 12,
-																	paddingTop:
+																	marginTop:
 																		selectedRoute.includes(
 																			'/' +
 																				entry.id +
@@ -977,6 +985,8 @@ class MenuClass extends TrackedComponent<MenuProps> {
 																				: 'rgba(127,127,127,.5)' +
 																				  ' solid 3px'
 																			: undefined,
+																	borderTopLeftRadius: 8,
+																	borderTopRightRadius: 8,
 															  }
 															: {
 																	height: 35,

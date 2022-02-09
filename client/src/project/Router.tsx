@@ -7,13 +7,14 @@
 
 import { useConstructor } from '@toolz/use-constructor'
 import { post } from 'core/api'
-import logo from 'core/assets/images/logo.svg'
+import flawk from 'core/assets/images/logo.svg'
 import Animated from 'core/components/Animated'
 import Avatar from 'core/components/Avatar'
 import { DashboardRoute, TabProps } from 'core/components/Dashboard'
 import RouterBase from 'core/components/RouterBase'
 import config from 'core/config'
 import styles from 'core/styles'
+import logo from 'project/assets/images/logo.svg'
 import React, { Component, useEffect } from 'react'
 import { Helmet } from 'react-helmet'
 import MediaQuery from 'react-responsive'
@@ -125,15 +126,15 @@ export default function Router(): React.ReactNode {
 		{
 			defaultRoute: true,
 			name: 'Overview',
-			icon: logo,
-			iconActive: logo,
+			icon: flawk,
+			iconActive: flawk,
 			id: 'overview',
 			notExact: true, // Support for routes inside the component
 		},
 		{
 			name: 'Notifications',
-			icon: logo,
-			iconActive: logo,
+			icon: flawk,
+			iconActive: flawk,
 			id: 'notifications',
 		},
 	]
@@ -146,8 +147,8 @@ export default function Router(): React.ReactNode {
 			},
 			{
 				name: 'Admin',
-				icon: logo,
-				iconActive: logo,
+				icon: flawk,
+				iconActive: flawk,
 				id: 'admin',
 			},
 		])
@@ -232,14 +233,14 @@ export default function Router(): React.ReactNode {
 		},
 		{
 			name: 'Settings',
-			customIcon: (active) => iconWrapper(settings),
+			customIcon: (active) => iconWrapper(settings, active),
 			id: 'settings',
 			page: Settings,
 		},
 		{
 			id: 'logout',
 			name: 'Logout',
-			customIcon: (active) => iconWrapper(logout),
+			customIcon: (active) => iconWrapper(logout, active, 21),
 			notRoute: true,
 			onClick: async () => {
 				const res = await post('client/logout', {})
@@ -448,14 +449,17 @@ const settings = (color: string) => {
 	)
 }
 
-const iconWrapper = (icon: (color: string) => React.ReactNode, iconSize?: number) => (
+const iconWrapper = (icon: (color: string) => React.ReactNode, active: boolean, size?: number) => (
 	<div
 		className='flex items-center justify-center'
 		style={{
-			opacity: 0.5,
-			width: iconSize ? iconSize * 0.85 : undefined,
+			width: 20,
+			height: 20,
+			opacity: active ? 1 : 0.5,
 		}}
 	>
-		{icon(styles.colors.black)}
+		<div className='flex items-center justify-center' style={{ width: size || 25 }}>
+			{icon(active ? styles.colors.main : styles.colors.black)}
+		</div>
 	</div>
 )

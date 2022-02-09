@@ -28,7 +28,8 @@ const iconWrapper = (icon: (color: string) => React.ReactNode, active: boolean, 
 	<div
 		className='flex items-center justify-center'
 		style={{
-			width: 25,
+			width: 20,
+			height: 20,
 			opacity: active ? 1 : 0.5,
 		}}
 	>
@@ -238,6 +239,7 @@ export default class ComponentsViewer extends Component {
 		return (
 			<Dashboard
 				horizontal={this.state.horizontalDashboard}
+				horizontalHeight={60}
 				textColor={styles.colors.black}
 				path={'/components/'}
 				color={styles.colors.white}

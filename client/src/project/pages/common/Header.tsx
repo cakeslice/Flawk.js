@@ -5,10 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import logo from 'core/assets/images/logo.svg'
 import Animated from 'core/components/Animated'
 import config from 'core/config'
 import styles from 'core/styles'
+import logo from 'project/assets/images/logo.svg'
 import React, { Component } from 'react'
 import MediaQuery from 'react-responsive'
 import { Link } from 'react-router-dom'
