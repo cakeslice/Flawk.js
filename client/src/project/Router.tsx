@@ -154,16 +154,16 @@ export default function Router(): React.ReactNode {
 		])
 	routes = routes.concat([
 		{
-			id: 'mobile_space',
-			notRoute: true,
-			tab: (props) => <div style={{ minHeight: '30%' }}></div>,
-			mobileTab: true,
-		},
-		{
 			id: 'space',
 			notRoute: true,
 			tab: (props) => <div style={{ flexGrow: 1 }} />,
 			desktopTab: true,
+		},
+		{
+			id: 'middle_mobile',
+			notRoute: true,
+			mobileTab: true,
+			tab: (props) => <div style={{ height: 40 }} />,
 		},
 		{
 			id: 'avatar',

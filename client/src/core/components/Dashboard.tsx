@@ -22,10 +22,16 @@ const mobileHeightTop = 65
 const desktopHeight = 55
 const desktopHeightTop = 65
 
-type EntryStyle = {
-	paddingLeftSubRoute: React.CSSProperties['paddingLeft']
-	heightSubRoute: React.CSSProperties['height']
-	selectedBorder: React.CSSProperties['border']
+type LinkStyle = React.CSSProperties & {
+	':selected'?: React.CSSProperties
+	subRoute?: React.CSSProperties &
+		GlamorProps & {
+			':selected'?: React.CSSProperties
+		}
+	icon?: React.CSSProperties &
+		GlamorProps & {
+			':selected'?: React.CSSProperties
+		}
 }
 
 export type TabProps = Obj & { toggleOpen?: (open?: boolean) => void; isOpen: boolean }
@@ -61,7 +67,7 @@ type DashboardProps = {
 	alwaysOpen?: boolean
 	closedWidth?: number
 	openWidth?: number
-	entryStyle?: React.CSSProperties & EntryStyle
+	linkStyle?: LinkStyle
 	dontFillSpace?: boolean
 	horizontal?: boolean
 	horizontalHeight?: number
@@ -70,7 +76,7 @@ type DashboardProps = {
 }
 export default class Dashboard extends TrackedComponent<
 	DashboardProps,
-	{ open: boolean; entryMaxWidth: number; showHeaderBackground: boolean }
+	{ open: boolean; linkMaxWidth: number; showHeaderBackground: boolean }
 > {
 	trackedName = 'Dashboard'
 	shouldComponentUpdate(nextProps: DashboardProps, nextState: typeof this.state) {
@@ -80,7 +86,7 @@ export default class Dashboard extends TrackedComponent<
 
 	state = {
 		open: false,
-		entryMaxWidth: this.props.closedWidth || 60,
+		linkMaxWidth: this.props.closedWidth || 60,
 		showHeaderBackground: false,
 	}
 
@@ -112,7 +118,7 @@ export default class Dashboard extends TrackedComponent<
 		const o = open !== undefined ? open : !this.state.open
 		this.setState({
 			open: o,
-			entryMaxWidth: o ? this.props.openWidth || 176 : this.props.closedWidth || 60,
+			linkMaxWidth: o ? this.props.openWidth || 176 : this.props.closedWidth || 60,
 		})
 	}
 
@@ -161,7 +167,7 @@ export default class Dashboard extends TrackedComponent<
 												width:
 													bigScreen || this.props.alwaysOpen
 														? openWidth
-														: this.state.entryMaxWidth,
+														: this.state.linkMaxWidth,
 												transition: 'width 500ms',
 												bottom: 0,
 										  }),
@@ -231,6 +237,10 @@ export default class Dashboard extends TrackedComponent<
 										this.props.style.color && {
 											color: this.props.style.color,
 										}),
+									...(this.props.style &&
+										this.props.style.opacity && {
+											opacity: this.props.style.opacity,
+										}),
 								}
 
 								return (
@@ -270,11 +280,11 @@ export default class Dashboard extends TrackedComponent<
 															this.state.open
 														}
 														isHover={this.state.open}
-														entryStyle={this.props.entryStyle}
-														entryMaxWidth={
+														linkStyle={this.props.linkStyle}
+														linkMaxWidth={
 															bigScreen || this.props.alwaysOpen
 																? openWidth
-																: this.state.entryMaxWidth
+																: this.state.linkMaxWidth
 														}
 														headerHeight={headerHeight}
 														desktop={desktop}
@@ -375,6 +385,7 @@ export default class Dashboard extends TrackedComponent<
 															<MobileDrawer
 																burgerStyle={mobileBurgerStyle}
 																menuStyle={mobileMenuStyle}
+																linkStyle={this.props.linkStyle}
 																headerHeight={
 																	this.state.showHeaderBackground
 																		? mobileHeight
@@ -579,8 +590,8 @@ type MenuProps = {
 	logo: string
 	isOpen: boolean
 	isHover: boolean
-	entryStyle?: React.CSSProperties & EntryStyle
-	entryMaxWidth: number
+	linkStyle?: LinkStyle
+	linkMaxWidth: number
 	headerHeight: number
 	horizontal?: boolean
 	toggleOpen: (open?: boolean) => void
@@ -618,54 +629,7 @@ class MenuClass extends TrackedComponent<MenuProps> {
 
 	render() {
 		const iconSize = 20
-		const fontSize = styles.defaultFontSize
-
 		const selectedRoute = this.props.location.pathname.toString()
-
-		const entryStyle = (entry: { id: string }): React.CSSProperties & GlamorProps => {
-			return {
-				userSelect: 'none',
-				backgroundColor: selectedRoute.includes('/' + entry.id)
-					? 'rgba(127,127,127,.05)'
-					: undefined,
-				fontSize: fontSize,
-				padding: 0,
-				display: 'flex',
-				alignItems: 'center',
-				color: 'inherit',
-				':focus-visible': {
-					outline: 'none',
-					backgroundColor: 'rgba(127,127,127,.15)',
-				},
-				':hover': {
-					textDecoration: 'none',
-					backgroundColor: 'rgba(127,127,127,.15)',
-				},
-				':active': {
-					backgroundColor: 'rgba(127,127,127,.25)',
-				},
-				...(this.props.horizontal
-					? {
-							paddingLeft: 12,
-							paddingRight: 12,
-							paddingTop: 10,
-							paddingBottom: selectedRoute.includes('/' + entry.id) ? 7 : 10,
-							justifyContent: 'center',
-							height: '100%',
-							width: '100%',
-							borderTopLeftRadius: 8,
-							borderTopRightRadius: 8,
-					  }
-					: {
-							paddingLeft: 12,
-							justifyContent: 'flex-start',
-							height: 40,
-							width: '100%',
-					  }),
-				...this.props.entryStyle,
-			}
-		}
-
 		const isOpen = this.props.horizontal ? true : this.props.isOpen
 
 		return (
@@ -694,21 +658,124 @@ class MenuClass extends TrackedComponent<MenuProps> {
 					...this.props.style,
 				}}
 			>
-				{this.props.routes.map((entry, i) => {
-					const hasIcon = entry.customIcon || entry.icon || entry.iconActive
+				{this.props.routes.map((link, i) => {
+					if (link.notRoute && link.tab)
+						return (
+							<div
+								key={link.id + (link.params || '')}
+								style={{ display: 'contents' }}
+							>
+								{link.tab({
+									...this.props.pageProps,
+									toggleOpen: this.props.toggleOpen,
+									isOpen: isOpen,
+								})}
+							</div>
+						)
+
+					const hasIcon = link.customIcon || link.icon || link.iconActive
+					const selected = selectedRoute.includes('/' + link.id)
+
+					let linkStyle: React.CSSProperties & GlamorProps = {
+						transition: 'opacity 500ms',
+						userSelect: 'none',
+						backgroundColor: undefined,
+						fontSize: styles.defaultFontSize,
+						padding: 0,
+						display: 'flex',
+						alignItems: 'center',
+						opacity: 0.5,
+						color: 'inherit',
+						fontWeight: 500,
+						':focus-visible': {
+							outline: 'none',
+							backgroundColor: 'rgba(127,127,127,.15)',
+						},
+						':hover': {
+							textDecoration: 'none',
+							backgroundColor: 'rgba(127,127,127,.15)',
+						},
+						':active': {
+							backgroundColor: 'rgba(127,127,127,.25)',
+						},
+						...(this.props.horizontal
+							? {
+									paddingLeft: 12,
+									paddingRight: 12,
+									paddingTop: 10,
+									paddingBottom: 10,
+									justifyContent: 'center',
+									height: '100%',
+									width: '100%',
+									borderTopLeftRadius: 8,
+									borderTopRightRadius: 8,
+									marginLeft: 10,
+							  }
+							: {
+									paddingLeft: 19,
+									justifyContent: 'flex-start',
+									height: 40,
+									width: '100%',
+									marginTop: 10,
+									marginBottom: 10,
+							  }),
+						...this.props.linkStyle,
+					}
+					if (selected)
+						linkStyle = {
+							...linkStyle,
+							opacity: 1,
+							color: styles.colors.main,
+							backgroundColor: 'rgba(127,127,127,.05)',
+							fontWeight: 'bold',
+							...(this.props.horizontal
+								? {
+										paddingBottom: 7,
+										borderBottom: 'rgba(127,127,127,.5)' + ' solid 3px',
+								  }
+								: {
+										borderLeft: 'rgba(127,127,127,.5)' + ' solid 3px',
+										paddingLeft: 16,
+								  }),
+							...(this.props.linkStyle && this.props.linkStyle[':selected']),
+						}
+
+					let imgStyle: React.CSSProperties & GlamorProps = {
+						width: iconSize,
+						height: iconSize,
+						...(selected && {
+							filter: 'grayscale(100%)',
+						}),
+						...(this.props.linkStyle && this.props.linkStyle.icon),
+					}
+					if (selected)
+						imgStyle = {
+							...imgStyle,
+							...(this.props.linkStyle &&
+								this.props.linkStyle.icon &&
+								this.props.linkStyle.icon[':selected']),
+						}
+					const icon = link.customIcon ? (
+						<div>{link.customIcon(selected)}</div>
+					) : link.iconActive || link.icon ? (
+						<div
+							style={{
+								display: 'flex',
+								alignItems: 'center',
+							}}
+						>
+							<img
+								src={selected ? link.iconActive || link.icon : link.icon}
+								{...css(imgStyle)}
+							></img>
+						</div>
+					) : (
+						<div />
+					)
 
 					const textStyle: React.CSSProperties = {
 						whiteSpace: 'nowrap',
-						fontSize:
-							this.props.entryStyle && this.props.entryStyle.fontSize
-								? (this.props.entryStyle.fontSize as string | number)
-								: fontSize,
-						opacity: isOpen ? (selectedRoute.includes('/' + entry.id) ? 1 : 0.5) : 0,
-						color:
-							isOpen && selectedRoute.includes('/' + entry.id)
-								? (this.props.style && this.props.style.color) || styles.colors.main
-								: 'inherit',
-						fontWeight: isOpen && selectedRoute.includes('/' + entry.id) ? 'bold' : 500,
+						...(!isOpen && { opacity: 0 }),
 						...(this.props.horizontal
 							? {
 									transition: `opacity 500ms, margin-left 500ms`,
@@ -721,157 +788,68 @@ class MenuClass extends TrackedComponent<MenuProps> {
 							  }),
 					}
 
-					if (entry.notRoute && entry.tab)
-						return (
-							<div
-								key={entry.id + (entry.params || '')}
-								style={{ display: 'contents' }}
-							>
-								{entry.tab({
-									...this.props.pageProps,
-									toggleOpen: this.props.toggleOpen,
-									isOpen: isOpen,
-								})}
-							</div>
-						)
-
-					const icon = entry.customIcon ? (
-						<div>{entry.customIcon(selectedRoute.includes('/' + entry.id))}</div>
-					) : entry.iconActive || entry.icon ? (
-						<div
-							style={{
-								display: 'flex',
-								alignItems: 'center',
-							}}
-						>
-							{selectedRoute.includes('/' + entry.id) ? (
-								<img
-									src={entry.iconActive || entry.icon}
-									style={{
-										height: iconSize,
-										width: iconSize,
-									}}
-								></img>
-							) : (
-								<img
-									src={entry.icon}
-									style={{
-										opacity: 0.5,
-										filter: 'grayscale(100%)',
-										width: iconSize,
-										height: iconSize,
-									}}
-								></img>
-							)}
-						</div>
-					) : (
-						<div />
-					)
-
 					const output = (
 						<div
-							key={entry.id + (entry.params || '')}
-							style={
-								this.props.horizontal
-									? {
-											alignSelf: 'flex-end',
-											marginLeft:
-												this.props.entryStyle &&
-												this.props.entryStyle.marginTop
-													? (this.props.entryStyle.marginTop as
-															| number
-															| string)
-													: 10,
-											borderBottom: selectedRoute.includes('/' + entry.id)
-												? this.props.entryStyle &&
-												  this.props.entryStyle.selectedBorder
-													? (this.props.entryStyle
-															.selectedBorder as string)
-													: 'rgba(127,127,127,.5)' + ' solid 3px'
-												: undefined,
-									  }
-									: {
-											marginTop:
-												this.props.entryStyle &&
-												this.props.entryStyle.marginTop
-													? (this.props.entryStyle.marginTop as
-															| number
-															| string)
-													: 10,
-											marginBottom:
-												this.props.entryStyle &&
-												this.props.entryStyle.marginBottom
-													? (this.props.entryStyle.marginBottom as
-															| number
-															| string)
-													: 10,
-											paddingLeft: selectedRoute.includes('/' + entry.id)
-												? '2px'
-												: '5px',
-											borderLeft: selectedRoute.includes('/' + entry.id)
-												? this.props.entryStyle &&
-												  this.props.entryStyle.selectedBorder
-													? (this.props.entryStyle
-															.selectedBorder as string)
-													: 'rgba(127,127,127,.5)' + ' solid 3px'
-												: undefined,
-									  }
-							}
+							className={this.props.horizontal ? 'flex h-full items-end' : undefined}
+							key={link.id + (link.params || '')}
 						>
-							{entry.notRoute ? (
+							{link.notRoute ? (
 								<a
-									{...css(entryStyle(entry))}
+									{...css(linkStyle)}
 									onClick={() => {
-										if (entry.onClick) {
-											entry.onClick()
+										if (link.onClick) {
+											link.onClick()
 										}
-										if (!entry.subRoutes || entry.subRoutes.length === 0)
+										if (!link.subRoutes || link.subRoutes.length === 0)
 											this.props.toggleOpen(false)
 										else this.props.toggleOpen(true)
 									}}
 								>
 									{icon}
 									<div>
-										{entry.name && (
-											<p style={textStyle}>{config.localize(entry.name)}</p>
+										{link.name && (
+											<div style={textStyle}>
+												{config.localize(link.name)}
+											</div>
 										)}
 									</div>
 								</a>
 							) : (
 								<Link
-									{...css(entryStyle(entry))}
+									{...css(linkStyle)}
 									onClick={() => {
-										if (entry.onClick) {
-											entry.onClick()
+										if (link.onClick) {
+											link.onClick()
 										}
-										if (!entry.subRoutes || entry.subRoutes.length === 0)
+										if (!link.subRoutes || link.subRoutes.length === 0)
 											this.props.toggleOpen(false)
 										else this.props.toggleOpen(true)
 									}}
 									to={
 										this.props.path +
-										entry.id +
-										(entry.subRoutes ? '/' + entry.subRoutes[0].id : '')
+										link.id +
+										(link.subRoutes ? '/' + link.subRoutes[0].id : '')
 									}
 								>
 									{icon}
 									<div>
-										{entry.name && (
-											<p style={textStyle}>{config.localize(entry.name)}</p>
+										{link.name && (
+											<div style={textStyle}>
+												{config.localize(link.name)}
+											</div>
 										)}
 									</div>
 								</Link>
 							)}
 						</div>
 					)
-
-					if (entry.subRoutes)
+					if (link.subRoutes)
 						return (
 							<div
 								className={
 									this.props.horizontal ? 'flex h-full items-end' : undefined
 								}
-								key={entry.id + (entry.params || '')}
+								key={link.id + (link.params || '')}
 							>
 								{output}
 								<Animated
@@ -884,151 +862,107 @@ class MenuClass extends TrackedComponent<MenuProps> {
 											: ['fade', 'height']
 									}
 									className={this.props.horizontal ? 'flex items-end' : undefined}
-									controlled={selectedRoute.includes('/' + entry.id)}
+									controlled={selected}
 								>
-									{entry.subRoutes &&
-										entry.subRoutes.map((sub, i) => (
-											<div
-												className={
-													this.props.horizontal ? 'h-full' : undefined
-												}
-												style={
-													this.props.horizontal
+									{link.subRoutes &&
+										link.subRoutes.map((sub, i) => {
+											const selectedSub = selectedRoute.includes(
+												'/' + link.id + '/' + sub.id
+											)
+
+											let linkStyleSub: React.CSSProperties & GlamorProps = {
+												...linkStyle,
+												backgroundColor: undefined,
+												opacity: 0.5,
+												color: styles.colors.black,
+												fontSize:
+													(linkStyle.fontSize &&
+														(linkStyle.fontSize as number) - 1) ||
+													styles.defaultFontSize - 1,
+												fontWeight: 500,
+												...(this.props.horizontal
+													? {
+															width: 'auto',
+															marginLeft: 3,
+															paddingTop: 3,
+															paddingBottom: 3,
+															borderBottom: undefined,
+													  }
+													: {
+															height: 35,
+															paddingLeft: 46,
+															borderLeft: undefined,
+													  }),
+												...(this.props.linkStyle &&
+													this.props.linkStyle.subRoute),
+											}
+											if (selectedSub)
+												linkStyleSub = {
+													...linkStyleSub,
+													opacity: 1,
+													backgroundColor: 'rgba(127,127,127,.05)',
+													fontWeight: 'bold',
+													...(this.props.horizontal
 														? {
-																marginLeft: 5,
+																paddingBottom: 0,
+																borderBottom:
+																	'rgba(127,127,127,.5)' +
+																	' solid 3px',
 														  }
-														: {}
+														: {
+																borderLeft:
+																	'rgba(127,127,127,.5)' +
+																	' solid 3px',
+														  }),
+													...(this.props.linkStyle &&
+														this.props.linkStyle.subRoute &&
+														this.props.linkStyle.subRoute[':selected']),
 												}
-												key={entry.id + '/' + sub.id + (sub.params || '')}
-											>
-												<Link
-													{...css({
-														...entryStyle(entry),
-														backgroundColor:
-															isOpen &&
-															selectedRoute.includes(
-																'/' + entry.id + '/' + sub.id
-															) &&
-															'rgba(127,127,127,.05)',
-														...(this.props.horizontal
-															? {
-																	paddingTop: 3,
-																	paddingBottom:
-																		selectedRoute.includes(
-																			'/' +
-																				entry.id +
-																				'/' +
-																				sub.id
-																		)
-																			? 0
-																			: 3,
-																	borderBottom:
-																		selectedRoute.includes(
-																			'/' +
-																				entry.id +
-																				'/' +
-																				sub.id
-																		)
-																			? this.props
-																					.entryStyle &&
-																			  this.props.entryStyle
-																					.selectedBorder
-																				? (this.props
-																						.entryStyle
-																						.selectedBorder as string)
-																				: 'rgba(127,127,127,.5)' +
-																				  ' solid 3px'
-																			: undefined,
-															  }
-															: {
-																	height: 35,
-															  }),
-														...(!this.props.horizontal &&
-															(this.props.entryStyle &&
-															this.props.entryStyle.heightSubRoute
-																? {
-																		height: this.props
-																			.entryStyle
-																			.heightSubRoute,
-																  }
-																: { height: 35 })),
-													})}
-													onClick={() => {
-														if (sub.onClick) {
-															sub.onClick()
-														}
-														this.props.toggleOpen(false)
-													}}
-													to={
-														sub.notRoute
-															? ''
-															: this.props.path +
-															  entry.id +
-															  '/' +
-															  sub.id
+
+											if (!isOpen)
+												linkStyleSub = { ...linkStyleSub, opacity: 0 }
+
+											return (
+												<div
+													className={
+														this.props.horizontal ? 'h-full' : undefined
+													}
+													key={
+														link.id + '/' + sub.id + (sub.params || '')
 													}
 												>
-													<div>
-														{sub.name && (
-															<p
-																style={{
-																	whiteSpace: 'nowrap',
-																	fontSize:
-																		(this.props.entryStyle &&
-																			(this.props.entryStyle
-																				.fontSize as number) -
-																				1) ||
-																		fontSize - 1,
-																	opacity: isOpen
-																		? selectedRoute.includes(
-																				'/' +
-																					entry.id +
-																					'/' +
-																					sub.id
-																		  )
-																			? 1
-																			: 0.5
-																		: 0,
-																	fontWeight:
-																		isOpen &&
-																		selectedRoute.includes(
-																			'/' +
-																				entry.id +
-																				'/' +
-																				sub.id
-																		)
-																			? 'bold'
-																			: 500,
-																	...(this.props.horizontal
-																		? {
-																				transition: `opacity 500ms, margin-left 500ms`,
-																		  }
-																		: {
-																				marginLeft: isOpen
-																					? this.props
-																							.entryStyle &&
-																					  this.props
-																							.entryStyle
-																							.paddingLeftSubRoute
-																						? (this
-																								.props
-																								.entryStyle
-																								.paddingLeftSubRoute as
-																								| string
-																								| number)
-																						: 36
-																					: 20,
-																				transition: `opacity 500ms, margin-left 500ms, max-width 500ms`,
-																		  }),
-																}}
-															>
-																{config.localize(sub.name)}
-															</p>
-														)}
-													</div>
-												</Link>
-											</div>
-										))}
+													<Link
+														{...css(linkStyleSub)}
+														onClick={() => {
+															if (sub.onClick) {
+																sub.onClick()
+															}
+															this.props.toggleOpen(false)
+														}}
+														to={
+															sub.notRoute
+																? ''
+																: this.props.path +
+																  link.id +
+																  '/' +
+																  sub.id
+														}
+													>
+														<div>
+															{sub.name && (
+																<div
+																	style={{
+																		whiteSpace: 'nowrap',
+																	}}
+																>
+																	{config.localize(sub.name)}
+																</div>
+															)}
+														</div>
+													</Link>
+												</div>
+											)
+										})}
 								</Animated>
 							</div>
 						)

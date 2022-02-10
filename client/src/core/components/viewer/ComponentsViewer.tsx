@@ -30,7 +30,6 @@ const iconWrapper = (icon: (color: string) => React.ReactNode, active: boolean, 
 		style={{
 			width: 20,
 			height: 20,
-			opacity: active ? 1 : 0.5,
 		}}
 	>
 		<div className='flex items-center justify-center' style={{ width: size || 25 }}>
@@ -159,12 +158,6 @@ export default class ComponentsViewer extends Component {
 				],
 			},
 			{
-				id: 'mobile_space',
-				notRoute: true,
-				tab: (props) => <div style={{ minHeight: '30%' }}></div>,
-				mobileTab: true,
-			},
-			{
 				id: 'desktop_space',
 				notRoute: true,
 				tab: (props) => <div style={{ flexGrow: 1, minHeight: 20 }} />,
@@ -172,6 +165,7 @@ export default class ComponentsViewer extends Component {
 			},
 			{
 				id: 'line',
+				desktopTab: true,
 				notRoute: true,
 				tab: (props) => (
 					<div
@@ -187,7 +181,14 @@ export default class ComponentsViewer extends Component {
 			{
 				id: 'middle',
 				notRoute: true,
+				desktopTab: true,
 				tab: (props) => <div style={{ height: 20 }} />,
+			},
+			{
+				id: 'middle_mobile',
+				notRoute: true,
+				mobileTab: true,
+				tab: (props) => <div style={{ height: 40 }} />,
 			},
 			{
 				name: (!global.nightMode ? 'Dark' : 'Light') + ' mode',
@@ -198,12 +199,13 @@ export default class ComponentsViewer extends Component {
 						{...css({
 							width: 25,
 							padding: 0,
-							opacity: 0.75,
 						})}
 					>
 						<img
 							style={{
 								maxHeight: 30,
+								position: 'relative',
+								left: -2,
 							}}
 							src={global.nightMode ? lightOff : lightOn}
 						></img>
@@ -233,6 +235,7 @@ export default class ComponentsViewer extends Component {
 			routes.push({
 				id: 'bottom',
 				notRoute: true,
+				desktopTab: true,
 				tab: (props) => <div style={{ height: 40 }} />,
 			})
 
@@ -241,7 +244,11 @@ export default class ComponentsViewer extends Component {
 				horizontal={this.state.horizontalDashboard}
 				horizontalHeight={50}
 				path={'/components/'}
-				style={{ color: styles.colors.black, background: styles.colors.white }}
+				style={{ background: styles.colors.white }}
+				linkStyle={{
+					...(this.state.horizontalDashboard && { height: 40 }),
+					':selected': { color: styles.colors.black },
+				}}
 				logo={logo}
 				wrapperComponent={Wrapper}
 				routes={routes}
