@@ -20,7 +20,7 @@ import { DashboardProps } from 'project-types'
 import React, { Component } from 'react'
 import MediaQuery from 'react-responsive'
 
-class Settings extends Component<DashboardProps> {
+export default class Settings extends Component<DashboardProps> {
 	state = {}
 
 	render() {
@@ -219,4 +219,3 @@ class Settings extends Component<DashboardProps> {
 		)
 	}
 }
-export default Settings

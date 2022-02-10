@@ -279,6 +279,7 @@ button {
 	font-size: inherit;
 	font-family: inherit;
 	background: none;
+	transition: opacity 200ms;
 }
 button:disabled {
 	cursor: default;
@@ -440,6 +441,12 @@ kbd {
 }
 .wrapMarginBig > * {
 	margin: 20px;
+}
+.wrapMarginTopRight {
+	max-width: 100%;
+}
+.wrapMarginTopRight > * {
+	margin: 0px 0px 10px 10px;
 }
 .wrapMarginTopLeft {
 	max-width: 100%;

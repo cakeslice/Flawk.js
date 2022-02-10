@@ -10,7 +10,7 @@ import { post } from 'core/api'
 import flawk from 'core/assets/images/logo.svg'
 import Animated from 'core/components/Animated'
 import Avatar from 'core/components/Avatar'
-import { DashboardRoute, TabProps } from 'core/components/Dashboard'
+import { DashboardRoute, DashboardWrapperProps, TabProps } from 'core/components/Dashboard'
 import RouterBase from 'core/components/RouterBase'
 import config from 'core/config'
 import styles from 'core/styles'
@@ -380,7 +380,7 @@ class PublicWrapper extends Component<{ auth?: boolean; desktop: boolean }> {
 		)
 	}
 }
-class DashboardWrapper extends Component<{ title: string; children: Element }> {
+class DashboardWrapper extends Component<DashboardWrapperProps> {
 	render() {
 		return (
 			<MediaQuery minWidth={config.mobileWidthTrigger}>
@@ -402,11 +402,16 @@ class DashboardWrapper extends Component<{ title: string; children: Element }> {
 								marginBottom: 160,
 							}}
 						>
-							<div>
-								<h3>{this.props.title}</h3>
-								<sp />
-								<sp />
-							</div>
+							{!this.props.overrideHeader && (
+								<div style={styles.dashboardHeader}>
+									<h3>
+										{this.props.parentTitle
+											? this.props.parentTitle + ': '
+											: ''}
+										{this.props.title}
+									</h3>
+								</div>
+							)}
 							{this.props.children}
 						</div>
 					</div>

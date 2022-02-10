@@ -274,6 +274,11 @@ export default class FButton extends TrackedComponent<Props> {
 							// @ts-ignore
 							...b[':focus-visible'],
 						},
+						':active': {
+							...finalStyle[':active'],
+							// @ts-ignore
+							...b[':active'],
+						},
 					}
 					usageBackground = b.usageBackground ? true : false
 				}
@@ -292,6 +297,11 @@ export default class FButton extends TrackedComponent<Props> {
 				...finalStyle[':focus-visible'],
 				// @ts-ignore
 				...(this.props.style && this.props.style[':focus-visible']),
+			},
+			':active': {
+				...finalStyle[':active'],
+				// @ts-ignore
+				...(this.props.style && this.props.style[':active']),
 			},
 		}
 

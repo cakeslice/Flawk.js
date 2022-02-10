@@ -7,7 +7,7 @@
 
 import { clearAllBodyScrollLocks, enableBodyScroll } from 'body-scroll-lock'
 import Animated from 'core/components/Animated'
-import { DashboardRoute } from 'core/components/Dashboard'
+import { DashboardRoute, LinkStyle } from 'core/components/Dashboard'
 import TrackedComponent from 'core/components/TrackedComponent'
 import config from 'core/config'
 import styles from 'core/styles'
@@ -17,18 +17,6 @@ import React from 'react'
 import FocusLock from 'react-focus-lock'
 import { Portal } from 'react-portal'
 import { Link, RouteComponentProps, withRouter } from 'react-router-dom'
-
-type LinkStyle = React.CSSProperties & {
-	':selected'?: React.CSSProperties
-	subRoute?: React.CSSProperties &
-		GlamorProps & {
-			':selected'?: React.CSSProperties
-		}
-	icon?: React.CSSProperties &
-		GlamorProps & {
-			':selected'?: React.CSSProperties
-		}
-}
 
 type Props = {
 	className?: string
@@ -151,7 +139,7 @@ class MobileDrawer extends TrackedComponent<Props> {
 							let imgStyle: React.CSSProperties & GlamorProps = {
 								width: iconSize,
 								height: iconSize,
-								...(selected && {
+								...(!selected && {
 									filter: 'grayscale(100%)',
 								}),
 								...(this.props.linkStyle && this.props.linkStyle.icon),
@@ -183,6 +171,7 @@ class MobileDrawer extends TrackedComponent<Props> {
 
 							const textStyle: React.CSSProperties = {
 								marginLeft: hasIcon ? 10 : 0,
+								whiteSpace: 'nowrap',
 							}
 
 							const output = (
@@ -213,8 +202,12 @@ class MobileDrawer extends TrackedComponent<Props> {
 											}
 										>
 											{icon}
-											<div style={textStyle}>
-												{link.name ? config.localize(link.name) : ''}
+											<div>
+												{!link.justIcon && link.name && (
+													<div style={textStyle}>
+														{config.localize(link.name)}
+													</div>
+												)}
 											</div>
 										</Link>
 									) : (
@@ -231,9 +224,11 @@ class MobileDrawer extends TrackedComponent<Props> {
 											}}
 										>
 											{icon}
-											<div style={textStyle}>
-												{link.name ? config.localize(link.name) : ''}
-											</div>
+											{!link.justIcon && link.name && (
+												<div style={textStyle}>
+													{config.localize(link.name)}
+												</div>
+											)}
 										</a>
 									)}
 
@@ -321,14 +316,20 @@ class MobileDrawer extends TrackedComponent<Props> {
 																		: link.id + '/' + sub.id
 																}
 															>
-																<div
-																	style={{
-																		marginLeft: 20,
-																	}}
-																>
-																	{sub.name
-																		? config.localize(sub.name)
-																		: ''}
+																<div>
+																	{sub.name && !link.justIcon && (
+																		<div
+																			style={{
+																				marginLeft: 20,
+																				whiteSpace:
+																					'nowrap',
+																			}}
+																		>
+																			{config.localize(
+																				sub.name
+																			)}
+																		</div>
+																	)}
 																</div>
 															</Link>
 														</div>

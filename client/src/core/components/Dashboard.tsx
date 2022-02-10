@@ -22,7 +22,14 @@ const mobileHeightTop = 65
 const desktopHeight = 55
 const desktopHeightTop = 65
 
-type LinkStyle = React.CSSProperties & {
+export type DashboardWrapperProps = {
+	overrideHeader: boolean
+	title: string
+	children: Element
+	parentTitle: string
+}
+
+export type LinkStyle = React.CSSProperties & {
 	':selected'?: React.CSSProperties
 	subRoute?: React.CSSProperties &
 		GlamorProps & {
@@ -40,6 +47,7 @@ export type DashboardRoute = {
 	id: string
 	params?: string
 	name?: string
+	justIcon?: boolean
 	icon?: string
 	iconActive?: string
 	customIcon?: (active: boolean) => React.ReactNode
@@ -743,7 +751,7 @@ class MenuClass extends TrackedComponent<MenuProps> {
 					let imgStyle: React.CSSProperties & GlamorProps = {
 						width: iconSize,
 						height: iconSize,
-						...(selected && {
+						...(!selected && {
 							filter: 'grayscale(100%)',
 						}),
 						...(this.props.linkStyle && this.props.linkStyle.icon),
@@ -807,7 +815,7 @@ class MenuClass extends TrackedComponent<MenuProps> {
 								>
 									{icon}
 									<div>
-										{link.name && (
+										{link.name && !link.justIcon && (
 											<div style={textStyle}>
 												{config.localize(link.name)}
 											</div>
@@ -833,7 +841,7 @@ class MenuClass extends TrackedComponent<MenuProps> {
 								>
 									{icon}
 									<div>
-										{link.name && (
+										{link.name && !link.justIcon && (
 											<div style={textStyle}>
 												{config.localize(link.name)}
 											</div>
@@ -949,7 +957,7 @@ class MenuClass extends TrackedComponent<MenuProps> {
 														}
 													>
 														<div>
-															{sub.name && (
+															{sub.name && !link.justIcon && (
 																<div
 																	style={{
 																		whiteSpace: 'nowrap',

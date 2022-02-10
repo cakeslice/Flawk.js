@@ -14,7 +14,7 @@ const _backgroundNight = 'rgba(35, 35, 35,1)'
 
 const _main = 'rgba(51,108,251, 1)'
 const _mainLight = 'rgba(51,108,251, .85)'
-const _mainVeryLight = 'rgba(51,108,251, .25)'
+const _mainVeryLight = 'rgba(51,108,251, .15)'
 
 /* const _card = {
 	borderStyle: 'solid',
@@ -35,7 +35,7 @@ export default {
 			name: 'action',
 			usageBackground: 'rgba(30,30,30,1)',
 
-			color: global.nightMode ? 'white' : 'black',
+			color: 'white',
 			fontWeight: 'bold',
 			minWidth: 128,
 			borderColor: 'transparent',
@@ -56,8 +56,9 @@ export default {
 				filter: 'drop-shadow(0px 0px 20px rgba(250, 40, 116, 0.71))',
 			},
 			':active': {
-				color: 'black',
-				borderColor: 'white',
+				color: 'white',
+				borderColor: 'transparent',
+				background: 'linear-gradient(90deg, #FB28B0 0%, #FC263C 100%)',
 				filter: 'drop-shadow(0px 0px 20px rgba(250, 40, 116, 0))',
 			},
 			background: 'linear-gradient(90deg, #FB28B0 0%, #FC263C 100%)',

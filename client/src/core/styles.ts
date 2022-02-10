@@ -23,7 +23,7 @@ const _white = 'rgba(255,255,255, 1)'
 
 const _main = 'rgba(51,108,251, 1)'
 const _mainLight = 'rgba(51,108,251, .85)'
-const _mainVeryLight = 'rgba(51,108,251, .25)'
+const _mainVeryLight = 'rgba(51,108,251, .15)'
 
 const _green = 'rgba(40,201,134, 1)'
 const _red = 'rgba(250,61,91,1)'
@@ -151,6 +151,10 @@ export default {
 
 	// @ts-ignore
 	tooltip: undefined as React.CSSProperties | undefined,
+
+	// Dashboard Config
+	// @ts-ignore
+	dashboardHeader: { marginBottom: 30, minHeight: 32 } as React.CSSProperties,
 
 	// Cards
 
@@ -285,6 +289,7 @@ export default {
 
 	fakeButton: {
 		cursor: 'pointer',
+		transition: 'opacity 200ms',
 		':focus-visible': {
 			opacity: 0.75,
 		},
