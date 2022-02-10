@@ -9,7 +9,9 @@ import { Request } from 'express'
 import { KeyObject, Obj } from 'flawk-types'
 import moment from 'moment'
 import _projectText from 'project/text'
-import _projectConfig from 'project/_config'
+import projectOverrides, { projectConfig as pC } from 'project/_config'
+
+export const projectConfig = pC
 
 ///////////////////////
 
@@ -39,7 +41,39 @@ const _frontendURL = process.env.frontendURL || ''
 
 //
 
-export default {
+const publicConfig: Config = {
+	mobileAppOrigins: true,
+	websocketSupport: true,
+
+	//
+
+	emailFrom: process.env.nodemailerUser || 'jose@cakeslice.dev',
+	replyTo: undefined, // ! Don't use "noreply" e-mails, bad for delivery!
+	adminEmails: [
+		{
+			email: 'jose@cakeslice.dev',
+		},
+	],
+	developerEmail: 'jose@cakeslice.dev',
+
+	routes: [],
+	publicRoutes: [],
+	rateLimitedCalls: [],
+	extremeRateLimitedCalls: [],
+	allowedOrigins: [],
+	path: '/backend',
+
+	//
+
+	permissions: {
+		user: 100,
+		admin: 10,
+		superAdmin: 1,
+	},
+}
+const config: Config & InternalConfig = {
+	...publicConfig,
+
 	port: _port,
 	responseTimeAlert: _responseTimeAlert,
 	appName: _appName,
@@ -52,13 +86,6 @@ export default {
 	cookieSettings: _cookieSettings,
 	tokenDays: _tokenDays,
 
-	// @ts-ignore
-	permissions: {
-		user: 100,
-		admin: 10,
-		superAdmin: 1,
-	},
-
 	//
 
 	jwtSecret: process.env.jwtSecret || '',
@@ -67,7 +94,7 @@ export default {
 
 	//
 
-	databaseURL: process.env.JEST !== 'true' && process.env.databaseURL,
+	databaseURL: process.env.JEST !== 'true' ? process.env.databaseURL : undefined,
 
 	//
 
@@ -143,5 +170,100 @@ export default {
 		return output
 	},
 
-	..._projectConfig,
+	...projectOverrides,
+}
+export default config
+
+type InternalConfig = {
+	port: typeof _port
+	responseTimeAlert: typeof _responseTimeAlert
+	appName: typeof _appName
+	prod: typeof _prod
+	jest: typeof _jest
+	staging: typeof _staging
+	frontendURL: typeof _frontendURL
+	maxTokens: typeof _maxTokens
+	debugSockets: typeof _debugSockets
+	cookieSettings: typeof _cookieSettings
+	tokenDays: typeof _tokenDays
+
+	//
+
+	jwtSecret: string
+	adminPassword: string | undefined
+	saltRounds: number
+
+	//
+
+	databaseURL: string | undefined
+
+	//
+
+	recaptchaSecretKey: string | undefined
+	recaptchaBypass: string | undefined
+	verificationCodeBypass: string | undefined
+
+	//
+
+	uploadFileLimit: number
+
+	bucketAccessID: string | undefined
+	bucketAccessSecret: string | undefined
+	bucketEndpoint: string | undefined
+	bucketName: string | undefined
+	bucketCDNTarget: string | undefined
+	bucketCDNOriginal: string | undefined
+	imageThumbnailWidth: number
+
+	publicUploadsPath: string
+	privateUploadsPath: string
+
+	//
+
+	sentryID: string | undefined
+
+	postmarkKey: string | undefined
+	nodemailerHost: string | undefined
+	nodemailerUser: string | undefined
+	nodemailerPass: string | undefined
+	nodemailerPort: number | undefined
+
+	pushNotificationsKey: string | undefined
+
+	nexmo: {
+		ID: string | undefined
+		token: string | undefined
+		phoneNumber: typeof _appName
+	}
+
+	/////////////////////////////////
+
+	response: (id: string, req: Request, obj?: Obj) => string
+	text: (id: string, req: Request, obj?: Obj) => string
+}
+export type Config = {
+	mobileAppOrigins: boolean
+	websocketSupport: boolean
+
+	//
+
+	emailFrom: string
+	replyTo: string | undefined
+	adminEmails: { email: string }[]
+	developerEmail: string
+
+	routes: string[]
+	publicRoutes: string[]
+	rateLimitedCalls: string[]
+	extremeRateLimitedCalls: string[]
+	allowedOrigins: string[]
+	path: string
+
+	//
+
+	permissions: {
+		user: number
+		admin: number
+		superAdmin: number
+	}
 }

@@ -57,6 +57,7 @@ class MobileDrawer extends TrackedComponent<Props> {
 						position: 'fixed',
 						left: 0,
 						top: this.props.headerHeight + 1,
+						zIndex: 30,
 						height: 'calc(100vh - ' + this.props.headerHeight.toString() + 'px)',
 						overflowY: 'auto',
 						overflowX: 'hidden',
@@ -203,11 +204,13 @@ class MobileDrawer extends TrackedComponent<Props> {
 										>
 											{icon}
 											<div>
-												{!link.justIcon && link.name && (
-													<div style={textStyle}>
-														{config.localize(link.name)}
-													</div>
-												)}
+												{
+													/* !link.justIcon && */ link.name && (
+														<div style={textStyle}>
+															{config.localize(link.name)}
+														</div>
+													)
+												}
 											</div>
 										</Link>
 									) : (
@@ -224,11 +227,13 @@ class MobileDrawer extends TrackedComponent<Props> {
 											}}
 										>
 											{icon}
-											{!link.justIcon && link.name && (
-												<div style={textStyle}>
-													{config.localize(link.name)}
-												</div>
-											)}
+											{
+												/* !link.justIcon && */ link.name && (
+													<div style={textStyle}>
+														{config.localize(link.name)}
+													</div>
+												)
+											}
 										</a>
 									)}
 
@@ -317,7 +322,7 @@ class MobileDrawer extends TrackedComponent<Props> {
 																}
 															>
 																<div>
-																	{sub.name && !link.justIcon && (
+																	{sub.name /* && !link.justIcon */ && (
 																		<div
 																			style={{
 																				marginLeft: 20,

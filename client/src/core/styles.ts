@@ -7,7 +7,9 @@
 
 import { GlamorProps } from 'flawk-types'
 import React from 'react'
-import config from './config'
+import config, { projectStyles as pS, projectStylesOverrides as projectOverrides } from './config'
+
+export const projectStyles = pS
 
 const _font = 'Roboto'
 const _fontAlt = 'PT Sans'
@@ -33,85 +35,51 @@ const _orange = 'rgba(255,152,0,1)'
 const _yellow = 'rgba(255,235,59,1)'
 const _blue = 'rgba(66, 124, 255,1)'
 
-export default {
+const styles: Styles = {
 	// Config
 
-	// @ts-ignore
 	font: _font,
-	// @ts-ignore
 	fontAlt: _fontAlt,
-	// @ts-ignore
 	defaultBorderRadius: 6,
-	// @ts-ignore
 	defaultFontSize: 14,
-	// @ts-ignore
 	defaultFontBold: 700,
 
 	// Input Config
 
-	// @ts-ignore
 	invalidFontSize: 13,
-	// @ts-ignore
 	invalidFontWeight: 500,
-	// @ts-ignore
 	inputFontWeight: undefined,
-	// @ts-ignore
 	inputBackground: undefined,
 
-	// @ts-ignore
 	inputBoxShadow: true,
-	// @ts-ignore
-	inputBorder: 'full' as 'full' | 'bottom' | 'none',
-	// @ts-ignore
+	inputBorder: 'full',
 	inputBorderFactorDay: 0.2,
-	// @ts-ignore
 	inputBorderFactorNight: 0.15,
 
-	// @ts-ignore
 	inputLabelOpacityNight: 0.66,
-	// @ts-ignore
 	inputLabelOpacityDay: 0.75,
-	// @ts-ignore
-	inputLabelStyle: undefined as React.CSSProperties,
+	inputLabelStyle: undefined,
 
-	// @ts-ignore
 	inputHeight: 31,
-	// @ts-ignore
 	inputPaddingLeft: 10,
 
 	// Button Config
 
-	// @ts-ignore
 	buttonBorderRadius: 6,
-	// @ts-ignore
-	buttonBorder: 'solid' as React.CSSProperties['borderStyle'],
-	// @ts-ignore
+	buttonBorder: 'solid',
 	buttonFontWeight: undefined,
 
 	// Modal Config
 
-	// @ts-ignore
 	modalWidth: undefined,
-	// @ts-ignore
 	modalPadding: undefined,
-	// @ts-ignore
 	modalBackground: undefined,
-	// @ts-ignore
 	modalButtonWrap: true,
-	// @ts-ignore
-	modalCard: undefined as React.CSSProperties,
-	// @ts-ignore
-	modalContentStyle: undefined as React.CSSProperties,
-	// @ts-ignore
+	modalCard: undefined,
+	modalContentStyle: undefined,
 	modalButtonsStyle: {
 		line: true,
-		//flexWrap: 'none',
-		//paddingBottom: 35 - 5,
-	} as React.CSSProperties & {
-		line?: boolean
-		lineColor?: React.CSSProperties['background']
 	},
-	// @ts-ignore
 	modalHeaderStyle: {
 		line: true,
 		noCloseButton: false,
@@ -120,66 +88,22 @@ export default {
 		textStyle: {
 			marginTop: 5,
 		},
-	} as React.CSSProperties & {
-		line?: boolean
-		lineColor?: React.CSSProperties['background']
-		noCloseButton?: boolean
-		textStyle?: React.CSSProperties
 	},
 
 	// Dropdown Config
 
-	// @ts-ignore
-	dropdown: undefined as
-		| { indicator?: { background: string }; menu?: React.CSSProperties }
-		| undefined,
-	// @ts-ignore
+	dropdown: undefined,
 	dropdownFontWeight: undefined,
 
 	// Table Config
-	// @ts-ignore
-	table: undefined as
-		| ({
-				headerWrapperStyle?: React.CSSProperties
-				rowStyle?: React.CSSProperties
-				wrapperStyle?: React.CSSProperties
-				rowWrapperStyle?: React.CSSProperties
-		  } & React.CSSProperties)
-		| undefined,
+	table: undefined,
 
 	// Tooltip Config
 
-	// @ts-ignore
-	tooltip: undefined as React.CSSProperties | undefined,
+	tooltip: undefined,
 
 	// Dashboard Config
-	// @ts-ignore
-	dashboardHeader: { marginBottom: 30, minHeight: 41 } as React.CSSProperties,
-
-	// Cards
-
-	// @ts-ignore
-	card: {
-		width: 'fit-content',
-		boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.05), 0 6px 20px 0 rgba(0, 0, 0, 0.05)',
-		borderStyle: 'solid',
-		borderWidth: 1,
-		padding: 20,
-		borderRadius: 10,
-		boxSizing: 'border-box',
-		background: _white,
-		noDarkMode: false,
-		borderColor: 'inherit',
-	} as React.CSSProperties & { noDarkMode?: boolean },
-	outlineCard: {
-		borderStyle: 'solid',
-		borderWidth: '1px',
-		boxSizing: 'border-box',
-		padding: 20,
-		borderRadius: 10,
-		noDarkMode: false,
-		borderColor: 'inherit',
-	} as React.CSSProperties & { noDarkMode?: boolean },
+	dashboardHeader: { marginBottom: 30, minHeight: 41 },
 
 	// Helpers
 
@@ -187,67 +111,11 @@ export default {
 		textOverflow: 'ellipsis',
 		overflow: 'hidden',
 		whiteSpace: 'nowrap',
-	} as React.CSSProperties,
+	},
 	mediumShadow: '0 5px 20px 0 rgba(0, 0, 0, 0.05)',
 	shadowFilter: '2px 6px 8px rgba(0, 0, 0, 0.3)',
 	strongerShadow:
 		'0 20px 32px -8px rgba(0, 0, 0, 0.1), 0 4px 8px 0 rgba(0, 0, 0, 0.05), 0 6px 20px 0 rgba(0, 0, 0, 0.05)',
-
-	// Colors
-
-	colors: {
-		// @ts-ignore
-		black: _black,
-		// @ts-ignore
-		blackDay: _black,
-		// @ts-ignore
-		blackNight: _white,
-		// @ts-ignore
-		white: _white,
-		// @ts-ignore
-		whiteDay: _white,
-		// @ts-ignore
-		whiteNight: _black,
-		// @ts-ignore
-		main: _main,
-		// @ts-ignore
-		mainLight: _mainLight,
-		// @ts-ignore
-		mainVeryLight: _mainVeryLight,
-		// @ts-ignore
-		background: _background,
-		// @ts-ignore
-		backgroundDay: _background,
-		// @ts-ignore
-		backgroundNight: _backgroundNight,
-		borderColor: _borderColor,
-		borderColorDay: _borderColor,
-		borderColorNight: _borderColorNight,
-		// @ts-ignore
-		lineColor: _lineColor,
-		// @ts-ignore
-		lineColorDay: _lineColor,
-		// @ts-ignore
-		lineColorNight: _lineColorNight,
-		// @ts-ignore
-		green: _green,
-		blue: _blue,
-		// @ts-ignore
-		red: _red,
-		// @ts-ignore
-		pink: _pink,
-		// @ts-ignore
-		purple: _purple,
-		// @ts-ignore
-		orange: _orange,
-		// @ts-ignore
-		yellow: _yellow,
-		...config.projectStyles.colorsOverride,
-	},
-	gradients: {
-		fade: 'linear-gradient(90deg, rgba(2, 4, 51, 1), rgba(2, 4, 51, 1), rgba(2, 4, 51, 0))',
-		main: _main,
-	},
 
 	// Dropzone
 
@@ -274,16 +142,15 @@ export default {
 		width: '100%',
 		borderRadius: 4,
 		border: '1px dashed ' + _black,
-	} as React.CSSProperties,
+	},
 	dropZoneActive: {
 		borderColor: _main,
 		background: config.replaceAlpha(_main, 0.1),
-	} as React.CSSProperties,
-	// @ts-ignore
+	},
 	dropZoneReject: {
 		borderColor: _red,
 		background: config.replaceAlpha(_red, 0.1),
-	} as React.CSSProperties,
+	},
 
 	// Misc
 
@@ -300,20 +167,17 @@ export default {
 
 	//
 
-	...config.projectStyles,
+	...projectOverrides,
 
 	//
 
-	// @ts-ignore
 	buttonAppearances: () => {
 		const base: ({
 			name: string
 			usageBackground?: string
 		} & GlamorProps &
 			React.CSSProperties)[] =
-			// @ts-ignore
-			(config.projectStyles.buttonAppearances && config.projectStyles.buttonAppearances()) ||
-			[]
+			(projectOverrides.buttonAppearances && projectOverrides.buttonAppearances()) || []
 
 		return base.concat([
 			{
@@ -369,15 +233,13 @@ export default {
 			},
 		])
 	},
-	// @ts-ignore
 	inputAppearances: () => {
 		const base: ({
 			name: string
 			usageBackground?: string
 		} & GlamorProps &
 			React.CSSProperties)[] =
-			// @ts-ignore
-			(config.projectStyles.inputAppearances && config.projectStyles.inputAppearances()) || []
+			(projectOverrides.inputAppearances && projectOverrides.inputAppearances()) || []
 		return base.concat([
 			{
 				name: 'dark',
@@ -399,4 +261,217 @@ export default {
 			},
 		])
 	},
+
+	// Cards
+
+	card: {
+		width: 'fit-content',
+		boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.05), 0 6px 20px 0 rgba(0, 0, 0, 0.05)',
+		borderStyle: 'solid',
+		borderWidth: 1,
+		padding: 20,
+		borderRadius: 10,
+		boxSizing: 'border-box',
+		background: _white,
+		noDarkMode: false,
+		borderColor: 'inherit',
+		...projectOverrides.card,
+	},
+	outlineCard: {
+		width: 'fit-content',
+		borderStyle: 'solid',
+		borderWidth: '1px',
+		boxSizing: 'border-box',
+		padding: 20,
+		borderRadius: 10,
+		noDarkMode: false,
+		borderColor: 'inherit',
+		...projectOverrides.outlineCard,
+	},
+
+	// Colors
+
+	colors: {
+		black: _black,
+		blackDay: _black,
+		blackNight: _white,
+		white: _white,
+		whiteDay: _white,
+		whiteNight: _black,
+		main: _main,
+		mainLight: _mainLight,
+		mainVeryLight: _mainVeryLight,
+		background: _background,
+		backgroundDay: _background,
+		backgroundNight: _backgroundNight,
+		borderColor: _borderColor,
+		borderColorDay: _borderColor,
+		borderColorNight: _borderColorNight,
+		lineColor: _lineColor,
+		lineColorDay: _lineColor,
+		lineColorNight: _lineColorNight,
+		green: _green,
+		blue: _blue,
+		red: _red,
+		pink: _pink,
+		purple: _purple,
+		orange: _orange,
+		yellow: _yellow,
+		...projectOverrides.colors,
+	},
+	gradients: {
+		fade: 'linear-gradient(90deg, rgba(2, 4, 51, 1), rgba(2, 4, 51, 1), rgba(2, 4, 51, 0))',
+		main: _main,
+		...projectOverrides.gradients,
+	},
+}
+export default styles
+
+export type Styles = {
+	// Config
+
+	font: string
+	fontAlt: string
+	defaultBorderRadius: React.CSSProperties['borderRadius']
+	defaultFontSize: number
+	defaultFontBold: React.CSSProperties['fontWeight']
+
+	// Input Config
+
+	invalidFontSize: number
+	invalidFontWeight: React.CSSProperties['fontWeight']
+	inputFontWeight: React.CSSProperties['fontWeight']
+	inputBackground: string | undefined
+
+	inputBoxShadow: boolean
+	inputBorder: 'full' | 'bottom' | 'none'
+	inputBorderFactorDay: number
+	inputBorderFactorNight: number
+
+	inputLabelOpacityNight: number
+	inputLabelOpacityDay: number
+	inputLabelStyle?: React.CSSProperties
+
+	inputHeight: number
+	inputPaddingLeft: number
+
+	// Button Config
+
+	buttonBorderRadius: React.CSSProperties['borderRadius']
+	buttonBorder: React.CSSProperties['borderStyle']
+	buttonFontWeight: React.CSSProperties['fontWeight']
+
+	// Modal Config
+
+	modalWidth?: number
+	modalPadding?: number
+	modalBackground: React.CSSProperties['background']
+	modalButtonWrap: boolean
+	modalCard?: React.CSSProperties
+	modalContentStyle?: React.CSSProperties
+	modalButtonsStyle: React.CSSProperties & {
+		line?: boolean
+		lineColor?: React.CSSProperties['background']
+	}
+	modalHeaderStyle: React.CSSProperties & {
+		line?: boolean
+		lineColor?: React.CSSProperties['background']
+		noCloseButton?: boolean
+		textStyle?: React.CSSProperties
+	}
+
+	// Dropdown Config
+
+	dropdown: { indicator?: { background: string }; menu?: React.CSSProperties } | undefined
+	dropdownFontWeight: React.CSSProperties['fontWeight']
+
+	// Table Config
+	table:
+		| ({
+				headerWrapperStyle?: React.CSSProperties
+				rowStyle?: React.CSSProperties
+				wrapperStyle?: React.CSSProperties
+				rowWrapperStyle?: React.CSSProperties
+		  } & React.CSSProperties)
+		| undefined
+
+	// Tooltip Config
+
+	tooltip: React.CSSProperties | undefined
+
+	// Dashboard Config
+	dashboardHeader: React.CSSProperties
+
+	// Helpers
+
+	textEllipsis: React.CSSProperties
+	mediumShadow: React.CSSProperties['boxShadow']
+	shadowFilter: React.CSSProperties['boxShadow']
+	strongerShadow: React.CSSProperties['boxShadow']
+
+	// Dropzone
+
+	dropZone: React.CSSProperties
+	dropZoneActive: React.CSSProperties
+	dropZoneReject: React.CSSProperties
+
+	// Misc
+
+	fakeButton: React.CSSProperties & GlamorProps
+
+	//
+
+	buttonAppearances: () => ({
+		name: string
+		usageBackground?: string
+	} & GlamorProps &
+		React.CSSProperties)[]
+	inputAppearances: () => ({
+		name: string
+		usageBackground?: string
+	} & GlamorProps &
+		React.CSSProperties)[]
+
+	// Cards
+
+	card: React.CSSProperties & { noDarkMode?: boolean }
+	outlineCard: React.CSSProperties & { noDarkMode?: boolean }
+
+	// Colors
+
+	colors: {
+		black: string
+		blackDay: string
+		blackNight: string
+		white: string
+		whiteDay: string
+		whiteNight: string
+		main: string
+		mainLight: string
+		mainVeryLight: string
+		//
+		background: string
+		backgroundDay: string
+		backgroundNight: string
+		//
+		borderColor: string
+		borderColorDay: string
+		borderColorNight: string
+		//
+		lineColor: string
+		lineColorDay: string
+		lineColorNight: string
+		//
+		green: string
+		blue: string
+		red: string
+		pink: string
+		purple: string
+		orange: string
+		yellow: string
+	}
+	gradients: {
+		fade: string
+		main: string
+	}
 }

@@ -5,6 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import { Config } from 'core/config'
+
 const _path = '/backend'
 const _publicRoutes = [
 	'/routes/public/auth', // Needs to be last one
@@ -31,7 +33,7 @@ const _allowedOrigins = [
 	'flawk-backend.cakeslice.dev',
 ]
 
-export default {
+const config: Partial<Config> = {
 	mobileAppOrigins: true,
 	websocketSupport: true,
 
@@ -61,3 +63,6 @@ export default {
 		superAdmin: 1,
 	},
 }
+export default config
+
+export const projectConfig = {}

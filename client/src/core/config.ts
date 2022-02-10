@@ -17,9 +17,13 @@ import moment from 'moment'
 import numeral from 'numeral'
 import 'numeral/locales'
 import _projectText from 'project/text'
-import _projectConfig from 'project/_config'
-import _projectStyles from 'project/_styles'
+import projectOverrides, { projectConfig as pC } from 'project/_config'
+import pSO, { projectStyles as pS } from 'project/_styles'
 import React from 'react'
+
+export const projectConfig = pC
+export const projectStyles = pS
+export const projectStylesOverrides = pSO
 
 const _prod =
 	process.env.NODE_ENV === 'production' &&
@@ -262,7 +266,43 @@ const rgbaToObj = (color: string) => {
 	}
 }
 
-export default {
+const publicConfig: Config = {
+	supportedLanguages: ['en'],
+	backendURL: undefined,
+	websocketURL: undefined,
+	preconnectURLs: ['https://fonts.googleapis.com'],
+	noTokenRedirect: 'dashboard',
+	loginRedirect: '/login',
+	restrictedRoutes: ['/dashboard'],
+
+	websocketSupport: false,
+	darkModeAvailable: false,
+	darkModeOptIn: false,
+	darkModeForce: false,
+	showCookieNotice: true,
+
+	toastCloseTime: 2000,
+
+	mobileWidthTrigger: 700,
+	publicMaxWidth: 1281.5,
+
+	//
+
+	title: () => 'Flawk.js',
+	separator: ' | ',
+	phrase: () => '',
+	description: () => '',
+
+	//
+
+	permissions: {
+		user: 100,
+		admin: 10,
+		superAdmin: 1,
+	},
+}
+const config: Config & InternalConfig = {
+	...publicConfig,
 	prod: _prod,
 	staging: _staging,
 	domain: _domain,
@@ -271,34 +311,6 @@ export default {
 	googleAnalyticsID: _googleAnalyticsID,
 	recaptchaSiteKey: _recaptchaSiteKey,
 	recaptchaBypass: _recaptchaBypass,
-
-	// @ts-ignore
-	backendURL: undefined as string | undefined,
-	// @ts-ignore
-	websocketURL: undefined as string | undefined,
-
-	// @ts-ignore
-	darkModeAvailable: false,
-	// @ts-ignore
-	darkModeOptIn: false,
-	// @ts-ignore
-	darkModeForce: false,
-
-	toastCloseTime: 2000,
-
-	// @ts-ignore
-	mobileWidthTrigger: 700,
-
-	minWidth: 768,
-	// @ts-ignore
-	publicMaxWidth: 1281.5,
-
-	// @ts-ignore
-	permissions: {
-		user: 100,
-		admin: 10,
-		superAdmin: 1,
-	},
 
 	lockFetch: async (ref: React.Component, method: () => Promise<void>, key?: string) => {
 		await _setStateAsync(ref, { [key || 'fetching']: true })
@@ -349,8 +361,6 @@ export default {
 		if (target) disableBodyScroll(target, { reserveScrollBarGap: false })
 	},
 
-	// @ts-ignore
-	supportedLanguages: ['pt', 'en'],
 	uploadLang: _updateLang,
 	setLang: _setLang,
 	changeLang: _changeLang,
@@ -411,16 +421,111 @@ export default {
 	},
 
 	prettierConfig: {
-		trailingComma: 'es5' as 'es5' | 'none' | 'all',
+		trailingComma: 'es5',
 		tabWidth: 3,
 		semi: false,
 		useTabs: true,
 		singleQuote: true,
 		printWidth: 100,
 		jsxSingleQuote: true,
-		endOfLine: 'lf' as 'auto' | 'lf' | 'crlf' | 'cr',
+		endOfLine: 'lf',
 	},
 
-	projectStyles: _projectStyles,
-	..._projectConfig,
+	...projectOverrides,
+}
+export default config
+
+type InternalConfig = {
+	prod: boolean
+	staging: boolean
+	domain: string | undefined
+
+	sentryID: string | undefined
+	googleAnalyticsID: string | undefined
+	recaptchaSiteKey: string | undefined
+	recaptchaBypass: string | undefined
+
+	lockFetch: (ref: React.Component, method: () => Promise<void>, key?: string) => Promise<void>
+	setStateAsync: typeof _setStateAsync
+
+	capitalize: typeof _capitalize
+	capitalizeAll: typeof _capitalizeAll
+	numeral: (number: number, format: string) => string
+	formatNumber: typeof _formatNumber
+	formatDecimal: typeof _formatDecimal
+	formatDecimalTwo: typeof _formatDecimalTwo
+
+	logCatch: typeof _logCatch
+	sleep: (ms: number) => Promise<void>
+	lazyWithPreload: (
+		factory: () => Promise<{
+			default: React.ComponentType<unknown>
+		}>
+	) => React.ExoticComponent
+	injectScript: (src: string, type: 'text' | 'src', top?: boolean, async?: boolean) => void
+
+	scrollToTop: () => void
+	disableScroll: () => void
+
+	uploadLang: typeof _updateLang
+	setLang: typeof _setLang
+	changeLang: typeof _changeLang
+	text: typeof _text
+	localize: (obj: string | Obj, lang?: string) => string | JSX.Element | JSX.Element[]
+
+	getRemoteConfig: (structures: KeyObject, key: string, code?: string) => Obj | undefined
+
+	calculateAge: (birthday: Date) => number
+
+	countriesSearch: (candidate: { value: string }, input: string) => boolean
+
+	replaceAlpha: (color: string, amount: number) => string
+	overlayColor: (background: string, color: string) => string
+	invertColor: (background: string, color: string) => string
+
+	prettierConfig: {
+		trailingComma: 'es5' | 'none' | 'all'
+		tabWidth: number
+		semi: boolean
+		useTabs: boolean
+		singleQuote: boolean
+		printWidth: number
+		jsxSingleQuote: boolean
+		endOfLine: 'auto' | 'lf' | 'crlf' | 'cr'
+	}
+}
+export type Config = {
+	supportedLanguages: string[]
+	backendURL: string | undefined
+	websocketURL: string | undefined
+	preconnectURLs: string[]
+	noTokenRedirect: string
+	loginRedirect: string
+	restrictedRoutes: string[]
+
+	websocketSupport: boolean
+	darkModeAvailable: boolean
+	darkModeOptIn: boolean
+	darkModeForce: boolean
+	showCookieNotice: boolean
+
+	toastCloseTime: number
+
+	mobileWidthTrigger: number
+	publicMaxWidth: number
+
+	//
+
+	title: () => string
+	separator: string
+	phrase: () => string
+	description: () => string
+
+	//
+
+	permissions: {
+		user: number
+		admin: number
+		superAdmin: number
+	}
 }
