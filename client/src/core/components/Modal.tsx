@@ -15,6 +15,13 @@ import React, { Component } from 'react'
 import FocusLock from 'react-focus-lock'
 import { Portal } from 'react-portal'
 
+type HeaderStyle = React.CSSProperties & {
+	line?: boolean
+	lineColor?: React.CSSProperties['background']
+	noCloseButton?: boolean
+	textStyle?: React.CSSProperties
+}
+
 type Props = {
 	title?: React.ReactNode
 	content: (
@@ -32,12 +39,7 @@ type Props = {
 	onClose?: () => void
 	//
 	style?: React.CSSProperties
-	headerStyle?: React.CSSProperties & {
-		line: boolean
-		lineColor: React.CSSProperties['background']
-		noCloseButton: boolean
-		textStyle: React.CSSProperties
-	}
+	headerStyle?: HeaderStyle
 	contentStyle?: React.CSSProperties
 	buttonsStyle?: React.CSSProperties & {
 		line: boolean
@@ -177,8 +179,11 @@ export default class Modal extends TrackedComponent<Props> {
 			<div>
 				{((!this.props.buttonsStyle &&
 					styles.modalButtonsStyle &&
-					styles.modalButtonsStyle.line) ||
-					(this.props.buttonsStyle && this.props.buttonsStyle.line)) && (
+					(styles.modalButtonsStyle.line === undefined ||
+						styles.modalButtonsStyle.line)) ||
+					(this.props.buttonsStyle &&
+						(this.props.buttonsStyle.line === undefined ||
+							this.props.buttonsStyle.line))) && (
 					<div>
 						<div
 							style={{
@@ -316,12 +321,7 @@ export default class Modal extends TrackedComponent<Props> {
 }
 class ModalHeader extends Component<{
 	title?: React.ReactNode
-	headerStyle?: React.CSSProperties & {
-		line: boolean
-		lineColor: React.CSSProperties['background']
-		noCloseButton: boolean
-		textStyle: React.CSSProperties
-	}
+	headerStyle?: HeaderStyle
 	modalPadding: number
 	onClose?: () => void
 }> {
@@ -373,8 +373,10 @@ class ModalHeader extends Component<{
 				</div>
 				{((!this.props.headerStyle &&
 					styles.modalHeaderStyle &&
-					styles.modalHeaderStyle.line) ||
-					(this.props.headerStyle && this.props.headerStyle.line)) && (
+					(styles.modalHeaderStyle.line === undefined || styles.modalHeaderStyle.line)) ||
+					(this.props.headerStyle &&
+						(this.props.headerStyle.line === undefined ||
+							this.props.headerStyle.line))) && (
 					<div
 						style={{
 							height: 2,

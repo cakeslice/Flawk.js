@@ -31,6 +31,8 @@ export default class Settings extends Component<DashboardProps> {
 						<div
 							style={{
 								...styles.card,
+								paddingLeft: 25,
+								paddingRight: 15,
 								alignSelf: desktop ? 'center' : undefined,
 								width: desktop ? 'fit-content' : undefined,
 							}}
@@ -115,7 +117,7 @@ export default class Settings extends Component<DashboardProps> {
 									return (
 										<Form noValidate>
 											<ExitPrompt dirty={dirty} />
-											<div className='wrapMargin flex flex-wrap justify-around'>
+											<div className='wrapMarginTopLeft flex flex-wrap justify-around'>
 												<Field
 													component={FInput}
 													required
@@ -129,7 +131,7 @@ export default class Settings extends Component<DashboardProps> {
 													name='lastName'
 												/>
 											</div>
-											<div className='wrapMargin flex flex-wrap justify-around'>
+											<div className='wrapMarginTopLeft flex flex-wrap justify-around'>
 												<Field
 													component={FInput}
 													required
@@ -148,53 +150,83 @@ export default class Settings extends Component<DashboardProps> {
 												/>
 											</div>
 											<sp />
-											<div className='flex items-center'>
-												<label
-													htmlFor={
-														desktop
-															? 'file_upload'
-															: 'file_upload_mobile'
-													}
-													style={{
-														alignSelf: 'center',
-														display: 'flex',
-														cursor: 'pointer',
-													}}
-												>
-													<input
-														disabled={isSubmitting}
-														type='file'
-														id={
+											<div className='wrapMarginTopLeft flex flex-wrap justify-between'>
+												<div className='flex items-center'>
+													<label
+														htmlFor={
 															desktop
 																? 'file_upload'
 																: 'file_upload_mobile'
 														}
-														accept='image/*;capture=camera'
-														onChange={async (e) => {
-															const img =
-																await upload.handleFileChange(e)
-															if (img) {
-																setFieldValue('photoURL', img.url)
-																setFieldValue('photoFile', img.file)
-															}
+														style={{
+															alignSelf: 'center',
+															display: 'flex',
+															cursor: 'pointer',
 														}}
-													/>
-													<div
-														/* tabIndex={0} */ {...css(
-															styles.fakeButton
-														)}
 													>
-														<Avatar src={values.photoURL}></Avatar>
+														<input
+															disabled={isSubmitting}
+															type='file'
+															id={
+																desktop
+																	? 'file_upload'
+																	: 'file_upload_mobile'
+															}
+															accept='image/*;capture=camera'
+															onChange={async (e) => {
+																const img =
+																	await upload.handleFileChange(e)
+																if (img) {
+																	setFieldValue(
+																		'photoURL',
+																		img.url
+																	)
+																	setFieldValue(
+																		'photoFile',
+																		img.file
+																	)
+																}
+															}}
+														/>
+														<div
+															/* tabIndex={0} */ {...css(
+																styles.fakeButton
+															)}
+														>
+															<Avatar
+																style={{ width: 45, height: 45 }}
+																src={values.photoURL}
+															></Avatar>
+														</div>
+													</label>
+													<div style={{ marginLeft: 10 }}>
+														{config.text(
+															'settings.drawer.account.profileImage'
+														)}
 													</div>
-												</label>
-												<div style={{ marginLeft: 10 }}>
-													{config.text(
-														'settings.drawer.account.profileImage'
-													)}
+												</div>
+												<div
+													style={{
+														width: '50%',
+														paddingLeft: desktop ? 10 : undefined,
+													}}
+												>
+													<FButton
+														onClick={async () => {
+															await global.toggleNightMode()
+														}}
+														style={{
+															minWidth: 50,
+														}}
+													>
+														{global.nightMode ? 'Light' : 'Dark'} mode
+													</FButton>
 												</div>
 											</div>
+
 											<sp />
-											<div className='flex-col items-center'>
+											<sp />
+											<div className='flex-col items-end'>
 												<FButton
 													type='submit'
 													formErrors={errors}

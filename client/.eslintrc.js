@@ -48,7 +48,7 @@ module.exports = {
 		'react/no-array-index-key': 'warn',
 		'react/no-redundant-should-component-update': 'error',
 		'react/no-unused-prop-types': 'error',
-		'react/no-unused-state': 'error',
+		'react/no-unused-state': 'warn',
 		'react/no-typos': 'error',
 		'react/no-arrow-function-lifecycle': 'error',
 		'react/no-children-prop': 'error',

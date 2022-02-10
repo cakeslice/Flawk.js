@@ -303,8 +303,9 @@ export const Section: React.FC<{
 	top?: boolean
 	tags?: string[]
 	code?: string
+	noOverflow?: boolean
 	lang?: 'tsx' | 'jsx' | 'json'
-}> = ({ children, title, top, tags, code, lang }) => {
+}> = ({ children, title, top, tags, code, lang, noOverflow }) => {
 	const id = title.replaceAll(' ', '_').toLowerCase()
 
 	return (
@@ -319,7 +320,10 @@ export const Section: React.FC<{
 								{!top && <sp />}
 								<Anchor id={id} updateHash>
 									<div className={(tablet ? 'flex' : 'flex-col') + ' w-full'}>
-										<div className={code && 'grow'}>
+										<div
+											className={code && 'grow'}
+											style={{ overflow: noOverflow ? 'hidden' : undefined }}
+										>
 											<div className='flex'>
 												<h3>{title}</h3>
 												{tags && <div style={{ minWidth: 15 }} />}

@@ -108,8 +108,8 @@ export default {
 		//flexWrap: 'none',
 		//paddingBottom: 35 - 5,
 	} as React.CSSProperties & {
-		line: boolean
-		lineColor: React.CSSProperties['background']
+		line?: boolean
+		lineColor?: React.CSSProperties['background']
 	},
 	// @ts-ignore
 	modalHeaderStyle: {
@@ -121,10 +121,10 @@ export default {
 			marginTop: 5,
 		},
 	} as React.CSSProperties & {
-		line: boolean
-		lineColor: React.CSSProperties['background']
-		noCloseButton: boolean
-		textStyle: React.CSSProperties
+		line?: boolean
+		lineColor?: React.CSSProperties['background']
+		noCloseButton?: boolean
+		textStyle?: React.CSSProperties
 	},
 
 	// Dropdown Config
@@ -154,7 +154,7 @@ export default {
 
 	// Dashboard Config
 	// @ts-ignore
-	dashboardHeader: { marginBottom: 30, minHeight: 32 } as React.CSSProperties,
+	dashboardHeader: { marginBottom: 30, minHeight: 41 } as React.CSSProperties,
 
 	// Cards
 

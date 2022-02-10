@@ -203,7 +203,7 @@ export default class Layout extends QueryParams<
 									<div style={gridExample}></div>
 								</div>
 							</Section>
-							<Section title='Table' tags={['<FTable/>']} code={codeTable}>
+							<Section title='Table' tags={['<FTable/>']} noOverflow code={codeTable}>
 								<div>
 									<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
 										<FInput
