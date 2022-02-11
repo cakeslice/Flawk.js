@@ -13,7 +13,7 @@ import TrackedComponent from 'core/components/TrackedComponent'
 import config from 'core/config'
 import styles from 'core/styles'
 import { GlamorProps, Obj } from 'flawk-types'
-import { css } from 'glamor'
+import { css, StyleAttribute } from 'glamor'
 import _ from 'lodash'
 import React from 'react'
 import MediaQuery from 'react-responsive'
@@ -44,7 +44,7 @@ type TableStyles = {
 	headerStyle?: React.CSSProperties
 	headerCellStyle?: React.CSSProperties
 	wrapperStyle?: React.CSSProperties
-	rowStyle?: React.CSSProperties
+	rowStyle?: React.CSSProperties & GlamorProps
 	rowWrapperStyle?: React.CSSProperties
 	cellStyle?: React.CSSProperties
 }
@@ -117,7 +117,7 @@ export default class FTable extends QueryParams<
 	isLoadingID: string | undefined = undefined
 
 	componentDidMount() {
-		this.setState({ containment: document.getElementById('custom-table-' + this.state.uuid) })
+		this.setState({ containment: document.getElementById('f-table-' + this.state.uuid) })
 	}
 
 	render() {
@@ -132,18 +132,16 @@ export default class FTable extends QueryParams<
 			paddingTop: cellPaddingY,
 			paddingBottom: cellPaddingY,
 			minWidth: 50,
-			//letterSpacing: 0.4,
-			fontSize: styles.defaultFontSize,
+			//letterSpacing: 0.4,,
 			textOverflow: 'ellipsis',
 			whiteSpace: 'nowrap',
 			overflow: 'hidden',
 		}
 
-		const headerRowStyle: React.CSSProperties = {
+		const headerWrapperStyle: React.CSSProperties = {
+			fontSize: styles.defaultFontSize,
 			background: styles.inputBackground || styles.colors.white,
-			padding: paddingX * 2,
-			paddingTop: 0,
-			paddingBottom: 0,
+			padding: '0px ' + paddingX * 2 + 'px 0px ' + paddingX * 2 + 'px',
 			boxSizing: 'border-box',
 			margin: 0,
 			borderRadius: 0,
@@ -159,9 +157,7 @@ export default class FTable extends QueryParams<
 			borderRadius: 6,
 			boxShadow: 'rgba(0, 0, 0, 0.04) 0px 2px 4px 0px, rgba(0, 0, 0, 0.04) 0px 6px 4px 0px',
 			margin: 0,
-			padding: 0,
-			paddingLeft: paddingX,
-			paddingRight: paddingX,
+			padding: '0px ' + paddingX + 'px 0px ' + paddingX + 'px',
 			boxSizing: 'border-box',
 			display: 'flex',
 			justifyContent: 'space-between',
@@ -170,7 +166,6 @@ export default class FTable extends QueryParams<
 
 			//
 
-			//maxHeight: 50,
 			minHeight: 50,
 			overflowY: 'hidden',
 
@@ -197,19 +192,41 @@ export default class FTable extends QueryParams<
 			boxShadow: 'none',
 		}
 		const rowWrapperStyle: React.CSSProperties = {
-			padding: paddingX,
-			paddingTop: 3,
-			paddingBottom: 3,
+			padding: '3px ' + paddingX + 'px 3px ' + paddingX + 'px',
 			boxSizing: 'border-box',
 		}
 
 		const overrideStyle: TableStyles | undefined =
 			props.style || styles.table
 				? {
-						...styles.table,
+						...(styles.table && styles.table()),
 						...props.style,
 				  }
 				: undefined
+
+		let bottomBarStyle: React.CSSProperties = {
+			...headerWrapperStyle,
+			...(overrideStyle && overrideStyle.headerWrapperStyle),
+		}
+		console.log(JSON.stringify(bottomBarStyle))
+		bottomBarStyle = {
+			paddingLeft: bottomBarStyle.paddingLeft,
+			paddingRight: bottomBarStyle.paddingRight,
+			paddingTop: bottomBarStyle.paddingTop,
+			paddingBottom: bottomBarStyle.paddingBottom,
+			padding: bottomBarStyle.padding,
+		}
+
+		//
+
+		const rS = css({
+			...rowStyle,
+			...(overrideStyle && overrideStyle.rowStyle),
+		})
+		const rWS = {
+			...rowWrapperStyle,
+			...(overrideStyle && overrideStyle.rowWrapperStyle),
+		}
 
 		return (
 			<MediaQuery minWidth={config.mobileWidthTrigger}>
@@ -248,7 +265,7 @@ export default class FTable extends QueryParams<
 								{!props.hideHeader && (
 									<div
 										style={{
-											...headerRowStyle,
+											...headerWrapperStyle,
 											...(overrideStyle && overrideStyle.headerWrapperStyle),
 										}}
 									>
@@ -258,7 +275,7 @@ export default class FTable extends QueryParams<
 												justifyContent: 'space-between',
 												alignItems: 'center',
 												width: '100%',
-												minHeight: 40,
+												minHeight: 36,
 												...(overrideStyle && overrideStyle.headerStyle),
 											}}
 										>
@@ -390,12 +407,11 @@ export default class FTable extends QueryParams<
 								)}
 
 								<div
-									id={'custom-table-' + this.state.uuid}
+									id={'f-table-' + this.state.uuid}
 									ref={this.setScrollYRef}
 									style={{
 										opacity: props.isLoading ? 0.5 : undefined,
-										overflowX: 'hidden',
-										overflowY: 'auto',
+										overflow: 'hidden overlay',
 										flexGrow: 1,
 									}}
 								>
@@ -410,15 +426,15 @@ export default class FTable extends QueryParams<
 												})
 											}
 
-											const rS = {
-												...rowStyle,
-												...(overrideStyle && overrideStyle.rowStyle),
-												...(d.specialRow && sR && sR.style),
-											}
-											const style = {
-												...rowWrapperStyle,
-												...(overrideStyle && overrideStyle.rowWrapperStyle),
-											}
+											const rSFinal =
+												d.specialRow && sR && sR.style
+													? css({
+															...rowStyle,
+															...(overrideStyle &&
+																overrideStyle.rowStyle),
+															...sR.style,
+													  })
+													: rS
 
 											const expandContent =
 												(!sR || sR.expandContent) &&
@@ -439,11 +455,11 @@ export default class FTable extends QueryParams<
 															return (
 																<div
 																	style={{
-																		...style,
+																		...rWS,
 																		opacity: 0.5,
 																	}}
 																>
-																	<div style={rS}></div>
+																	<div {...rSFinal}></div>
 																</div>
 															)
 														const rowKey = 'r_' + k
@@ -456,8 +472,8 @@ export default class FTable extends QueryParams<
 																}
 																trackedName={rowKey}
 																isVisible={isVisible}
-																style={style}
-																rowStyle={rS}
+																style={rWS}
+																rowStyle={rSFinal}
 																expandContent={expandContent}
 																cellPadding={cellPadding}
 																cellPaddingY={cellPaddingY}
@@ -573,18 +589,19 @@ export default class FTable extends QueryParams<
 									background: styles.inputBackground || styles.colors.white,
 									...(overrideStyle && overrideStyle.wrapperStyle),
 
-									//borderTop: 'none',
 									borderTopLeftRadius: 0,
 									borderTopRightRadius: 0,
 								}}
 							>
-								{props.pagination && (
-									<TablePagination
-										items={props.data ? props.data.length : 0}
-										{...props.pagination}
-									/>
-								)}
-								{props.children}
+								<div style={bottomBarStyle}>
+									{props.pagination && (
+										<TablePagination
+											items={props.data ? props.data.length : 0}
+											{...props.pagination}
+										/>
+									)}
+									{props.children}
+								</div>
 							</div>
 						)}
 					</div>
@@ -601,7 +618,7 @@ type RowProps = {
 	isLoadingID: string
 	isVisible: boolean
 	expandContent?: React.ReactNode
-	rowStyle: React.CSSProperties & GlamorProps
+	rowStyle: StyleAttribute
 	style: React.CSSProperties
 	cellPadding: number
 	cellPaddingY: number
@@ -642,11 +659,7 @@ class Row extends TrackedComponent<RowProps> {
 		return (
 			<div style={this.props.style}>
 				{this.props.expandContent ? (
-					<div
-						{...css({
-							...this.props.rowStyle,
-						})}
-					>
+					<div {...this.props.rowStyle}>
 						<button
 							type='button'
 							onClick={() => {
@@ -680,7 +693,7 @@ class Row extends TrackedComponent<RowProps> {
 						{this.props.children}
 					</div>
 				) : (
-					<div {...css(this.props.rowStyle)}>{this.props.children}</div>
+					<div {...this.props.rowStyle}>{this.props.children}</div>
 				)}
 				{this.props.expandContent && (
 					<Animated
@@ -742,8 +755,8 @@ export function TablePagination({
 	totalPages?: number
 	totalItems?: number
 }) {
-	const p = page ? Number(page) : 1
-	const l = limit ? Number(limit) : 15
+	//const p = page ? Number(page) : 1
+	//const l = limit ? Number(limit) : 15
 
 	return (
 		<SizeMe>
@@ -770,7 +783,6 @@ export function TablePagination({
 									style={{
 										minHeight: 44,
 										minWidth: 100,
-										marginLeft: styles.card.padding,
 									}}
 								/>
 							)}
@@ -787,7 +799,7 @@ export function TablePagination({
 								<div
 									style={{
 										minWidth: 100,
-										marginRight: styles.card.padding,
+										textAlign: 'right',
 									}}
 								>
 									{items > 0 && (
@@ -795,13 +807,15 @@ export function TablePagination({
 											style={{
 												color: config.replaceAlpha(
 													styles.colors.black,
-													0.5
+													0.75
 												),
-												display: 'flex',
-												justifyContent: 'flex-end',
 											}}
 										>
-											{(p - 1) * l}-{(p - 1) * l + items} of {totalItems}
+											{/* <span>
+												{(p - 1) * l}-{(p - 1) * l + items} of
+											</span>{' '} */}
+											<span style={{ fontWeight: 500 }}>{totalItems}</span>{' '}
+											{config.text('common.results')}
 										</div>
 									)}
 								</div>

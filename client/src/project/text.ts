@@ -13,6 +13,7 @@ export default {
 	},
 
 	common: {
+		results: { pt: 'Resultados', en: 'Results' },
 		searching: { pt: 'A procurar...', en: 'Searching...' },
 		cancel: { pt: 'Cancelar', en: 'Cancel' },
 		delete: { pt: 'Apagar', en: 'Delete' },

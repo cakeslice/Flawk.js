@@ -13,7 +13,12 @@ import { FieldInputProps, FormikProps } from 'formik'
 import { css } from 'glamor'
 import React from 'react'
 import MediaQuery from 'react-responsive'
-import Select, { components, CSSObjectWithLabel, DropdownIndicatorProps } from 'react-select'
+import Select, {
+	components,
+	CSSObjectWithLabel,
+	DropdownIndicatorProps,
+	StylesConfig,
+} from 'react-select'
 
 export type Option = {
 	value: string
@@ -43,22 +48,14 @@ const DropdownIndicator = ({ children, ...rest }: DropdownIndicatorProps<unknown
 		</svg>
 	)
 
+	const cssStyle = css({
+		opacity: isDisabled ? 0.15 : dropdownIndicator ? 1 : rest.isFocused ? 0.75 : 0.33,
+		':hover': { opacity: 0.75 },
+	})
+
 	return (
 		<components.DropdownIndicator {...rest}>
-			<div
-				{...css({
-					opacity: isDisabled
-						? 0.15
-						: dropdownIndicator
-						? 1
-						: rest.isFocused
-						? 0.75
-						: 0.33,
-					':hover': { opacity: 0.75 },
-				})}
-			>
-				{dropdownIndicator || dots(styles.colors.black)}
-			</div>
+			<div {...cssStyle}>{dropdownIndicator || dots(styles.colors.black)}</div>
 		</components.DropdownIndicator>
 	)
 }
@@ -242,38 +239,36 @@ export default class Dropdown extends TrackedComponent<Props> {
 						...defaultContainerStyle,
 						...b,
 						':hover': {
-							// @ts-ignore
 							...defaultContainerStyle[':hover'],
-							// @ts-ignore
 							...b[':hover'],
 						},
 						':focus': {
 							...defaultContainerStyle[':focus'],
-							// @ts-ignore
 							...b[':focus'],
 						},
 					}
-					// @ts-ignore
-					defaultPlaceholderStyle = { ...defaultPlaceholderStyle, ...b['::placeholder'] }
+					defaultPlaceholderStyle = {
+						...defaultPlaceholderStyle,
+						...b['::placeholder'],
+					}
 				}
 			})
 
-		// @ts-ignore
-		let finalStyle: CSSObjectWithLabel = {
-			...defaultContainerStyle,
-			...this.props.style,
-			':hover': {
-				// @ts-ignore
-				...defaultContainerStyle[':hover'],
-				// @ts-ignore
-				...(this.props.style && this.props.style[':hover']),
-			},
-			':focus': {
-				...defaultContainerStyle[':focus'],
-				// @ts-ignore
-				...(this.props.style && this.props.style[':focus']),
-			},
-		}
+		let finalStyle: CSSObjectWithLabel = defaultContainerStyle
+		if (this.props.style)
+			finalStyle = {
+				...finalStyle,
+				...this.props.style,
+				':hover': {
+					...defaultContainerStyle[':hover'],
+					...(this.props.style && this.props.style[':hover']),
+				},
+				':focus': {
+					...defaultContainerStyle[':focus'],
+					...(this.props.style && this.props.style[':focus']),
+				},
+			}
+
 		const color = finalStyle.color as string | undefined
 		finalStyle = {
 			...finalStyle,
@@ -381,6 +376,211 @@ export default class Dropdown extends TrackedComponent<Props> {
 			return desktop ? 175 : '100%'
 		}
 
+		const selectStyles: StylesConfig = {
+			menuPortal: (base): CSSObjectWithLabel => ({
+				...base,
+				zIndex: 9999,
+			}),
+			valueContainer: (s): CSSObjectWithLabel => {
+				return {
+					...s,
+					padding: 2,
+					paddingRight: 0,
+					paddingLeft: styles.inputPaddingLeft,
+					...(this.props.button && {
+						display: 'flex',
+						justifyContent: 'center',
+						alignItems: 'center',
+					}),
+				}
+			},
+			input: (styles): CSSObjectWithLabel => {
+				return {
+					...styles,
+					...(this.props.style && this.props.style.input),
+					padding: 0,
+					margin: 0,
+				}
+			},
+			clearIndicator: (styles): CSSObjectWithLabel => {
+				return {
+					...styles,
+					...indicatorStyle,
+				}
+			},
+			indicatorsContainer: (styles): CSSObjectWithLabel => {
+				return {
+					...styles,
+					...indicatorStyle,
+					paddingLeft: 0,
+				}
+			},
+			dropdownIndicator: (s): CSSObjectWithLabel => {
+				return {
+					...s,
+					...indicatorStyle,
+				}
+			},
+			indicatorSeparator: (s): CSSObjectWithLabel => {
+				return {
+					...s,
+					background: indicatorStyle.color,
+					...(styles.dropdown && styles.dropdown.indicator),
+				}
+			},
+			placeholder: (s): CSSObjectWithLabel => {
+				return {
+					...s,
+					...defaultPlaceholderStyle,
+					...(this.props.button && {
+						color: styles.colors.black,
+						fontWeight: styles.buttonFontWeight,
+						marginLeft: 15,
+						width: 'auto',
+					}),
+				}
+			},
+			control: (internalStyle, { selectProps, isFocused }): CSSObjectWithLabel => {
+				let output: CSSObjectWithLabel = {
+					...internalStyle,
+					...finalStyle,
+
+					...(!this.props.isDisabled &&
+						(isFocused ||
+							selectProps.menuIsOpen ||
+							this.props.eventOverride === 'focus') && {
+							// @ts-ignore
+							':hover': finalStyle[':focus'],
+							...finalStyle[':focus'],
+						}),
+				}
+
+				if (this.props.eventOverride)
+					output = {
+						...output,
+						// @ts-ignore
+						...output[':' + this.props.eventOverride],
+					}
+
+				return output
+			},
+			menu: (internalStyle): CSSObjectWithLabel => {
+				return {
+					...internalStyle,
+					...defaultMenuStyle,
+					...(styles.dropdown && styles.dropdown.menu),
+					...(this.props.style && this.props.style.menu),
+				}
+			},
+			singleValue: (internalStyle, { data }): CSSObjectWithLabel => {
+				// eslint-disable-next-line
+				const d = data as Option
+				return {
+					...internalStyle,
+					...defaultInputStyle,
+					...(this.props.button && {
+						color: styles.colors.black,
+						fontWeight: styles.buttonFontWeight,
+						marginLeft: 15,
+						width: 'auto',
+					}),
+					fontWeight: styles.dropdownFontWeight,
+					...(this.props.style && this.props.style.input),
+					...conditionalInputStyle,
+					...(d && d.style),
+				}
+			},
+			option: (
+				internalStyle,
+				{ data, isDisabled, isFocused, isSelected }
+			): CSSObjectWithLabel => {
+				// eslint-disable-next-line
+				const d = data as Option
+				return {
+					...internalStyle,
+					...defaultStyle,
+					...{
+						backgroundColor: d.isDisabled
+							? config.replaceAlpha(
+									styles.colors.black,
+									global.nightMode ? 0.025 : 0.05
+							  )
+							: isSelected
+							? styles.colors.mainVeryLight
+							: isFocused
+							? config.replaceAlpha(
+									styles.colors.black,
+									global.nightMode ? 0.05 : 0.1
+							  )
+							: undefined,
+						color: isSelected
+							? styles.colors.black
+							: isDisabled
+							? config.replaceAlpha(
+									styles.colors.black,
+									global.nightMode ? 0.25 : 0.5
+							  )
+							: undefined,
+						fontWeight: isSelected ? 700 : 400,
+						opacity: d.isDisabled ? 0.75 : undefined,
+						cursor: d.isDisabled ? 'default' : 'pointer',
+
+						':active': {
+							fontWeight: !d.isDisabled ? 700 : undefined,
+							backgroundColor: !d.isDisabled
+								? styles.colors.mainVeryLight
+								: undefined,
+						},
+					},
+					...d.style,
+				}
+			},
+
+			...(this.props.customInput && {
+				valueContainer: (): CSSObjectWithLabel => {
+					return { maxWidth: 0, maxHeight: 0 }
+				},
+				singleValue: (): CSSObjectWithLabel => {
+					return { maxWidth: 0, overflow: 'hidden' }
+				},
+				control: (internalStyle, { isFocused }): CSSObjectWithLabel => {
+					return {
+						cursor: 'pointer',
+					}
+				},
+				input: (): CSSObjectWithLabel => {
+					return {
+						maxWidth: 0,
+					}
+				},
+				indicatorSeparator: (): CSSObjectWithLabel => {
+					return { maxWidth: 0, maxHeight: 0 }
+				},
+				indicatorsContainer: (styles): CSSObjectWithLabel => {
+					return {
+						padding: 8,
+					}
+				},
+				placeholder: (): CSSObjectWithLabel => {
+					return {
+						maxWidth: 0,
+						overflow: 'hidden',
+					}
+				},
+				menu: (internalStyles): CSSObjectWithLabel => {
+					return {
+						...internalStyles,
+						...defaultMenuStyle,
+						...(styles.dropdown && styles.dropdown.menu),
+						width: 150,
+						left: -137,
+						top: -10,
+						...(this.props.style && this.props.style.menu),
+					}
+				},
+			}),
+		}
+
 		return (
 			<MediaQuery minWidth={config.mobileWidthTrigger}>
 				{(desktop) => {
@@ -416,7 +616,6 @@ export default class Dropdown extends TrackedComponent<Props> {
 											typeof label === 'string' && label.length === 1
 												? 'end'
 												: undefined,
-										// @ts-ignore
 										fontSize: styles.defaultFontSize,
 										whiteSpace: 'nowrap',
 										...styles.inputLabelStyle,
@@ -536,226 +735,18 @@ export default class Dropdown extends TrackedComponent<Props> {
 											  }
 											: undefined
 									}
-									styles={{
-										menuPortal: (base): CSSObjectWithLabel => ({
-											...base,
-											zIndex: 9999,
-										}),
-										container: (styles): CSSObjectWithLabel => {
-											return {
-												...styles,
-												width: width,
-												flex: 1,
-											}
-										},
-										valueContainer: (s): CSSObjectWithLabel => {
-											return {
-												...s,
-												padding: 2,
-												paddingRight: 0,
-												paddingLeft: styles.inputPaddingLeft,
-												...(this.props.button && {
-													display: 'flex',
-													justifyContent: 'center',
-													alignItems: 'center',
-												}),
-											}
-										},
-										input: (styles): CSSObjectWithLabel => {
-											return {
-												...styles,
-												...(this.props.style && this.props.style.input),
-												padding: 0,
-												margin: 0,
-											}
-										},
-										clearIndicator: (styles): CSSObjectWithLabel => {
-											return {
-												...styles,
-												...indicatorStyle,
-											}
-										},
-										indicatorsContainer: (styles): CSSObjectWithLabel => {
-											return {
-												...styles,
-												...indicatorStyle,
-												paddingLeft: 0,
-											}
-										},
-										dropdownIndicator: (s): CSSObjectWithLabel => {
-											return {
-												...s,
-												...indicatorStyle,
-											}
-										},
-										indicatorSeparator: (s): CSSObjectWithLabel => {
-											return {
-												...s,
-												background: indicatorStyle.color,
-												...(styles.dropdown && styles.dropdown.indicator),
-											}
-										},
-										placeholder: (s): CSSObjectWithLabel => {
-											return {
-												...s,
-												...defaultPlaceholderStyle,
-												...(this.props.button && {
-													color: styles.colors.black,
-													fontWeight: styles.buttonFontWeight,
-													marginLeft: 15,
-													width: 'auto',
-												}),
-											}
-										},
-										control: (
-											internalStyle,
-											{ selectProps, isFocused }
-										): CSSObjectWithLabel => {
-											let output: CSSObjectWithLabel = {
-												...internalStyle,
-												...finalStyle,
-
-												...(!this.props.isDisabled &&
-													(isFocused ||
-														selectProps.menuIsOpen ||
-														this.props.eventOverride === 'focus') && {
-														// @ts-ignore
-														':hover': finalStyle[':focus'],
-														...finalStyle[':focus'],
-													}),
-											}
-
-											if (this.props.eventOverride)
-												output = {
-													...output,
-													// @ts-ignore
-													...output[':' + this.props.eventOverride],
-												}
-
-											return output
-										},
-										menu: (internalStyle): CSSObjectWithLabel => {
-											return {
-												...internalStyle,
-												...defaultMenuStyle,
-												...(styles.dropdown && styles.dropdown.menu),
-												...(this.props.style && this.props.style.menu),
-											}
-										},
-										singleValue: (
-											internalStyle,
-											{ data }
-										): CSSObjectWithLabel => {
-											// eslint-disable-next-line
-											const d = data as Option
-											return {
-												...internalStyle,
-												...defaultInputStyle,
-												...(this.props.button && {
-													color: styles.colors.black,
-													fontWeight: styles.buttonFontWeight,
-													marginLeft: 15,
-													width: 'auto',
-												}),
-												fontWeight: styles.dropdownFontWeight,
-												...(this.props.style && this.props.style.input),
-												...conditionalInputStyle,
-												...(d && d.style),
-											}
-										},
-										option: (
-											internalStyle,
-											{ data, isDisabled, isFocused, isSelected }
-										): CSSObjectWithLabel => {
-											// eslint-disable-next-line
-											const d = data as Option
-											return {
-												...internalStyle,
-												...defaultStyle,
-												...{
-													backgroundColor: d.isDisabled
-														? config.replaceAlpha(
-																styles.colors.black,
-																global.nightMode ? 0.025 : 0.05
-														  )
-														: isSelected
-														? styles.colors.mainVeryLight
-														: isFocused
-														? config.replaceAlpha(
-																styles.colors.black,
-																global.nightMode ? 0.05 : 0.1
-														  )
-														: undefined,
-													color: isSelected
-														? styles.colors.black
-														: isDisabled
-														? config.replaceAlpha(
-																styles.colors.black,
-																global.nightMode ? 0.25 : 0.5
-														  )
-														: undefined,
-													fontWeight: isSelected ? 700 : 400,
-													opacity: d.isDisabled ? 0.75 : undefined,
-													cursor: d.isDisabled ? 'default' : 'pointer',
-
-													':active': {
-														fontWeight: !d.isDisabled ? 700 : undefined,
-														backgroundColor: !d.isDisabled
-															? styles.colors.mainVeryLight
-															: undefined,
-													},
-												},
-												...d.style,
-											}
-										},
-
-										...(this.props.customInput && {
-											valueContainer: (): CSSObjectWithLabel => {
-												return { maxWidth: 0, maxHeight: 0 }
-											},
-											singleValue: (): CSSObjectWithLabel => {
-												return { maxWidth: 0, overflow: 'hidden' }
-											},
-											control: (
-												internalStyle,
-												{ isFocused }
-											): CSSObjectWithLabel => {
+									styles={
+										{
+											...selectStyles,
+											container: (styles): CSSObjectWithLabel => {
 												return {
-													cursor: 'pointer',
+													...styles,
+													width: width,
+													flex: 1,
 												}
 											},
-											input: (): CSSObjectWithLabel => {
-												return {
-													maxWidth: 0,
-												}
-											},
-											indicatorSeparator: (): CSSObjectWithLabel => {
-												return { maxWidth: 0, maxHeight: 0 }
-											},
-											indicatorsContainer: (styles): CSSObjectWithLabel => {
-												return {
-													padding: 8,
-												}
-											},
-											placeholder: (): CSSObjectWithLabel => {
-												return {
-													maxWidth: 0,
-													overflow: 'hidden',
-												}
-											},
-											menu: (internalStyles): CSSObjectWithLabel => {
-												return {
-													...internalStyles,
-													...defaultMenuStyle,
-													...(styles.dropdown && styles.dropdown.menu),
-													width: 150,
-													left: -137,
-													top: -10,
-													...(this.props.style && this.props.style.menu),
-												}
-											},
-										}),
-									}}
+										} as StylesConfig
+									}
 									filterOption={
 										this.props.searchFunction
 											? this.props.searchFunction

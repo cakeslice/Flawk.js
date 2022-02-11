@@ -8,6 +8,7 @@
 import { clearAllBodyScrollLocks } from 'body-scroll-lock'
 import Animated from 'core/components/Animated'
 import MobileDrawer from 'core/components/MobileDrawer'
+import Tooltip from 'core/components/Tooltip'
 import TrackedComponent from 'core/components/TrackedComponent'
 import config from 'core/config'
 import styles from 'core/styles'
@@ -717,7 +718,8 @@ class MenuClass extends TrackedComponent<MenuProps> {
 									width: '100%',
 									borderTopLeftRadius: 8,
 									borderTopRightRadius: 8,
-									marginLeft: 10,
+									marginLeft: 5,
+									marginRight: 5,
 							  }
 							: {
 									paddingLeft: 19,
@@ -859,7 +861,18 @@ class MenuClass extends TrackedComponent<MenuProps> {
 								}
 								key={link.id + (link.params || '')}
 							>
-								{output}
+								{link.justIcon && link.name ? (
+									<Tooltip
+										tooltipProps={{
+											placement: this.props.horizontal ? 'bottom' : 'right',
+										}}
+										content={config.localize(link.name)}
+									>
+										{output}
+									</Tooltip>
+								) : (
+									output
+								)}
 								<Animated
 									trackedName='Dashboard/Menu'
 									animateOffscreen
@@ -974,7 +987,19 @@ class MenuClass extends TrackedComponent<MenuProps> {
 								</Animated>
 							</div>
 						)
-					else return output
+					else
+						return link.justIcon && link.name ? (
+							<Tooltip
+								tooltipProps={{
+									placement: this.props.horizontal ? 'bottom' : 'right',
+								}}
+								content={config.localize(link.name)}
+							>
+								{output}
+							</Tooltip>
+						) : (
+							output
+						)
 				})}
 			</div>
 		)

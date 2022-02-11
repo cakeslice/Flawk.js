@@ -415,7 +415,21 @@ export default class Style extends Component<Props> {
 								<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
 									<Tooltip
 										tooltipProps={{ placement: 'right' }}
-										content={<div>Hello World!</div>}
+										content={
+											<div>
+												<p>
+													Lorem ipsum dolor sit amet, <s>strikethrough</s>{' '}
+													adipiscing elit, sed do eiusmod tempor{' '}
+													<b>bold</b> ut labore et dolore magna aliqua. Ut
+													enim ad minim veniam, quis nostrud exercitation
+													ullamco laboris nisi ut aliquip ex ea commodo{' '}
+													<Link to='/components/style#button'>
+														anchor link
+													</Link>
+													.
+												</p>
+											</div>
+										}
 									>
 										<div style={styles.card}>
 											<b>{desktop ? 'Hover' : 'Click'} me</b>

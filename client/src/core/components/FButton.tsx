@@ -29,7 +29,7 @@ const scrollToErrors = (errors: FormikErrors<unknown>, thisElement: HTMLElement 
 
 export type Appearance = 'primary' | 'secondary' | string // We need to support string for custom appearances declared in styles.buttonAppearances
 type Props = {
-	style?: React.CSSProperties & GlamorProps
+	style?: React.CSSProperties & GlamorProps & { ':checkbox'?: React.CSSProperties & GlamorProps }
 	children?: React.ReactNode
 	appearance?: Appearance
 	noInvalidLabel?: boolean
@@ -264,46 +264,62 @@ export default class FButton extends TrackedComponent<Props> {
 					finalStyle = {
 						...finalStyle,
 						...b,
+						...(this.props.checkbox && { minWidth: 20 }),
+						...(this.props.checkbox && { ...b[':checkbox'] }),
 						':hover': {
 							...finalStyle[':hover'],
-							// @ts-ignore
 							...b[':hover'],
+							...(this.props.checkbox &&
+								b[':checkbox'] && { ...b[':checkbox'][':hover'] }),
 						},
 						':focus-visible': {
 							...finalStyle[':focus-visible'],
-							// @ts-ignore
 							...b[':focus-visible'],
+							...(this.props.checkbox &&
+								b[':checkbox'] && { ...b[':checkbox'][':focus-visible'] }),
 						},
 						':active': {
 							...finalStyle[':active'],
-							// @ts-ignore
 							...b[':active'],
+							...(this.props.checkbox &&
+								b[':checkbox'] && { ...b[':checkbox'][':active'] }),
 						},
 					}
 					usageBackground = b.usageBackground ? true : false
 				}
 			})
 
-		finalStyle = {
-			...finalStyle,
+		if (this.props.style)
+			finalStyle = {
+				...finalStyle,
 
-			...this.props.style,
-			':hover': {
-				...finalStyle[':hover'],
-				// @ts-ignore
-				...(this.props.style && this.props.style[':hover']),
-			},
-			':focus-visible': {
-				...finalStyle[':focus-visible'],
-				// @ts-ignore
-				...(this.props.style && this.props.style[':focus-visible']),
-			},
-			':active': {
-				...finalStyle[':active'],
-				// @ts-ignore
-				...(this.props.style && this.props.style[':active']),
-			},
-		}
+				...this.props.style,
+				...(this.props.checkbox && { ...this.props.style[':checkbox'] }),
+				':hover': {
+					...finalStyle[':hover'],
+					...(this.props.style && this.props.style[':hover']),
+					...(this.props.checkbox &&
+						this.props.style[':checkbox'] && {
+							...this.props.style[':checkbox'][':hover'],
+						}),
+				},
+				':focus-visible': {
+					...finalStyle[':focus-visible'],
+					...(this.props.style && this.props.style[':focus-visible']),
+					...(this.props.checkbox &&
+						this.props.style[':checkbox'] && {
+							...this.props.style[':checkbox'][':focus-visible'],
+						}),
+				},
+				':active': {
+					...finalStyle[':active'],
+					...(this.props.style && this.props.style[':active']),
+					...(this.props.checkbox &&
+						this.props.style[':checkbox'] && {
+							...this.props.style[':checkbox'][':active'],
+						}),
+				},
+			}
 
 		if (this.props.checkbox) {
 			if (checked !== undefined) this.state.checked = checked // eslint-disable-line
@@ -325,6 +341,7 @@ export default class FButton extends TrackedComponent<Props> {
 			}
 			finalStyle[':focus-visible'] = {
 				...finalStyle[':hover'],
+				background: undefined,
 			}
 		}
 
@@ -388,137 +405,153 @@ export default class FButton extends TrackedComponent<Props> {
 			finalStyle = { ...finalStyle, ...finalStyle[':' + this.props.eventOverride] }
 		}
 
+		const cssDesktop = css({
+			...finalStyle,
+		})
+		const cssMobile = css({
+			...finalStyle,
+			...{
+				':hover': {},
+				':active': finalStyle[':hover'],
+			},
+		})
+
 		return (
 			<MediaQuery minWidth={config.mobileWidthTrigger}>
-				{(desktop) => (
-					<div style={{ width: finalStyle.width, flexGrow: finalStyle.flexGrow }}>
-						<div style={{ display: 'flex', alignItems: 'flex-start' }}>
-							<button
-								ref={this.setButtonRef}
-								className='f-button'
-								{...css({
-									...finalStyle,
-									...(!desktop && {
-										':hover': {},
-										':active': finalStyle[':hover'],
-									}),
-								})}
-								onClick={(e) => {
-									if (this.props.isLoading || this.props.isDisabled) return
+				{(desktop) => {
+					const cssStyle = desktop ? cssDesktop : cssMobile
 
-									if (this.props.formErrors) {
-										scrollToErrors(this.props.formErrors, this.buttonRef)
-									}
+					return (
+						<div style={{ width: finalStyle.width, flexGrow: finalStyle.flexGrow }}>
+							<div style={{ display: 'flex', alignItems: 'flex-start' }}>
+								<button
+									ref={this.setButtonRef}
+									className='f-button'
+									{...cssStyle}
+									onClick={(e) => {
+										if (this.props.isLoading || this.props.isDisabled) return
 
-									if (this.props.checkbox) {
-										if (checked !== undefined) {
-											formIK &&
-												formIK.setFieldValue &&
-												name &&
-												formIK.setFieldValue(name, !checked)
+										if (this.props.formErrors) {
+											scrollToErrors(this.props.formErrors, this.buttonRef)
+										}
 
-											this.props.onChange && this.props.onChange(!checked)
-										} else
-											this.setState({ checked: !this.state.checked }, () => {
+										if (this.props.checkbox) {
+											if (checked !== undefined) {
 												formIK &&
 													formIK.setFieldValue &&
 													name &&
-													formIK.setFieldValue(name, this.state.checked)
+													formIK.setFieldValue(name, !checked)
 
-												this.props.onChange &&
-													this.props.onChange(this.state.checked)
-											})
-									} else if (this.props.onClick) this.props.onClick(e)
-								}}
-								onBlur={(e) => {
-									if (formIK && formIK.setFieldTouched) {
-										if (this.timer) clearTimeout(this.timer)
-										this.timer = setTimeout(() => {
-											if (formIK && name) formIK.setFieldTouched(name, true)
-										})
-									}
+												this.props.onChange && this.props.onChange(!checked)
+											} else
+												this.setState(
+													{ checked: !this.state.checked },
+													() => {
+														formIK &&
+															formIK.setFieldValue &&
+															name &&
+															formIK.setFieldValue(
+																name,
+																this.state.checked
+															)
 
-									this.props.onBlur && this.props.onBlur(e)
-								}}
-								name={name}
-								// eslint-disable-next-line
-								type={this.props.type ? this.props.type : 'button'}
-								disabled={this.props.isDisabled || this.props.isLoading}
-							>
-								{this.props.checkbox && this.state.checked && (
-									<div
-										style={{
-											display: 'flex',
-											justifyContent: 'center',
-											alignItems: 'center',
-											maxWidth: 10,
-											maxHeight: 10,
-										}}
-									>
-										{checkedIcon(
-											(this.props.eventOverride
-												? overridenStyle.color
-												: finalStyle.color) as string
-										)}
-									</div>
-								)}
-								{this.props.isLoading && !this.props.checkbox ? (
-									<div>
-										<div style={{ maxHeight: 0, opacity: 0 }}>
-											{this.props.children}
-										</div>
-										<div className='flex items-center justify-center'>
-											<Loading
-												color={
-													this.props.eventOverride
-														? overridenStyle.color
-														: finalStyle.color
-												}
-												noDelay
-												size={18.5}
-											/>
-										</div>
-									</div>
-								) : (
-									this.props.children
-								)}
-							</button>
-							{this.props.checkbox && (
-								<label
-									htmlFor={name}
-									style={{
-										opacity: global.nightMode
-											? styles.inputLabelOpacityNight
-											: styles.inputLabelOpacityDay,
-										letterSpacing: 0.4,
-										fontSize: styles.defaultFontSize,
-										marginLeft: 7.5,
-										...styles.inputLabelStyle,
-										...this.props.checkboxLabelStyle,
+														this.props.onChange &&
+															this.props.onChange(this.state.checked)
+													}
+												)
+										} else if (this.props.onClick) this.props.onClick(e)
 									}}
+									onBlur={(e) => {
+										if (formIK && formIK.setFieldTouched) {
+											if (this.timer) clearTimeout(this.timer)
+											this.timer = setTimeout(() => {
+												if (formIK && name)
+													formIK.setFieldTouched(name, true)
+											})
+										}
+
+										this.props.onBlur && this.props.onBlur(e)
+									}}
+									name={name}
+									// eslint-disable-next-line
+									type={this.props.type ? this.props.type : 'button'}
+									disabled={this.props.isDisabled || this.props.isLoading}
 								>
-									{this.props.checkbox}
-								</label>
-							)}
-						</div>
-						{name && !this.props.noInvalidLabel && (
-							<div style={{ minHeight: 26 }}>
-								{invalid && <div style={{ minHeight: 5 }}></div>}
-								{invalid && (
-									<p
+									{this.props.checkbox && this.state.checked && (
+										<div
+											style={{
+												display: 'flex',
+												justifyContent: 'center',
+												alignItems: 'center',
+												maxWidth: 10,
+												maxHeight: 10,
+											}}
+										>
+											{checkedIcon(
+												(this.props.eventOverride
+													? overridenStyle.color
+													: finalStyle.color) as string
+											)}
+										</div>
+									)}
+									{this.props.isLoading && !this.props.checkbox ? (
+										<div>
+											<div style={{ maxHeight: 0, opacity: 0 }}>
+												{this.props.children}
+											</div>
+											<div className='flex items-center justify-center'>
+												<Loading
+													color={
+														this.props.eventOverride
+															? overridenStyle.color
+															: finalStyle.color
+													}
+													noDelay
+													size={18.5}
+												/>
+											</div>
+										</div>
+									) : (
+										this.props.children
+									)}
+								</button>
+								{this.props.checkbox && (
+									<label
+										htmlFor={name}
 										style={{
-											fontSize: styles.invalidFontSize,
-											fontWeight: styles.invalidFontWeight,
-											color: styles.colors.red,
+											opacity: global.nightMode
+												? styles.inputLabelOpacityNight
+												: styles.inputLabelOpacityDay,
+											letterSpacing: 0.4,
+											fontSize: styles.defaultFontSize,
+											marginLeft: 7.5,
+											...styles.inputLabelStyle,
+											...this.props.checkboxLabelStyle,
 										}}
 									>
-										{invalid}
-									</p>
+										{this.props.checkbox}
+									</label>
 								)}
 							</div>
-						)}
-					</div>
-				)}
+							{name && !this.props.noInvalidLabel && (
+								<div style={{ minHeight: 26 }}>
+									{invalid && <div style={{ minHeight: 5 }}></div>}
+									{invalid && (
+										<p
+											style={{
+												fontSize: styles.invalidFontSize,
+												fontWeight: styles.invalidFontWeight,
+												color: styles.colors.red,
+											}}
+										>
+											{invalid}
+										</p>
+									)}
+								</div>
+							)}
+						</div>
+					)
+				}}
 			</MediaQuery>
 		)
 	}

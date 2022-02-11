@@ -399,7 +399,7 @@ class DashboardWrapper extends Component<DashboardWrapperProps> {
 							style={{
 								width: '100%',
 								//maxWidth: 1200,
-								marginBottom: 160,
+								marginBottom: 80,
 							}}
 						>
 							{!this.props.overrideHeader && (

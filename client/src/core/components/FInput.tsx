@@ -10,7 +10,7 @@ import config from 'core/config'
 import styles from 'core/styles'
 import { FormIKStruct, GlamorProps, Obj } from 'flawk-types'
 import { FieldInputProps, FormikProps } from 'formik'
-import { css } from 'glamor'
+import { css, StyleAttribute } from 'glamor'
 import moment, { Moment } from 'moment'
 import React from 'react'
 import Datetime from 'react-datetime'
@@ -26,7 +26,7 @@ const MaskedInput = (
 		autoFocus?: boolean
 		disabled?: boolean
 		required?: boolean
-		inputStyle: React.CSSProperties & GlamorProps
+		inputStyle: StyleAttribute
 		value?: string | number | undefined
 		onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
 	} & React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>
@@ -50,7 +50,7 @@ const MaskedInput = (
 			<input
 				{...inputProps}
 				// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-				{...css(props.inputStyle)}
+				{...props.inputStyle}
 				autoFocus={props.autoFocus}
 				disabled={props.disabled}
 				required={props.required}
@@ -84,7 +84,7 @@ const DatePicker = (props: {
 	placeholder?: string
 	required?: boolean
 	width?: number
-	inputStyle: React.CSSProperties & GlamorProps
+	inputStyle: StyleAttribute
 }) => (
 	<Datetime
 		renderView={(mode, renderDefault) => {
@@ -118,7 +118,7 @@ const DatePicker = (props: {
 		renderInput={(p) => {
 			return (
 				<input
-					{...css(props.inputStyle)}
+					{...props.inputStyle}
 					{...p}
 					value={props.value || !props.isControlled ? p.value : ''}
 				/>
@@ -137,7 +137,7 @@ const DatePicker = (props: {
 )
 
 type Props = {
-	style?: React.CSSProperties
+	style?: React.CSSProperties & GlamorProps
 	appearance?: string
 	center?: boolean
 	invalidType?: 'bottom' | 'label' | 'right'
@@ -312,6 +312,10 @@ export default class FInput extends TrackedComponent<Props> {
 			whiteSpace: this.props.textArea ? undefined : 'nowrap',
 			textOverflow: this.props.textArea ? undefined : 'ellipsis',
 
+			justifyContent: 'center',
+			alignItems: 'center',
+			display: 'flex',
+
 			color: styles.colors.black,
 
 			borderColor: config.replaceAlpha(
@@ -355,46 +359,38 @@ export default class FInput extends TrackedComponent<Props> {
 						...b,
 						'::placeholder': {
 							...mainStyle['::placeholder'],
-							// @ts-ignore
 							...b['::placeholder'],
 						},
 						':hover': {
 							...mainStyle[':hover'],
-							// @ts-ignore
 							...b[':hover'],
 						},
 						':focus': {
 							...mainStyle[':focus'],
-							// @ts-ignore
 							...b[':focus'],
 						},
 					}
 			})
 
-		let finalStyle: React.CSSProperties & GlamorProps = {
-			...mainStyle,
-			...{
-				justifyContent: 'center',
-				alignItems: 'center',
-				display: 'flex',
-			},
-			...this.props.style,
-			'::placeholder': {
-				...mainStyle['::placeholder'],
-				// @ts-ignore
-				...(this.props.style && this.props.style['::placeholder']),
-			},
-			':hover': {
-				...mainStyle[':hover'],
-				// @ts-ignore
-				...(this.props.style && this.props.style[':hover']),
-			},
-			':focus': {
-				...mainStyle[':focus'],
-				// @ts-ignore
-				...(this.props.style && this.props.style[':focus']),
-			},
-		}
+		let finalStyle: React.CSSProperties & GlamorProps = mainStyle
+		if (this.props.style)
+			finalStyle = {
+				...finalStyle,
+				...this.props.style,
+				'::placeholder': {
+					...mainStyle['::placeholder'],
+					...(this.props.style && this.props.style['::placeholder']),
+				},
+				':hover': {
+					...mainStyle[':hover'],
+					...(this.props.style && this.props.style[':hover']),
+				},
+				':focus': {
+					...mainStyle[':focus'],
+					...(this.props.style && this.props.style[':focus']),
+				},
+			}
+
 		finalStyle = {
 			...finalStyle,
 			...(invalid && {
@@ -549,185 +545,206 @@ export default class FInput extends TrackedComponent<Props> {
 			// @ts-ignore
 			finalStyle = { ...finalStyle, ...finalStyle[':' + this.props.eventOverride] }
 
+		const cssDesktop = css({
+			...finalStyle,
+			width: finalStyle.width || defaultWidth(true),
+		})
+		const cssMobile = css({
+			...finalStyle,
+			width: finalStyle.width || defaultWidth(false),
+		})
+
 		return (
 			<MediaQuery minWidth={config.mobileWidthTrigger}>
-				{(desktop) => (
-					<div
-						style={{
-							width: finalStyle.width || defaultWidth(desktop),
-							maxWidth: finalStyle.maxWidth,
-							flexGrow: finalStyle.flexGrow,
-						}}
-					>
-						{label && (
-							<div
-								style={{
-									display: 'flex',
-									justifyContent: 'space-between',
-									letterSpacing: 0.4,
-									textAlign:
-										typeof label === 'string' && label.length === 1
-											? 'end'
-											: undefined,
-									// @ts-ignore
-									fontSize: styles.defaultFontSize,
-									whiteSpace: 'nowrap',
-									...styles.inputLabelStyle,
-									...this.props.labelStyle,
-									opacity: 1,
-								}}
-							>
-								<label
-									htmlFor={name}
+				{(desktop) => {
+					const cssStyle = desktop ? cssDesktop : cssMobile
+
+					return (
+						<div
+							style={{
+								width: finalStyle.width || defaultWidth(desktop),
+								maxWidth: finalStyle.maxWidth,
+								flexGrow: finalStyle.flexGrow,
+							}}
+						>
+							{label && (
+								<div
 									style={{
-										opacity: global.nightMode
-											? styles.inputLabelOpacityNight
-											: styles.inputLabelOpacityDay,
-										...(styles.inputLabelStyle &&
-											styles.inputLabelStyle.opacity && {
-												opacity: styles.inputLabelStyle.opacity,
-											}),
-										...(this.props.labelStyle &&
-											this.props.labelStyle.opacity && {
-												opacity: this.props.labelStyle.opacity,
-											}),
+										display: 'flex',
+										justifyContent: 'space-between',
+										letterSpacing: 0.4,
+										textAlign:
+											typeof label === 'string' && label.length === 1
+												? 'end'
+												: undefined,
+										// @ts-ignore
+										fontSize: styles.defaultFontSize,
+										whiteSpace: 'nowrap',
+										...styles.inputLabelStyle,
+										...this.props.labelStyle,
+										opacity: 1,
 									}}
 								>
-									{label}
-								</label>
-								{invalidType === 'label' && name && invalid && invalid.length > 0 && (
-									<span
+									<label
+										htmlFor={name}
 										style={{
-											marginLeft: 7.5,
-											fontSize: styles.invalidFontSize,
-											fontWeight: styles.invalidFontWeight,
-											color: styles.colors.red,
+											opacity: global.nightMode
+												? styles.inputLabelOpacityNight
+												: styles.inputLabelOpacityDay,
+											...(styles.inputLabelStyle &&
+												styles.inputLabelStyle.opacity && {
+													opacity: styles.inputLabelStyle.opacity,
+												}),
+											...(this.props.labelStyle &&
+												this.props.labelStyle.opacity && {
+													opacity: this.props.labelStyle.opacity,
+												}),
 										}}
 									>
-										{invalid}
-									</span>
-								)}
-							</div>
-						)}
-						{label && <div style={{ minHeight: 5 }}></div>}
-						<div style={{ display: 'flex' }}>
-							{this.props.datePicker ? (
-								<DatePicker
-									{...commonProps}
-									{...datePickerValueProps}
-									{...inputEventProps}
-									inputStyle={{
-										...finalStyle,
-										width: finalStyle.width || defaultWidth(desktop),
-									}}
-								/>
-							) : this.props.textArea ? (
-								this.props.textAreaFixed ? (
-									<TextArea
+										{label}
+									</label>
+									{invalidType === 'label' &&
+										name &&
+										invalid &&
+										invalid.length > 0 && (
+											<span
+												style={{
+													marginLeft: 7.5,
+													fontSize: styles.invalidFontSize,
+													fontWeight: styles.invalidFontWeight,
+													color: styles.colors.red,
+												}}
+											>
+												{invalid}
+											</span>
+										)}
+								</div>
+							)}
+							{label && <div style={{ minHeight: 5 }}></div>}
+							<div style={{ display: 'flex' }}>
+								{this.props.datePicker ? (
+									<DatePicker
+										{...commonProps}
+										{...datePickerValueProps}
+										{...inputEventProps}
+										inputStyle={cssStyle}
+									/>
+								) : this.props.textArea ? (
+									this.props.textAreaFixed ? (
+										<TextArea
+											{...commonProps}
+											{...valueProps}
+											{...inputEventProps}
+											// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+											{...cssStyle}
+										/>
+									) : (
+										<TextAreaAuto
+											{...commonProps}
+											{...valueProps}
+											{...inputEventProps}
+											// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+											{...cssStyle}
+											minRows={this.props.minRows}
+											maxRows={this.props.maxRows}
+										/>
+									)
+								) : !this.props.mask && !this.props.timeInput ? (
+									<Input
 										{...commonProps}
 										{...valueProps}
 										{...inputEventProps}
 										// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-										{...css({
-											...finalStyle,
-											width: finalStyle.width || defaultWidth(desktop),
-										})}
+										{...cssStyle}
 									/>
 								) : (
-									<TextAreaAuto
+									<MaskedInput
 										{...commonProps}
 										{...valueProps}
 										{...inputEventProps}
-										// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-										{...css({
-											...finalStyle,
-											width: finalStyle.width || defaultWidth(desktop),
-										})}
-										minRows={this.props.minRows}
-										maxRows={this.props.maxRows}
+										inputStyle={cssStyle}
+										{...(this.props.mask
+											? {
+													mask: this.props.mask,
+													formatChars: this.props.formatChars,
+											  }
+											: {
+													mask:
+														value && (value as string)[0] === '2'
+															? '23:59'
+															: '29:59',
+													formatChars: {
+														9: '[0-9]',
+														3: '[0-3]',
+														5: '[0-5]',
+														2: '[0-2]',
+													},
+											  })}
 									/>
-								)
-							) : !this.props.mask && !this.props.timeInput ? (
-								<Input
-									{...commonProps}
-									{...valueProps}
-									{...inputEventProps}
-									// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-									{...css({
-										...finalStyle,
-										width: finalStyle.width || defaultWidth(desktop),
-									})}
-								/>
-							) : (
-								<MaskedInput
-									{...commonProps}
-									{...valueProps}
-									{...inputEventProps}
-									inputStyle={{
-										...finalStyle,
-										width: finalStyle.width || defaultWidth(desktop),
-									}}
-									{...(this.props.mask
-										? {
-												mask: this.props.mask,
-												formatChars: this.props.formatChars,
-										  }
-										: {
-												mask:
-													value && (value as string)[0] === '2'
-														? '23:59'
-														: '29:59',
-												formatChars: {
-													9: '[0-9]',
-													3: '[0-3]',
-													5: '[0-5]',
-													2: '[0-2]',
-												},
-										  })}
-								/>
-							)}
+								)}
 
-							{this.props.icon && (
-								<div style={{ maxWidth: 0, maxHeight: 0 }}>
-									<div
-										style={{
-											pointerEvents: 'none',
-											position: 'relative',
-											display: 'flex',
-											justifyContent: 'center',
-											alignItems: 'center',
-											width: 30,
-											right: 35,
-											height: styles.inputHeight,
-										}}
-									>
-										{this.props.icon}
+								{this.props.icon && (
+									<div style={{ maxWidth: 0, maxHeight: 0 }}>
+										<div
+											style={{
+												pointerEvents: 'none',
+												position: 'relative',
+												display: 'flex',
+												justifyContent: 'center',
+												alignItems: 'center',
+												width: 30,
+												right: 35,
+												height: styles.inputHeight,
+											}}
+										>
+											{this.props.icon}
+										</div>
 									</div>
-								</div>
-							)}
-							{this.props.button && (
-								<div style={{ maxWidth: 0, maxHeight: 0 }}>
-									<div
-										style={{
-											position: 'relative',
-											display: 'flex',
-											justifyContent: 'center',
-											alignItems: 'center',
-											width: 30,
-											right: 35,
-											top: 2,
-											height: styles.inputHeight,
-											...this.props.buttonStyle,
-										}}
-									>
-										{this.props.button}
+								)}
+								{this.props.button && (
+									<div style={{ maxWidth: 0, maxHeight: 0 }}>
+										<div
+											style={{
+												position: 'relative',
+												display: 'flex',
+												justifyContent: 'center',
+												alignItems: 'center',
+												width: 30,
+												right: 35,
+												top: 2,
+												height: styles.inputHeight,
+												...this.props.buttonStyle,
+											}}
+										>
+											{this.props.button}
+										</div>
 									</div>
-								</div>
-							)}
-							{invalidType === 'right' && name && (
-								<div style={{ minWidth: 16, display: 'flex' }}>
+								)}
+								{invalidType === 'right' && name && (
+									<div style={{ minWidth: 16, display: 'flex' }}>
+										{!this.props.isDisabled &&
+											invalid &&
+											invalid.length > 0 && (
+												<div style={{ minWidth: 7.5 }}></div>
+											)}
+										{!this.props.isDisabled && invalid && invalid.length > 0 && (
+											<p
+												style={{
+													fontSize: styles.invalidFontSize,
+													fontWeight: styles.invalidFontWeight,
+													color: styles.colors.red,
+												}}
+											>
+												{invalid}
+											</p>
+										)}
+									</div>
+								)}
+							</div>
+							{invalidType === 'bottom' && name && (
+								<div style={{ minHeight: 26 }}>
 									{!this.props.isDisabled && invalid && invalid.length > 0 && (
-										<div style={{ minWidth: 7.5 }}></div>
+										<div style={{ minHeight: 5 }}></div>
 									)}
 									{!this.props.isDisabled && invalid && invalid.length > 0 && (
 										<p
@@ -743,26 +760,8 @@ export default class FInput extends TrackedComponent<Props> {
 								</div>
 							)}
 						</div>
-						{invalidType === 'bottom' && name && (
-							<div style={{ minHeight: 26 }}>
-								{!this.props.isDisabled && invalid && invalid.length > 0 && (
-									<div style={{ minHeight: 5 }}></div>
-								)}
-								{!this.props.isDisabled && invalid && invalid.length > 0 && (
-									<p
-										style={{
-											fontSize: styles.invalidFontSize,
-											fontWeight: styles.invalidFontWeight,
-											color: styles.colors.red,
-										}}
-									>
-										{invalid}
-									</p>
-								)}
-							</div>
-						)}
-					</div>
-				)}
+					)
+				}}
 			</MediaQuery>
 		)
 	}

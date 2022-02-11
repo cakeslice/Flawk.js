@@ -263,6 +263,42 @@ export default class Layout extends QueryParams<
 										]}
 										columns={[
 											{
+												name: (
+													<div>
+														<FButton
+															/* onChange={(e) => {
+															}} */
+															checkbox
+															//checked={}
+														></FButton>
+													</div>
+												),
+												selector: 'checkbox',
+												style: {
+													minWidth: 35,
+													maxWidth: 35,
+													display: 'flex',
+												},
+												cell: (value, d) => (
+													<div>
+														<FButton
+															/* onChange={(e) => {
+																if (e) this.state.selected.push(d._id)
+																else
+																	_.remove(
+																		this.state.selected,
+																		(e) => e === d._id
+																	)
+
+																this.forceUpdate()
+															}} */
+															checkbox
+															//checked={this.state.selected.includes(d._id)}
+														></FButton>
+													</div>
+												),
+											},
+											{
 												onClick: async () => {
 													await this.fetchData()
 												},
@@ -273,7 +309,7 @@ export default class Layout extends QueryParams<
 												},
 											},
 											{
-												name: 'Title',
+												name: 'Name',
 												selector: 'title',
 												grow: 4,
 											},
@@ -288,37 +324,35 @@ export default class Layout extends QueryParams<
 											{
 												name: (
 													<div style={{ ...styles.textEllipsis }}>
-														Fat{' '}
-														<small style={{ opacity: 0.75 }}>(g)</small>
+														Price{' '}
+														<small style={{ opacity: 0.5 }}>€</small>
 													</div>
 												),
 												grow: 2,
-												selector: 'fat',
+												selector: 'price',
 												//hide: 'mobile',
 											},
 											{
-												name: 'Carbs',
-												selector: 'title',
+												name: 'Email',
+												selector: 'email',
 												//hide: 'mobile',
 												grow: 4,
 												style: { whiteSpace: 'nowrap' },
 											},
 											{
-												name: 'Protein',
-												selector: 'protein',
+												name: 'Phone',
+												selector: 'phone',
 												//hide: 'mobile',
 											},
 											{
 												style: { minWidth: 60 },
 												name: (
 													<div style={{ ...styles.textEllipsis }}>
-														Sodium{' '}
-														<small style={{ opacity: 0.75 }}>
-															(mg)
-														</small>
+														Maximum Tax{' '}
+														<small style={{ opacity: 0.5 }}>€</small>
 													</div>
 												),
-												selector: 'sodium',
+												selector: 'tax',
 												//hide: 'mobile',
 												cell: (value) => (
 													<div>
@@ -331,8 +365,8 @@ export default class Layout extends QueryParams<
 												),
 											},
 											{
-												name: 'Calcium (%)',
-												selector: 'calcium',
+												name: 'Country',
+												selector: 'country',
 												//hide: 'mobile',
 												cell: (value) => (
 													<div style={{ ...styles.textEllipsis }}>

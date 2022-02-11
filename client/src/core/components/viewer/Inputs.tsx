@@ -123,6 +123,12 @@ export default class Inputs extends Component {
 										placeholder={'******'}
 									/>
 									<FInput type='number' label={'Number'} placeholder={'1337'} />
+
+									<FInput
+										label={'Centered'}
+										placeholder={'Hello'}
+										center={true}
+									/>
 								</div>
 								<sp />
 								<div className='wrapMarginTopLeft flex flex-wrap justify-start items-start'>

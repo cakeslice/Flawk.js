@@ -92,7 +92,9 @@ const styles: Styles = {
 
 	// Dropdown Config
 
-	dropdown: undefined,
+	dropdown: {
+		indicator: { background: 'none' },
+	},
 	dropdownFontWeight: undefined,
 
 	// Table Config
@@ -176,7 +178,7 @@ const styles: Styles = {
 			name: string
 			usageBackground?: string
 		} & GlamorProps &
-			React.CSSProperties)[] =
+			React.CSSProperties & { ':checkbox'?: React.CSSProperties & GlamorProps })[] =
 			(projectOverrides.buttonAppearances && projectOverrides.buttonAppearances()) || []
 
 		return base.concat([
@@ -387,9 +389,10 @@ export type Styles = {
 
 	// Table Config
 	table:
-		| ({
+		| (() => {
 				headerWrapperStyle?: React.CSSProperties
-				rowStyle?: React.CSSProperties
+				headerStyle?: React.CSSProperties
+				rowStyle?: React.CSSProperties & GlamorProps
 				wrapperStyle?: React.CSSProperties
 				rowWrapperStyle?: React.CSSProperties
 		  } & React.CSSProperties)
@@ -425,7 +428,7 @@ export type Styles = {
 		name: string
 		usageBackground?: string
 	} & GlamorProps &
-		React.CSSProperties)[]
+		React.CSSProperties & { ':checkbox'?: React.CSSProperties & GlamorProps })[]
 	inputAppearances: () => ({
 		name: string
 		usageBackground?: string
