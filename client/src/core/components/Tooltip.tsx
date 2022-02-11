@@ -56,10 +56,7 @@ export default class Tooltip extends TrackedComponent<Props> {
 		]
 		const animatedStyle = {
 			...styles.card,
-			paddingTop: 3,
-			paddingBottom: 3,
-			paddingLeft: 7.5,
-			paddingRight: 7.5,
+			padding: '3px 7.5px 3px 7.5px',
 			fontSize: 14,
 			maxWidth: 200,
 			...styles.tooltip,

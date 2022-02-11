@@ -1066,7 +1066,10 @@ function setup() {
 						data: structure,
 					})
 				} catch (e) {
-					console.error(redColor, 'Failed to get structure: ' + s.schema.collection.name)
+					console.error(
+						redColor,
+						'--- FAILED to get structure: ' + s.schema.collection.name
+					)
 				}
 			}
 		}
@@ -1085,7 +1088,10 @@ function setup() {
 		if (
 			!_.find(config.publicRoutes, (e) => {
 				const split = e.split('/')
-				return split[split.length - 1] === file.replace('.ts', '').replace('.js', '')
+				return (
+					split[split.length - 1] ===
+					file.replace('.ts', '').replace('.js.map', '').replace('.js', '')
+				)
 			})
 		)
 			console.error(redColor, '--- MISSING ' + file + ' in routes configuration')
@@ -1094,7 +1100,10 @@ function setup() {
 		if (
 			!_.find(config.routes, (e) => {
 				const split = e.split('/')
-				return split[split.length - 1] === file.replace('.ts', '').replace('.js', '')
+				return (
+					split[split.length - 1] ===
+					file.replace('.ts', '').replace('.js.map', '').replace('.js', '')
+				)
 			})
 		)
 			console.error(redColor, '--- MISSING ' + file + ' in routes configuration')
@@ -1222,7 +1231,11 @@ async function onDatabaseConnected() {
 		console.log(`Mongoose version: ${mongoose.version}\n\n`)
 	})
 
-	await updateDatabaseStructures()
+	try {
+		await updateDatabaseStructures()
+	} catch (err) {
+		console.error(redColor, '--- FAILED to update database structures' + '\n', err)
+	}
 
 	if (!config.jest) await createDevUser()
 }
@@ -1232,11 +1245,10 @@ async function listen() {
 
 	try {
 		await mongoose.connect(config.databaseURL as string)
-
-		await onDatabaseConnected()
 	} catch (err) {
-		console.error('FAILED TO CONNECT TO DATABASE!' + '\n', err)
+		console.error(redColor, '--- FAILED to connect to database' + '\n', err)
 	}
+	await onDatabaseConnected()
 
 	const server = app.listen(config.port, () => {
 		console.log(greenColor, 'Listening to requests on port ' + config.port.toString() + '\n\n')
