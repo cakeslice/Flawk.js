@@ -13,7 +13,7 @@ import Avatar from 'core/components/Avatar'
 import { DashboardRoute, DashboardWrapperProps, TabProps } from 'core/components/Dashboard'
 import RouterBase from 'core/components/RouterBase'
 import config from 'core/config'
-import styles from 'core/styles'
+import styles, { projectStyles } from 'core/styles'
 import logo from 'project/assets/images/logo.svg'
 import React, { Component, useEffect } from 'react'
 import { Helmet } from 'react-helmet'
@@ -399,7 +399,7 @@ class DashboardWrapper extends Component<DashboardWrapperProps> {
 							}}
 						>
 							{!this.props.overrideHeader && (
-								<div style={styles.dashboardHeader}>
+								<div style={projectStyles.dashboardHeader}>
 									<h3>
 										{this.props.parentTitle
 											? this.props.parentTitle + ': '

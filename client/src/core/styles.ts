@@ -35,7 +35,7 @@ const _orange = 'rgba(255,152,0,1)'
 const _yellow = 'rgba(255,235,59,1)'
 const _blue = 'rgba(66, 124, 255,1)'
 
-const styles: Styles = {
+const styles: Styles & { colors: Colors; gradients: Gradients } = {
 	// Config
 
 	font: _font,
@@ -98,14 +98,12 @@ const styles: Styles = {
 	dropdownFontWeight: undefined,
 
 	// Table Config
+
 	table: undefined,
 
 	// Tooltip Config
 
 	tooltip: undefined,
-
-	// Dashboard Config
-	dashboardHeader: { marginBottom: 30, minHeight: 41 },
 
 	// Helpers
 
@@ -402,9 +400,6 @@ export type Styles = {
 
 	tooltip: React.CSSProperties | undefined
 
-	// Dashboard Config
-	dashboardHeader: React.CSSProperties
-
 	// Helpers
 
 	textEllipsis: React.CSSProperties
@@ -442,39 +437,41 @@ export type Styles = {
 
 	// Colors
 
-	colors: {
-		black: string
-		blackDay: string
-		blackNight: string
-		white: string
-		whiteDay: string
-		whiteNight: string
-		main: string
-		mainLight: string
-		mainVeryLight: string
-		//
-		background: string
-		backgroundDay: string
-		backgroundNight: string
-		//
-		borderColor: string
-		borderColorDay: string
-		borderColorNight: string
-		//
-		lineColor: string
-		lineColorDay: string
-		lineColorNight: string
-		//
-		green: string
-		blue: string
-		red: string
-		pink: string
-		purple: string
-		orange: string
-		yellow: string
-	}
-	gradients: {
-		fade: string
-		main: string
-	}
+	colors: Partial<Colors>
+	gradients: Partial<Gradients>
+}
+type Colors = {
+	black: string
+	blackDay: string
+	blackNight: string
+	white: string
+	whiteDay: string
+	whiteNight: string
+	main: string
+	mainLight: string
+	mainVeryLight: string
+	//
+	background: string
+	backgroundDay: string
+	backgroundNight: string
+	//
+	borderColor: string
+	borderColorDay: string
+	borderColorNight: string
+	//
+	lineColor: string
+	lineColorDay: string
+	lineColorNight: string
+	//
+	green: string
+	blue: string
+	red: string
+	pink: string
+	purple: string
+	orange: string
+	yellow: string
+}
+type Gradients = {
+	fade: string
+	main: string
 }

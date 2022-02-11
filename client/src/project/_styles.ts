@@ -55,7 +55,6 @@ const styles: Partial<Styles> = {
 		},
 	],
 
-	// @ts-ignore
 	colors: {
 		background: _background,
 		backgroundDay: _background,
@@ -68,4 +67,4 @@ const styles: Partial<Styles> = {
 }
 export default styles
 
-export const projectStyles = {}
+export const projectStyles = { dashboardHeader: { marginBottom: 30, minHeight: 41 } }
