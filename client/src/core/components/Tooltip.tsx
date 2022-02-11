@@ -9,6 +9,7 @@ import Animated, { Effect } from 'core/components/Animated'
 import TrackedComponent from 'core/components/TrackedComponent'
 import config from 'core/config'
 import styles from 'core/styles'
+import { css } from 'glamor'
 import React from 'react'
 import TooltipTrigger, { TooltipTriggerProps } from 'react-popper-tooltip'
 import MediaQuery from 'react-responsive'
@@ -22,6 +23,7 @@ type Props = {
 	offsetAlt?: number
 	selectable?: boolean
 	contentStyle?: React.CSSProperties
+	containerStyle?: React.CSSProperties
 }
 export default class Tooltip extends TrackedComponent<Props> {
 	trackedName = 'Tooltip'
@@ -62,6 +64,8 @@ export default class Tooltip extends TrackedComponent<Props> {
 			...styles.tooltip,
 			...props.contentStyle,
 		}
+
+		const containerCSS = css(props.containerStyle)
 
 		return (
 			<MediaQuery minWidth={config.mobileWidthTrigger}>
@@ -146,11 +150,13 @@ export default class Tooltip extends TrackedComponent<Props> {
 											ref: triggerRef,
 											className: 'trigger',
 										})}
+										{...containerCSS}
 									>
 										{props.children}
 									</span>
 								) : (
 									<button
+										{...containerCSS}
 										type='button'
 										{...getTriggerProps({
 											ref: triggerRef,

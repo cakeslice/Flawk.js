@@ -863,6 +863,7 @@ class MenuClass extends TrackedComponent<MenuProps> {
 							>
 								{link.justIcon && link.name ? (
 									<Tooltip
+										containerStyle={{ width: '100%', height: '100%' }}
 										tooltipProps={{
 											placement: this.props.horizontal ? 'bottom' : 'right',
 										}}
@@ -990,6 +991,9 @@ class MenuClass extends TrackedComponent<MenuProps> {
 					else
 						return link.justIcon && link.name ? (
 							<Tooltip
+								containerStyle={
+									this.props.horizontal ? { height: '100%' } : { width: '100%' }
+								}
 								tooltipProps={{
 									placement: this.props.horizontal ? 'bottom' : 'right',
 								}}

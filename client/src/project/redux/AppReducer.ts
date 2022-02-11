@@ -109,7 +109,7 @@ export const fetchUser = async (dispatch: StoreDispatch): Promise<void> => {
 		let offlineUser: UserState | undefined
 		if (storedOfflineUser) offlineUser = JSON.parse(storedOfflineUser)
 
-		const authError = res.status && res.status < 500 ? true : false
+		const authError = res.body && res.body.invalidToken ? true : false
 
 		dispatch(userFetched({ user: authError ? undefined : offlineUser, authError: authError }))
 	}

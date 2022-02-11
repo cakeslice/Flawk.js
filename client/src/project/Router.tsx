@@ -347,11 +347,7 @@ class PublicWrapper extends Component<{ auth?: boolean; desktop: boolean }> {
 		return (
 			<div
 				style={{
-					paddingTop: this.props.auth
-						? !this.props.desktop
-							? 30
-							: undefined
-						: undefined,
+					paddingTop: this.props.auth ? 30 : undefined,
 				}}
 			>
 				<div

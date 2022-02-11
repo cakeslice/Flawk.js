@@ -93,7 +93,7 @@ async function sendRequest(method: string, path: string, options: Options, body?
 
 	if (options.internal) {
 		const token = await global.storage.getItem('token')
-		if (token) headers = { ...headers, lang: global.lang.text, token: token }
+		headers = { ...headers, lang: global.lang.text, token: token || 'no-token' }
 	}
 
 	let fD
