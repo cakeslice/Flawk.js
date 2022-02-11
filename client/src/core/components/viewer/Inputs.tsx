@@ -55,13 +55,16 @@ export default class Inputs extends Component {
 						usageBackground: appearance && appearance.usageBackground,
 					})
 				}}
-				options={[{ label: 'Default', value: 'default' }].concat(
-					appearances.map((e) => {
-						return {
-							label: config.capitalizeAll(e.name.replaceAll('_', ' ')),
-							value: e.name,
-						}
-					})
+				options={_.uniqBy(
+					[{ label: 'Default', value: 'default' }].concat(
+						appearances.map((e) => {
+							return {
+								label: config.capitalizeAll(e.name.replaceAll('_', ' ')),
+								value: e.name,
+							}
+						})
+					),
+					(e) => e.value
 				)}
 			></Dropdown>
 		)

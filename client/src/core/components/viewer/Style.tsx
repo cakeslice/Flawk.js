@@ -507,19 +507,22 @@ export default class Style extends Component<Props> {
 												appearance && appearance.usageBackground,
 										})
 									}}
-									options={[
-										{ label: 'Default', value: 'default' },
-										{ label: 'Primary', value: 'primary' },
-										{ label: 'Secondary', value: 'secondary' },
-									].concat(
-										styles.buttonAppearances().map((e) => {
-											return {
-												label: config.capitalizeAll(
-													e.name.replaceAll('_', ' ')
-												),
-												value: e.name,
-											}
-										})
+									options={_.uniqBy(
+										[
+											{ label: 'Default', value: 'default' },
+											{ label: 'Primary', value: 'primary' },
+											{ label: 'Secondary', value: 'secondary' },
+										].concat(
+											styles.buttonAppearances().map((e) => {
+												return {
+													label: config.capitalizeAll(
+														e.name.replaceAll('_', ' ')
+													),
+													value: e.name,
+												}
+											})
+										),
+										(e) => e.value
 									)}
 								></Dropdown>
 								<sp />
