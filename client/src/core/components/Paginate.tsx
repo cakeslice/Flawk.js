@@ -87,6 +87,7 @@ export default function Paginate(props: Props) {
 						alignSelf: 'center',
 						opacity: global.nightMode ? 0.25 : 0.5,
 						color: styles.colors.black,
+						userSelect: 'none',
 						...style,
 					}}
 					key={`Paginate${data.key}`}

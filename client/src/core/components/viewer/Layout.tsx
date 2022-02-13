@@ -15,6 +15,7 @@ import Paginate from 'core/components/Paginate'
 import QueryParams from 'core/components/QueryParams'
 import config from 'core/config'
 import styles from 'core/styles'
+import _ from 'lodash'
 import React from 'react'
 import MediaQuery from 'react-responsive'
 import Collapsible from '../Collapsible'
@@ -47,6 +48,7 @@ export default class Layout extends QueryParams<
 			| undefined,
 		isOpen: false,
 		fetching: false,
+		selected: [] as string[],
 	}
 
 	defaultQueryParams = {
@@ -205,36 +207,48 @@ export default class Layout extends QueryParams<
 							</Section>
 							<Section title='Table' tags={['<FTable/>']} noOverflow code={codeTable}>
 								<div>
-									<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
-										<FInput
-											name='buffered_search'
-											defaultValue={this.queryParams.search}
-											bufferedInput
-											onChange={async (e) => {
-												this.setQueryParams({
-													search: e as string | undefined,
-												})
-												await this.fetchData()
-											}}
-											placeholder={'Buffered Search'}
-										></FInput>
-										<FInput
-											name='manual_search'
-											style={{ maxWidth: 210, width: '100%' }}
-											defaultValue={this.queryParams.search}
-											onChange={(e) => {
-												this.setQueryParams({
-													search: e as string | undefined,
-												})
-											}}
-											onKeyPress={(e) => {
-												if (e.key === 'Enter') this.fetchData()
-											}}
-											onBlur={async (e) => {
-												await this.fetchData()
-											}}
-											placeholder={'Manual Search (Press Enter)'}
-										></FInput>
+									<div className='flex'>
+										<div className='grow wrapMarginTopLeft flex flex-wrap justify-start'>
+											<FInput
+												name='buffered_search'
+												defaultValue={this.queryParams.search}
+												bufferedInput
+												onChange={async (e) => {
+													this.setQueryParams({
+														search: e as string | undefined,
+													})
+													await this.fetchData()
+												}}
+												placeholder={'Buffered Search'}
+											></FInput>
+											<FInput
+												name='manual_search'
+												style={{ maxWidth: 210, width: '100%' }}
+												defaultValue={this.queryParams.search}
+												onChange={(e) => {
+													this.setQueryParams({
+														search: e as string | undefined,
+													})
+												}}
+												onKeyPress={(e) => {
+													if (e.key === 'Enter') this.fetchData()
+												}}
+												onBlur={async (e) => {
+													await this.fetchData()
+												}}
+												placeholder={'Manual Search (Press Enter)'}
+											></FInput>
+										</div>
+										{this.state.selected.length > 0 && (
+											<div className='wrapMarginTopLeft flex flex-wrap justify-end items-center'>
+												<div>
+													<span style={{ fontWeight: 500 }}>
+														{this.state.selected.length}
+													</span>{' '}
+													selected
+												</div>
+											</div>
+										)}
 									</div>
 									<div style={{ minHeight: 10 }}></div>
 									<FTable
@@ -266,10 +280,34 @@ export default class Layout extends QueryParams<
 												name: (
 													<div>
 														<FButton
-															/* onChange={(e) => {
-															}} */
+															isDisabled={
+																!this.state.data ||
+																// @ts-ignore
+																this.state.data.items.length === 0
+															}
+															onChange={(e) => {
+																if (e) {
+																	this.state.selected = []
+																	if (this.state.data)
+																		this.state.data.items.forEach(
+																			(i) => {
+																				this.state.selected.push(
+																					i.id
+																				)
+																			}
+																		)
+																} else {
+																	this.state.selected = []
+																}
+
+																this.forceUpdate()
+															}}
 															checkbox
-															//checked={}
+															checked={
+																this.state.data &&
+																this.state.selected.length ===
+																	this.state.data.items.length
+															}
 														></FButton>
 													</div>
 												),
@@ -282,18 +320,28 @@ export default class Layout extends QueryParams<
 												cell: (value, d) => (
 													<div>
 														<FButton
-															/* onChange={(e) => {
-																if (e) this.state.selected.push(d._id)
-																else
+															onChange={(e) => {
+																if (e)
+																	this.state.selected.push(
+																		d.id as string
+																	)
+																else {
 																	_.remove(
 																		this.state.selected,
-																		(e) => e === d._id
+																		(e) => e === 'all_visible'
 																	)
+																	_.remove(
+																		this.state.selected,
+																		(e) => e === d.id
+																	)
+																}
 
 																this.forceUpdate()
-															}} */
+															}}
 															checkbox
-															//checked={this.state.selected.includes(d._id)}
+															checked={this.state.selected.includes(
+																d.id as string
+															)}
 														></FButton>
 													</div>
 												),

@@ -208,7 +208,6 @@ export default class FTable extends QueryParams<
 			...headerWrapperStyle,
 			...(overrideStyle && overrideStyle.headerWrapperStyle),
 		}
-		console.log(JSON.stringify(bottomBarStyle))
 		bottomBarStyle = {
 			paddingLeft: bottomBarStyle.paddingLeft,
 			paddingRight: bottomBarStyle.paddingRight,

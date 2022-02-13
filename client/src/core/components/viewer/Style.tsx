@@ -175,6 +175,7 @@ export default class Style extends Component<Props> {
 									<ul>
 										<li>
 											Lorem <tag>Tag #1</tag>
+											<vr />
 											<tag>Tag #2</tag>
 										</li>
 										<li>Ipsum</li>

@@ -180,11 +180,17 @@ li {
 	padding-top: 3px;
 }
 hr {
-	opacity: 0.2;
+	opacity: 0.25;
 	border-width: 1px;
 	border-bottom: none;
 	border-left: none;
 	border-right: none;
+}
+vr {
+	opacity: 0.25;
+	margin: 0 15px;
+	height: 50%;
+	border-left: 1px inset;
 }
 
 tag {
@@ -197,7 +203,6 @@ tag {
 	border-radius: 6px;
 	background: rgba(127, 127, 127, 0.15);
 }
-
 hl {
 	border-radius: 3px;
 	padding: 1px;
@@ -272,7 +277,7 @@ button {
 	letter-spacing: 0.4px;
 	border: none;
 	user-select: none;
-	/* text-transform: uppercase; */
+	text-transform: inherit;
 	padding: 0px;
 	color: inherit;
 	font-weight: inherit;

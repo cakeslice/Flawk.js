@@ -32,6 +32,7 @@ declare global {
 		interface IntrinsicElements {
 			sp: any
 			bb: any
+			vr: any
 			tag: any
 			hl: any
 		}

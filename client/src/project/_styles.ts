@@ -67,4 +67,6 @@ const styles: Partial<Styles> = {
 }
 export default styles
 
-export const projectStyles = { dashboardHeader: { marginBottom: 30, minHeight: 41 } }
+export const projectStyles = {
+	dashboardHeader: { marginBottom: 30, minHeight: 41 } as React.CSSProperties,
+}
