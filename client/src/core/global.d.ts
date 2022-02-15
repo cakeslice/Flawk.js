@@ -51,6 +51,7 @@ declare global {
 			closeButton?: boolean
 			closeOnClick?: boolean
 			autoClose?: boolean
+			pauseOnFocusLoss?: boolean
 		}
 	) => void
 	var routerHistory: () => History

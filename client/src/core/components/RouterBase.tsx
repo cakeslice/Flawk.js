@@ -39,14 +39,24 @@ function addFlagFunction(
 		closeButton?: boolean
 		closeOnClick?: boolean
 		closeAfter?: number
+		pauseOnFocusLoss?: boolean
 	}
 ) {
-	const { customComponent, playSound, autoClose, closeAfter, closeOnClick, closeButton } = {
+	const {
+		customComponent,
+		playSound,
+		autoClose,
+		closeAfter,
+		closeOnClick,
+		closeButton,
+		pauseOnFocusLoss,
+	} = {
 		customComponent: undefined,
 		playSound: false,
 		autoClose: false,
 		closeOnClick: false,
 		closeButton: true,
+		pauseOnFocusLoss: true,
 		...options,
 	}
 
@@ -110,7 +120,7 @@ function addFlagFunction(
 			hideProgressBar: autoClose || closeAfter ? false : true,
 			closeOnClick: closeOnClick,
 			pauseOnHover: true,
-			pauseOnFocusLoss: true,
+			pauseOnFocusLoss: pauseOnFocusLoss,
 			draggable: false,
 			closeButton: closeButton
 				? ({ closeToast }) => (
