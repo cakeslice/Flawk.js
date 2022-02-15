@@ -79,7 +79,7 @@ declare global {
 		  }
 	var socket: Socket
 	//
-	var playNotificationSound: () => void
+	var playNotificationSound: () => Promise<void>
 	//
 	var stats:
 		| {

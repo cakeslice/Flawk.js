@@ -21,7 +21,8 @@ import MediaQuery from 'react-responsive'
 import { Route, Switch } from 'react-router-dom'
 import './assets/fonts.css'
 import './assets/main.scss'
-//import notificationSound from './assets/sounds/notification.mp3'
+// eslint-disable-next-line
+//const notificationSound = require('project/assets/sounds/notification.mp3')
 import Footer from './pages/common/Footer'
 import Header from './pages/common/Header'
 import { fetchStructures, fetchUser, UserState } from './redux/AppReducer'
@@ -58,9 +59,10 @@ export default function Router(): React.ReactNode {
 	useConstructor(() => {
 		if (config.websocketSupport && global.socket) global.socket.on('data_update', onUpdateData)
 
-		global.playNotificationSound = () => {
-			//let audio = new Audio(notificationSound)
-			//audio.play()
+		global.playNotificationSound = async () => {
+			// eslint-disable-next-line
+			//const audio = new Audio(notificationSound)
+			//await audio.play()
 		}
 	})
 

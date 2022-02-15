@@ -423,6 +423,10 @@ const config: Config & InternalConfig = {
 		return 'rgba(' + c.r + ',' + c.g + ',' + c.b + ',' + c.a + ')'
 	},
 
+	chromeNotificationsEnabled() {
+		return Notification.permission === 'granted'
+	},
+
 	prettierConfig: {
 		trailingComma: 'es5',
 		tabWidth: 3,
@@ -485,6 +489,8 @@ type InternalConfig = {
 	replaceAlpha: (color: string, amount: number) => string
 	overlayColor: (background: string, color: string) => string
 	invertColor: (background: string, color: string) => string
+
+	chromeNotificationsEnabled: () => boolean
 
 	prettierConfig: {
 		trailingComma: 'es5' | 'none' | 'all'
