@@ -58,7 +58,13 @@ type TableProps = {
 	hideHeader?: boolean
 	expandContent?: (object: Obj) => React.ReactNode
 	columns?: Column[]
-	keySelector: string
+	keySelector:
+		| string
+		| ((
+				d: Obj & {
+					specialRow?: string | undefined
+				}
+		  ) => string)
 	specialRows?: SpecialRow[]
 	pagination?: {
 		onClick: (page: number) => void
@@ -140,6 +146,7 @@ export default class FTable extends QueryParams<
 
 		const headerWrapperStyle: React.CSSProperties = {
 			fontSize: styles.defaultFontSize,
+			fontWeight: 500,
 			background: styles.inputBackground || styles.colors.white,
 			padding: '0px ' + paddingX * 2 + 'px 0px ' + paddingX * 2 + 'px',
 			boxSizing: 'border-box',
@@ -416,7 +423,10 @@ export default class FTable extends QueryParams<
 								>
 									{props.data &&
 										props.data.map((d) => {
-											const k = _.get(d, props.keySelector) as string
+											const k =
+												typeof props.keySelector === 'function'
+													? props.keySelector(d)
+													: (_.get(d, props.keySelector) as string)
 
 											let sR: undefined | SpecialRow
 											if (d.specialRow) {

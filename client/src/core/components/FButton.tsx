@@ -147,6 +147,7 @@ export default class FButton extends TrackedComponent<Props> {
 		const checked = (
 			formIK ? formIK.value !== false && formIK.value !== undefined : this.props.checked
 		) as boolean
+		if (checked !== undefined) this.state.checked = checked // eslint-disable-line
 		const invalid =
 			formIK && (formIK.touch || formIK.submitCount > 0) ? formIK.error : this.props.invalid
 
@@ -249,7 +250,9 @@ export default class FButton extends TrackedComponent<Props> {
 				},
 			}),
 			...(this.props.appearance === 'secondary' && {
-				borderColor: styles.colors.mainLight,
+				...((!this.props.checkbox || this.state.checked) && {
+					borderColor: styles.colors.mainLight,
+				}),
 				color: styles.colors.main,
 			}),
 		}
@@ -322,8 +325,6 @@ export default class FButton extends TrackedComponent<Props> {
 			}
 
 		if (this.props.checkbox) {
-			if (checked !== undefined) this.state.checked = checked // eslint-disable-line
-
 			if (!this.state.checked)
 				finalStyle.background = usageBackground
 					? config.overlayColor(

@@ -21,7 +21,7 @@ import Select, {
 } from 'react-select'
 
 export type Option = {
-	value: string
+	value: string | number
 	label: React.ReactNode
 	isDisabled?: boolean
 	style?: CSSObjectWithLabel
@@ -75,7 +75,7 @@ type Props = {
 	customInput?: boolean
 	//
 	placeholder?: string
-	value?: string
+	value?: string | number
 	bufferInterval?: number
 	//
 	loadOptions?: (

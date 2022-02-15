@@ -169,14 +169,17 @@ const _capitalizeAll = (s: string) => {
 	return output
 }
 
-const _formatNumber = function (n: number, onlyPositive = false) {
+const _formatNumber = function (n: number, onlyPositive = false, decimals = 0) {
 	n = Number.parseFloat(n.toString())
 
 	if (onlyPositive && n < 0) n = 0
 
 	if (n > 999999) return numeral(n).format('0,0.[0]a')
 	else if (n > 9999) return numeral(n).format('0,0.[0]a')
-	else return numeral(n).format('0,0')
+	else {
+		if (decimals) return numeral(n).format('0,0.' + '0'.repeat(decimals))
+		else return numeral(n).format('0,0')
+	}
 }
 const _formatDecimal = function (n: number, onlyPositive = false) {
 	n = Number.parseFloat(n.toString())
