@@ -12,11 +12,14 @@ import React from 'react'
 import TrackedComponent from './TrackedComponent'
 
 type Props = {
+	style?: React.CSSProperties
+	renderValue?: (value: number) => string
 	min: number
 	max: number
 	step?: number
 	defaultValue: [number, number]
 	width?: number
+	onChange?: (value: [number, number]) => void
 }
 export default class Slider extends TrackedComponent<Props> {
 	trackedName = 'Slider'
@@ -36,10 +39,13 @@ export default class Slider extends TrackedComponent<Props> {
 				style={{
 					width: this.props.width || 150,
 					marginRight: 5,
+					...this.props.style,
 				}}
 			>
 				<p style={{ fontSize: styles.defaultFontSize }}>
-					{this.state.value[0].toString() + ' m'}
+					{this.props.renderValue
+						? this.props.renderValue(this.state.value[0])
+						: this.state.value[0].toString() + ' m'}
 				</p>
 				<div style={{ minHeight: 5 }}></div>
 				<div style={{ marginLeft: 5 }}>
@@ -55,6 +61,7 @@ export default class Slider extends TrackedComponent<Props> {
 						}}
 						onChange={(e) => {
 							this.setState({ value: e })
+							if (this.props.onChange) this.props.onChange(e as [number, number])
 						}}
 						defaultValue={this.props.defaultValue}
 						allowCross={false}
@@ -65,7 +72,9 @@ export default class Slider extends TrackedComponent<Props> {
 				</div>
 				<div style={{ minHeight: 5 }}></div>
 				<p style={{ fontSize: styles.defaultFontSize, alignSelf: 'flex-end' }}>
-					{this.state.value[1].toString() + ' m'}
+					{this.props.renderValue
+						? this.props.renderValue(this.state.value[1])
+						: this.state.value[1].toString() + ' m'}
 				</p>
 			</div>
 		)
@@ -79,7 +88,7 @@ const handleComponent = (props: {
 	offset: number
 }) => {
 	const { value, dragging, index, ...restProps } = props
-	return <Handle key={index} dragging={dragging} {...restProps} />
+	return <Handle value={value} key={index} dragging={dragging} {...restProps} />
 }
 const handle = {
 	position: 'absolute',
@@ -96,7 +105,7 @@ const activeHandle = {
 	boxSizing: 'content-box',
 	border: 'solid 3px ' + styles.colors.mainVeryLight,
 }
-class Handle extends React.Component<{ dragging?: boolean; offset: number }> {
+class Handle extends React.Component<{ value: number; dragging?: boolean; offset: number }> {
 	render() {
 		const handleStyle = Object.assign(
 			{ left: `${this.props.offset}%` },

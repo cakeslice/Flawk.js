@@ -144,6 +144,34 @@ export default {
 		return new Promise((resolve) => setTimeout(resolve, ms))
 	},
 
+	queryString: function (object: Obj, removeEmpty = true) {
+		if (removeEmpty)
+			Object.keys(object).forEach((key) => {
+				if (object[key] === undefined || object[key] === null) delete object[key]
+			})
+		return Object.entries(object)
+			.map(([key, value]) => {
+				let v: string | number | boolean = ''
+
+				if (value === undefined || value === null) v = ''
+				else if (typeof value === 'object') {
+					if (Object.prototype.toString.call(value) === '[object Date]')
+						v = (value as Date).toISOString()
+					else
+						console.error(
+							'Unsupported query parameter "' +
+								key +
+								'":\n' +
+								JSON.stringify(value, null, 3)
+						)
+				} else v = value as string
+
+				return `${encodeURIComponent(key)}=${encodeURIComponent(v)}`
+			})
+			.sort()
+			.join('&')
+	},
+
 	///////////////////////////////////// LOGGER
 
 	logCatch: _logCatch,
