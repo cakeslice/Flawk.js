@@ -475,7 +475,7 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 												setCookieNotice('true')
 											}}
 										>
-											I AGREE
+											OK
 										</FButton>
 
 										<div></div>
