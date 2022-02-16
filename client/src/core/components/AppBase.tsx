@@ -447,6 +447,7 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 										<div></div>
 
 										<p
+											data-nosnippet
 											style={{
 												fontSize: desktop ? 12 : 11,
 												opacity: 0.75,
