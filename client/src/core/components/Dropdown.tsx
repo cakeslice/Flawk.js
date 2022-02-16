@@ -394,9 +394,10 @@ export default class Dropdown extends TrackedComponent<Props> {
 					}),
 				}
 			},
-			input: (styles): CSSObjectWithLabel => {
+			input: (s): CSSObjectWithLabel => {
 				return {
-					...styles,
+					...s,
+					color: config.replaceAlpha(styles.colors.black, 0.75),
 					...(this.props.style && this.props.style.input),
 					padding: 0,
 					margin: 0,
