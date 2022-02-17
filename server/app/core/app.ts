@@ -844,6 +844,8 @@ function setup() {
 	app.use(config.path + '/*', mongoSanitize())
 
 	if (!config.jest) {
+		const tooManyMessage = 'Too many requests, try again later'
+
 		const rateLimiter = {
 			default: new RateLimiterMemory({
 				points: 12, // X requests
@@ -867,7 +869,7 @@ function setup() {
 					})
 					.catch(() => {
 						console.log(req.baseUrl + ': Too many requests from ' + req.ip)
-						common.setResponse(429, req, res, 'Too many requests')
+						common.setResponse(429, req, res, tooManyMessage)
 					})
 			})
 		})
@@ -880,7 +882,7 @@ function setup() {
 					})
 					.catch(() => {
 						console.log(req.baseUrl + ': Too many requests from ' + req.ip)
-						common.setResponse(429, req, res, 'Too many requests')
+						common.setResponse(429, req, res, tooManyMessage)
 					})
 			})
 		})
@@ -892,7 +894,7 @@ function setup() {
 				})
 				.catch(() => {
 					console.log(req.baseUrl + ': Too many requests from ' + req.ip)
-					common.setResponse(429, req, res, 'Too many requests')
+					common.setResponse(429, req, res, tooManyMessage)
 				})
 		})
 	}

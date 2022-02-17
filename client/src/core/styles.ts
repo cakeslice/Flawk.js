@@ -29,7 +29,7 @@ const _mainVeryLight = 'rgba(51,108,251, .15)'
 
 const _green = 'rgba(40,201,134, 1)'
 const _red = 'rgba(250,61,91,1)'
-const _pink = 'rgba(189, 31, 130, 1)'
+const _pink = 'rgba(219, 31, 130, 1)'
 const _purple = 'rgba(159, 90, 253, 1)'
 const _orange = 'rgba(255,152,0,1)'
 const _yellow = 'rgba(255,235,59,1)'
@@ -85,6 +85,7 @@ const styles: Styles & { colors: Colors; gradients: Gradients } = {
 		noCloseButton: false,
 		fontWeight: 'bold',
 		fontSize: 19,
+		lineHeight: '23px',
 		textStyle: {
 			marginTop: 5,
 		},
@@ -367,7 +368,7 @@ export type Styles = {
 	modalPadding?: number
 	modalBackground: React.CSSProperties['background']
 	modalButtonWrap: boolean
-	modalCard?: React.CSSProperties
+	modalCard?: () => React.CSSProperties
 	modalContentStyle?: React.CSSProperties
 	modalButtonsStyle: React.CSSProperties & {
 		line?: boolean

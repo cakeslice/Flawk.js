@@ -88,10 +88,7 @@ export default class Tooltip extends TrackedComponent<Props> {
 							]}
 							trigger={desktop ? ['hover'] : []}
 							{...props.tooltipProps}
-							tooltipShown={true}
-							onVisibilityChange={(visible) => {
-								if (this.state.visible !== visible) this.setState({ visible })
-							}}
+							tooltipShown={desktop ? undefined : this.state.visible}
 							tooltip={({ tooltipRef, getTooltipProps }) =>
 								desktop ? (
 									<div
@@ -102,7 +99,6 @@ export default class Tooltip extends TrackedComponent<Props> {
 									>
 										<Animated
 											trackedName='Tooltip'
-											controlled={this.state.visible}
 											className={
 												!props.selectable ? 'select-none' : undefined
 											}
@@ -127,7 +123,6 @@ export default class Tooltip extends TrackedComponent<Props> {
 										>
 											<Animated
 												trackedName='Tooltip'
-												controlled={this.state.visible}
 												className={
 													!props.selectable ? 'select-none' : undefined
 												}

@@ -33,10 +33,6 @@ type Props = {
 	) => React.ReactNode
 	// Props to set modal state on the parent component on close automatically
 	name?: string
-	parent?: Component
-	// To set modal state manually
-	visible?: boolean
-	onClose?: () => void
 	//
 	style?: React.CSSProperties
 	headerStyle?: HeaderStyle
@@ -45,7 +41,19 @@ type Props = {
 		line: boolean
 	}
 	noAutoFocus?: boolean
-}
+} & (
+	| {
+			parent: Component
+			visible?: undefined
+			onClose?: undefined
+	  }
+	| {
+			parent?: undefined
+			// To set modal state manually
+			visible?: boolean
+			onClose: () => void
+	  }
+)
 export default class Modal extends TrackedComponent<Props> {
 	trackedName = 'Modal'
 	shouldComponentUpdate(nextProps: Props, nextState: typeof this.state) {
@@ -286,7 +294,7 @@ export default class Modal extends TrackedComponent<Props> {
 												flexDirection: 'column',
 												justifyContent: 'space-between',
 												padding: 0,
-												...(styles.modalCard && styles.modalCard),
+												...(styles.modalCard && styles.modalCard()),
 												...this.props.style,
 											},
 										}}
@@ -341,6 +349,7 @@ class ModalHeader extends Component<{
 						style={{
 							...{
 								letterSpacing: 0.4,
+								maxWidth: '90%',
 								...(styles.modalHeaderStyle && styles.modalHeaderStyle.textStyle),
 								...(this.props.headerStyle && this.props.headerStyle.textStyle),
 							},

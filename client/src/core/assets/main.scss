@@ -180,6 +180,7 @@ li {
 	padding-top: 3px;
 }
 hr {
+	width: 100%;
 	opacity: 0.25;
 	border-width: 1px;
 	border-bottom: none;
@@ -194,6 +195,7 @@ vr {
 }
 
 tag {
+	width: max-content;
 	opacity: 0.66;
 	padding: 2px 5px;
 	margin: 1px;
