@@ -15,6 +15,7 @@
 		"build_docker:staging": "npm run env:build-staging npm run buildPushDocker",
 		"build_local:prod": "npm run env:build-prod npm run buildLocal",
 		"build_docker:prod": "npm run env:build-prod npm run buildPushDocker",
+		"generateDatabase": "mtgen --no-populate-overload -o ./app/project/database.gen.ts ./app/project/database.ts && node ./app/core/internal/fixMtgen.js && prettier --write ./app/project/database.gen.ts",
 		"- HELPER SCRIPTS -": "-----------------------------",
 		"startLocalJavascript": "cross-env NODE_PATH=dist/ node --inspect ./dist/server.js",
 		"startLocal": "npm run lintCI && tsc-watch --onSuccess \"npm run startLocalJavascript\"",
@@ -32,7 +33,6 @@
 		"lintTypescriptCI": "tsc --noEmit --incremental",
 		"auditFix": "npm audit fix && npm run auditCI",
 		"auditCI": "npm audit --audit-level=critical",
-		"generateDatabase": "mtgen --no-populate-overload -o ./app/project/database.gen.ts ./app/project/database.ts && node ./app/core/internal/fixMtgen.js && prettier --write ./app/project/database.gen.ts",
 		"checkStaged": "lint-staged"
 	},
 	"dependencies": {
