@@ -87,8 +87,6 @@ export default class Settings extends Component<DashboardProps> {
 												resetForm()
 											}
 										}
-
-										setSubmitting(false)
 									} else {
 										const r = await post('client/change_settings', {
 											...values,
@@ -108,9 +106,9 @@ export default class Settings extends Component<DashboardProps> {
 											setFieldValue('password', undefined)
 											resetForm()
 										}
-
-										setSubmitting(false)
 									}
+
+									setSubmitting(false)
 								}}
 							>
 								{({ values, isSubmitting, setFieldValue, errors, dirty }) => {

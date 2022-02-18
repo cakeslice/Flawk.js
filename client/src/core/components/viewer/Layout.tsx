@@ -305,6 +305,7 @@ export default class Layout extends QueryParams<
 															checkbox
 															checked={
 																this.state.data &&
+																this.state.data.items.length > 0 &&
 																this.state.selected.length ===
 																	this.state.data.items.length
 															}
@@ -326,10 +327,6 @@ export default class Layout extends QueryParams<
 																		d.id as string
 																	)
 																else {
-																	_.remove(
-																		this.state.selected,
-																		(e) => e === 'all_visible'
-																	)
 																	_.remove(
 																		this.state.selected,
 																		(e) => e === d.id

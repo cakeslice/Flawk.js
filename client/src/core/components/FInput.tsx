@@ -263,16 +263,17 @@ export default class FInput extends TrackedComponent<Props> {
 		if (this.props.field && this.props.form) {
 			const field = this.props.field
 			const form = this.props.form
+			const meta = form.getFieldMeta(field.name)
 			formIK = {
 				name: field.name,
-				value: form.values[field.name],
-				error: form.errors[field.name],
-				touch: form.touched[field.name],
+				value: meta.value,
+				error: meta.error,
+				touch: meta.touched,
 				setFieldValue: form.setFieldValue,
 				setFieldTouched: form.setFieldTouched,
 				handleBlur: form.handleBlur,
 				submitCount: form.submitCount,
-				changed: form.values[field.name] !== form.initialValues[field.name], // TODO: Could be useful!
+				changed: meta.value !== meta.initialValue, // TODO: Could be useful!
 			}
 		}
 

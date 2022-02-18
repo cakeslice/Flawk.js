@@ -279,7 +279,7 @@ function mapApiType(type: string): {
 	$ref?: string
 	type?: string
 	format?: string
-	of?: { $ref?: string; type?: string; format?: string }
+	items?: { $ref?: string; type?: string; format?: string }
 } {
 	let typeCheck = type
 	if (type.includes('[]')) {
@@ -318,7 +318,9 @@ function mapApiType(type: string): {
 	if (type.includes('[]')) {
 		return {
 			type: 'array',
-			of: output,
+			items: {
+				...output,
+			},
 		}
 	}
 
@@ -378,7 +380,7 @@ function addPath(path: Path, tag: string) {
 					if (map.type === 'array') {
 						body[property] = {
 							type: 'array',
-							items: map.of ? map.of : {},
+							items: map.items,
 						}
 					} else body[property] = map
 				} else {
@@ -461,7 +463,7 @@ function addPath(path: Path, tag: string) {
 								if (responseBody)
 									responseBody[property] = {
 										type: 'array',
-										items: map.of ? map.of : {},
+										items: map.items,
 									}
 							} else {
 								if (responseBody) responseBody[property] = map

@@ -6,7 +6,7 @@
  */
 
 import { ArrayKeyObject, ArrayObject, KeyObject, Obj } from 'flawk-types'
-import mongoose, { Model, Schema } from 'mongoose'
+import mongoose, { Model, Schema, Types } from 'mongoose'
 // @ts-ignore
 import mongooseLeanId from 'mongoose-lean-id'
 import mongooseLeanVirtuals from 'mongoose-lean-virtuals'
@@ -74,6 +74,10 @@ export default {
 		}
 		console.error('Failed to get structure: ' + name)
 		return undefined
+	},
+	replaceArray(array: Types.Array<unknown>, newArray: unknown[]) {
+		array.splice(0, array.length)
+		array.addToSet(...newArray)
 	},
 	unshiftToArray: async function unshiftToArray(
 		// eslint-disable-next-line

@@ -45,7 +45,7 @@ type Props = {
 	| {
 			parent: Component
 			visible?: undefined
-			onClose?: undefined
+			onClose?: () => void
 	  }
 	| {
 			parent?: undefined
