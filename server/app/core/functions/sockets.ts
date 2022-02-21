@@ -129,12 +129,6 @@ export function globalSocketMessage(channel: string, data: Obj, loggedInData?: O
 	const loggedInSockets: Socket[] = []
 	// eslint-disable-next-line
 	for (const [s, socket] of global.clientSockets.sockets) {
-		console.log(
-			'HELO: ' +
-				(socket && socket._client && socket._client.permission <= 100) +
-				' ' +
-				JSON.stringify(socket._client, null, 2)
-		)
 		if (loggedInData && socket._client && socket._client.permission <= 100) {
 			// eslint-disable-next-line
 			loggedInSockets.push(socket)
@@ -143,7 +137,6 @@ export function globalSocketMessage(channel: string, data: Obj, loggedInData?: O
 			sockets.push(socket)
 		}
 	}
-	console.log('FUCK ' + sockets.length + ' ' + loggedInSockets.length)
 	if (config.debugSockets)
 		console.log('Sending global socket message: ' + channel + ' | ' + JSON.stringify(data))
 	message(sockets, channel, data)
