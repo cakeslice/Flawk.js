@@ -7,7 +7,6 @@
 
 import { addAsync } from '@awaitjs/express'
 import * as Sentry from '@sentry/node'
-import Tracing from '@sentry/tracing'
 import bcrypt from 'bcryptjs'
 // @ts-ignore
 import cachegoose from 'cachegoose'
@@ -16,7 +15,6 @@ import cookieParser from 'cookie-parser'
 import common from 'core/common'
 import config from 'core/config'
 import db, { getNextRef } from 'core/functions/db'
-import { init as notificationsInit } from 'core/functions/notifications'
 import { init as socketInit } from 'core/functions/sockets'
 import HttpException from 'core/internal/HttpException'
 import cors from 'cors'
@@ -26,7 +24,6 @@ import * as OpenApiValidator from 'express-openapi-validator'
 import paginate from 'express-paginate'
 import { ArrayKeyObject, KeyArrayKeyObject, Obj } from 'flawk-types'
 import fs from 'fs'
-import GitRepoInfo from 'git-repo-info'
 import helmet from 'helmet'
 import _ from 'lodash'
 import makeSynchronous from 'make-synchronous'
@@ -38,8 +35,6 @@ import responseTime from 'response-time'
 import { Server as SocketServer } from 'socket.io'
 import 'source-map-support/register'
 import validator from 'validator'
-import winston from 'winston'
-import { Loggly } from 'winston-loggly-bulk'
 
 const purpleColor = '\x1b[35m%s\x1b[0m'
 const blueColor = '\x1b[36m%s\x1b[0m'
@@ -95,71 +90,6 @@ const corsOrigins = <CustomOrigin>(
 		callback(allowed ? null : new Error('Origin is not allowed'), allowed)
 	}
 )
-
-function initLogging() {
-	const gitHash = process.env.CAPROVER_GIT_COMMIT_SHA || GitRepoInfo().sha
-	global.buildNumber = gitHash ? gitHash.substring(0, 7) : 'unknown'
-
-	if (config.sentryID) {
-		Sentry.init({
-			release: '@' + global.buildNumber,
-			environment: config.prod ? 'production' : config.staging ? 'staging' : 'development',
-			dsn: config.sentryID,
-			integrations: [
-				// Enable HTTP calls tracing
-				new Sentry.Integrations.Http({ tracing: true }),
-				// Enable Express.js middleware tracing
-				new Tracing.Integrations.Express({
-					// To trace all requests to the default router
-					app,
-					// Alternatively, you can specify the routes you want to trace:
-					// router: someRouter,
-				}),
-			],
-			// Leaving the sample rate at 1.0 means that automatic instrumentation will send a transaction each time a user loads any page or navigates anywhere in your app, which is a lot of transactions. Sampling enables you to collect representative data without overwhelming either your system or your Sentry transaction quota.
-			tracesSampleRate: 0.2,
-		})
-	}
-
-	if (process.env.LogglyToken && process.env.LogglySubdomain && process.env.LogglyTag) {
-		winston.add(
-			new Loggly({
-				timestamp: false,
-				token: process.env.LogglyToken,
-				subdomain: process.env.LogglySubdomain,
-				tags: [process.env.LogglyTag],
-				json: true,
-			})
-		)
-
-		console.log('Now logging to Loggly...')
-		/* eslint-disable */
-		// @ts-ignore
-		console.log = (...args) => winston.info.call(winston, ...args)
-		// @ts-ignore
-		console.info = (...args) => winston.info.call(winston, ...args)
-		// @ts-ignore
-		console.warn = (...args) => winston.warn.call(winston, ...args)
-		// @ts-ignore
-		console.error = (...args) => winston.error.call(winston, ...args)
-		// @ts-ignore
-		console.debug = (...args) => winston.debug.call(winston, ...args)
-		/* eslint-enable */
-	}
-
-	process.on('uncaughtException', function (err) {
-		Sentry.captureException(err)
-		console.error('uncaughtException:', err.message || err)
-		console.error(err.stack || err)
-		makeSynchronous(async () => {
-			await Sentry.close(2000)
-			await common.sleep(2000)
-		})
-	})
-	process.on('exit', (code) => {
-		console.log(`About to exit with code: ${code}`)
-	})
-}
 
 async function extractRouteTypes(file: string) {
 	const ts = await import('typescript')
@@ -793,8 +723,6 @@ async function generateOpenApi() {
 }
 
 function setup() {
-	initLogging()
-
 	console.log(purpleColor, '\n#### Flawk.js ####\n')
 
 	if (config.jest) console.log(yellowColor, '----- JEST TESTING -----\n')
@@ -1258,8 +1186,6 @@ async function listen() {
 	const server = app.listen(config.port, () => {
 		console.log(greenColor, 'Listening to requests on port ' + config.port.toString() + '\n\n')
 	})
-
-	notificationsInit()
 
 	if (config.websocketSupport) {
 		const socketServer = new SocketServer(server, {

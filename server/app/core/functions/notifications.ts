@@ -9,7 +9,14 @@ import config from 'core/config'
 import db from 'core/functions/db'
 import { Client, WebPushSubscription } from 'project/database'
 import webpush from 'web-push'
-const redColor = '\x1b[31m%s\x1b[0m'
+
+if (process.env.publicVAPID && process.env.privateVAPID) {
+	webpush.setVapidDetails(
+		'mailto:' + config.webPushEmail,
+		process.env.publicVAPID,
+		process.env.privateVAPID
+	)
+}
 
 ///////////////////////////////////// WEB PUSH NOTIFICATIONS
 
@@ -55,6 +62,7 @@ export const globalWebPushNotification = async (
 				s.client &&
 				(await Client.findOne({
 					permission: { $lte: 100 },
+					// eslint-disable-next-line
 					_id: db.toObjectID(s.client.toString()),
 				}).select('_id'))
 			await webpush.sendNotification(body, c ? loggedP : p)
@@ -121,18 +129,4 @@ export const pushGlobalNotification = async function (message: string /* data = 
 	if(!config.prod && !config.staging)
 	console.log('Sent global mobile push notification: ' + data, httpResponse.statusCode)
 	*/
-}
-
-//
-
-export function init() {
-	if (!config.webPushSupport) console.log('Web push is disabled')
-	else if (process.env.publicVAPID && process.env.privateVAPID) {
-		webpush.setVapidDetails(
-			'mailto:' + config.webPushEmail,
-			process.env.publicVAPID,
-			process.env.privateVAPID
-		)
-		console.log('Web push is enabled')
-	} else console.error(redColor, 'Web push error: No VAPID keys found')
 }

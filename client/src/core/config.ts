@@ -491,6 +491,7 @@ const config: Config & InternalConfig = {
 		//
 
 		if (global.serviceWorker) {
+			// eslint-disable-next-line
 			await setupPushNotifications(global.serviceWorker)
 		}
 	},

@@ -15,8 +15,10 @@ import { toRegex } from 'diacritic-regex'
 import { NextFunction, Request, Response } from 'express'
 import paginate from 'express-paginate'
 import { Obj } from 'flawk-types'
+import GitRepoInfo from 'git-repo-info'
 import jwt from 'jsonwebtoken'
 import _ from 'lodash'
+import makeSynchronous from 'make-synchronous'
 import mongoose from 'mongoose'
 import fetch from 'node-fetch'
 import { LocalStorage } from 'node-localstorage'
@@ -27,12 +29,97 @@ import { Client, IRemoteConfig, RemoteConfig } from 'project/database'
 import RegexParser from 'regex-parser'
 import { URLSearchParams } from 'url'
 import * as uuid from 'uuid'
+import winston from 'winston'
+import { Loggly } from 'winston-loggly-bulk'
+
+const greenColor = '\x1b[32m%s\x1b[0m'
+const redColor = '\x1b[31m%s\x1b[0m'
+
+function _sleep(ms: number) {
+	return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
+function initLogging() {
+	console.log('') // Very first app log
+	const gitHash = process.env.CAPROVER_GIT_COMMIT_SHA || GitRepoInfo().sha
+	global.buildNumber = gitHash ? gitHash.substring(0, 7) : 'unknown'
+
+	if (process.env.LogglyToken && process.env.LogglySubdomain && process.env.LogglyTag) {
+		winston.add(
+			new Loggly({
+				timestamp: false,
+				token: process.env.LogglyToken,
+				subdomain: process.env.LogglySubdomain,
+				tags: [process.env.LogglyTag],
+				json: true,
+			})
+		)
+
+		console.log('Now logging to Loggly...')
+		/* eslint-disable */
+		// @ts-ignore
+		console.log = (...args) => winston.info.call(winston, ...args)
+		// @ts-ignore
+		console.info = (...args) => winston.info.call(winston, ...args)
+		// @ts-ignore
+		console.warn = (...args) => winston.warn.call(winston, ...args)
+		// @ts-ignore
+		console.error = (...args) => winston.error.call(winston, ...args)
+		// @ts-ignore
+		console.debug = (...args) => winston.debug.call(winston, ...args)
+		/* eslint-enable */
+	} else console.log('Loggly is disabled')
+
+	if (config.sentryID) {
+		Sentry.init({
+			release: '@' + global.buildNumber,
+			environment: config.prod ? 'production' : config.staging ? 'staging' : 'development',
+			dsn: config.sentryID,
+			integrations: [
+				// Enable HTTP calls tracing
+				new Sentry.Integrations.Http({ tracing: true }),
+			],
+			// Leaving the sample rate at 1.0 means that automatic instrumentation will send a transaction each time a user loads any page or navigates anywhere in your app, which is a lot of transactions. Sampling enables you to collect representative data without overwhelming either your system or your Sentry transaction quota.
+			tracesSampleRate: 0.2,
+		})
+		console.log(greenColor, 'Sentry is enabled')
+	} else console.log('Sentry is disabled')
+
+	if (config.postmarkKey) console.log(greenColor, 'Postmark is enabled')
+	if (!config.postmarkKey && config.nodemailerHost) {
+		console.log(greenColor, 'Nodemailer is enabled')
+	}
+	if (!config.postmarkKey && !config.nodemailerHost) console.log('E-mail is disabled')
+	if (!config.webPushSupport) console.log('Web push is disabled')
+	else if (process.env.publicVAPID && process.env.privateVAPID) {
+		console.log(greenColor, 'Web push is enabled')
+	} else console.error(redColor, 'Web push error: No VAPID keys found')
+
+	process.on('uncaughtException', function (err) {
+		Sentry.captureException(err)
+		console.error('uncaughtException:', err.message || err)
+		console.error(err.stack || err)
+		makeSynchronous(async () => {
+			await Sentry.close(2000)
+			await _sleep(2000)
+		})
+	})
+	process.on('exit', (code) => {
+		console.log(`About to exit with code: ${code}`)
+	})
+}
+initLogging()
+
+if (config.recaptchaSecretKey) console.log(greenColor, 'Recaptcha is enabled')
+else console.log('Recaptcha is disabled')
 
 const mb = 1024 * 1024
 // Megabytes
 const _localStorage = config.localStorageEnabled
 	? new LocalStorage('./local-storage', config.localStorageSize * mb)
 	: undefined
+if (config.localStorageEnabled) console.log(greenColor, 'Local storage is enabled')
+else console.log('Local storage is disabled')
 
 numeral.register('locale', 'us', {
 	delimiters: {
@@ -98,13 +185,20 @@ const s3 = new AWS.S3({
 	secretAccessKey: config.bucketAccessSecret,
 	apiVersion: '2006-03-01',
 })
+if (config.bucketEndpoint) console.log(greenColor, 'S3 bucket is enabled')
+else console.log('S3 bucked is disabled')
 
 let nexmoClient: Nexmo
-if (config.nexmo.ID && config.nexmo.token)
+if (config.nexmo.ID && config.nexmo.token) {
+	if (!config.nexmo.phoneNumber) {
+		console.log('SMS is disabled (no phoneNumber)')
+	} else if (process.env.noSMS) console.log('SMS is disabled')
+	else console.log(greenColor, 'SMS is enabled')
 	nexmoClient = new Nexmo({
 		apiKey: config.nexmo.ID,
 		apiSecret: config.nexmo.token,
 	})
+} else console.log('SMS is disabled')
 
 ////////////////
 
@@ -213,9 +307,7 @@ export default {
 		return _countPages(count, req)
 	},
 
-	sleep: function sleep(ms: number) {
-		return new Promise((resolve) => setTimeout(resolve, ms))
-	},
+	sleep: _sleep,
 
 	queryString: function (object: Obj, removeEmpty = true) {
 		if (removeEmpty)
@@ -433,30 +525,32 @@ export default {
 	///////////////////////////////////// RECAPTCHA
 
 	checkRecaptcha: async function (req: Request, res: Response) {
-		try {
-			if (config.recaptchaBypass && req.query.recaptchaToken === config.recaptchaBypass)
-				return true
+		if (config.recaptchaSecretKey || config.jest) {
+			try {
+				if (config.recaptchaBypass && req.query.recaptchaToken === config.recaptchaBypass)
+					return true
 
-			const params = new URLSearchParams()
-			if (config.recaptchaSecretKey) params.append('secret', config.recaptchaSecretKey)
-			if (req.query.recaptchaToken)
-				params.append('response', req.query.recaptchaToken as string)
-			params.append('remoteip', req.ip)
+				const params = new URLSearchParams()
+				if (config.recaptchaSecretKey) params.append('secret', config.recaptchaSecretKey)
+				if (req.query.recaptchaToken)
+					params.append('response', req.query.recaptchaToken as string)
+				params.append('remoteip', req.ip)
 
-			const r = await fetch('https://www.google.com/recaptcha/api/siteverify', {
-				method: 'POST',
-				body: params,
-			})
-			const json = (await r.json()) as Obj
+				const r = await fetch('https://www.google.com/recaptcha/api/siteverify', {
+					method: 'POST',
+					body: params,
+				})
+				const json = (await r.json()) as Obj
 
-			if (!config.prod) console.log(JSON.stringify(json))
+				if (!config.prod) console.log(JSON.stringify(json))
 
-			if (json && json.success) {
-				return true
+				if (json && json.success) {
+					return true
+				}
+			} catch (e) {
+				// If request fails, we will return 400
 			}
-		} catch (e) {
-			// If request fails, we will return 400
-		}
+		} else console.error('Recaptcha secret key not set!')
 		_setResponse(400, req, res, config.response('recaptchaFailed', req))
 		return false
 	},

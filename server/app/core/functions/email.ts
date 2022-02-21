@@ -45,7 +45,10 @@ function setupNodemailer() {
 	)
 	nodemailerClient.use('compile', htmlToText())
 }
-if (!config.postmarkKey && config.nodemailerHost) setupNodemailer()
+if (!config.postmarkKey && config.nodemailerHost) {
+	setupNodemailer()
+	console.log('Nodemailer is enabled')
+}
 
 type EmailData = { subject: string; substitutions: Obj }
 type EmailBulkData = { subject: string; substitutions: Obj } & { email: string }
