@@ -11,9 +11,10 @@ import common from 'core/common'
 import config from 'core/config'
 import { getNextRef } from 'core/functions/db'
 import { sendEmail } from 'core/functions/email'
+import { webPushNotification } from 'core/functions/notifications'
 import crypto from 'crypto-extra'
 import jwt from 'jsonwebtoken'
-import { Client } from 'project/database'
+import { Client, WebPushSubscription } from 'project/database'
 
 const router = Router()
 
@@ -331,6 +332,73 @@ router.postAsync(ResetPassword.call, async (req, res) => {
 		res.do(200, undefined, response)
 	} else res.do(401, res.response('wrongCode'))
 })
+
+// ! All routes after this can use a valid token but it's not required
+
+router.useAsync('/*', common.optionalTokenMiddleware())
+
+if (config.webPushSupport) {
+	const WebPushUnsubscribe = {
+		call: '/client/webpush_unsubscribe',
+		method: 'post',
+		description: 'Unsubscribe to web push notifications',
+		body: {} as {
+			endpoint: string
+			keys: {
+				p256dh: string
+				auth: string
+			}
+		},
+	}
+	router.postAsync(WebPushUnsubscribe.call, async (req, res) => {
+		const body: typeof WebPushUnsubscribe.body = req.body
+
+		const obj = await WebPushSubscription.findOne({ endpoint: body.endpoint }).select('_id')
+		if (!obj) {
+			res.do(404, res.response('itemNotFound'))
+			return
+		}
+
+		await obj.remove()
+		res.do(200)
+	})
+	const WebPushSubscribe = {
+		call: '/client/webpush_subscribe',
+		method: 'post',
+		description: 'Subscribe to web push notifications',
+		body: {} as {
+			endpoint: string
+			keys: {
+				p256dh: string
+				auth: string
+			}
+		},
+	}
+	router.postAsync(WebPushSubscribe.call, async (req, res) => {
+		const body: typeof WebPushSubscribe.body = req.body
+
+		const duplicate = await WebPushSubscription.findOne({ endpoint: req.body.endpoint }).select(
+			'_id'
+		)
+		if (duplicate) {
+			res.do(409, 'Duplicate')
+			return
+		}
+
+		const obj = new WebPushSubscription({
+			...body,
+			client: req.user ? req.user._id : undefined,
+		})
+		await obj.save()
+
+		await webPushNotification(body, {
+			title: 'Pass Monitor',
+			body: '\nNotifications are now enabled 🎉',
+		})
+
+		res.do(201)
+	})
+}
 
 // ! All routes after this will require a valid token
 

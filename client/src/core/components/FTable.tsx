@@ -488,7 +488,7 @@ export default class FTable extends QueryParams<
 														props.expandContent &&
 														props.expandContent(d)
 
-													return this.state.containment ? (
+													return !this.state.containment ? null : (
 														<VisibilitySensor
 															intervalCheck={true}
 															intervalDelay={100}
@@ -638,7 +638,7 @@ export default class FTable extends QueryParams<
 																)
 															}}
 														</VisibilitySensor>
-													) : null
+													)
 												})}
 										</div>
 									</div>

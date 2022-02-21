@@ -36,6 +36,10 @@ const _allowedOrigins = [
 const config: Partial<Config> = {
 	mobileAppOrigins: true,
 	websocketSupport: true,
+	publicSockets: false,
+	webPushSupport: false,
+	webPushEmail: 'jose@cakeslice.dev',
+	localStorageEnabled: false, // ! Needs persistent storage in CapRover
 
 	//
 

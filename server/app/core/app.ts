@@ -16,6 +16,7 @@ import cookieParser from 'cookie-parser'
 import common from 'core/common'
 import config from 'core/config'
 import db, { getNextRef } from 'core/functions/db'
+import { init as notificationsInit } from 'core/functions/notifications'
 import { init as socketInit } from 'core/functions/sockets'
 import HttpException from 'core/internal/HttpException'
 import cors from 'cors'
@@ -1257,6 +1258,8 @@ async function listen() {
 	const server = app.listen(config.port, () => {
 		console.log(greenColor, 'Listening to requests on port ' + config.port.toString() + '\n\n')
 	})
+
+	notificationsInit()
 
 	if (config.websocketSupport) {
 		const socketServer = new SocketServer(server, {

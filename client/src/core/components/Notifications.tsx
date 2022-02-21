@@ -10,6 +10,7 @@ import config from 'core/config'
 import styles from 'core/styles'
 import Parser from 'html-react-parser'
 import React from 'react'
+import VisibilitySensor from 'react-visibility-sensor'
 import Avatar from './Avatar'
 import OutsideAlerter from './OutsideAlerter'
 import TrackedComponent from './TrackedComponent'
@@ -33,6 +34,7 @@ export default class Notifications extends TrackedComponent<Props> {
 		super(props)
 
 		this.updateNotifications = this.updateNotifications.bind(this)
+		this.readNotification = this.readNotification.bind(this)
 	}
 	state: {
 		open: boolean
@@ -106,7 +108,7 @@ export default class Notifications extends TrackedComponent<Props> {
 			<OutsideAlerter
 				trackedName='Notifications'
 				clickedOutside={() => {
-					this.setState({ open: false })
+					if (this.state.open) this.setState({ open: false })
 				}}
 			>
 				<div>
@@ -128,107 +130,149 @@ export default class Notifications extends TrackedComponent<Props> {
 					</button>
 
 					{this.state.open && (
-						<div style={{ maxWidth: 0, maxHeight: 0 }}>
-							<div
-								style={{
-									position: 'relative',
-									zIndex: 5,
-									top: 15,
-									minWidth: 300,
-								}}
-							>
-								<div
-									style={{
-										...styles.card,
-										...{
-											overflow: 'hidden',
-											padding: 5,
-											paddingBottom: 0,
-											boxShadow: styles.strongerShadow,
-										},
-									}}
-								>
-									<div
-										style={{
-											width: '100%',
-											height:
-												this.state.data && this.state.data.length > 0
-													? 400
-													: undefined,
-											overflow: 'scroll',
-										}}
-									>
-										{this.state.data && this.state.data.length > 0 ? (
-											this.state.data.map((n) => (
-												<button
-													type='button'
-													key={n._id}
-													onClick={async () => {
-														await this.readNotification(n._id)
-													}}
-													style={{ width: '100%' }}
-												>
-													<div
-														style={{
-															padding: 10,
-															marginBottom: 3,
-															display: 'flex',
-															minHeight: 60,
-															alignItems: 'center',
-															textAlign: 'left',
-														}}
-													>
-														<div
-															style={{
-																minWidth: 7.5,
-																minHeight: 7.5,
-																marginRight: 7.5,
-																borderRadius: '50%',
-																background: !n.isRead
-																	? styles.colors.main
-																	: undefined,
-															}}
-														></div>
-														{n.imageURL && (
-															<Avatar
-																style={{
-																	width: 30,
-																	height: 30,
-																}}
-																src={n.imageURL}
-															></Avatar>
-														)}
-
-														{Parser(
-															n
-																? '<p style="max-width: 230px; margin-left:10px">' +
-																		n.message +
-																		'</p>'
-																: '<p>N/A</p>'
-														)}
-													</div>
-												</button>
-											))
-										) : (
-											<div
-												className='flex justify-center items-center'
-												style={{
-													opacity: 0.5,
-													padding: 20,
-													width: '100%',
-													height: '100%',
-												}}
-											>
-												No notifications
-											</div>
-										)}
-									</div>
-								</div>
-							</div>
-						</div>
+						<Popup readNotification={this.readNotification} data={this.state.data} />
 					)}
 				</div>
 			</OutsideAlerter>
+		)
+	}
+}
+
+class Popup extends React.Component<{
+	readNotification: (notificationID: string) => Promise<void>
+	data: Notification[]
+}> {
+	state: { containment: undefined | HTMLElement | null } = {
+		containment: undefined,
+	}
+
+	componentDidMount() {
+		this.setState({ containment: document.getElementById('notifications-popup') })
+	}
+
+	render() {
+		return (
+			<div style={{ maxWidth: 0, maxHeight: 0 }}>
+				<div
+					style={{
+						position: 'relative',
+						zIndex: 5,
+						top: 15,
+						minWidth: 300,
+					}}
+				>
+					<div
+						style={{
+							...styles.card,
+							...{
+								width: 300,
+								overflow: 'hidden',
+								padding: 5,
+								paddingBottom: 0,
+								boxShadow: styles.strongerShadow,
+							},
+						}}
+					>
+						<div
+							id={'notifications-popup'}
+							style={{
+								width: '100%',
+								height:
+									this.props.data && this.props.data.length > 0 ? 400 : undefined,
+								overflow: 'scroll',
+							}}
+						>
+							{this.props.data && this.props.data.length > 0 ? (
+								this.props.data.map((n) => {
+									const k = n._id
+									return !this.state.containment ? null : (
+										<VisibilitySensor
+											intervalCheck={true}
+											intervalDelay={100}
+											// Interval check is the only one that deals with all possible cases
+											partialVisibility
+											key={k}
+											containment={this.state.containment}
+										>
+											{({ isVisible }) => {
+												if (!isVisible)
+													return (
+														<div
+															style={{ minHeight: 55 }}
+															key={'n_' + k}
+														></div>
+													)
+												return (
+													<button
+														type='button'
+														key={'n_' + k}
+														onClick={async () => {
+															await this.props.readNotification(n._id)
+														}}
+														style={{ width: '100%' }}
+													>
+														<div
+															style={{
+																padding: 10,
+																marginBottom: 3,
+																display: 'flex',
+																minHeight: 60,
+																alignItems: 'center',
+																textAlign: 'left',
+															}}
+														>
+															<div
+																style={{
+																	minWidth: 7.5,
+																	minHeight: 7.5,
+																	marginRight: 7.5,
+																	borderRadius: '50%',
+																	background: !n.isRead
+																		? styles.colors.main
+																		: undefined,
+																}}
+															></div>
+															{n.imageURL && (
+																<Avatar
+																	style={{
+																		width: 30,
+																		height: 30,
+																	}}
+																	src={n.imageURL}
+																></Avatar>
+															)}
+
+															{Parser(
+																n
+																	? '<p style="max-width: 230px; margin-left:10px">' +
+																			n.message +
+																			'</p>'
+																	: '<p>N/A</p>'
+															)}
+														</div>
+													</button>
+												)
+											}}
+										</VisibilitySensor>
+									)
+								})
+							) : (
+								<div
+									className='flex justify-center items-center'
+									style={{
+										opacity: 0.5,
+										padding: 20,
+										width: '100%',
+										height: '100%',
+									}}
+								>
+									No notifications
+								</div>
+							)}
+						</div>
+					</div>
+				</div>
+			</div>
 		)
 	}
 }

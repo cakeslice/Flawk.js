@@ -79,6 +79,8 @@ declare global {
 				clear: () => Promise<void>
 		  }
 	var socket: Socket
+	var socketClientID: string | undefined
+	var serviceWorker: ServiceWorkerRegistration | undefined
 	//
 	var playNotificationSound: () => Promise<void>
 	//

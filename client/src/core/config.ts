@@ -9,7 +9,7 @@ import * as Sentry from '@sentry/react'
 import { disableBodyScroll } from 'body-scroll-lock'
 import { difference, normal } from 'color-blend'
 import { countries, Country } from 'countries-list'
-import { KeyObject, Obj } from 'flawk-types'
+import { KeyObject, KeyUnknown, Obj } from 'flawk-types'
 import hexRgb from 'hex-rgb'
 import Parser from 'html-react-parser'
 import _ from 'lodash'
@@ -20,6 +20,7 @@ import _projectText from 'project/text'
 import projectOverrides, { projectConfig as pC } from 'project/_config'
 import pSO, { projectStyles as pS } from 'project/_styles'
 import React from 'react'
+import { post } from './api'
 
 export const projectConfig = pC
 export const projectStyles = pS
@@ -279,6 +280,7 @@ const publicConfig: Config = {
 	restrictedRoutes: ['/dashboard'],
 
 	websocketSupport: false,
+	publicSockets: false,
 	darkModeAvailable: false,
 	darkModeOptIn: false,
 	darkModeForce: false,
@@ -423,8 +425,74 @@ const config: Config & InternalConfig = {
 		return 'rgba(' + c.r + ',' + c.g + ',' + c.b + ',' + c.a + ')'
 	},
 
-	chromeNotificationsEnabled() {
+	webPushNotificationsEnabled() {
 		return Notification.permission === 'granted'
+	},
+	getWebPushSubscription: async () => {
+		if (global.serviceWorker) return await global.serviceWorker.pushManager.getSubscription()
+		else return null
+	},
+	enableWebPushNotifications: async () => {
+		async function setupPushNotifications(worker: ServiceWorkerRegistration) {
+			const prefix = '[Service Worker] '
+
+			function urlBase64ToUint8Array(base64String: string) {
+				const padding = '='.repeat((4 - (base64String.length % 4)) % 4)
+				// eslint-disable-next-line
+				const base64 = (base64String + padding).replace(/\-/g, '+').replace(/_/g, '/')
+
+				const rawData = window.atob(base64)
+				const outputArray = new Uint8Array(rawData.length)
+
+				for (let i = 0; i < rawData.length; ++i) {
+					outputArray[i] = rawData.charCodeAt(i)
+				}
+				return outputArray
+			}
+
+			const key = process.env.REACT_APP_VAPID_KEY
+			if (key) {
+				try {
+					const oldSubscription = await worker.pushManager.getSubscription()
+					if (oldSubscription) {
+						await post(
+							'client/webpush_unsubscribe',
+							oldSubscription as unknown as KeyUnknown
+						)
+						const unsub = await oldSubscription.unsubscribe()
+						if (!unsub)
+							console.error(
+								prefix + 'Failed to unsubscribe from web push notifications'
+							)
+					}
+					const subscription = await worker.pushManager.subscribe({
+						userVisibleOnly: true,
+						applicationServerKey: urlBase64ToUint8Array(key),
+					})
+					const res = await post(
+						'client/webpush_subscribe',
+						subscription as unknown as KeyUnknown
+					)
+					if (res.ok) console.log(prefix + 'Web push notifications are enabled')
+					else {
+						console.warn(prefix + 'Failed to subscribe to web push notifications')
+						const unsub = await subscription.unsubscribe()
+						if (!unsub)
+							console.error(
+								prefix + 'Failed to unsubscribe from web push notifications'
+							)
+					}
+				} catch (e) {
+					console.warn(prefix + 'Failed to enable web push notifications')
+				}
+			} else console.log(prefix + 'Web push notifications are disabled (no VAPID key)')
+		}
+
+		//
+
+		if (global.serviceWorker) {
+			await setupPushNotifications(global.serviceWorker)
+		}
 	},
 
 	prettierConfig: {
@@ -490,7 +558,9 @@ type InternalConfig = {
 	overlayColor: (background: string, color: string) => string
 	invertColor: (background: string, color: string) => string
 
-	chromeNotificationsEnabled: () => boolean
+	webPushNotificationsEnabled: () => boolean
+	getWebPushSubscription: () => Promise<PushSubscription | null>
+	enableWebPushNotifications: () => Promise<void>
 
 	prettierConfig: {
 		trailingComma: 'es5' | 'none' | 'all'
@@ -513,6 +583,7 @@ export type Config = {
 	restrictedRoutes: string[]
 
 	websocketSupport: boolean
+	publicSockets: boolean
 	darkModeAvailable: boolean
 	darkModeOptIn: boolean
 	darkModeForce: boolean

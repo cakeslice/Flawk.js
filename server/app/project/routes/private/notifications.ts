@@ -180,6 +180,8 @@ router.postAsync(CreateNotification.call, async (req, res) => {
 	res.do(200)
 })
 
+///////////////////////////////////// MOBILE PUSH NOTIFICATIONS
+
 const AddPushNotificationID = {
 	call: '/client/add_push_notification_id',
 	description: 'Add the push notification ID of a mobile device',

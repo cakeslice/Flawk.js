@@ -23,7 +23,7 @@ const _cookieSettings = {
 	maxAge: moment().add(30, 'days').valueOf() / 1000,
 }
 const _tokenDays = 30
-const _debugSockets = process.env.debugSockets
+
 ///////////////////////
 
 const _appName = process.env.appName
@@ -38,12 +38,18 @@ const _prod =
 	process.env.NODE_ENV === 'production'
 const _jest = process.env.JEST === 'true'
 const _frontendURL = process.env.frontendURL || ''
+const _debugSockets = process.env.debugSockets || (!_prod && !_staging)
 
 //
 
 const publicConfig: Config = {
 	mobileAppOrigins: true,
 	websocketSupport: true,
+	publicSockets: false,
+	webPushSupport: false,
+	webPushEmail: 'jose@cakeslice.dev',
+	localStorageEnabled: false, // ! Needs persistent storage in CapRover
+	localStorageSize: 5,
 
 	//
 
@@ -244,6 +250,11 @@ type InternalConfig = {
 export type Config = {
 	mobileAppOrigins: boolean
 	websocketSupport: boolean
+	publicSockets: boolean
+	webPushSupport: boolean
+	webPushEmail: string
+	localStorageEnabled: boolean
+	localStorageSize: number
 
 	//
 

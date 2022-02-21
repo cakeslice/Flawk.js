@@ -206,12 +206,18 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 					global.socket.emit(
 						'init',
 						{ token: token },
-						async (res: { success: boolean; buildNumber?: string }) => {
+						async (res: {
+							success: boolean
+							buildNumber?: string
+							clientID?: string
+						}) => {
 							if (res.success && res.buildNumber) {
 								console.log(
 									'Connected to websocket! Build number: ' + res.buildNumber ||
 										'unknown'
 								)
+
+								global.socketClientID = res.clientID
 
 								const buildNumber = await global.storage.getItem('build_number')
 								await global.storage.setItem('build_number', res.buildNumber)
@@ -231,7 +237,12 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 			global.socket.on('disconnect', function () {
 				setSocketConnected(false)
 				console.warn('Websocket disconnected!')
+				if (!global.socket.connected) global.socket.connect()
 			})
+
+			if (global.socket && !global.socket.connected && config.publicSockets)
+				global.socket.connect()
+
 			setTimeout(function () {
 				setSocketConnectionDelay(true)
 			}, 3000)

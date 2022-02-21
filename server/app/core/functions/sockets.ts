@@ -36,6 +36,22 @@ function message(socketList: Socket[], channel: string, data: Obj) {
 
 //
 
+export function globalSocketNotification(title: string, description?: string, type = 'info') {
+	if (!config.websocketSupport) return
+
+	const sockets: Socket[] = []
+	for (const [s, socket] of global.clientSockets.sockets) {
+		// eslint-disable-next-line
+		sockets.push(socket)
+	}
+
+	if (config.debugSockets)
+		console.log(
+			'Sending global socket notification: ' +
+				JSON.stringify({ title: title, description: description, type: type })
+		)
+	notification(sockets, title, description, type)
+}
 export function socketNotification(
 	socketID: string,
 	title: string,
@@ -104,6 +120,33 @@ export function isOnline(clientID: string) {
 	return online
 }
 
+export function globalSocketMessage(channel: string, data: Obj, loggedInData?: Obj) {
+	if (!config.websocketSupport) return
+
+	const sockets: Socket[] = []
+	const loggedInSockets: Socket[] = []
+	// eslint-disable-next-line
+	for (const [s, socket] of global.clientSockets.sockets) {
+		console.log(
+			'HELO: ' +
+				(socket && socket._client && socket._client.permission <= 100) +
+				' ' +
+				JSON.stringify(socket._client, null, 2)
+		)
+		if (loggedInData && socket._client && socket._client.permission <= 100) {
+			// eslint-disable-next-line
+			loggedInSockets.push(socket)
+		} else {
+			// eslint-disable-next-line
+			sockets.push(socket)
+		}
+	}
+	console.log('FUCK ' + sockets.length + ' ' + loggedInSockets.length)
+	if (config.debugSockets)
+		console.log('Sending global socket message: ' + channel + ' | ' + JSON.stringify(data))
+	message(sockets, channel, data)
+	if (loggedInData) message(loggedInSockets, channel, loggedInData)
+}
 export function socketMessage(socketID: string, channel: string, data: Obj) {
 	if (!config.websocketSupport) return
 
@@ -144,6 +187,31 @@ export function clientSocketMessage(clientID: string, channel: string, data: Obj
 
 //
 
+const checkSocket = (
+	socket: Socket,
+	errorMessage: string,
+	next: (err?: Error | undefined) => void,
+	command: string,
+	data: Obj
+) => {
+	if (!config.publicSockets) {
+		disconnectUnidentified(socket)
+		return next(new Error(errorMessage))
+	} else {
+		if (config.debugSockets)
+			console.log(
+				'[SOCKET.IO] Socket: ' +
+					'Unidentified' +
+					': ' +
+					'client/' +
+					command +
+					' | ' +
+					JSON.stringify(data)
+			)
+		return next()
+	}
+}
+
 export function init() {
 	if (!config.websocketSupport) {
 		console.log('Websockets are disabled')
@@ -151,6 +219,13 @@ export function init() {
 	}
 
 	console.log('Websockets are enabled')
+
+	// ! Disconnect all logged in sockets once in a while to make sure they still have permissions
+	setInterval(() => {
+		for (const [s, socket] of global.clientSockets.sockets) {
+			if (socket._client) socket.disconnect(true)
+		}
+	}, 60000 * 10)
 
 	global.clientSockets.on('connection', (socket: Socket) => {
 		if (config.debugSockets) console.log('[SOCKET.IO] New socket connection: ' + socket.id)
@@ -175,8 +250,13 @@ export function init() {
 							// eslint-disable-next-line
 							!db.validateObjectID(decoded._id)
 						) {
-							disconnectUnidentified(socket)
-							return next(new Error('Invalid token! Disconnecting...'))
+							return checkSocket(
+								socket,
+								'Invalid token! Disconnecting...',
+								next,
+								command,
+								data
+							)
 						}
 
 						// Check if token belongs to someone
@@ -185,8 +265,13 @@ export function init() {
 							.select('_id email permission access.activeTokens')
 							.exec(function (err, user) {
 								if (err || !user) {
-									disconnectUnidentified(socket)
-									return next(new Error('User not found! Disconnecting...'))
+									return checkSocket(
+										socket,
+										'User not found! Disconnecting...',
+										next,
+										command,
+										data
+									)
 								}
 
 								let valid = false
@@ -250,23 +335,30 @@ export function init() {
 									}
 									return next()
 								} else {
-									disconnectUnidentified(socket)
-									return next(new Error('Invalid token!'))
+									return checkSocket(
+										socket,
+										'Invalid token!',
+										next,
+										command,
+										data
+									)
 								}
 							})
 					} else {
-						disconnectUnidentified(socket)
-						return next(new Error('Invalid token!'))
+						return checkSocket(socket, 'Invalid token!', next, command, data)
 					}
 				})
 			} else {
-				disconnectUnidentified(socket)
-				return next(new Error('No token provided!'))
+				return checkSocket(socket, 'No token provided!', next, command, data)
 			}
 		})
 
 		socket.on('init', (data, res) => {
-			res({ success: true, buildNumber: global.buildNumber })
+			res({
+				success: true,
+				buildNumber: global.buildNumber,
+				clientID: socket._client ? socket._client.id : undefined,
+			})
 		})
 		socket.on('disconnect', () => {
 			if (socket._client) {
@@ -285,8 +377,8 @@ export function init() {
 					)
 				socket._client = undefined
 			} else {
-				//if(config.debugSockets)
-				//console.log('[SOCKET.IO] Unidentified client just disconnected!')
+				if (config.debugSockets)
+					console.log('[SOCKET.IO] Unidentified client just disconnected!')
 			}
 		})
 	})

@@ -98,7 +98,11 @@ export const fetchUser = async (dispatch: StoreDispatch): Promise<void> => {
 
 		if (global.analytics) global.analytics.set({ userId: user._id })
 
-		if (global.socket && !global.socket.connected) global.socket.connect()
+		if (global.socket) {
+			if (global.socket.connected && global.socketClientID !== user._id)
+				global.socket.disconnect()
+			if (!global.socket.connected) global.socket.connect()
+		}
 
 		await global.storage.setItem('user', JSON.stringify(res.body))
 

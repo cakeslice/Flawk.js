@@ -5,14 +5,43 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-//import * as serviceWorkerRegistration from 'core/internal/serviceWorkerRegistration'
 import App from 'project/App'
 import React from 'react'
 import ReactDOM from 'react-dom'
 
-ReactDOM.render(<App></App>, document.getElementById('root'))
+// -------- Service worker code --------
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://cra.link/PWA
-// serviceWorkerRegistration.unregister()
+const prefix = '[Service Worker] '
+const registerServiceWorker = async function () {
+	let worker: ServiceWorkerRegistration | undefined
+	if ('serviceWorker' in navigator) {
+		try {
+			console.log(prefix + 'Registering service worker...')
+
+			// /public/worker.js
+			worker = await navigator.serviceWorker.register('/worker.js', {
+				scope: '/',
+			})
+			console.log(prefix + 'Service worker registered')
+		} catch (e) {
+			console.error(prefix + e)
+		}
+	}
+	return worker
+}
+
+//
+
+const initServiceWorker = async () => {
+	const worker = await registerServiceWorker()
+
+	global.serviceWorker = worker
+}
+
+// ------------------------------------
+
+// Service worker for web push notifications, etc...
+// The service worker is in /public/worker.js
+initServiceWorker()
+
+ReactDOM.render(<App></App>, document.getElementById('root'))

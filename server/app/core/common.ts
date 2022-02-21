@@ -19,11 +19,59 @@ import jwt from 'jsonwebtoken'
 import _ from 'lodash'
 import mongoose from 'mongoose'
 import fetch from 'node-fetch'
+import { LocalStorage } from 'node-localstorage'
+import numeral from 'numeral'
+import 'numeral/locales'
 import { JwtPayload } from 'project-types'
 import { Client, IRemoteConfig, RemoteConfig } from 'project/database'
 import RegexParser from 'regex-parser'
 import { URLSearchParams } from 'url'
 import * as uuid from 'uuid'
+
+const mb = 1024 * 1024
+// Megabytes
+const _localStorage = config.localStorageEnabled
+	? new LocalStorage('./local-storage', config.localStorageSize * mb)
+	: undefined
+
+numeral.register('locale', 'us', {
+	delimiters: {
+		thousands: ',',
+		decimal: '.',
+	},
+	abbreviations: {
+		thousand: 'K',
+		million: 'M',
+		billion: 'B',
+		trillion: 'T',
+	},
+	ordinal: function (number) {
+		return number === 1 ? 'er' : 'ème'
+	},
+	currency: {
+		symbol: '$',
+	},
+})
+numeral.register('locale', 'pt', {
+	delimiters: {
+		thousands: '.',
+		decimal: ',',
+	},
+	abbreviations: {
+		thousand: 'K',
+		million: 'M',
+		billion: 'B',
+		trillion: 'T',
+	},
+	ordinal: function (number) {
+		return number === 1 ? 'er' : 'ème'
+	},
+	currency: {
+		symbol: '€',
+	},
+})
+
+numeral.locale('us')
 
 //
 
@@ -50,9 +98,6 @@ const s3 = new AWS.S3({
 	secretAccessKey: config.bucketAccessSecret,
 	apiVersion: '2006-03-01',
 })
-
-/* let pushNotificationsClient
-if (config.pushNotificationsKey) pushNotificationsClient = new Something({ accessToken: config.pushNotificationsKey }) */
 
 let nexmoClient: Nexmo
 if (config.nexmo.ID && config.nexmo.token)
@@ -117,11 +162,39 @@ const _countPages = function (itemCount: number, req: Request) {
 export default {
 	///////////////////////////////////// HELPERS
 
+	localStorage: _localStorage,
+
 	removeAccents: _removeAccents,
 
 	toFixedNumber: function (target: number, x: number, base: number) {
 		const pow = Math.pow(base || 10, x)
 		return +(Math.round(target * pow) / pow)
+	},
+	formatNumber: function (n: number, onlyPositive = false, decimals = 0) {
+		n = Number.parseFloat(n.toString())
+
+		if (onlyPositive && n < 0) n = 0
+
+		if (n > 999999) return numeral(n).format('0,0.[0]a')
+		else if (n > 9999) return numeral(n).format('0,0.[0]a')
+		else {
+			if (decimals) return numeral(n).format('0,0.' + '0'.repeat(decimals))
+			else return numeral(n).format('0,0')
+		}
+	},
+	formatDecimal: function (n: number, onlyPositive = false) {
+		n = Number.parseFloat(n.toString())
+
+		if (onlyPositive && n < 0) n = 0
+
+		return numeral(n).format('0,0.0')
+	},
+	formatDecimalTwo: function (n: number, onlyPositive = false) {
+		n = Number.parseFloat(n.toString())
+
+		if (onlyPositive && n < 0) n = 0
+
+		return numeral(n).format('0,0.00')
 	},
 
 	calculateAge: function (birthday: Date): number {
@@ -298,60 +371,6 @@ export default {
 				})
 			})
 		})
-	},
-
-	///////////////////////////////////// MOBILE PUSH NOTIFICATIONS
-
-	pushNotification: async function (message: string, clientID: string /* data = {} */) {
-		if (process.env.noPushNotifications === 'true') {
-			console.log('Skipped push notification: ' + clientID + ': ' + message)
-			return
-		}
-
-		if (config.jest) {
-			return { success: true }
-		}
-
-		throw 'Not implemented!'
-
-		/*
-		var notification = new OneSignal.Notification({
-					contents: {
-						en: message,
-					},
-					include_player_ids: [client.appState.mobileNotificationDevices],
-				})
-				notification.postBody['data'] = data
-
-		var data = await oneSignalClient.sendNotification(notification)
-
-		console.log(data, httpResponse.statusCode)
-		*/
-	},
-	pushGlobalNotification: async function (message: string /* data = {} */) {
-		if (process.env.noPushNotifications === 'true') {
-			console.log('Skipped global push notification: ' + message)
-			return
-		}
-
-		if (config.jest) {
-			return { success: true }
-		}
-
-		throw 'Not implemented!'
-
-		/*
-		var notification = new OneSignal.Notification({
-			contents: {
-				en: message,
-			},
-		})
-		notification.postBody['data'] = data
-
-		var data = await oneSignalClient.sendNotification(notification)
-
-		console.log(data, httpResponse.statusCode)
-		*/
 	},
 
 	///////////////////////////////////// SMS

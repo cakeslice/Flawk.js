@@ -8,7 +8,13 @@
 import mongoose, { Schema } from 'mongoose'
 import validator from 'validator'
 import db, { MixedType, ObjectIdType, StructureConfig } from '../core/functions/db'
-import { ChatDocument, ClientDocument, CountryDocument, RemoteConfigDocument } from './database.gen'
+import {
+	ChatDocument,
+	ClientDocument,
+	CountryDocument,
+	RemoteConfigDocument,
+	WebPushSubscriptionDocument,
+} from './database.gen'
 
 const emailValidator = {
 	validator: (v: string) => (v ? validator.isEmail(v) : true),
@@ -204,6 +210,22 @@ export const Chat = mongoose.model<ChatDocument>(
 					},
 				],
 			},
+		})
+	)
+)
+
+export type IWebPushSubscription = WebPushSubscriptionDocument
+export const WebPushSubscription = mongoose.model<WebPushSubscriptionDocument>(
+	'WebPushSubscription',
+	db.attachPlugins(
+		new Schema({
+			// _id
+			endpoint: { type: String, required: true, index: true },
+			keys: {
+				p256dh: { type: String, required: true },
+				auth: { type: String, required: true },
+			},
+			client: { type: ObjectIdType, ref: 'Client' },
 		})
 	)
 )

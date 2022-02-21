@@ -5,107 +5,101 @@
 
 // NOTE: ANY CHANGES MADE WILL BE OVERWRITTEN ON SUBSEQUENT EXECUTIONS OF MONGOOSE-TSGEN.
 
-import mongoose from "mongoose";
+import mongoose from 'mongoose'
 
 /**
  * Lean version of ClientArraysNotificationDocument
- * 
+ *
  * This has all Mongoose getters & functions removed. This type will be returned from `ClientDocument.toObject()`.
  * ```
  * const clientObject = client.toObject();
  * ```
  */
 export type ClientArraysNotification = {
-_id: mongoose.Types.ObjectId;
-isRead: boolean;
-date: Date;
-notificationType: "gotCoupon" | "postLiked";
-data?: any;
+	_id: mongoose.Types.ObjectId
+	isRead: boolean
+	date: Date
+	notificationType: 'gotCoupon' | 'postLiked'
+	data?: any
 }
 
 /**
  * Lean version of ClientArraysFriendDocument
- * 
+ *
  * This has all Mongoose getters & functions removed. This type will be returned from `ClientDocument.toObject()`.
  * ```
  * const clientObject = client.toObject();
  * ```
  */
 export type ClientArraysFriend = {
-client?: Client["_id"] | Client;
-addedDate?: Date;
-blocked?: boolean;
+	client?: Client['_id'] | Client
+	addedDate?: Date
+	blocked?: boolean
 }
 
 /**
  * Lean version of ClientDocument
- * 
+ *
  * This has all Mongoose getters & functions removed. This type will be returned from `ClientDocument.toObject()`. To avoid conflicts with model names, use the type alias `ClientObject`.
  * ```
  * const clientObject = client.toObject();
  * ```
  */
 export type Client = {
-email: string;
-phone?: string;
-permission: number;
-reference: number;
-state?: "pending" | "active" | "canceled";
-flags: ("suspended" | "verified")[];
-contexts: "manager"[];
-personal: {
-select: {
-};
-firstName?: string;
-lastName?: string;
-photoURL?: string;
-country?: string;
-countryPhoneCode?: string;
-};
-access: {
-select: {
-};
-hashedPassword?: string;
-activeTokens: string[];
-};
-settings: {
-select: {
-};
-language?: "en" | "pt";
-};
-appState: {
-select: {
-};
-verificationCode?: number;
-lastUnreadChatEmail?: Date;
-mobileNotificationDevices: string[];
-};
-timestamps: {
-select: {
-};
-created: {
-date?: Date;
-by?: Client["_id"] | Client;
-};
-lastCall?: Date;
-};
-arrays: {
-select: {
-};
-notifications: ClientArraysNotification[];
-friends: ClientArraysFriend[];
-};
-_id: mongoose.Types.ObjectId;
+	email: string
+	phone?: string
+	permission: number
+	reference: number
+	state?: 'pending' | 'active' | 'canceled'
+	flags: ('suspended' | 'verified')[]
+	contexts: 'manager'[]
+	personal: {
+		
+		firstName?: string
+		lastName?: string
+		photoURL?: string
+		country?: string
+		countryPhoneCode?: string
+	}
+	access: {
+		
+		hashedPassword?: string
+		activeTokens: string[]
+	}
+	settings: {
+		
+		language?: 'en' | 'pt'
+	}
+	appState: {
+		
+		verificationCode?: number
+		lastUnreadChatEmail?: Date
+		mobileNotificationDevices: string[]
+	}
+	timestamps: {
+		
+		created: {
+			date?: Date
+			by?: Client['_id'] | Client
+		}
+		lastCall?: Date
+	}
+	arrays: {
+		
+		notifications: ClientArraysNotification[]
+		friends: ClientArraysFriend[]
+	}
+	_id: mongoose.Types.ObjectId
 }
 
 /**
  * Lean version of ClientDocument (type alias of `Client`)
- * 
+ *
  * Use this type alias to avoid conflicts with model names:
  * ```
  * import { Client } from "../models"
  * import { ClientObject } from "../interfaces/mongoose.gen.ts"
- * 
+ *
  * const clientObject: ClientObject = client.toObject();
  * ```
  */
@@ -113,24 +107,21 @@ export type ClientObject = Client
 
 /**
  * Mongoose Query types
- * 
+ *
  * Pass this type to the Mongoose Model constructor:
  * ```
  * const Client = mongoose.model<ClientDocument, ClientModel>("Client", ClientSchema);
  * ```
  */
-export type ClientQueries = {
-}
+export type ClientQueries = {}
 
-export type ClientMethods = {
-}
+export type ClientMethods = {}
 
-export type ClientStatics = {
-}
+export type ClientStatics = {}
 
 /**
  * Mongoose Model type
- * 
+ *
  * Pass this type to the Mongoose Model constructor:
  * ```
  * const Client = mongoose.model<ClientDocument, ClientModel>("Client", ClientSchema);
@@ -140,7 +131,7 @@ export type ClientModel = mongoose.Model<ClientDocument, ClientQueries> & Client
 
 /**
  * Mongoose Schema type
- * 
+ *
  * Assign this type to new Client schema instances:
  * ```
  * const ClientSchema: ClientSchema = new mongoose.Schema({ ... })
@@ -150,172 +141,165 @@ export type ClientSchema = mongoose.Schema<ClientDocument, ClientModel>
 
 /**
  * Mongoose Subdocument type
- * 
+ *
  * Type of `ClientDocument["arrays.notifications"]` element.
  */
 export type ClientArraysNotificationDocument = mongoose.Types.Subdocument & {
-_id: mongoose.Types.ObjectId;
-isRead: boolean;
-date: Date;
-notificationType: "gotCoupon" | "postLiked";
-data?: any;
+	_id: mongoose.Types.ObjectId
+	isRead: boolean
+	date: Date
+	notificationType: 'gotCoupon' | 'postLiked'
+	data?: any
 }
 
 /**
  * Mongoose Subdocument type
- * 
+ *
  * Type of `ClientDocument["arrays.friends"]` element.
  */
 export type ClientArraysFriendDocument = mongoose.Types.Subdocument & {
-client?: ClientDocument["_id"] | ClientDocument;
-addedDate?: Date;
-blocked?: boolean;
+	client?: ClientDocument['_id'] | ClientDocument
+	addedDate?: Date
+	blocked?: boolean
 }
 
 /**
  * Mongoose Document type
- * 
+ *
  * Pass this type to the Mongoose Model constructor:
  * ```
  * const Client = mongoose.model<ClientDocument, ClientModel>("Client", ClientSchema);
  * ```
  */
-export type ClientDocument = mongoose.Document<mongoose.Types.ObjectId, ClientQueries> & ClientMethods & {
-email: string;
-phone?: string;
-permission: number;
-reference: number;
-state?: "pending" | "active" | "canceled";
-flags: mongoose.Types.Array<"suspended" | "verified">;
-contexts: mongoose.Types.Array<"manager">;
-personal: {
-select: {
-};
-firstName?: string;
-lastName?: string;
-photoURL?: string;
-country?: string;
-countryPhoneCode?: string;
-fullName: any;
-};
-access: {
-select: {
-};
-hashedPassword?: string;
-activeTokens: mongoose.Types.Array<string>;
-};
-settings: {
-select: {
-};
-language?: "en" | "pt";
-};
-appState: {
-select: {
-};
-verificationCode?: number;
-lastUnreadChatEmail?: Date;
-mobileNotificationDevices: mongoose.Types.Array<string>;
-};
-timestamps: {
-select: {
-};
-created: {
-date?: Date;
-by?: ClientDocument["_id"] | ClientDocument;
-};
-lastCall?: Date;
-};
-arrays: {
-select: {
-};
-notifications: mongoose.Types.DocumentArray<ClientArraysNotificationDocument>;
-friends: mongoose.Types.DocumentArray<ClientArraysFriendDocument>;
-};
-_id: mongoose.Types.ObjectId;
-}
+export type ClientDocument = mongoose.Document<mongoose.Types.ObjectId, ClientQueries> &
+	ClientMethods & {
+		email: string
+		phone?: string
+		permission: number
+		reference: number
+		state?: 'pending' | 'active' | 'canceled'
+		flags: mongoose.Types.Array<'suspended' | 'verified'>
+		contexts: mongoose.Types.Array<'manager'>
+		personal: {
+			
+			firstName?: string
+			lastName?: string
+			photoURL?: string
+			country?: string
+			countryPhoneCode?: string
+			fullName: any
+		}
+		access: {
+			
+			hashedPassword?: string
+			activeTokens: mongoose.Types.Array<string>
+		}
+		settings: {
+			
+			language?: 'en' | 'pt'
+		}
+		appState: {
+			
+			verificationCode?: number
+			lastUnreadChatEmail?: Date
+			mobileNotificationDevices: mongoose.Types.Array<string>
+		}
+		timestamps: {
+			
+			created: {
+				date?: Date
+				by?: ClientDocument['_id'] | ClientDocument
+			}
+			lastCall?: Date
+		}
+		arrays: {
+			
+			notifications: mongoose.Types.DocumentArray<ClientArraysNotificationDocument>
+			friends: mongoose.Types.DocumentArray<ClientArraysFriendDocument>
+		}
+		_id: mongoose.Types.ObjectId
+	}
 
 /**
  * Lean version of ChatArraysClientDocument
- * 
+ *
  * This has all Mongoose getters & functions removed. This type will be returned from `ChatDocument.toObject()`.
  * ```
  * const chatObject = chat.toObject();
  * ```
  */
 export type ChatArraysClient = {
-client: Client["_id"] | Client;
-_id: mongoose.Types.ObjectId;
+	client: Client['_id'] | Client
+	_id: mongoose.Types.ObjectId
 }
 
 /**
  * Lean version of ChatArraysMessageAttachmentDocument
- * 
+ *
  * This has all Mongoose getters & functions removed. This type will be returned from `ChatArraysMessageDocument.toObject()`.
  * ```
  * const chatarraysmessageObject = chatarraysmessage.toObject();
  * ```
  */
 export type ChatArraysMessageAttachment = {
-URL?: string;
-fileName?: string;
-fileType?: string;
-_id: mongoose.Types.ObjectId;
+	URL?: string
+	fileName?: string
+	fileType?: string
+	_id: mongoose.Types.ObjectId
 }
 
 /**
  * Lean version of ChatArraysMessageDocument
- * 
+ *
  * This has all Mongoose getters & functions removed. This type will be returned from `ChatDocument.toObject()`.
  * ```
  * const chatObject = chat.toObject();
  * ```
  */
 export type ChatArraysMessage = {
-_id: mongoose.Types.ObjectId;
-sender?: Client["_id"] | Client;
-date?: Date;
-text?: string;
-readBy: (Client["_id"] | Client)[];
-attachments: ChatArraysMessageAttachment[];
+	_id: mongoose.Types.ObjectId
+	sender?: Client['_id'] | Client
+	date?: Date
+	text?: string
+	readBy: (Client['_id'] | Client)[]
+	attachments: ChatArraysMessageAttachment[]
 }
 
 /**
  * Lean version of ChatDocument
- * 
+ *
  * This has all Mongoose getters & functions removed. This type will be returned from `ChatDocument.toObject()`. To avoid conflicts with model names, use the type alias `ChatObject`.
  * ```
  * const chatObject = chat.toObject();
  * ```
  */
 export type Chat = {
-state?: "active" | "closed";
-flags: "suspended"[];
-contexts: "private"[];
-timestamps: {
-select: {
-};
-created: {
-date?: Date;
-by?: Client["_id"] | Client;
-};
-};
-arrays: {
-select: {
-};
-clients: ChatArraysClient[];
-messages: ChatArraysMessage[];
-};
-_id: mongoose.Types.ObjectId;
+	state?: 'active' | 'closed'
+	flags: 'suspended'[]
+	contexts: 'private'[]
+	timestamps: {
+		
+		created: {
+			date?: Date
+			by?: Client['_id'] | Client
+		}
+	}
+	arrays: {
+		
+		clients: ChatArraysClient[]
+		messages: ChatArraysMessage[]
+	}
+	_id: mongoose.Types.ObjectId
 }
 
 /**
  * Lean version of ChatDocument (type alias of `Chat`)
- * 
+ *
  * Use this type alias to avoid conflicts with model names:
  * ```
  * import { Chat } from "../models"
  * import { ChatObject } from "../interfaces/mongoose.gen.ts"
- * 
+ *
  * const chatObject: ChatObject = chat.toObject();
  * ```
  */
@@ -323,24 +307,21 @@ export type ChatObject = Chat
 
 /**
  * Mongoose Query types
- * 
+ *
  * Pass this type to the Mongoose Model constructor:
  * ```
  * const Chat = mongoose.model<ChatDocument, ChatModel>("Chat", ChatSchema);
  * ```
  */
-export type ChatQueries = {
-}
+export type ChatQueries = {}
 
-export type ChatMethods = {
-}
+export type ChatMethods = {}
 
-export type ChatStatics = {
-}
+export type ChatStatics = {}
 
 /**
  * Mongoose Model type
- * 
+ *
  * Pass this type to the Mongoose Model constructor:
  * ```
  * const Chat = mongoose.model<ChatDocument, ChatModel>("Chat", ChatSchema);
@@ -350,7 +331,7 @@ export type ChatModel = mongoose.Model<ChatDocument, ChatQueries> & ChatStatics
 
 /**
  * Mongoose Schema type
- * 
+ *
  * Assign this type to new Chat schema instances:
  * ```
  * const ChatSchema: ChatSchema = new mongoose.Schema({ ... })
@@ -360,95 +341,188 @@ export type ChatSchema = mongoose.Schema<ChatDocument, ChatModel>
 
 /**
  * Mongoose Subdocument type
- * 
+ *
  * Type of `ChatDocument["arrays.clients"]` element.
  */
 export type ChatArraysClientDocument = mongoose.Types.Subdocument & {
-client: ClientDocument["_id"] | ClientDocument;
-_id: mongoose.Types.ObjectId;
+	client: ClientDocument['_id'] | ClientDocument
+	_id: mongoose.Types.ObjectId
 }
 
 /**
  * Mongoose Subdocument type
- * 
+ *
  * Type of `ChatArraysMessageDocument["attachments"]` element.
  */
 export type ChatArraysMessageAttachmentDocument = mongoose.Types.Subdocument & {
-URL?: string;
-fileName?: string;
-fileType?: string;
-_id: mongoose.Types.ObjectId;
+	URL?: string
+	fileName?: string
+	fileType?: string
+	_id: mongoose.Types.ObjectId
 }
 
 /**
  * Mongoose Subdocument type
- * 
+ *
  * Type of `ChatDocument["arrays.messages"]` element.
  */
 export type ChatArraysMessageDocument = mongoose.Types.Subdocument & {
-_id: mongoose.Types.ObjectId;
-sender?: ClientDocument["_id"] | ClientDocument;
-date?: Date;
-text?: string;
-readBy: mongoose.Types.Array<ClientDocument["_id"] | ClientDocument>;
-attachments: mongoose.Types.DocumentArray<ChatArraysMessageAttachmentDocument>;
+	_id: mongoose.Types.ObjectId
+	sender?: ClientDocument['_id'] | ClientDocument
+	date?: Date
+	text?: string
+	readBy: mongoose.Types.Array<ClientDocument['_id'] | ClientDocument>
+	attachments: mongoose.Types.DocumentArray<ChatArraysMessageAttachmentDocument>
 }
 
 /**
  * Mongoose Document type
- * 
+ *
  * Pass this type to the Mongoose Model constructor:
  * ```
  * const Chat = mongoose.model<ChatDocument, ChatModel>("Chat", ChatSchema);
  * ```
  */
-export type ChatDocument = mongoose.Document<mongoose.Types.ObjectId, ChatQueries> & ChatMethods & {
-state?: "active" | "closed";
-flags: mongoose.Types.Array<"suspended">;
-contexts: mongoose.Types.Array<"private">;
-timestamps: {
-select: {
-};
-created: {
-date?: Date;
-by?: ClientDocument["_id"] | ClientDocument;
-};
-};
-arrays: {
-select: {
-};
-clients: mongoose.Types.DocumentArray<ChatArraysClientDocument>;
-messages: mongoose.Types.DocumentArray<ChatArraysMessageDocument>;
-};
-_id: mongoose.Types.ObjectId;
+export type ChatDocument = mongoose.Document<mongoose.Types.ObjectId, ChatQueries> &
+	ChatMethods & {
+		state?: 'active' | 'closed'
+		flags: mongoose.Types.Array<'suspended'>
+		contexts: mongoose.Types.Array<'private'>
+		timestamps: {
+			
+			created: {
+				date?: Date
+				by?: ClientDocument['_id'] | ClientDocument
+			}
+		}
+		arrays: {
+			
+			clients: mongoose.Types.DocumentArray<ChatArraysClientDocument>
+			messages: mongoose.Types.DocumentArray<ChatArraysMessageDocument>
+		}
+		_id: mongoose.Types.ObjectId
+	}
+
+/**
+ * Lean version of WebPushSubscriptionDocument
+ *
+ * This has all Mongoose getters & functions removed. This type will be returned from `WebPushSubscriptionDocument.toObject()`. To avoid conflicts with model names, use the type alias `WebPushSubscriptionObject`.
+ * ```
+ * const webpushsubscriptionObject = webpushsubscription.toObject();
+ * ```
+ */
+export type WebPushSubscription = {
+	endpoint: string
+	keys: {
+		p256dh: string
+		auth: string
+	}
+	client?: Client['_id'] | Client
+	_id: mongoose.Types.ObjectId
 }
 
 /**
+ * Lean version of WebPushSubscriptionDocument (type alias of `WebPushSubscription`)
+ *
+ * Use this type alias to avoid conflicts with model names:
+ * ```
+ * import { WebPushSubscription } from "../models"
+ * import { WebPushSubscriptionObject } from "../interfaces/mongoose.gen.ts"
+ *
+ * const webpushsubscriptionObject: WebPushSubscriptionObject = webpushsubscription.toObject();
+ * ```
+ */
+export type WebPushSubscriptionObject = WebPushSubscription
+
+/**
+ * Mongoose Query types
+ *
+ * Pass this type to the Mongoose Model constructor:
+ * ```
+ * const WebPushSubscription = mongoose.model<WebPushSubscriptionDocument, WebPushSubscriptionModel>("WebPushSubscription", WebPushSubscriptionSchema);
+ * ```
+ */
+export type WebPushSubscriptionQueries = {}
+
+export type WebPushSubscriptionMethods = {}
+
+export type WebPushSubscriptionStatics = {}
+
+/**
+ * Mongoose Model type
+ *
+ * Pass this type to the Mongoose Model constructor:
+ * ```
+ * const WebPushSubscription = mongoose.model<WebPushSubscriptionDocument, WebPushSubscriptionModel>("WebPushSubscription", WebPushSubscriptionSchema);
+ * ```
+ */
+export type WebPushSubscriptionModel = mongoose.Model<
+	WebPushSubscriptionDocument,
+	WebPushSubscriptionQueries
+> &
+	WebPushSubscriptionStatics
+
+/**
+ * Mongoose Schema type
+ *
+ * Assign this type to new WebPushSubscription schema instances:
+ * ```
+ * const WebPushSubscriptionSchema: WebPushSubscriptionSchema = new mongoose.Schema({ ... })
+ * ```
+ */
+export type WebPushSubscriptionSchema = mongoose.Schema<
+	WebPushSubscriptionDocument,
+	WebPushSubscriptionModel
+>
+
+/**
+ * Mongoose Document type
+ *
+ * Pass this type to the Mongoose Model constructor:
+ * ```
+ * const WebPushSubscription = mongoose.model<WebPushSubscriptionDocument, WebPushSubscriptionModel>("WebPushSubscription", WebPushSubscriptionSchema);
+ * ```
+ */
+export type WebPushSubscriptionDocument = mongoose.Document<
+	mongoose.Types.ObjectId,
+	WebPushSubscriptionQueries
+> &
+	WebPushSubscriptionMethods & {
+		endpoint: string
+		keys: {
+			p256dh: string
+			auth: string
+		}
+		client?: ClientDocument['_id'] | ClientDocument
+		_id: mongoose.Types.ObjectId
+	}
+
+/**
  * Lean version of CountryDocument
- * 
+ *
  * This has all Mongoose getters & functions removed. This type will be returned from `CountryDocument.toObject()`. To avoid conflicts with model names, use the type alias `CountryObject`.
  * ```
  * const countryObject = country.toObject();
  * ```
  */
 export type Country = {
-countryCode: string;
-name: {
-pt: string;
-en: string;
-};
-code: string;
-_id: mongoose.Types.ObjectId;
+	countryCode: string
+	name: {
+		pt: string
+		en: string
+	}
+	code: string
+	_id: mongoose.Types.ObjectId
 }
 
 /**
  * Lean version of CountryDocument (type alias of `Country`)
- * 
+ *
  * Use this type alias to avoid conflicts with model names:
  * ```
  * import { Country } from "../models"
  * import { CountryObject } from "../interfaces/mongoose.gen.ts"
- * 
+ *
  * const countryObject: CountryObject = country.toObject();
  * ```
  */
@@ -456,24 +530,21 @@ export type CountryObject = Country
 
 /**
  * Mongoose Query types
- * 
+ *
  * Pass this type to the Mongoose Model constructor:
  * ```
  * const Country = mongoose.model<CountryDocument, CountryModel>("Country", CountrySchema);
  * ```
  */
-export type CountryQueries = {
-}
+export type CountryQueries = {}
 
-export type CountryMethods = {
-}
+export type CountryMethods = {}
 
-export type CountryStatics = {
-}
+export type CountryStatics = {}
 
 /**
  * Mongoose Model type
- * 
+ *
  * Pass this type to the Mongoose Model constructor:
  * ```
  * const Country = mongoose.model<CountryDocument, CountryModel>("Country", CountrySchema);
@@ -483,7 +554,7 @@ export type CountryModel = mongoose.Model<CountryDocument, CountryQueries> & Cou
 
 /**
  * Mongoose Schema type
- * 
+ *
  * Assign this type to new Country schema instances:
  * ```
  * const CountrySchema: CountrySchema = new mongoose.Schema({ ... })
@@ -493,49 +564,50 @@ export type CountrySchema = mongoose.Schema<CountryDocument, CountryModel>
 
 /**
  * Mongoose Document type
- * 
+ *
  * Pass this type to the Mongoose Model constructor:
  * ```
  * const Country = mongoose.model<CountryDocument, CountryModel>("Country", CountrySchema);
  * ```
  */
-export type CountryDocument = mongoose.Document<mongoose.Types.ObjectId, CountryQueries> & CountryMethods & {
-countryCode: string;
-name: {
-pt: string;
-en: string;
-};
-code: string;
-_id: mongoose.Types.ObjectId;
-}
+export type CountryDocument = mongoose.Document<mongoose.Types.ObjectId, CountryQueries> &
+	CountryMethods & {
+		countryCode: string
+		name: {
+			pt: string
+			en: string
+		}
+		code: string
+		_id: mongoose.Types.ObjectId
+	}
 
 /**
  * Lean version of RemoteConfigDocument
- * 
+ *
  * This has all Mongoose getters & functions removed. This type will be returned from `RemoteConfigDocument.toObject()`. To avoid conflicts with model names, use the type alias `RemoteConfigObject`.
  * ```
  * const remoteconfigObject = remoteconfig.toObject();
  * ```
  */
 export type RemoteConfig = {
-code: string;
-maintenanceMode?: boolean;
-publicMessage: {
-active?: boolean;
-text?: string;
-messageType?: string;
-};
-_id: mongoose.Types.ObjectId;
+	code: string
+	maintenanceMode?: boolean
+	publicMessage: {
+		active?: boolean
+		text?: string
+		messageType?: string
+	}
+	_id: mongoose.Types.ObjectId
 }
 
 /**
  * Lean version of RemoteConfigDocument (type alias of `RemoteConfig`)
- * 
+ *
  * Use this type alias to avoid conflicts with model names:
  * ```
  * import { RemoteConfig } from "../models"
  * import { RemoteConfigObject } from "../interfaces/mongoose.gen.ts"
- * 
+ *
  * const remoteconfigObject: RemoteConfigObject = remoteconfig.toObject();
  * ```
  */
@@ -543,34 +615,32 @@ export type RemoteConfigObject = RemoteConfig
 
 /**
  * Mongoose Query types
- * 
+ *
  * Pass this type to the Mongoose Model constructor:
  * ```
  * const RemoteConfig = mongoose.model<RemoteConfigDocument, RemoteConfigModel>("RemoteConfig", RemoteConfigSchema);
  * ```
  */
-export type RemoteConfigQueries = {
-}
+export type RemoteConfigQueries = {}
 
-export type RemoteConfigMethods = {
-}
+export type RemoteConfigMethods = {}
 
-export type RemoteConfigStatics = {
-}
+export type RemoteConfigStatics = {}
 
 /**
  * Mongoose Model type
- * 
+ *
  * Pass this type to the Mongoose Model constructor:
  * ```
  * const RemoteConfig = mongoose.model<RemoteConfigDocument, RemoteConfigModel>("RemoteConfig", RemoteConfigSchema);
  * ```
  */
-export type RemoteConfigModel = mongoose.Model<RemoteConfigDocument, RemoteConfigQueries> & RemoteConfigStatics
+export type RemoteConfigModel = mongoose.Model<RemoteConfigDocument, RemoteConfigQueries> &
+	RemoteConfigStatics
 
 /**
  * Mongoose Schema type
- * 
+ *
  * Assign this type to new RemoteConfig schema instances:
  * ```
  * const RemoteConfigSchema: RemoteConfigSchema = new mongoose.Schema({ ... })
@@ -580,55 +650,56 @@ export type RemoteConfigSchema = mongoose.Schema<RemoteConfigDocument, RemoteCon
 
 /**
  * Mongoose Document type
- * 
+ *
  * Pass this type to the Mongoose Model constructor:
  * ```
  * const RemoteConfig = mongoose.model<RemoteConfigDocument, RemoteConfigModel>("RemoteConfig", RemoteConfigSchema);
  * ```
  */
-export type RemoteConfigDocument = mongoose.Document<mongoose.Types.ObjectId, RemoteConfigQueries> & RemoteConfigMethods & {
-code: string;
-maintenanceMode?: boolean;
-publicMessage: {
-active?: boolean;
-text?: string;
-messageType?: string;
-};
-_id: mongoose.Types.ObjectId;
-}
+export type RemoteConfigDocument = mongoose.Document<mongoose.Types.ObjectId, RemoteConfigQueries> &
+	RemoteConfigMethods & {
+		code: string
+		maintenanceMode?: boolean
+		publicMessage: {
+			active?: boolean
+			text?: string
+			messageType?: string
+		}
+		_id: mongoose.Types.ObjectId
+	}
 
 /**
  * Check if a property on a document is populated:
  * ```
  * import { IsPopulated } from "../interfaces/mongoose.gen.ts"
- * 
+ *
  * if (IsPopulated<UserDocument["bestFriend"]>) { ... }
  * ```
  */
 export function IsPopulated<T>(doc: T | mongoose.Types.ObjectId): doc is T {
-  return doc instanceof mongoose.Document;
+	return doc instanceof mongoose.Document
 }
 
 /**
- * Helper type used by `PopulatedDocument`. Returns the parent property of a string 
+ * Helper type used by `PopulatedDocument`. Returns the parent property of a string
  * representing a nested property (i.e. `friend.user` -> `friend`)
  */
-type ParentProperty<T> = T extends `${infer P}.${string}` ? P : never;
+type ParentProperty<T> = T extends `${infer P}.${string}` ? P : never
 
 /**
-* Helper type used by `PopulatedDocument`. Returns the child property of a string 
-* representing a nested property (i.e. `friend.user` -> `user`).
-*/
-type ChildProperty<T> = T extends `${string}.${infer C}` ? C : never;
+ * Helper type used by `PopulatedDocument`. Returns the child property of a string
+ * representing a nested property (i.e. `friend.user` -> `user`).
+ */
+type ChildProperty<T> = T extends `${string}.${infer C}` ? C : never
 
 /**
-* Helper type used by `PopulatedDocument`. Removes the `ObjectId` from the general union type generated 
-* for ref documents (i.e. `mongoose.Types.ObjectId | UserDocument` -> `UserDocument`)
-*/
-type PopulatedProperty<Root, T extends keyof Root> = Omit<Root, T> & { 
-  [ref in T]: Root[T] extends mongoose.Types.Array<infer U> ? 
-    mongoose.Types.Array<Exclude<U, mongoose.Types.ObjectId>> :
-    Exclude<Root[T], mongoose.Types.ObjectId> 
+ * Helper type used by `PopulatedDocument`. Removes the `ObjectId` from the general union type generated
+ * for ref documents (i.e. `mongoose.Types.ObjectId | UserDocument` -> `UserDocument`)
+ */
+type PopulatedProperty<Root, T extends keyof Root> = Omit<Root, T> & {
+	[ref in T]: Root[T] extends mongoose.Types.Array<infer U>
+		? mongoose.Types.Array<Exclude<U, mongoose.Types.ObjectId>>
+		: Exclude<Root[T], mongoose.Types.ObjectId>
 }
 
 /**
@@ -641,31 +712,20 @@ type PopulatedProperty<Root, T extends keyof Root> = Omit<Root, T> & {
  * }
  * ```
  */
-export type PopulatedDocument<
-DocType,
-T
-> = T extends keyof DocType
-? PopulatedProperty<DocType, T> 
-: (
-    ParentProperty<T> extends keyof DocType
-      ? Omit<DocType, ParentProperty<T>> &
-      {
-        [ref in ParentProperty<T>]: (
-          DocType[ParentProperty<T>] extends mongoose.Types.Array<infer U> ? (
-            mongoose.Types.Array<
-              ChildProperty<T> extends keyof U 
-                ? PopulatedProperty<U, ChildProperty<T>> 
-                : PopulatedDocument<U, ChildProperty<T>>
-            >
-          ) : (
-            ChildProperty<T> extends keyof DocType[ParentProperty<T>]
-            ? PopulatedProperty<DocType[ParentProperty<T>], ChildProperty<T>>
-            : PopulatedDocument<DocType[ParentProperty<T>], ChildProperty<T>>
-          )
-        )
-      }
-      : DocType
-  )
-
-
-
+export type PopulatedDocument<DocType, T> = T extends keyof DocType
+	? PopulatedProperty<DocType, T>
+	: ParentProperty<T> extends keyof DocType
+	? Omit<DocType, ParentProperty<T>> & {
+			[ref in ParentProperty<T>]: DocType[ParentProperty<T>] extends mongoose.Types.Array<
+				infer U
+			>
+				? mongoose.Types.Array<
+						ChildProperty<T> extends keyof U
+							? PopulatedProperty<U, ChildProperty<T>>
+							: PopulatedDocument<U, ChildProperty<T>>
+				  >
+				: ChildProperty<T> extends keyof DocType[ParentProperty<T>]
+				? PopulatedProperty<DocType[ParentProperty<T>], ChildProperty<T>>
+				: PopulatedDocument<DocType[ParentProperty<T>], ChildProperty<T>>
+	  }
+	: DocType
