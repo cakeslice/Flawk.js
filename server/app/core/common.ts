@@ -157,7 +157,7 @@ if (config.localStorageEnabled) {
 	_localStorage?.setItem('disk_test', 'yes')
 	if (_localStorage?.getItem('disk_test') === 'yes') {
 		console.log(colorizeLog('Local storage is enabled', 'green'))
-	} else console.log(colorizeLog('Local storage error: CANNOT SAVE TO DISK', 'red'))
+	} else console.error(colorizeLog('Local storage error: CANNOT SAVE TO DISK', 'red'))
 } else console.log(colorizeLog('Local storage is disabled', 'grey'))
 
 numeral.register('locale', 'us', {
