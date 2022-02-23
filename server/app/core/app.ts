@@ -1027,6 +1027,8 @@ function setup() {
 	})
 
 	fs.readdirSync('./app/project/routes/public').forEach((file) => {
+		if (file.includes('.js.map')) return
+
 		if (
 			!_.find(config.publicRoutes, (e) => {
 				const split = e.split('/')
@@ -1041,6 +1043,8 @@ function setup() {
 			)
 	})
 	fs.readdirSync('./app/project/routes/private').forEach((file) => {
+		if (file.includes('.js.map')) return
+
 		if (
 			!_.find(config.routes, (e) => {
 				const split = e.split('/')

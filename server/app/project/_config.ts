@@ -39,7 +39,7 @@ const config: Partial<Config> = {
 	publicSockets: false,
 	webPushSupport: false,
 	webPushEmail: 'jose@cakeslice.dev',
-	localStorageEnabled: false, // ! Needs persistent storage in CapRover
+	localStorageEnabled: false, // ! Needs persistent storage in CapRover: /usr/src/flawk/local-storage
 
 	//
 

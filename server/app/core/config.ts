@@ -48,7 +48,7 @@ const publicConfig: Config = {
 	publicSockets: false,
 	webPushSupport: false,
 	webPushEmail: 'flawk@cakeslice.dev',
-	localStorageEnabled: false, // ! Needs persistent storage in CapRover
+	localStorageEnabled: false, // ! Needs persistent storage in CapRover: /usr/src/flawk/local-storage
 	localStorageSize: 5,
 
 	//
