@@ -145,7 +145,7 @@ ENV NODE_PATH=app/
 ARG CAPROVER_GIT_COMMIT_SHA=${CAPROVER_GIT_COMMIT_SHA}
 ENV CAPROVER_GIT_COMMIT_SHA=${CAPROVER_GIT_COMMIT_SHA}
 
-WORKDIR /usr/src/app
+WORKDIR /usr/src/flawk
 # Add package.json before rest of repo for caching
 COPY ./package*.json ./
 # NODE_ENV=production will only install prod dependencies
@@ -153,6 +153,6 @@ RUN npm ci --ignore-scripts
 
 COPY --from=typescript-build /usr/src/typescript_build/dist app
 
-WORKDIR /usr/src/app
+WORKDIR /usr/src/flawk
 EXPOSE 8080
 CMD [ "node", "--optimize_for_size", "--max_old_space_size=1024", "./app/server.js" ]

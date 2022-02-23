@@ -36,12 +36,6 @@ import { Server as SocketServer } from 'socket.io'
 import 'source-map-support/register'
 import validator from 'validator'
 
-const purpleColor = '\x1b[35m%s\x1b[0m'
-const blueColor = '\x1b[36m%s\x1b[0m'
-const yellowColor = '\x1b[33m%s\x1b[0m'
-const greenColor = '\x1b[32m%s\x1b[0m'
-const redColor = '\x1b[31m%s\x1b[0m'
-
 cachegoose(mongoose, {
 	//engine: 'redis',    /* If you don't specify the redis engine,      */
 	//port: 6379,         /* the query results will be cached in memory. */
@@ -507,7 +501,7 @@ function addPath(path: Path, tag: string) {
 	}
 }
 async function generateOpenApi() {
-	console.log('Generating OpenAPI spec...')
+	console.log(common.colorizeLog('Generating OpenAPI spec...', 'grey'))
 
 	const obj = {
 		openapi: '3.0.0',
@@ -717,21 +711,23 @@ async function generateOpenApi() {
 	const src = fs.readFileSync(file).toString()
 	const newApi = JSON.stringify(obj, null, 2)
 	if (src !== newApi) {
-		console.log('Spec changed! Writing to file\n\n')
+		console.log(common.colorizeLog('Spec changed! Writing to file\n', 'grey'))
 		fs.writeFileSync(file, newApi)
-	} else console.log('No changes detected\n\n')
+	} else console.log(common.colorizeLog('No changes detected\n', 'grey'))
 }
 
 function setup() {
-	console.log(purpleColor, '\n#### Flawk.js ####\n')
-
-	if (config.jest) console.log(yellowColor, '----- JEST TESTING -----\n')
+	console.log('')
+	if (config.jest) console.log(common.colorizeLog('----- JEST TESTING -----\n', 'yellow'))
 	console.log(
-		blueColor,
-		'Environment: ' + (config.prod ? 'production' : config.staging ? 'staging' : 'development')
+		common.colorizeLog('Environment: ', 'yellow') +
+			common.colorizeLog(
+				config.prod ? 'production' : config.staging ? 'staging' : 'development',
+				'magenta'
+			)
 	)
-	console.log(blueColor, 'Build: ' + '@' + global.buildNumber)
-	console.log(blueColor, 'Running on NodeJS ' + process.version + '\n\n')
+	console.log(common.colorizeLog('Build: ' + '@' + global.buildNumber, 'grey'))
+	console.log(common.colorizeLog('Running on NodeJS ' + process.version + '\n', 'grey'))
 
 	// CORS
 	const corsOptions: cors.CorsOptions = {
@@ -799,7 +795,9 @@ function setup() {
 				duration: 60 * 15, // per X second by IP
 			}),
 		}
+		console.log('Rate limited:')
 		config.rateLimitedCalls.forEach((c) => {
+			console.log(common.colorizeLog(c, 'grey'))
 			app.use(c, (req, res, next) => {
 				rateLimiter.limited
 					.consume(req.ip)
@@ -812,7 +810,9 @@ function setup() {
 					})
 			})
 		})
+		console.log('Extremely Rate limited:')
 		config.extremeRateLimitedCalls.forEach((c) => {
+			console.log(common.colorizeLog(c, 'orange'))
 			app.use(c, (req, res, next) => {
 				rateLimiter.extremelyLimited
 					.consume(req.ip)
@@ -825,6 +825,7 @@ function setup() {
 					})
 			})
 		})
+		console.log('')
 		app.use(config.path + '/*', (req, res, next) => {
 			rateLimiter.default
 				.consume(req.ip)
@@ -1008,8 +1009,8 @@ function setup() {
 					})
 				} catch (e) {
 					console.error(
-						redColor,
-						'--- FAILED to get structure: ' + s.schema.collection.name
+						common.colorizeLog('--- FAILED to get structure: ', 'red') +
+							s.schema.collection.name
 					)
 				}
 			}
@@ -1035,7 +1036,9 @@ function setup() {
 				)
 			})
 		)
-			console.error(redColor, '--- MISSING ' + file + ' in routes configuration')
+			console.error(
+				common.colorizeLog('--- MISSING ', 'red') + file + ' in routes configuration'
+			)
 	})
 	fs.readdirSync('./app/project/routes/private').forEach((file) => {
 		if (
@@ -1047,7 +1050,9 @@ function setup() {
 				)
 			})
 		)
-			console.error(redColor, '--- MISSING ' + file + ' in routes configuration')
+			console.error(
+				common.colorizeLog('--- MISSING ', 'red') + file + ' in routes configuration'
+			)
 	})
 
 	for (let i = 0; i < config.publicRoutes.length; i++) {
@@ -1058,7 +1063,11 @@ function setup() {
 			app.use(config.path + '/', route)
 			//console.log('Loading ' + '/project' + config.publicRoutes[i])
 		} else {
-			console.error(redColor, '--- FAILED to load ' + '/project' + config.publicRoutes[i])
+			console.error(
+				common.colorizeLog('--- FAILED to load ', 'red') +
+					'/project' +
+					config.publicRoutes[i]
+			)
 		}
 	}
 	for (let i = 0; i < config.routes.length; i++) {
@@ -1069,7 +1078,9 @@ function setup() {
 			app.use(config.path + '/', route)
 			//console.log('Loading ' + '/project' + config.routes[i])
 		} else {
-			console.error(redColor, '--- FAILED to load ' + '/project' + config.routes[i])
+			console.error(
+				common.colorizeLog('--- FAILED to load ', 'red') + '/project' + config.routes[i]
+			)
 		}
 	}
 	console.log('')
@@ -1164,18 +1175,28 @@ async function updateDatabaseStructures() {
 	}
 }
 async function onDatabaseConnected() {
-	console.log('Connected to database:')
+	console.log('Connected to database')
 	const mongoAdmin = mongoose.connection.db.admin()
 	mongoAdmin.buildInfo(function (err, info) {
-		console.log(yellowColor, `MongoDB target: 4.4.10`)
-		console.log(`MongoDB version: ${info ? (info.version as string) : 'Unknown'}`)
-		console.log(`Mongoose version: ${mongoose.version}\n\n`)
+		console.log(
+			common.colorizeLog('MongoDB target: ', 'yellow') +
+				common.colorizeLog('4.4.10', 'magenta')
+		)
+		console.log(
+			common.colorizeLog(
+				`MongoDB version: ${info ? (info.version as string) : 'Unknown'}`,
+				'grey'
+			)
+		)
+		console.log(common.colorizeLog(`Mongoose version: ${mongoose.version}\n`, 'grey'))
 	})
 
 	try {
 		await updateDatabaseStructures()
 	} catch (err) {
-		console.error(redColor, '--- FAILED to update database structures' + '\n', err)
+		console.error(
+			common.colorizeLog('--- FAILED to update database structures', 'red') + '\n' + err
+		)
 	}
 
 	if (!config.jest) await createDevUser()
@@ -1187,12 +1208,17 @@ async function listen() {
 	try {
 		await mongoose.connect(config.databaseURL as string)
 	} catch (err) {
-		console.error(redColor, '--- FAILED to connect to database' + '\n', err)
+		console.error(common.colorizeLog('--- FAILED to connect to database', 'red') + '\n' + err)
 	}
 	await onDatabaseConnected()
 
 	const server = app.listen(config.port, () => {
-		console.log(greenColor, 'Listening to requests on port ' + config.port.toString() + '\n\n')
+		console.log(
+			common.colorizeLog(
+				'Listening to requests on port ' + config.port.toString() + '\n\n',
+				'green'
+			)
+		)
 	})
 
 	if (config.websocketSupport) {
@@ -1210,5 +1236,4 @@ async function listen() {
 		await import('project/sockets')
 	}
 }
-
 export { app, listen, onDatabaseConnected }

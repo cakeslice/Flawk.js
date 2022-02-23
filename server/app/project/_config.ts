@@ -43,14 +43,14 @@ const config: Partial<Config> = {
 
 	//
 
-	emailFrom: process.env.nodemailerUser || 'jose@cakeslice.dev',
-	replyTo: undefined, // ! Don't use "noreply" e-mails, bad for delivery!
+	emailFrom: process.env.nodemailerUser || 'flawk@cakeslice.dev',
+	replyTo: 'flawk@cakeslice.dev', // ! Don't use "noreply" e-mails, bad for delivery!
 	adminEmails: [
 		{
-			email: 'jose@cakeslice.dev',
+			email: 'flawk@cakeslice.dev',
 		},
 	],
-	developerEmail: 'jose@cakeslice.dev',
+	developerEmail: 'flawk@cakeslice.dev',
 
 	routes: _routes,
 	publicRoutes: _publicRoutes,

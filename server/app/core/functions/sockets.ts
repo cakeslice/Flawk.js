@@ -14,8 +14,6 @@ import { JwtPayload, SocketUser } from 'project-types'
 import { Client } from 'project/database'
 import { Socket } from 'socket.io'
 
-const yellowColor = '\x1b[33m%s\x1b[0m'
-
 function disconnectUnidentified(socket: Socket) {
 	socket.disconnect(true)
 	if (config.debugSockets)
@@ -212,8 +210,7 @@ export function init() {
 		console.log('Websockets are disabled')
 		return
 	}
-
-	console.log(yellowColor, 'Websockets are enabled')
+	console.log('Websockets are enabled')
 
 	// ! Disconnect all logged in sockets once in a while to make sure they still have permissions
 	setInterval(() => {

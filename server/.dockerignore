@@ -4,4 +4,5 @@ node_modules/*
 
 /coverage
 local-storage/*
-dist/*
+
+# DO NOT ADD dist/*

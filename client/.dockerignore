@@ -5,3 +5,5 @@ android/*
 ios/*
 
 coverage/*
+
+# DO NOT ADD build/*

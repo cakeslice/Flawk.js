@@ -35,7 +35,7 @@
 		"buildAndroid": "npm run buildLocal && npx cap sync && cd android && gradlew bundleRelease && cd .. && cross-env-shell jarsigner -keystore ./_env/android_keystore.env -storepass $ANDROID_KEYSTORE_PASS ./android/app/build/outputs/bundle/release/app-release.aab $ANDROID_KEYSTORE_ALIAS",
 		"- EXTRA SCRIPTS -": "-----------------------------",
 		"precommit": "npm-run-all --aggregate-output --parallel auditCI lintTypescriptCI checkStaged",
-		"postinstall": "cd .. && git config core.hooksPath ./git-hooks",
+		"postinstall": "cd .. && git config core.hooksPath ./git-hooks && cd client",
 		"eject": "react-scripts eject",
 		"test": "cross-env CI=true react-scripts test --env=jsdom --coverage",
 		"testCI": "cross-env CI=true react-scripts test --env=jsdom --bail",

@@ -5,9 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import { Logtail } from '@logtail/node'
+import { LogtailTransport } from '@logtail/winston'
 import * as Sentry from '@sentry/node'
 import Nexmo, { MessageError, MessageRequestResponse } from '@vonage/server-sdk'
 import AWS from 'aws-sdk'
+import chalk from 'chalk'
 import config from 'core/config'
 import db from 'core/functions/db'
 import crypto from 'crypto-extra'
@@ -31,7 +34,6 @@ import Stripe from 'stripe'
 import { URLSearchParams } from 'url'
 import * as uuid from 'uuid'
 import winston from 'winston'
-import { Loggly } from 'winston-loggly-bulk'
 
 const _stripe = process.env.stripeSecret
 	? new Stripe(process.env.stripeSecret, {
@@ -39,30 +41,53 @@ const _stripe = process.env.stripeSecret
 	  })
 	: undefined
 
-const greenColor = '\x1b[32m%s\x1b[0m'
-const redColor = '\x1b[31m%s\x1b[0m'
+const colorizeLog = (
+	s: string,
+	color: 'blue' | 'yellow' | 'red' | 'green' | 'magenta' | 'grey' | 'orange'
+) => {
+	if (process.env.LogtailToken) return s
+
+	let colorized = s
+	switch (color) {
+		case 'blue':
+			colorized = chalk.blue(s)
+			break
+		case 'yellow':
+			colorized = chalk.yellow(s)
+			break
+		case 'red':
+			colorized = chalk.red(s)
+			break
+		case 'green':
+			colorized = chalk.green(s)
+			break
+		case 'magenta':
+			colorized = chalk.magenta(s)
+			break
+		case 'grey':
+			colorized = chalk.gray(s)
+			break
+		case 'orange':
+			colorized = chalk.hex('#FFA500')(s)
+			break
+	}
+	return colorized
+}
 
 function _sleep(ms: number) {
 	return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
 function initLogging() {
-	console.log('') // Very first app log
+	console.log(colorizeLog('\n######### Flawk.js #########\n', 'magenta')) // Very first app log
 	const gitHash = process.env.CAPROVER_GIT_COMMIT_SHA || GitRepoInfo().sha
 	global.buildNumber = gitHash ? gitHash.substring(0, 7) : 'unknown'
 
-	if (process.env.LogglyToken && process.env.LogglySubdomain && process.env.LogglyTag) {
-		winston.add(
-			new Loggly({
-				timestamp: false,
-				token: process.env.LogglyToken,
-				subdomain: process.env.LogglySubdomain,
-				tags: [process.env.LogglyTag],
-				json: true,
-			})
-		)
+	if (process.env.LogtailToken) {
+		const logtail = new Logtail(process.env.LogtailToken)
+		winston.add(new LogtailTransport(logtail))
 
-		console.log('Now logging to Loggly...')
+		console.log('Now logging to Logtail...')
 		/* eslint-disable */
 		// @ts-ignore
 		console.log = (...args) => winston.info.call(winston, ...args)
@@ -75,7 +100,7 @@ function initLogging() {
 		// @ts-ignore
 		console.debug = (...args) => winston.debug.call(winston, ...args)
 		/* eslint-enable */
-	} else console.log('Loggly is disabled')
+	} else console.log(colorizeLog('Logtail is disabled', 'grey'))
 
 	if (config.sentryID) {
 		Sentry.init({
@@ -89,21 +114,22 @@ function initLogging() {
 			// Leaving the sample rate at 1.0 means that automatic instrumentation will send a transaction each time a user loads any page or navigates anywhere in your app, which is a lot of transactions. Sampling enables you to collect representative data without overwhelming either your system or your Sentry transaction quota.
 			tracesSampleRate: 0.2,
 		})
-		console.log(greenColor, 'Sentry is enabled')
-	} else console.log('Sentry is disabled')
+		console.log(colorizeLog('Sentry is enabled', 'green'))
+	} else console.log(colorizeLog('Sentry is disabled', 'grey'))
 
-	if (config.postmarkKey) console.log(greenColor, 'Postmark is enabled')
+	if (config.postmarkKey) console.log(colorizeLog('Postmark is enabled', 'green'))
 	if (!config.postmarkKey && config.nodemailerHost) {
-		console.log(greenColor, 'Nodemailer is enabled')
+		console.log(colorizeLog('Nodemailer is enabled', 'green'))
 	}
-	if (!config.postmarkKey && !config.nodemailerHost) console.log('E-mail is disabled')
-	if (!config.webPushSupport) console.log('Web push is disabled')
+	if (!config.postmarkKey && !config.nodemailerHost)
+		console.log(colorizeLog('E-mail is disabled', 'grey'))
+	if (!config.webPushSupport) console.log(colorizeLog('Web push is disabled', 'grey'))
 	else if (process.env.publicVAPID && process.env.privateVAPID) {
-		console.log(greenColor, 'Web push is enabled')
-	} else console.error(redColor, 'Web push error: No VAPID keys found')
+		console.log(colorizeLog('Web push is enabled', 'green'))
+	} else console.error(colorizeLog('Web push error: No VAPID keys found', 'red'))
 
-	if (process.env.stripeSecret) console.log(greenColor, 'Stripe is enabled')
-	else console.log('Stripe is disabled')
+	if (process.env.stripeSecret) console.log(colorizeLog('Stripe is enabled', 'green'))
+	else console.log(colorizeLog('Stripe is disabled', 'grey'))
 
 	process.on('uncaughtException', function (err) {
 		Sentry.captureException(err)
@@ -120,16 +146,19 @@ function initLogging() {
 }
 initLogging()
 
-if (config.recaptchaSecretKey) console.log(greenColor, 'Recaptcha is enabled')
-else console.log('Recaptcha is disabled')
+if (config.recaptchaSecretKey) console.log(colorizeLog('Recaptcha is enabled', 'green'))
+else console.log(colorizeLog('Recaptcha is disabled', 'grey'))
 
-const mb = 1024 * 1024
-// Megabytes
+const mb = 1024 * 1024 // Megabytes
 const _localStorage = config.localStorageEnabled
 	? new LocalStorage('./local-storage', config.localStorageSize * mb)
 	: undefined
-if (config.localStorageEnabled) console.log(greenColor, 'Local storage is enabled')
-else console.log('Local storage is disabled')
+if (config.localStorageEnabled) {
+	_localStorage?.setItem('disk_test', 'yes')
+	if (_localStorage?.getItem('disk_test') === 'yes') {
+		console.log(colorizeLog('Local storage is enabled', 'green'))
+	} else console.log(colorizeLog('Local storage error: CANNOT SAVE TO DISK', 'red'))
+} else console.log(colorizeLog('Local storage is disabled', 'grey'))
 
 numeral.register('locale', 'us', {
 	delimiters: {
@@ -195,20 +224,20 @@ const s3 = new AWS.S3({
 	secretAccessKey: config.bucketAccessSecret,
 	apiVersion: '2006-03-01',
 })
-if (config.bucketEndpoint) console.log(greenColor, 'S3 bucket is enabled')
-else console.log('S3 bucked is disabled')
+if (config.bucketEndpoint) console.log(colorizeLog('S3 bucket is enabled', 'green'))
+else console.log(colorizeLog('S3 bucket is disabled', 'grey'))
 
 let nexmoClient: Nexmo
 if (config.nexmo.ID && config.nexmo.token) {
 	if (!config.nexmo.phoneNumber) {
-		console.log('SMS is disabled (no phoneNumber)')
-	} else if (process.env.noSMS) console.log('SMS is disabled')
-	else console.log(greenColor, 'SMS is enabled')
+		console.log(colorizeLog('SMS is disabled (no phoneNumber)', 'yellow'))
+	} else if (process.env.noSMS) console.log(colorizeLog('SMS is disabled', 'grey'))
+	else console.log(colorizeLog('SMS is enabled', 'green'))
 	nexmoClient = new Nexmo({
 		apiKey: config.nexmo.ID,
 		apiSecret: config.nexmo.token,
 	})
-} else console.log('SMS is disabled')
+} else console.log(colorizeLog('SMS is disabled', 'grey'))
 
 ////////////////
 
@@ -348,6 +377,8 @@ export default {
 	},
 
 	///////////////////////////////////// LOGGER
+
+	colorizeLog: colorizeLog,
 
 	logCatch: _logCatch,
 
