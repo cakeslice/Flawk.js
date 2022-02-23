@@ -9,3 +9,4 @@ node_modules/*
 dist/*
 package-lock.json
 database.gen.ts
+local-storage/*

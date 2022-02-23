@@ -18,9 +18,9 @@
 		"generateDatabase": "mtgen --no-populate-overload -o ./app/project/database.gen.ts ./app/project/database.ts && node ./app/core/internal/fixMtgen.js && prettier --write ./app/project/database.gen.ts",
 		"generateVAPIDKeys": "web-push generate-vapid-keys",
 		"- HELPER SCRIPTS -": "-----------------------------",
-		"startLocalJavascript": "cross-env NODE_PATH=dist/ node --inspect ./dist/server.js",
+		"startLocalJavascript": "npm run copyExtra && cross-env NODE_PATH=dist/ node --inspect ./dist/server.js",
 		"startLocal": "npm run lintCI && tsc-watch --onSuccess \"npm run startLocalJavascript\"",
-		"buildCI": "tsc && cross-env cpy --cwd=app --parents '**/*.json' '../dist/'",
+		"buildCI": "tsc && npm run copyExtra",
 		"buildLocal": "npm run auditCI && npm run testCI && npm run buildCI",
 		"buildPushDocker": "npm run buildLocal && cross-env-shell docker image build -t $DOCKER_IMAGE . -f Dockerfile.local && cross-env-shell docker push $DOCKER_IMAGE && cross-env-shell docker run caprover/cli-caprover:v2.1.1 caprover deploy --caproverUrl $CAPROVER_URL --caproverPassword $CAPROVER_PASSWORD --caproverApp $CAPROVER_APP --imageName $DOCKER_IMAGE && cross-env-shell docker image rm $DOCKER_IMAGE",
 		"- EXTRA SCRIPTS -": "-----------------------------",
@@ -34,7 +34,8 @@
 		"lintTypescriptCI": "tsc --noEmit --incremental",
 		"auditFix": "npm audit fix && npm run auditCI",
 		"auditCI": "npm audit --audit-level=critical",
-		"checkStaged": "lint-staged"
+		"checkStaged": "lint-staged",
+		"copyExtra": "cross-env cpy --cwd=app --parents '**/*.json' '../dist/' && cross-env cpy --cwd=app --parents '**/*.hbs' '../dist/'"
 	},
 	"dependencies": {
 		"@awaitjs/express": "^0.9.0",
@@ -75,6 +76,7 @@
 		"response-time": "^2.3.2",
 		"socket.io": "^4.4.0",
 		"source-map-support": "^0.5.21",
+		"stripe": "^8.203.0",
 		"supertest": "^6.1.6",
 		"uuid": "^8.3.2",
 		"validator": "^13.7.0",

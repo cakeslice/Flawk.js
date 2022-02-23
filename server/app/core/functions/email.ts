@@ -19,10 +19,11 @@ const postmarkClient = config.postmarkKey
 	: undefined
 let nodemailerClient: nodemailer.Transporter<unknown> | undefined = undefined
 function setupNodemailer() {
+	const port = config.nodemailerPort || 465
 	nodemailerClient = nodemailer.createTransport({
 		host: config.nodemailerHost,
-		port: config.nodemailerPort || 465,
-		secure: config.nodemailerPort != 465 ? false : true, // eslint-disable-line
+		port: port,
+		secure: port != 465 ? false : true, // eslint-disable-line
 		auth: {
 			user: config.nodemailerUser,
 			pass: config.nodemailerPass,
@@ -47,7 +48,6 @@ function setupNodemailer() {
 }
 if (!config.postmarkKey && config.nodemailerHost) {
 	setupNodemailer()
-	console.log('Nodemailer is enabled')
 }
 
 type EmailData = { subject: string; substitutions: Obj }
@@ -120,6 +120,10 @@ export async function sendEmail(
 
 			context: {
 				...data.substitutions,
+			},
+
+			headers: {
+				'X-PM-Tag': template,
 			},
 		})) as Obj
 

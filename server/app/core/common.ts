@@ -27,10 +27,17 @@ import 'numeral/locales'
 import { JwtPayload } from 'project-types'
 import { Client, IRemoteConfig, RemoteConfig } from 'project/database'
 import RegexParser from 'regex-parser'
+import Stripe from 'stripe'
 import { URLSearchParams } from 'url'
 import * as uuid from 'uuid'
 import winston from 'winston'
 import { Loggly } from 'winston-loggly-bulk'
+
+const _stripe = process.env.stripeSecret
+	? new Stripe(process.env.stripeSecret, {
+			apiVersion: '2020-08-27',
+	  })
+	: undefined
 
 const greenColor = '\x1b[32m%s\x1b[0m'
 const redColor = '\x1b[31m%s\x1b[0m'
@@ -94,6 +101,9 @@ function initLogging() {
 	else if (process.env.publicVAPID && process.env.privateVAPID) {
 		console.log(greenColor, 'Web push is enabled')
 	} else console.error(redColor, 'Web push error: No VAPID keys found')
+
+	if (process.env.stripeSecret) console.log(greenColor, 'Stripe is enabled')
+	else console.log('Stripe is disabled')
 
 	process.on('uncaughtException', function (err) {
 		Sentry.captureException(err)
@@ -220,7 +230,7 @@ const _setResponse = function (
 	res.setHeader('Content-Type', 'application/json')
 	res.end(JSON.stringify(data))
 	console.log(
-		'------ RES: ' +
+		'\n------ RES: ' +
 			str +
 			' (' +
 			code.toString() +
@@ -341,7 +351,7 @@ export default {
 
 	logCatch: _logCatch,
 
-	logCall: function (req: Request) {
+	logCall: function (req: Request, skipBody = false) {
 		const { user, ip } = _getUserIP(req)
 
 		let str =
@@ -353,7 +363,7 @@ export default {
 			ip +
 			')'
 		let o
-		if (req.body && !_.isEmpty(req.body)) {
+		if (!skipBody && req.body && !_.isEmpty(req.body)) {
 			o = JSON.parse(JSON.stringify(req.body, null, 3))
 			if (o.password) o.password = '*******'
 			str += '\nbody ' + JSON.stringify(o, null, 3)
@@ -369,7 +379,7 @@ export default {
                 o.password = "*******";
             str += "\nheaders " + JSON.stringify(req.headers, null, 3);
         } */
-		console.log('-- ' + req.method + ': ' + str)
+		console.log('\n-- ' + req.method + ': ' + str)
 	},
 
 	///////////////////////////////////// COMMON RESPONSES
@@ -554,6 +564,10 @@ export default {
 		_setResponse(400, req, res, config.response('recaptchaFailed', req))
 		return false
 	},
+
+	/////////////////////////////////// PAYMENTS
+
+	stripe: _stripe as Stripe,
 
 	/////////////////////////////////// AUTHENTICATION
 

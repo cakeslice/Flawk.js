@@ -31,6 +31,7 @@ declare module 'express-serve-static-core' {
 		skip: number
 		limit: number
 		bodyFields?: any
+		rawBody?: any
 		files?: Express.Multer.File[]
 	}
 	interface Response {

@@ -240,8 +240,20 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 				if (!global.socket.connected) global.socket.connect()
 			})
 
-			if (global.socket && !global.socket.connected && config.publicSockets)
+			if (
+				global.socket &&
+				!global.socket.connected &&
+				(config.publicSockets || global.socketClientID)
+			)
 				global.socket.connect()
+			setInterval(() => {
+				if (
+					global.socket &&
+					!global.socket.connected &&
+					(config.publicSockets || global.socketClientID)
+				)
+					global.socket.connect()
+			}, 10000)
 
 			setTimeout(function () {
 				setSocketConnectionDelay(true)

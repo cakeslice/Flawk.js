@@ -749,7 +749,15 @@ function setup() {
 	app.use(helmet())
 	app.use(compression())
 	app.use(cookieParser())
-	app.use(express.json())
+	app.use(
+		express.json({
+			verify: function (req: express.Request, res: express.Response, buf, encoding) {
+				if (req.originalUrl.includes('_rawbody')) {
+					req.rawBody = buf.toString((encoding as BufferEncoding) || 'utf8')
+				}
+			},
+		})
+	)
 	app.use(express.urlencoded({ extended: true }))
 	if (config.prod || config.staging) app.enable('trust proxy') // Only if you're behind a reverse proxy (Heroku, Bluemix, AWS ELB, Nginx, etc)
 
@@ -832,7 +840,7 @@ function setup() {
 
 	// Request logger
 	app.use(config.path + '/*', function (req, res, next) {
-		common.logCall(req)
+		common.logCall(req, req.originalUrl.includes('_rawbody'))
 		next()
 	})
 

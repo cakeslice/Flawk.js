@@ -30,8 +30,20 @@ self.addEventListener(
 		event.notification.close()
 
 		if (event.action === 'open') {
-			// eslint-disable-next-line no-undef
-			clients.openWindow('/' /*  + 'messages?reply=' + messageId */)
+			var promise = new Promise(function (resolve) {
+				resolve()
+			}).then(async function () {
+				// eslint-disable-next-line no-undef
+				const c = await clients.matchAll({ type: 'window', includeUncontrolled: true })
+
+				if (!c[0]) {
+					// eslint-disable-next-line no-undef
+					return clients.openWindow('/' /*  + 'messages?reply=' + messageId */)
+				} else return c[0].focus()
+			})
+
+			// Now wait for the promise to keep the permission alive.
+			event.waitUntil(promise)
 		}
 	},
 	false
