@@ -14,6 +14,8 @@ import config from 'core/config'
 import navigation from 'core/functions/navigation'
 import ScrollToTop from 'core/internal/ScrollToTop'
 import styles from 'core/styles'
+// @ts-ignore
+import { install as installGoogleAds } from 'ga-gtag'
 import { createBrowserHistory } from 'history'
 import _ from 'lodash'
 import { useStoreSelector } from 'project/redux/_store'
@@ -223,15 +225,20 @@ export default function RouterBase({ children }: { children: React.ReactNode }) 
 						const cookie = await global.storage.getItem('cookie_notice')
 						startAnalytics = cookie === 'true'
 					}
-					if (startAnalytics && config.googleAnalyticsID) {
-						ReactGA.initialize(config.googleAnalyticsID)
-						const w = window.location.pathname + window.location.search
-						ReactGA.pageview(w)
-						history.listen((location) => {
-							const l = location.pathname + location.search
-							ReactGA.pageview(l)
-						})
-						global.analytics = ReactGA
+					if (startAnalytics) {
+						if (config.googleAdsID) {
+							installGoogleAds(config.googleAdsID)
+						}
+						if (config.googleAnalyticsID) {
+							ReactGA.initialize(config.googleAnalyticsID)
+							const w = window.location.pathname + window.location.search
+							ReactGA.pageview(w)
+							history.listen((location) => {
+								const l = location.pathname + location.search
+								ReactGA.pageview(l)
+							})
+							global.analytics = ReactGA
+						}
 					}
 				}
 			}

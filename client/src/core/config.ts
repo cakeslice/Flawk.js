@@ -33,6 +33,7 @@ const _prod =
 const _staging = !_prod && process.env.REACT_APP_STAGING === 'true'
 const _domain = process.env.REACT_APP_DOMAIN
 const _googleAnalyticsID = process.env.REACT_APP_GA_KEY
+const _googleAdsID = process.env.REACT_APP_G_ADS_KEY
 const _recaptchaSiteKey = process.env.REACT_APP_RECAPTCHA_KEY
 const _recaptchaBypass = process.env.REACT_APP_RECAPTCHA_BYPASS
 const _sentryID = process.env.REACT_APP_SENTRY_KEY
@@ -314,6 +315,7 @@ const config: Config & InternalConfig = {
 
 	sentryID: _sentryID,
 	googleAnalyticsID: _googleAnalyticsID,
+	googleAdsID: _googleAdsID,
 	recaptchaSiteKey: _recaptchaSiteKey,
 	recaptchaBypass: _recaptchaBypass,
 
@@ -518,6 +520,7 @@ type InternalConfig = {
 
 	sentryID: string | undefined
 	googleAnalyticsID: string | undefined
+	googleAdsID: string | undefined
 	recaptchaSiteKey: string | undefined
 	recaptchaBypass: string | undefined
 
