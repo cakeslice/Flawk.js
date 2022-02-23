@@ -38,7 +38,7 @@ const config: Partial<Config> = {
 	websocketSupport: true,
 	publicSockets: false,
 	webPushSupport: false,
-	webPushEmail: 'jose@cakeslice.dev',
+	webPushEmail: 'flawk@cakeslice.dev',
 	localStorageEnabled: false, // ! Needs persistent storage in CapRover: /usr/src/flawk/local-storage
 
 	//
