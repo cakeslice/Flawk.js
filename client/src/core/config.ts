@@ -286,6 +286,7 @@ const publicConfig: Config = {
 	darkModeOptIn: false,
 	darkModeForce: false,
 	showCookieNotice: true,
+	hasEssentialCookies: true,
 	cookiePolicyURL: 'https://services.cakeslice.dev/cookies',
 
 	toastCloseTime: 2000,
@@ -593,6 +594,7 @@ export type Config = {
 	darkModeOptIn: boolean
 	darkModeForce: boolean
 	showCookieNotice: boolean
+	hasEssentialCookies: boolean
 	cookiePolicyURL: 'https://services.cakeslice.dev/cookies'
 
 	toastCloseTime: number

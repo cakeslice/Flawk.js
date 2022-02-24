@@ -498,12 +498,15 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 													setCookieNotice('essential')
 												}}
 											>
-												Essential Only
+												{config.hasEssentialCookies
+													? config.text('common.essentialCookies')
+													: config.text('common.rejectCookies')}
 											</FButton>
 
 											<FButton
 												appearance='primary'
 												style={{
+													fontSize: 13,
 													marginLeft: desktop ? 7.5 : undefined,
 													minHeight: 30,
 													minWidth: 0,
@@ -518,7 +521,7 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 													setCookieNotice('all')
 												}}
 											>
-												Accept All
+												{config.text('common.acceptCookies')}
 											</FButton>
 										</div>
 

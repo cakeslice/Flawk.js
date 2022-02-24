@@ -43,6 +43,9 @@ export default {
 		decline: { pt: 'Recusar', en: 'Decline' },
 
 		cookiePolicy: { pt: 'Policy', en: 'Policy' },
+		essentialCookies: { pt: 'Essential Only', en: 'Essential Only' },
+		rejectCookies: { pt: 'Reject All', en: 'Reject All' },
+		acceptCookies: { pt: 'Accept All', en: 'Accept All' },
 		cookieWarning: {
 			pt: "This site uses necessary cookies to deliver its services. We'd like to set additional cookies to analyse traffic. View our {{cookiePolicy}}",
 			en: "This site uses necessary cookies to deliver its services. We'd like to set additional cookies to analyse traffic. View our {{cookiePolicy}}",
