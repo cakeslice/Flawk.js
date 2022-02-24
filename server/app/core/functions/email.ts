@@ -6,13 +6,14 @@
  */
 
 import config from 'core/config'
+import crypto from 'crypto'
 import { Obj } from 'flawk-types'
+import moment from 'moment'
 import nodemailer from 'nodemailer'
 import hbs from 'nodemailer-express-handlebars'
 import { htmlToText } from 'nodemailer-html-to-text'
 import postmark from 'postmark'
-
-//
+import { AppState, Client, EmailTrack } from 'project/database'
 
 const postmarkClient = config.postmarkKey
 	? new postmark.ServerClient(config.postmarkKey)
@@ -45,9 +46,6 @@ function setupNodemailer() {
 		})
 	)
 	nodemailerClient.use('compile', htmlToText())
-}
-if (!config.postmarkKey && config.nodemailerHost) {
-	setupNodemailer()
 }
 
 type EmailData = { subject: string; substitutions: Obj }
@@ -106,6 +104,18 @@ export async function sendEmail(
 			return false
 		}
 	} else if (nodemailerClient) {
+		const client = await Client.findOne({ email: body.To }).select('_id')
+
+		const emailHash = crypto.createHash('md5').update(body.To).digest('hex')
+		const emailTrack = new EmailTrack({
+			emailHash: emailHash,
+			timestamp: new Date(),
+			template: template,
+			subject: body.TemplateModel.subject,
+			client: client ? client._id : undefined,
+		})
+		const emailTrackID = emailTrack._id
+
 		// @ts-ignore
 		const info = (await nodemailerClient.sendMail({
 			from: body.From,
@@ -119,13 +129,26 @@ export async function sendEmail(
 			template: template,
 
 			context: {
+				email: body.To,
 				...data.substitutions,
+				...(process.env.emailTrackingURL && {
+					_tracking_:
+						process.env.emailTrackingURL +
+						'?email=' +
+						encodeURIComponent(body.To) +
+						'&template=' +
+						template +
+						'&_id=' +
+						emailTrackID,
+				}),
 			},
 
 			headers: {
 				'X-PM-Tag': template,
 			},
 		})) as Obj
+
+		await emailTrack.save()
 
 		console.log(
 			'Message sent: %s',
@@ -180,21 +203,24 @@ export async function sendBulkEmails(array: [EmailBulkData], template: string) {
 		return false
 	}
 }
-export async function sendAdminEmail(data: EmailData, template: string, developer = false) {
+export async function sendAdminEmail(data: EmailData, template = 'generic', developer = false) {
 	let adminEmails = ''
 	for (let i = 0; i < config.adminEmails.length; i++) {
 		if (i === config.adminEmails.length - 1) adminEmails += config.adminEmails[i]
 		else adminEmails += config.adminEmails[i].email + ', '
 	}
+	const pre = config.appName + ' Admin: '
+	const to = !config.prod || (developer && config.prod) ? config.developerEmail : adminEmails
 	const body: EmailBody = {
 		TemplateAlias: template,
 		TemplateModel: {
+			email: to,
 			...data.substitutions,
-			subject: !config.prod ? '[TEST-ADMIN] ' + data.subject : data.subject,
+			subject: !config.prod ? '[TEST-ADMIN] ' + pre + data.subject : pre + data.subject,
 		},
 		From: config.emailFrom,
 		ReplyTo: config.replyTo,
-		To: !config.prod || (developer && config.prod) ? config.developerEmail : adminEmails,
+		To: to,
 	}
 	if (process.env.noEmails === 'true') {
 		console.log('Skipped e-mail: ' + JSON.stringify(body))
@@ -245,4 +271,90 @@ export async function sendAdminEmail(data: EmailData, template: string, develope
 		console.log('Skipped sending e-mail, no e-mail service!')
 		return false
 	}
+}
+
+if (!config.postmarkKey && config.nodemailerHost) {
+	setupNodemailer()
+
+	setInterval(
+		() => {
+			void (async function () {
+				const sevenDaysAgo = moment().subtract(7, 'days').toDate()
+				const emailTracks = await EmailTrack.find({
+					timestamp: { $gt: sevenDaysAgo },
+				})
+					.select('read template')
+					.lean()
+
+				let count = 0
+				let openedCount = 0
+				const stats: { template: string; count: number; openedCount: number }[] = []
+				emailTracks.forEach((e) => {
+					count++
+					if (e.read) openedCount++
+
+					const temp = e.template || 'unknown'
+					const found = stats.find((s) => s.template === temp)
+					if (!found)
+						stats.push({ template: temp, count: 1, openedCount: e.read ? 1 : 0 })
+					else {
+						found.count++
+						if (e.read) found.openedCount++
+					}
+				})
+				const openedPercent = !count ? 0 : (openedCount / count) * 100
+
+				if (!process.env.emailTrackingURL)
+					console.log(
+						'[E-mail Tracking] No emailTrackingURL is set, e-mail opens will not be tracked!'
+					)
+				console.log(
+					'\n[Email Tracking] Last 7 days: ' +
+						count +
+						' sent (' +
+						openedPercent +
+						'% opened)\n'
+				)
+
+				//
+
+				let appState = await AppState.findOne({}).select('lastEmailReport')
+				if (!appState) {
+					appState = new AppState({})
+				}
+				if (
+					!appState.lastEmailReport ||
+					new Date(appState.lastEmailReport).getTime() < sevenDaysAgo.getTime()
+				) {
+					await sendAdminEmail({
+						subject: 'Weekly E-mail Report',
+						substitutions: {
+							text:
+								'In the last week, we sent <b>' +
+								count +
+								' e-mails</b> and about <b>' +
+								openedPercent +
+								'%</b> of them were opened.<br/><br/>Template statistics:<br/>' +
+								stats
+									.map(
+										(s) =>
+											'<b>' +
+											s.template +
+											'</b>' +
+											': ' +
+											s.count +
+											' sent, ' +
+											s.openedCount +
+											' read'
+									)
+									.join('<br/>'),
+						},
+					})
+					appState.lastEmailReport = new Date()
+					await appState.save()
+				}
+			})()
+		},
+		config.prod || config.staging ? 60000 * 60 : 30000
+	)
 }

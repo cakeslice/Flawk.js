@@ -61,6 +61,7 @@ export type Client = {
 		country?: string
 		countryPhoneCode?: string
 	}
+	stripeCustomer?: string
 	access: {
 		
 		hashedPassword?: string
@@ -189,6 +190,7 @@ export type ClientDocument = mongoose.Document<mongoose.Types.ObjectId, ClientQu
 			countryPhoneCode?: string
 			fullName: any
 		}
+		stripeCustomer?: string
 		access: {
 			
 			hashedPassword?: string
@@ -400,6 +402,167 @@ export type ChatDocument = mongoose.Document<mongoose.Types.ObjectId, ChatQuerie
 			clients: mongoose.Types.DocumentArray<ChatArraysClientDocument>
 			messages: mongoose.Types.DocumentArray<ChatArraysMessageDocument>
 		}
+		_id: mongoose.Types.ObjectId
+	}
+
+/**
+ * Lean version of EmailTrackDocument
+ *
+ * This has all Mongoose getters & functions removed. This type will be returned from `EmailTrackDocument.toObject()`. To avoid conflicts with model names, use the type alias `EmailTrackObject`.
+ * ```
+ * const emailtrackObject = emailtrack.toObject();
+ * ```
+ */
+export type EmailTrack = {
+	emailHash?: string
+	timestamp?: Date
+	template?: string
+	subject?: string
+	read?: boolean
+	readTimestamp?: Date
+	opened?: number
+	_id: mongoose.Types.ObjectId
+}
+
+/**
+ * Lean version of EmailTrackDocument (type alias of `EmailTrack`)
+ *
+ * Use this type alias to avoid conflicts with model names:
+ * ```
+ * import { EmailTrack } from "../models"
+ * import { EmailTrackObject } from "../interfaces/mongoose.gen.ts"
+ *
+ * const emailtrackObject: EmailTrackObject = emailtrack.toObject();
+ * ```
+ */
+export type EmailTrackObject = EmailTrack
+
+/**
+ * Mongoose Query types
+ *
+ * Pass this type to the Mongoose Model constructor:
+ * ```
+ * const EmailTrack = mongoose.model<EmailTrackDocument, EmailTrackModel>("EmailTrack", EmailTrackSchema);
+ * ```
+ */
+export type EmailTrackQueries = {}
+
+export type EmailTrackMethods = {}
+
+export type EmailTrackStatics = {}
+
+/**
+ * Mongoose Model type
+ *
+ * Pass this type to the Mongoose Model constructor:
+ * ```
+ * const EmailTrack = mongoose.model<EmailTrackDocument, EmailTrackModel>("EmailTrack", EmailTrackSchema);
+ * ```
+ */
+export type EmailTrackModel = mongoose.Model<EmailTrackDocument, EmailTrackQueries> &
+	EmailTrackStatics
+
+/**
+ * Mongoose Schema type
+ *
+ * Assign this type to new EmailTrack schema instances:
+ * ```
+ * const EmailTrackSchema: EmailTrackSchema = new mongoose.Schema({ ... })
+ * ```
+ */
+export type EmailTrackSchema = mongoose.Schema<EmailTrackDocument, EmailTrackModel>
+
+/**
+ * Mongoose Document type
+ *
+ * Pass this type to the Mongoose Model constructor:
+ * ```
+ * const EmailTrack = mongoose.model<EmailTrackDocument, EmailTrackModel>("EmailTrack", EmailTrackSchema);
+ * ```
+ */
+export type EmailTrackDocument = mongoose.Document<mongoose.Types.ObjectId, EmailTrackQueries> &
+	EmailTrackMethods & {
+		emailHash?: string
+		timestamp?: Date
+		template?: string
+		subject?: string
+		read?: boolean
+		readTimestamp?: Date
+		opened?: number
+		_id: mongoose.Types.ObjectId
+	}
+
+/**
+ * Lean version of AppStateDocument
+ *
+ * This has all Mongoose getters & functions removed. This type will be returned from `AppStateDocument.toObject()`. To avoid conflicts with model names, use the type alias `AppStateObject`.
+ * ```
+ * const appstateObject = appstate.toObject();
+ * ```
+ */
+export type AppState = {
+	lastEmailReport?: Date
+	_id: mongoose.Types.ObjectId
+}
+
+/**
+ * Lean version of AppStateDocument (type alias of `AppState`)
+ *
+ * Use this type alias to avoid conflicts with model names:
+ * ```
+ * import { AppState } from "../models"
+ * import { AppStateObject } from "../interfaces/mongoose.gen.ts"
+ *
+ * const appstateObject: AppStateObject = appstate.toObject();
+ * ```
+ */
+export type AppStateObject = AppState
+
+/**
+ * Mongoose Query types
+ *
+ * Pass this type to the Mongoose Model constructor:
+ * ```
+ * const AppState = mongoose.model<AppStateDocument, AppStateModel>("AppState", AppStateSchema);
+ * ```
+ */
+export type AppStateQueries = {}
+
+export type AppStateMethods = {}
+
+export type AppStateStatics = {}
+
+/**
+ * Mongoose Model type
+ *
+ * Pass this type to the Mongoose Model constructor:
+ * ```
+ * const AppState = mongoose.model<AppStateDocument, AppStateModel>("AppState", AppStateSchema);
+ * ```
+ */
+export type AppStateModel = mongoose.Model<AppStateDocument, AppStateQueries> & AppStateStatics
+
+/**
+ * Mongoose Schema type
+ *
+ * Assign this type to new AppState schema instances:
+ * ```
+ * const AppStateSchema: AppStateSchema = new mongoose.Schema({ ... })
+ * ```
+ */
+export type AppStateSchema = mongoose.Schema<AppStateDocument, AppStateModel>
+
+/**
+ * Mongoose Document type
+ *
+ * Pass this type to the Mongoose Model constructor:
+ * ```
+ * const AppState = mongoose.model<AppStateDocument, AppStateModel>("AppState", AppStateSchema);
+ * ```
+ */
+export type AppStateDocument = mongoose.Document<mongoose.Types.ObjectId, AppStateQueries> &
+	AppStateMethods & {
+		lastEmailReport?: Date
 		_id: mongoose.Types.ObjectId
 	}
 

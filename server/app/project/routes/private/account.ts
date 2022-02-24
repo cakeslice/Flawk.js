@@ -73,6 +73,28 @@ router.postAsync(UploadURL.call, async (req, res) => {
 	res.do(200, '', response)
 })
 
+const ManageStripeLink = {
+	call: '/client/manage_stripe_link',
+	method: 'get',
+	description: 'Get a link to manage the Stripe subscription',
+}
+if (common.stripe) {
+	router.getAsync(ManageStripeLink.call, async (req, res) => {
+		const selection = '_id stripeCustomer'
+		const user = await Client.findOne({ _id: req.user._id }).select(selection)
+
+		if (user && user.stripeCustomer) {
+			const session = await common.stripe.billingPortal.sessions.create({
+				customer: user.stripeCustomer,
+				return_url: config.frontendURL,
+			})
+			res.do(200, '', {
+				link: session.url,
+			})
+		} else res.do(500)
+	})
+}
+
 const Data = {
 	call: '/client/data',
 	description: "Get a user's account data",

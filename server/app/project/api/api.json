@@ -98,6 +98,78 @@
         ]
       }
     },
+    "/track_email": {
+      "get": {
+        "description": "Track e-mail open",
+        "operationId": "get-track_email",
+        "tags": [
+          "public"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "email",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "template",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "_id"
+          }
+        ]
+      }
+    },
+    "/stripe_hook_rawbody": {
+      "post": {
+        "description": "Stripe Webhooks endpoint",
+        "operationId": "post-stripe_hook_rawbody",
+        "tags": [
+          "public"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "type"
+                ]
+              }
+            }
+          }
+        },
+        "parameters": []
+      }
+    },
     "/client/login": {
       "post": {
         "description": "Login a user",
@@ -137,6 +209,33 @@
                   },
                   "password": {
                     "type": "string"
+                  },
+                  "webPushSubscription": {
+                    "type": "object",
+                    "properties": {
+                      "endpoint": {
+                        "type": "string"
+                      },
+                      "keys": {
+                        "type": "object",
+                        "properties": {
+                          "p256dh": {
+                            "type": "string"
+                          },
+                          "auth": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "p256dh",
+                          "auth"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "endpoint",
+                      "keys"
+                    ]
                   }
                 },
                 "required": [
@@ -352,6 +451,55 @@
         "parameters": []
       }
     },
+    "/client/webpush_unsubscribe": {
+      "post": {
+        "description": "Unsubscribe to web push notifications",
+        "operationId": "post-webpush_unsubscribe",
+        "tags": [
+          "public"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "endpoint": {
+                    "type": "string"
+                  },
+                  "keys": {
+                    "type": "object",
+                    "properties": {
+                      "p256dh": {
+                        "type": "string"
+                      },
+                      "auth": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "p256dh",
+                      "auth"
+                    ]
+                  }
+                },
+                "required": [
+                  "endpoint",
+                  "keys"
+                ]
+              }
+            }
+          }
+        },
+        "parameters": []
+      }
+    },
     "/client/logout": {
       "post": {
         "description": "Logout a user",
@@ -436,6 +584,32 @@
                 ]
               }
             }
+          }
+        },
+        "parameters": []
+      }
+    },
+    "/client/manage_stripe_link": {
+      "get": {
+        "description": "Get a link to manage the Stripe subscription",
+        "operationId": "get-manage_stripe_link",
+        "tags": [
+          "private"
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          },
+          {
+            "headerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "Unauthorized"
           }
         },
         "parameters": []

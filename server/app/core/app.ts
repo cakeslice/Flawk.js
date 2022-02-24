@@ -718,7 +718,7 @@ async function generateOpenApi() {
 
 function setup() {
 	console.log('')
-	if (config.jest) console.log(common.colorizeLog('----- JEST TESTING -----\n', 'yellow'))
+	if (config.jest) console.warn(common.colorizeLog('----- JEST TESTING -----\n', 'yellow'))
 	console.log(
 		common.colorizeLog('Environment: ', 'yellow') +
 			common.colorizeLog(
@@ -797,7 +797,8 @@ function setup() {
 		}
 		console.log('Rate limited:')
 		config.rateLimitedCalls.forEach((c) => {
-			console.log(common.colorizeLog(c, 'grey'))
+			const split = c.split('/')
+			console.log(common.colorizeLog(split[split.length - 1], 'blue'))
 			app.use(c, (req, res, next) => {
 				rateLimiter.limited
 					.consume(req.ip)
@@ -812,7 +813,8 @@ function setup() {
 		})
 		console.log('Extremely Rate limited:')
 		config.extremeRateLimitedCalls.forEach((c) => {
-			console.log(common.colorizeLog(c, 'orange'))
+			const split = c.split('/')
+			console.log(common.colorizeLog(split[split.length - 1], 'orange'))
 			app.use(c, (req, res, next) => {
 				rateLimiter.extremelyLimited
 					.consume(req.ip)
@@ -1038,9 +1040,7 @@ function setup() {
 				)
 			})
 		)
-			console.error(
-				common.colorizeLog('--- MISSING ', 'red') + file + ' in routes configuration'
-			)
+			console.error(common.colorizeLog('--- MISSING ', 'red') + file + ' in config')
 	})
 	fs.readdirSync('./app/project/routes/private').forEach((file) => {
 		if (file.includes('.js.map')) return
@@ -1054,9 +1054,7 @@ function setup() {
 				)
 			})
 		)
-			console.error(
-				common.colorizeLog('--- MISSING ', 'red') + file + ' in routes configuration'
-			)
+			console.error(common.colorizeLog('--- MISSING ', 'red') + file + ' in config')
 	})
 
 	for (let i = 0; i < config.publicRoutes.length; i++) {

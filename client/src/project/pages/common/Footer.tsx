@@ -28,27 +28,33 @@ export default class Footer extends Component {
 						}}
 					>
 						<Animated
+							className='text-center'
 							effects={['fade', 'up']}
 							distance={10}
 							duration={0.75}
 							delay={0.25}
 						>
 							<p
-								className='text-center'
 								style={{
-									fontSize: 14.5,
+									fontSize: 13,
+									opacity: 0.75,
 									color: styles.colors.whiteDay,
 								}}
 							>
-								© 2020{' '}
-								<a
-									href='https://cakeslice.dev'
-									style={{ color: styles.colors.whiteDay, fontWeight: 700 }}
-								>
-									José Guerreiro
-								</a>
+								© 2022 José Guerreiro
 							</p>
-
+							<a
+								target='_blank'
+								style={{
+									fontSize: 13,
+									opacity: 0.75,
+									color: styles.colors.whiteDay,
+								}}
+								href='https://cakeslice.dev'
+								rel='noreferrer'
+							>
+								www.cakeslice.dev
+							</a>
 							<div style={{ minHeight: 30 }}></div>
 
 							<div className='flex items-center justify-center'>

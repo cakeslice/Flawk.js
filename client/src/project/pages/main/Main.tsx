@@ -87,7 +87,7 @@ export default class Main extends Component {
 							</FButton>
 						</div>
 
-						<div style={{ minHeight: 800 }} />
+						<div style={{ minHeight: 300 }} />
 					</div>
 				)}
 			</MediaQuery>

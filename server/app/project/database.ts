@@ -9,9 +9,11 @@ import mongoose, { Schema } from 'mongoose'
 import validator from 'validator'
 import db, { MixedType, ObjectIdType, StructureConfig } from '../core/functions/db'
 import {
+	AppStateDocument,
 	ChatDocument,
 	ClientDocument,
 	CountryDocument,
+	EmailTrackDocument,
 	RemoteConfigDocument,
 	WebPushSubscriptionDocument,
 } from './database.gen'
@@ -68,6 +70,7 @@ const ClientSchema = db.attachPlugins(
 			country: String,
 			countryPhoneCode: String,
 		},
+		stripeCustomer: String,
 
 		access: {
 			select: false,
@@ -210,6 +213,36 @@ export const Chat = mongoose.model<ChatDocument>(
 					},
 				],
 			},
+		})
+	)
+)
+
+// ------ Core ------
+
+export type IEmailTrack = EmailTrackDocument
+export const EmailTrack = mongoose.model<EmailTrackDocument>(
+	'EmailTrack',
+	db.attachPlugins(
+		new Schema({
+			// _id
+			emailHash: { type: String, index: true },
+			timestamp: Date,
+			template: { type: String, index: true },
+			subject: { type: String },
+			read: { type: Boolean, default: false, index: true },
+			readTimestamp: Date,
+			opened: { type: Number, default: 0 },
+		})
+	)
+)
+
+export type IAppState = AppStateDocument
+export const AppState = mongoose.model<AppStateDocument>(
+	'AppState',
+	db.attachPlugins(
+		new Schema({
+			// _id
+			lastEmailReport: Date,
 		})
 	)
 )

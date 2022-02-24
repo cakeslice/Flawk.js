@@ -124,6 +124,8 @@ function initLogging() {
 	if (config.postmarkKey) console.log(colorizeLog('Postmark is enabled', 'green'))
 	if (!config.postmarkKey && config.nodemailerHost) {
 		console.log(colorizeLog('Nodemailer is enabled', 'green'))
+		if (!process.env.emailTrackingURL)
+			console.warn(colorizeLog('Nodemailer: emailTrackingURL is not set!', 'orange'))
 	}
 	if (!config.postmarkKey && !config.nodemailerHost)
 		console.log(colorizeLog('E-mail is disabled', 'grey'))
@@ -132,8 +134,11 @@ function initLogging() {
 		console.log(colorizeLog('Web push is enabled', 'green'))
 	} else console.error(colorizeLog('Web push error: No VAPID keys found', 'red'))
 
-	if (process.env.stripeSecret) console.log(colorizeLog('Stripe is enabled', 'green'))
-	else console.log(colorizeLog('Stripe is disabled', 'grey'))
+	if (process.env.stripeSecret) {
+		console.log(colorizeLog('Stripe is enabled', 'green'))
+		if (!process.env.stripeWebhooksSecret)
+			console.error(colorizeLog('Stripe error: stripeWebhooksSecret is not set!', 'red'))
+	} else console.log(colorizeLog('Stripe is disabled', 'grey'))
 
 	process.on('uncaughtException', function (err) {
 		Sentry.captureException(err)
@@ -231,7 +236,7 @@ else console.log(colorizeLog('S3 bucket is disabled', 'grey'))
 let nexmoClient: Nexmo
 if (config.nexmo.ID && config.nexmo.token) {
 	if (!config.nexmo.phoneNumber) {
-		console.log(colorizeLog('SMS is disabled (no phoneNumber)', 'yellow'))
+		console.error(colorizeLog('SMS error: phoneNumber is not set!', 'red'))
 	} else if (process.env.noSMS) console.log(colorizeLog('SMS is disabled', 'grey'))
 	else console.log(colorizeLog('SMS is enabled', 'green'))
 	nexmoClient = new Nexmo({
