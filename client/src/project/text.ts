@@ -42,9 +42,10 @@ export default {
 		accept: { pt: 'Aceitar', en: 'Accept' },
 		decline: { pt: 'Recusar', en: 'Decline' },
 
+		cookiePolicy: { pt: 'Policy', en: 'Policy' },
 		cookieWarning: {
-			pt: 'ESTE SITE UTILIZA COOKIES PARA FORNECER OS SERVIÇOS E ANALISAR O TRÁFEGO. AO USAR ESTE SITE, CONCORDA COM A SUA UTILIZAÇÃO DE COOKIES',
-			en: 'THIS SITE USES COOKIES TO DELIVER ITS SERVICES AND TO ANALYSE TRAFFIC. BY USING THIS SITE, YOU AGREE TO ITS USE OF COOKIES',
+			pt: "This site uses necessary cookies to deliver its services. We'd like to set additional cookies to analyse traffic. View our {{cookiePolicy}}",
+			en: "This site uses necessary cookies to deliver its services. We'd like to set additional cookies to analyse traffic. View our {{cookiePolicy}}",
 		},
 	},
 
@@ -112,18 +113,6 @@ export default {
 			en: 'Lost connection to server!',
 		},
 
-		privacy: {
-			title: {
-				pt: 'Política de Privacidade e Cookies',
-				en: 'Privacy & Cookies Policy',
-			},
-		},
-		terms: {
-			title: {
-				pt: 'Termos de Serviço',
-				en: 'Terms of Service',
-			},
-		},
 		somethingWrong: {
 			pt: 'Ocorreu um erro',
 			en: 'Something went wrong',

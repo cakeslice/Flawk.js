@@ -28,6 +28,7 @@ const config: Partial<Config> = {
 	websocketSupport: _websocketSupport,
 	darkModeAvailable: true,
 	showCookieNotice: true,
+	cookiePolicyURL: 'https://services.cakeslice.dev/cookies',
 
 	mobileWidthTrigger: 700,
 	publicMaxWidth: 1281.5,

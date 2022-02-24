@@ -330,6 +330,34 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 
 	const title = config.title() + (config.phrase() ? config.separator + config.phrase() : '')
 
+	const bannerStyle = (desktop: boolean): React.CSSProperties => {
+		return {
+			borderTop: '1px solid rgba(255,255,255,.1)',
+			display: 'flex',
+			minWidth: '100vw',
+			minHeight: 50,
+			padding: 15,
+			...(desktop
+				? {
+						paddingLeft: 25,
+						paddingRight: 25,
+				  }
+				: {
+						paddingLeft: 15,
+						paddingRight: 15,
+				  }),
+			position: 'fixed',
+			overflow: 'hidden',
+			bottom: 0,
+			zIndex: 8,
+			background: 'rgba(30,30,30,.9)',
+			textAlign: 'center',
+			alignItems: 'center',
+			justifyContent: 'center',
+			fontSize: 13,
+		}
+	}
+
 	return (
 		<ErrorBoundary FallbackComponent={ErrorFallback}>
 			<Suspense fallback={<div></div>}>
@@ -355,30 +383,15 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 									<Animated
 										trackedName='AppBase'
 										animateOffscreen
-										effects={['up']}
+										effects={['fade', 'up']}
 										distance={50}
 										duration={0.5}
-										style={{
-											borderTop: '1px solid rgba(255,255,255,.1)',
-											display: 'flex',
-											minWidth: '100vw',
-											minHeight: 50,
-											padding: 5,
-											position: 'fixed',
-											overflow: 'hidden',
-											bottom: 0,
-											zIndex: 8,
-											background: 'rgba(30,30,30,.9)',
-											textAlign: 'center',
-											alignItems: 'center',
-											justifyContent: 'center',
-										}}
+										style={bannerStyle(desktop)}
 									>
 										<div></div>
 
 										<p
 											style={{
-												fontSize: 12,
 												opacity: 0.75,
 												color: 'white',
 											}}
@@ -391,7 +404,6 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 											style={{
 												marginLeft: 15,
 												minHeight: 30,
-												fontSize: 12,
 												minWidth: 0,
 											}}
 											onClick={() => {
@@ -413,26 +425,15 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 										<Animated
 											trackedName='AppBase-socketConnectionDelay'
 											animateOffscreen
-											effects={['up']}
+											effects={['fade', 'up']}
 											distance={50}
 											duration={0.5}
 											style={{
-												borderTop: '1px solid rgba(255,255,255,.1)',
-												display: 'flex',
-												minWidth: '100vw',
-												minHeight: 50,
-												padding: 5,
-												position: 'fixed',
-												overflow: 'hidden',
-												bottom: 0,
-												zIndex: 8,
+												...bannerStyle(desktop),
 												background: config.replaceAlpha(
 													styles.colors.red,
 													0.9
 												),
-												textAlign: 'center',
-												alignItems: 'center',
-												justifyContent: 'center',
 											}}
 										>
 											<p style={{ color: 'white' }}>
@@ -446,60 +447,80 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 									<Animated
 										trackedName='AppBase-cookieNotice'
 										animateOffscreen
-										effects={['up']}
+										effects={['fade', 'up']}
 										distance={50}
 										duration={0.5}
 										delay={2}
 										//
-										style={{
-											borderTop: '1px solid rgba(255,255,255,.1)',
-											display: 'flex',
-											minWidth: '100vw',
-											minHeight: 50,
-											padding: desktop ? 5 : 15,
-											position: 'fixed',
-											overflow: 'hidden',
-											bottom: 0,
-											zIndex: 8,
-											background: 'rgba(30,30,30,.9)',
-											textAlign: 'center',
-											alignItems: 'center',
-											justifyContent: 'center',
-										}}
+										style={bannerStyle(desktop)}
 									>
 										<div></div>
 
 										<p
 											data-nosnippet
 											style={{
-												fontSize: desktop ? 12 : 11,
+												marginRight: 15,
 												opacity: 0.75,
 												color: 'white',
 											}}
 										>
-											{config.text('common.cookieWarning')}
+											{config.text('common.cookieWarning', global.lang.text, [
+												{
+													key: '{{cookiePolicy}}',
+													value:
+														'<a style="color:white;text-decoration:underline" target="_blank" href="' +
+														config.cookiePolicyURL +
+														'">' +
+														config.text('common.cookiePolicy') +
+														'</a>',
+												},
+											])}
 										</p>
 
-										<FButton
-											appearance='primary'
+										<div
+											className={!desktop ? 'flex-col items-center' : 'flex'}
 											style={{
-												marginLeft: 15,
-												minHeight: 30,
-												fontSize: 12,
-												minWidth: 0,
-											}}
-											onClick={async () => {
-												await global.storage.setItem(
-													'cookie_notice',
-													'true'
-												)
-												if (global.startAnalytics)
-													await global.startAnalytics()
-												setCookieNotice('true')
+												flexFlow: !desktop ? 'column-reverse' : undefined,
 											}}
 										>
-											OK
-										</FButton>
+											<FButton
+												style={{
+													fontSize: 13,
+													marginTop: !desktop ? 10 : undefined,
+													minHeight: 30,
+													minWidth: 0,
+												}}
+												onClick={async () => {
+													await global.storage.setItem(
+														'cookie_notice',
+														'essential'
+													)
+													setCookieNotice('essential')
+												}}
+											>
+												Essential Only
+											</FButton>
+
+											<FButton
+												appearance='primary'
+												style={{
+													marginLeft: desktop ? 7.5 : undefined,
+													minHeight: 30,
+													minWidth: 0,
+												}}
+												onClick={async () => {
+													await global.storage.setItem(
+														'cookie_notice',
+														'all'
+													)
+													if (global.startAnalytics)
+														await global.startAnalytics()
+													setCookieNotice('all')
+												}}
+											>
+												Accept All
+											</FButton>
+										</div>
 
 										<div></div>
 									</Animated>

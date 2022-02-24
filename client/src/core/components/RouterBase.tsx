@@ -223,9 +223,11 @@ export default function RouterBase({ children }: { children: React.ReactNode }) 
 					if (!config.showCookieNotice) startAnalytics = true
 					else {
 						const cookie = await global.storage.getItem('cookie_notice')
-						startAnalytics = cookie === 'true'
+						startAnalytics = cookie === 'all'
 					}
+					// ! NOTE: Do not track (DNT) is not a legal requirement which is why it's ignored
 					if (startAnalytics) {
+						console.log('Starting analytics - Got consent')
 						if (config.googleAdsID) {
 							installGoogleAds(config.googleAdsID)
 						}
@@ -239,6 +241,8 @@ export default function RouterBase({ children }: { children: React.ReactNode }) 
 							})
 							global.analytics = ReactGA
 						}
+					} else {
+						console.log("Can't start analytics - No consent")
 					}
 				}
 			}
