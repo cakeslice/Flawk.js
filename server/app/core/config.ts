@@ -123,7 +123,7 @@ const config: Config & InternalConfig = {
 
 	//
 
-	sentryID: process.env.sentryID,
+	sentryID: process.env.SentryID,
 
 	postmarkKey: process.env.postmarkKey,
 	nodemailerHost: process.env.nodemailerHost,
