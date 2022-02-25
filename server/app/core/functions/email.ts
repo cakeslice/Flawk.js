@@ -209,7 +209,7 @@ export async function sendBulkEmails(array: [EmailBulkData], template: string) {
 export async function sendAdminEmail(data: EmailData, template = 'generic', developer = false) {
 	let adminEmails = ''
 	for (let i = 0; i < config.adminEmails.length; i++) {
-		if (i === config.adminEmails.length - 1) adminEmails += config.adminEmails[i]
+		if (i === config.adminEmails.length - 1) adminEmails += config.adminEmails[i].email
 		else adminEmails += config.adminEmails[i].email + ', '
 	}
 	const pre = config.appName + ' Admin: '
