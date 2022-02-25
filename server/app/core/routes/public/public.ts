@@ -16,52 +16,52 @@ import { onStripeSubscriptionActive } from 'project/functions/overrides'
 
 const router = Router()
 
-if (common.stripe) {
-	/*
-	Stripe Checkout subscription example
+/*
+Stripe Checkout subscription example
 
-	const url = config.frontendURL
-	const session = await common.stripe.checkout.sessions.create({
-		line_items: [
-			{
-				price_data: {
-					currency: 'usd',
-					// eslint-disable-next-line
-					product: config.prod ? 'productID' : 'test_productID',
-					recurring: {
-						interval: 'month',
-					},
-					tax_behavior: 'exclusive',
-					unit_amount: 15 * 100, // $15
+const url = config.frontendURL
+const session = await common.stripe.checkout.sessions.create({
+	line_items: [
+		{
+			price_data: {
+				currency: 'usd',
+				// eslint-disable-next-line
+				product: config.prod ? 'productID' : 'test_productID',
+				recurring: {
+					interval: 'month',
 				},
-				quantity: 1,
+				tax_behavior: 'exclusive',
+				unit_amount: 15 * 100, // $15
 			},
-		],
-		allow_promotion_codes: false,
-		automatic_tax: {
-			enabled: true,
+			quantity: 1,
 		},
-		mode: 'subscription',
-		success_url:
-			'url/?success=' + encodeURIComponent(user.email),
-		cancel_url: url,
-		client_reference_id: user._id.toString(),
-		//
-		// If a new customer
-		customer_email: user.email,
-		// If an existing customer
-		customer: user.core.stripeCustomer,
-	})
-	res.do(200, undefined, { session: session.id })
-	*/
-	const StripeHook = {
-		call: '/stripe_hook_rawbody',
-		method: 'post',
-		description: 'Stripe Webhooks endpoint',
-		body: {} as {
-			type: string
-		},
-	}
+	],
+	allow_promotion_codes: false,
+	automatic_tax: {
+		enabled: true,
+	},
+	mode: 'subscription',
+	success_url:
+		'url/?success=' + encodeURIComponent(user._id.toString() + '_' + new Date().getTime().toString()),
+	cancel_url: url,
+	client_reference_id: user._id.toString(),
+	//
+	// If a new customer
+	customer_email: user.email,
+	// If an existing customer
+	customer: user.core.stripeCustomer,
+})
+res.do(200, undefined, { session: session.id })
+*/
+const StripeHook = {
+	call: '/stripe_hook_rawbody',
+	method: 'post',
+	description: 'Stripe Webhooks endpoint',
+	body: {} as {
+		type: string
+	},
+}
+if (common.stripe) {
 	router.postAsync(
 		StripeHook.call,
 		async (req, res, next: NextFunction) => {
@@ -255,19 +255,19 @@ router.getAsync(TrackEmail.call, async (req, res) => {
 
 //
 
+const WebPushUnsubscribe = {
+	call: '/client/webpush_unsubscribe',
+	method: 'post',
+	description: 'Unsubscribe to web push notifications',
+	body: {} as {
+		endpoint: string
+		keys: {
+			p256dh: string
+			auth: string
+		}
+	},
+}
 if (config.webPushSupport) {
-	const WebPushUnsubscribe = {
-		call: '/client/webpush_unsubscribe',
-		method: 'post',
-		description: 'Unsubscribe to web push notifications',
-		body: {} as {
-			endpoint: string
-			keys: {
-				p256dh: string
-				auth: string
-			}
-		},
-	}
 	router.postAsync(
 		WebPushUnsubscribe.call,
 		common.optionalTokenMiddleware(),
@@ -284,18 +284,20 @@ if (config.webPushSupport) {
 			res.do(200)
 		}
 	)
-	const WebPushSubscribe = {
-		call: '/client/webpush_subscribe',
-		method: 'post',
-		description: 'Subscribe to web push notifications',
-		body: {} as {
-			endpoint: string
-			keys: {
-				p256dh: string
-				auth: string
-			}
-		},
-	}
+}
+const WebPushSubscribe = {
+	call: '/client/webpush_subscribe',
+	method: 'post',
+	description: 'Subscribe to web push notifications',
+	body: {} as {
+		endpoint: string
+		keys: {
+			p256dh: string
+			auth: string
+		}
+	},
+}
+if (config.webPushSupport) {
 	router.postAsync(WebPushSubscribe.call, async (req, res) => {
 		const body: typeof WebPushSubscribe.body = req.body
 

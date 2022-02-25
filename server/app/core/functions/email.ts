@@ -50,7 +50,9 @@ function setupNodemailer() {
 }
 
 type EmailData = { subject: string; substitutions: Obj }
-type EmailBulkData = { subject: string; substitutions: Obj } & { email: string }
+type EmailBulkData = { subject: string; substitutions: Obj } & {
+	email: string
+}
 type EmailBody = {
 	TemplateAlias: string
 	TemplateModel: Obj & { subject: string }
@@ -289,7 +291,11 @@ if (!config.postmarkKey && config.nodemailerHost) {
 
 				let count = 0
 				let openedCount = 0
-				const stats: { template: string; count: number; openedCount: number }[] = []
+				const stats: {
+					template: string
+					count: number
+					openedCount: number
+				}[] = []
 				emailTracks.forEach((e) => {
 					count++
 					if (e.read) openedCount++
@@ -297,7 +303,11 @@ if (!config.postmarkKey && config.nodemailerHost) {
 					const temp = e.template || 'unknown'
 					const found = stats.find((s) => s.template === temp)
 					if (!found)
-						stats.push({ template: temp, count: 1, openedCount: e.read ? 1 : 0 })
+						stats.push({
+							template: temp,
+							count: 1,
+							openedCount: e.read ? 1 : 0,
+						})
 					else {
 						found.count++
 						if (e.read) found.openedCount++
@@ -313,7 +323,7 @@ if (!config.postmarkKey && config.nodemailerHost) {
 					'\n[Email Tracking] Last 7 days: ' +
 						count +
 						' sent (' +
-						openedPercent +
+						openedPercent.toFixed(1) +
 						'% opened)\n'
 				)
 
@@ -334,7 +344,7 @@ if (!config.postmarkKey && config.nodemailerHost) {
 								'In the last week, we sent <b>' +
 								count +
 								' e-mails</b> and about <b>' +
-								openedPercent +
+								openedPercent.toFixed(1) +
 								'%</b> of them were opened.<br/><br/>Template statistics:<br/>' +
 								stats
 									.map(

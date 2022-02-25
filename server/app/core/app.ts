@@ -88,7 +88,8 @@ const corsOrigins = <CustomOrigin>(
 
 async function extractRouteTypes(file: string): Promise<{ noChanges: boolean; calls: Path[] }> {
 	const fileSplit = file.split('/')
-	const cacheFolder = './local-storage/api-cache/' + fileSplit[fileSplit.length - 2] + '/'
+	const cacheFolder =
+		'./local-storage/api-cache/' + config.appName + '/' + fileSplit[fileSplit.length - 2] + '/'
 	const cachedPath = cacheFolder + fileSplit[fileSplit.length - 1]
 	await fs.promises.mkdir(cacheFolder, { recursive: true })
 	//

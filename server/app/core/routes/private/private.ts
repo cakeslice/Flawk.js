@@ -48,17 +48,17 @@ router.postAsync(UploadURL.call, async (req, res) => {
 	res.do(200, '', response)
 })
 
+const ManageStripeLink = {
+	call: '/client/manage_stripe_link',
+	method: 'get',
+	description: 'Get a link to manage the Stripe subscription',
+}
 if (common.stripe) {
-	const ManageStripeLink = {
-		call: '/client/manage_stripe_link',
-		method: 'get',
-		description: 'Get a link to manage the Stripe subscription',
-	}
 	router.getAsync(ManageStripeLink.call, async (req, res) => {
 		const selection = '_id core.stripeCustomer'
 		const user = await Client.findOne({ _id: req.user._id }).select(selection)
 
-		if (user && user.core.stripeCustomer) {
+		if (user && user.core && user.core.stripeCustomer) {
 			const session = await common.stripe.billingPortal.sessions.create({
 				customer: user.core.stripeCustomer,
 				return_url: config.frontendURL,
@@ -66,7 +66,7 @@ if (common.stripe) {
 			res.do(200, '', {
 				link: session.url,
 			})
-		} else res.do(500)
+		} else res.do(500, 'No customer found')
 	})
 }
 

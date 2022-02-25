@@ -98,6 +98,39 @@
         ]
       }
     },
+    "/stripe_hook_rawbody": {
+      "post": {
+        "description": "Stripe Webhooks endpoint",
+        "operationId": "post-stripe_hook_rawbody",
+        "tags": [
+          "public"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "type"
+                ]
+              }
+            }
+          }
+        },
+        "parameters": []
+      }
+    },
     "/track_email": {
       "get": {
         "description": "Track e-mail open",
@@ -135,6 +168,104 @@
             "name": "_id"
           }
         ]
+      }
+    },
+    "/client/webpush_unsubscribe": {
+      "post": {
+        "description": "Unsubscribe to web push notifications",
+        "operationId": "post-webpush_unsubscribe",
+        "tags": [
+          "public"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "endpoint": {
+                    "type": "string"
+                  },
+                  "keys": {
+                    "type": "object",
+                    "properties": {
+                      "p256dh": {
+                        "type": "string"
+                      },
+                      "auth": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "p256dh",
+                      "auth"
+                    ]
+                  }
+                },
+                "required": [
+                  "endpoint",
+                  "keys"
+                ]
+              }
+            }
+          }
+        },
+        "parameters": []
+      }
+    },
+    "/client/webpush_subscribe": {
+      "post": {
+        "description": "Subscribe to web push notifications",
+        "operationId": "post-webpush_subscribe",
+        "tags": [
+          "public"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "endpoint": {
+                    "type": "string"
+                  },
+                  "keys": {
+                    "type": "object",
+                    "properties": {
+                      "p256dh": {
+                        "type": "string"
+                      },
+                      "auth": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "p256dh",
+                      "auth"
+                    ]
+                  }
+                },
+                "required": [
+                  "endpoint",
+                  "keys"
+                ]
+              }
+            }
+          }
+        },
+        "parameters": []
       }
     },
     "/client/login": {
@@ -465,6 +596,21 @@
                 ]
               }
             }
+          }
+        },
+        "parameters": []
+      }
+    },
+    "/client/manage_stripe_link": {
+      "get": {
+        "description": "Get a link to manage the Stripe subscription",
+        "operationId": "get-manage_stripe_link",
+        "tags": [
+          "public"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
           }
         },
         "parameters": []
