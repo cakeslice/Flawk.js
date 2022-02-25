@@ -340,7 +340,8 @@ export function init() {
 										token: data.token as string,
 									}
 
-									// If user not assigned to socket yet
+									let newClient = false
+									if (!socket._client) newClient = true
 									socket._client = client
 
 									let unknownUsers = 0
@@ -355,36 +356,40 @@ export function init() {
 											}
 										} else unknownUsers++
 									}
-									if (config.debugSockets) {
-										adminSocketNotification(
-											'Socket connection',
-											'Client <b>' +
-												(client.email || client.id) +
-												'</b> just connected'
-										)
-										console.log(
-											'[SOCKET.IO] ' +
-												client.email +
-												' socket connected! (online: ' +
-												onlineClients.toString() +
-												' | unidentified: ' +
-												unknownUsers.toString() +
-												')'
-										)
+
+									if (newClient) {
+										if (config.debugSockets) {
+											adminSocketNotification(
+												'Socket connection',
+												'Client <b>' +
+													(client.email || client.id) +
+													'</b> just connected'
+											)
+											console.log(
+												'[SOCKET.IO] ' +
+													client.email +
+													' socket connected! (online: ' +
+													onlineClients.toString() +
+													' | unidentified: ' +
+													unknownUsers.toString() +
+													')'
+											)
+										}
+
+										if (config.debugSockets) {
+											const c: string = client.email || client.id
+											console.log(
+												'[SOCKET.IO] Socket: ' +
+													c +
+													': ' +
+													'client/' +
+													command +
+													' | ' +
+													JSON.stringify(data)
+											)
+										}
 									}
 
-									if (config.debugSockets) {
-										const c: string = client.email || client.id
-										console.log(
-											'[SOCKET.IO] Socket: ' +
-												c +
-												': ' +
-												'client/' +
-												command +
-												' | ' +
-												JSON.stringify(data)
-										)
-									}
 									return next()
 								} else {
 									return checkSocket(

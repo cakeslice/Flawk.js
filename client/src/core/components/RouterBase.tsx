@@ -252,9 +252,14 @@ export default function RouterBase({ children }: { children: React.ReactNode }) 
 		if (config.websocketSupport && global.socket) {
 			global.socket.off('notification')
 			global.socket.on('notification', (data: { title: string; description: string }) => {
-				addFlag(config.localize(data.title), config.localize(data.description), 'info', {
-					autoClose: true,
-				})
+				addFlag(
+					config.localize(data.title),
+					data.description ? config.localize(data.description) : undefined,
+					'info',
+					{
+						autoClose: true,
+					}
+				)
 			})
 		}
 
