@@ -463,17 +463,23 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 												color: 'white',
 											}}
 										>
-											{config.text('common.cookieWarning', global.lang.text, [
-												{
-													key: '{{cookiePolicy}}',
-													value:
-														'<a style="color:white;text-decoration:underline" target="_blank" href="' +
-														config.cookiePolicyURL +
-														'">' +
-														config.text('common.cookiePolicy') +
-														'</a>',
-												},
-											])}
+											{config.text(
+												config.hasEssentialCookies
+													? 'common.essentialCookieWarning'
+													: 'common.cookieWarning',
+												global.lang.text,
+												[
+													{
+														key: '{{cookiePolicy}}',
+														value:
+															'<a style="color:white;text-decoration:underline" target="_blank" href="' +
+															config.cookiePolicyURL +
+															'">' +
+															config.text('common.cookiePolicy') +
+															'</a>',
+													},
+												]
+											)}
 										</p>
 
 										<div

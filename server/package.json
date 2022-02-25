@@ -81,6 +81,7 @@
 		"source-map-support": "^0.5.21",
 		"stripe": "^8.203.0",
 		"supertest": "^6.1.6",
+		"turbodepot-node": "^7.0.1",
 		"uuid": "^8.3.2",
 		"validator": "^13.7.0",
 		"web-push": "^3.4.5"
@@ -131,7 +132,6 @@
 		"replace-in-file": "^6.3.2",
 		"ts-jest": "^27.0.7",
 		"tsc-watch": "^4.5.0",
-		"turbodepot-node": "^7.0.1",
 		"typescript": "^4.5.2"
 	},
 	"lint-staged": {
