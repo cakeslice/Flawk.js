@@ -595,7 +595,7 @@ export type Config = {
 	darkModeForce: boolean
 	showCookieNotice: boolean
 	hasEssentialCookies: boolean
-	cookiePolicyURL: 'https://services.cakeslice.dev/cookies'
+	cookiePolicyURL: string
 
 	toastCloseTime: number
 

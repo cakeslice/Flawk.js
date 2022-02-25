@@ -63,7 +63,7 @@ export default class Main extends Component {
 						<br />
 
 						<div className='flex-col items-center justify-center'>
-							<b>* WORK IN PROGRESS *</b>
+							<tag>WORK IN PROGRESS</tag>
 						</div>
 
 						<br />
