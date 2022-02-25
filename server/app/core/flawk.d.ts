@@ -17,4 +17,16 @@ declare module 'flawk-types' {
 	}
 	export type KeyUnknown = { [key: string]: unknown }
 	export type ArrayKeyUnknown = Array<{ [key: string]: unknown }>
+
+	//
+
+	export type RequestUser = {
+		_id: ObjectId
+		email?: string
+		phone?: string
+	}
+	export type JwtPayload = {
+		_id: string
+		exp: number
+	}
 }

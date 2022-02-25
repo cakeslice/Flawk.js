@@ -137,39 +137,6 @@
         ]
       }
     },
-    "/stripe_hook_rawbody": {
-      "post": {
-        "description": "Stripe Webhooks endpoint",
-        "operationId": "post-stripe_hook_rawbody",
-        "tags": [
-          "public"
-        ],
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        },
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "type": {
-                    "type": "string"
-                  }
-                },
-                "required": [
-                  "type"
-                ]
-              }
-            }
-          }
-        },
-        "parameters": []
-      }
-    },
     "/client/login": {
       "post": {
         "description": "Login a user",
@@ -451,95 +418,12 @@
         "parameters": []
       }
     },
-    "/client/webpush_unsubscribe": {
-      "post": {
-        "description": "Unsubscribe to web push notifications",
-        "operationId": "post-webpush_unsubscribe",
-        "tags": [
-          "public"
-        ],
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        },
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "endpoint": {
-                    "type": "string"
-                  },
-                  "keys": {
-                    "type": "object",
-                    "properties": {
-                      "p256dh": {
-                        "type": "string"
-                      },
-                      "auth": {
-                        "type": "string"
-                      }
-                    },
-                    "required": [
-                      "p256dh",
-                      "auth"
-                    ]
-                  }
-                },
-                "required": [
-                  "endpoint",
-                  "keys"
-                ]
-              }
-            }
-          }
-        },
-        "parameters": []
-      }
-    },
-    "/client/logout": {
-      "post": {
-        "description": "Logout a user",
-        "operationId": "post-logout",
-        "tags": [
-          "private"
-        ],
-        "security": [
-          {
-            "cookieAuth": []
-          },
-          {
-            "headerAuth": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success"
-          },
-          "401": {
-            "description": "Unauthorized"
-          }
-        },
-        "parameters": []
-      }
-    },
     "/client/upload_url": {
       "post": {
         "description": "Get a S3 URL to upload a file to",
         "operationId": "post-upload_url",
         "tags": [
-          "private"
-        ],
-        "security": [
-          {
-            "cookieAuth": []
-          },
-          {
-            "headerAuth": []
-          }
+          "public"
         ],
         "responses": {
           "200": {
@@ -563,9 +447,6 @@
                 }
               }
             }
-          },
-          "401": {
-            "description": "Unauthorized"
           }
         },
         "requestBody": {
@@ -589,10 +470,208 @@
         "parameters": []
       }
     },
-    "/client/manage_stripe_link": {
+    "/client/add_mobile_push_notification_id": {
+      "post": {
+        "description": "Add the push notification ID of a mobile device",
+        "operationId": "post-add_mobile_push_notification_id",
+        "tags": [
+          "public"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "playerID": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "playerID"
+                ]
+              }
+            }
+          }
+        },
+        "parameters": []
+      }
+    },
+    "/client/notifications": {
       "get": {
-        "description": "Get a link to manage the Stripe subscription",
-        "operationId": "get-manage_stripe_link",
+        "description": "Get the user's notifications",
+        "operationId": "get-notifications",
+        "tags": [
+          "public"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "notifications": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "_id": {
+                            "$ref": "#/components/schemas/ObjectId"
+                          },
+                          "isRead": {
+                            "type": "boolean"
+                          },
+                          "date": {
+                            "$ref": "#/components/schemas/DateTime"
+                          },
+                          "notificationType": {
+                            "type": "string"
+                          },
+                          "data": {
+                            "type": "object"
+                          },
+                          "clientData": {
+                            "type": "object",
+                            "properties": {
+                              "photo": {
+                                "type": "string"
+                              },
+                              "name": {
+                                "type": "string"
+                              }
+                            }
+                          }
+                        },
+                        "required": [
+                          "_id",
+                          "isRead",
+                          "date",
+                          "notificationType"
+                        ]
+                      }
+                    },
+                    "unreadCount": {
+                      "type": "number"
+                    },
+                    "hasNext": {
+                      "type": "boolean"
+                    },
+                    "pageCount": {
+                      "type": "number"
+                    },
+                    "itemCount": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "notifications",
+                    "unreadCount"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "limit"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "page"
+          }
+        ]
+      }
+    },
+    "/client/read_notification": {
+      "post": {
+        "description": "Mark a notification as read",
+        "operationId": "post-read_notification",
+        "tags": [
+          "public"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "notificationID": {
+                    "$ref": "#/components/schemas/ObjectId"
+                  }
+                },
+                "required": [
+                  "notificationID"
+                ]
+              }
+            }
+          }
+        },
+        "parameters": []
+      }
+    },
+    "/client/create_notification": {
+      "post": {
+        "description": "Create a notification",
+        "operationId": "post-create_notification",
+        "tags": [
+          "public"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "notificationType": {
+                    "type": "string"
+                  },
+                  "message": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "notificationType",
+                  "message"
+                ]
+              }
+            }
+          }
+        },
+        "parameters": []
+      }
+    },
+    "/client/logout": {
+      "post": {
+        "description": "Logout a user",
+        "operationId": "post-logout",
         "tags": [
           "private"
         ],
@@ -768,315 +847,6 @@
                 ]
               }
             }
-          }
-        },
-        "parameters": []
-      }
-    },
-    "/client/notifications": {
-      "get": {
-        "description": "Get the user's notifications",
-        "operationId": "get-notifications",
-        "tags": [
-          "private"
-        ],
-        "security": [
-          {
-            "cookieAuth": []
-          },
-          {
-            "headerAuth": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "notifications": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "_id": {
-                            "$ref": "#/components/schemas/ObjectId"
-                          },
-                          "isRead": {
-                            "type": "boolean"
-                          },
-                          "date": {
-                            "$ref": "#/components/schemas/DateTime"
-                          },
-                          "notificationType": {
-                            "type": "string"
-                          },
-                          "message": {
-                            "type": "string"
-                          },
-                          "imageURL": {
-                            "type": "string"
-                          },
-                          "fullName": {
-                            "type": "string"
-                          }
-                        },
-                        "required": [
-                          "_id",
-                          "isRead",
-                          "date",
-                          "notificationType",
-                          "message"
-                        ]
-                      }
-                    },
-                    "unreadCount": {
-                      "type": "number"
-                    },
-                    "hasNext": {
-                      "type": "boolean"
-                    },
-                    "pageCount": {
-                      "type": "number"
-                    },
-                    "itemCount": {
-                      "type": "number"
-                    }
-                  },
-                  "required": [
-                    "notifications",
-                    "unreadCount"
-                  ]
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized"
-          }
-        },
-        "parameters": [
-          {
-            "schema": {
-              "type": "string"
-            },
-            "in": "query",
-            "name": "limit"
-          },
-          {
-            "schema": {
-              "type": "string"
-            },
-            "in": "query",
-            "name": "page"
-          }
-        ]
-      }
-    },
-    "/client/read_notification": {
-      "post": {
-        "description": "Mark a notification as read",
-        "operationId": "post-read_notification",
-        "tags": [
-          "private"
-        ],
-        "security": [
-          {
-            "cookieAuth": []
-          },
-          {
-            "headerAuth": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success"
-          },
-          "401": {
-            "description": "Unauthorized"
-          }
-        },
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "notificationID": {
-                    "$ref": "#/components/schemas/ObjectId"
-                  }
-                },
-                "required": [
-                  "notificationID"
-                ]
-              }
-            }
-          }
-        },
-        "parameters": []
-      }
-    },
-    "/client/create_notification": {
-      "post": {
-        "description": "Create a notification",
-        "operationId": "post-create_notification",
-        "tags": [
-          "private"
-        ],
-        "security": [
-          {
-            "cookieAuth": []
-          },
-          {
-            "headerAuth": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success"
-          },
-          "401": {
-            "description": "Unauthorized"
-          }
-        },
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "notificationType": {
-                    "type": "string"
-                  },
-                  "message": {
-                    "type": "string"
-                  }
-                },
-                "required": [
-                  "notificationType",
-                  "message"
-                ]
-              }
-            }
-          }
-        },
-        "parameters": []
-      }
-    },
-    "/client/add_push_notification_id": {
-      "post": {
-        "description": "Add the push notification ID of a mobile device",
-        "operationId": "post-add_push_notification_id",
-        "tags": [
-          "private"
-        ],
-        "security": [
-          {
-            "cookieAuth": []
-          },
-          {
-            "headerAuth": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success"
-          },
-          "401": {
-            "description": "Unauthorized"
-          }
-        },
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "playerID": {
-                    "type": "string"
-                  }
-                },
-                "required": [
-                  "playerID"
-                ]
-              }
-            }
-          }
-        },
-        "parameters": []
-      }
-    },
-    "/admin/online_users": {
-      "get": {
-        "description": "Get online users (connected with websockets)",
-        "operationId": "get-online_users",
-        "tags": [
-          "private",
-          "admin"
-        ],
-        "security": [
-          {
-            "cookieAuth": []
-          },
-          {
-            "headerAuth": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "unknownClients": {
-                      "type": "number"
-                    },
-                    "clients": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "amount": {
-                            "type": "number"
-                          },
-                          "id": {
-                            "type": "string"
-                          },
-                          "email": {
-                            "type": "string"
-                          },
-                          "phone": {
-                            "type": "string"
-                          },
-                          "permission": {
-                            "type": "number"
-                          }
-                        },
-                        "required": [
-                          "amount",
-                          "id",
-                          "permission"
-                        ]
-                      }
-                    }
-                  },
-                  "required": [
-                    "unknownClients",
-                    "clients"
-                  ]
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized"
           }
         },
         "parameters": []

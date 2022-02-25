@@ -7,7 +7,7 @@
 
 declare module 'project-types' {
 	type UserState = import('project/redux/AppReducer').UserState
-	type DashboardWrapperProps = import('core/componenents/Dashboard').DashboardWrapperProps
+	type DashboardWrapperProps = import('core/components/Dashboard').DashboardWrapperProps
 
 	export type DashboardProps = DashboardWrapperProps & {
 		structures?: KeyArrayKeyObject

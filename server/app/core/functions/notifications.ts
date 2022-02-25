@@ -6,8 +6,9 @@
  */
 
 import config from 'core/config'
+import { WebPushSubscription } from 'core/database'
 import db from 'core/functions/db'
-import { Client, WebPushSubscription } from 'project/database'
+import { Client } from 'project/database'
 import webpush from 'web-push'
 
 if (process.env.publicVAPID && process.env.privateVAPID) {
@@ -77,9 +78,12 @@ export const globalWebPushNotification = async (
 
 ///////////////////////////////////// MOBILE PUSH NOTIFICATIONS
 
-export const pushNotification = async function (message: string, clientID: string /* data = {} */) {
-	if (process.env.noPushNotifications === 'true') {
-		console.log('Skipped push notification: ' + clientID + ': ' + message)
+export const mobilePushNotification = async function (
+	message: string,
+	clientID: string /* data = {} */
+) {
+	if (process.env.noMobilePushNotifications === 'true') {
+		console.log('Skipped mobile push notification: ' + clientID + ': ' + message)
 		return
 	}
 
@@ -94,7 +98,7 @@ export const pushNotification = async function (message: string, clientID: strin
 				contents: {
 					en: message,
 				},
-				include_player_ids: [client.appState.mobileNotificationDevices],
+				include_player_ids: [client.core.mobileNotificationDevices],
 			})
 			notification.postBody['data'] = data
 
@@ -104,9 +108,9 @@ export const pushNotification = async function (message: string, clientID: strin
 	console.log('Sent mobile push notification: ' + data, httpResponse.statusCode)
 	*/
 }
-export const pushGlobalNotification = async function (message: string /* data = {} */) {
-	if (process.env.noPushNotifications === 'true') {
-		console.log('Skipped global push notification: ' + message)
+export const globalMobilePushNotification = async function (message: string /* data = {} */) {
+	if (process.env.noMobilePushNotifications === 'true') {
+		console.log('Skipped global mobile push notification: ' + message)
 		return
 	}
 

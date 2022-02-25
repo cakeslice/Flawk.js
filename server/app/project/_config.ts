@@ -11,13 +11,7 @@ const _path = '/backend'
 const _publicRoutes = [
 	'/routes/public/auth', // Needs to be last one
 ]
-const _routes = [
-	'/routes/private/account',
-	'/routes/private/platform',
-	'/routes/private/notifications',
-	'/routes/private/chat',
-	'/routes/private/admin',
-]
+const _routes = ['/routes/private/account', '/routes/private/admin']
 
 const _rateLimitedCalls = [_path + '/client/login', _path + '/client/upload_url']
 const _extremeRateLimitedCalls = [
@@ -34,9 +28,10 @@ const _allowedOrigins = [
 ]
 
 const config: Partial<Config> = {
+	appName: 'Flawk',
 	mobileAppOrigins: true,
 	websocketSupport: true,
-	publicSockets: false,
+	publicSockets: true,
 	webPushSupport: false,
 	webPushEmail: 'flawk@cakeslice.dev',
 	localStorageEnabled: false, // ! Needs persistent storage in CapRover: /usr/src/flawk/local-storage

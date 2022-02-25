@@ -7,15 +7,26 @@
 
 const replace = require('replace-in-file')
 
+// Remove select properties
 let options = {
-	files: './app/project/database.gen.ts',
+	files: ['./app/project/database.gen.ts', './app/core/database.gen.ts'],
 	from: /select: {}/g,
 	to: '',
 }
-
-// Remove select properties
 try {
-	console.log('Replacement results:', replace.sync(options))
+	console.log('"select" Replacement results:', replace.sync(options))
+} catch (error) {
+	console.error('Error occurred:', error)
+}
+
+// Add Client import to core/database.gen.ts
+options = {
+	files: ['./app/core/database.gen.ts'],
+	from: /import mongoose from 'mongoose'/g,
+	to: "import mongoose from 'mongoose'\nimport { Client, ClientDocument } from 'project/database.gen'",
+}
+try {
+	console.log('"import mongoose" Replacement results:', replace.sync(options))
 } catch (error) {
 	console.error('Error occurred:', error)
 }

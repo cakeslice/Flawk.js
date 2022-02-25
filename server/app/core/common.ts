@@ -17,7 +17,7 @@ import crypto from 'crypto-extra'
 import { toRegex } from 'diacritic-regex'
 import { NextFunction, Request, Response } from 'express'
 import paginate from 'express-paginate'
-import { Obj } from 'flawk-types'
+import { JwtPayload, Obj } from 'flawk-types'
 import GitRepoInfo from 'git-repo-info'
 import jwt from 'jsonwebtoken'
 import _ from 'lodash'
@@ -27,7 +27,6 @@ import fetch from 'node-fetch'
 import { LocalStorage } from 'node-localstorage'
 import numeral from 'numeral'
 import 'numeral/locales'
-import { JwtPayload } from 'project-types'
 import { Client, IRemoteConfig, RemoteConfig } from 'project/database'
 import RegexParser from 'regex-parser'
 import Stripe from 'stripe'
@@ -212,9 +211,11 @@ const _getUserIP = function (req: Request) {
 	if (req.user) {
 		if (req.user.email) user = req.user.email
 		else if (req.user.phone) user = req.user.phone
+		else user = req.user._id.toString()
 	} else if (req.body) {
 		if (req.body.email) user = req.body.email
 		else if (req.body.phone) user = req.body.phone
+		else user = req.body._id
 	}
 
 	let ip = 'Unknown'
@@ -666,7 +667,7 @@ export default {
 
 					// Check if token belongs to a user
 					const user = await Client.findOne({ _id: decoded._id }).select(
-						'_id email permission flags timestamps.lastCall access.activeTokens settings.language' +
+						'_id email permission flags core.timestamps.lastCall access.activeTokens core.language' +
 							(extraClientSelect ? ' ' + extraClientSelect : '')
 					)
 					if (!user) {
@@ -693,14 +694,14 @@ export default {
 
 						if (valid) {
 							// Pass the user that belongs to the token for next routes
-							user.timestamps.lastCall = new Date()
+							user.core.timestamps.lastCall = new Date()
 							await user.save()
 							req.user = user
 							req.token = token
 							// @ts-ignore: Object is possibly 'undefined'.
 							req.tokenExpiration = decoded.exp * 1000
 							req.permission = user.permission
-							if (user.settings.language) req.lang = user.settings.language
+							if (user.core.language) req.lang = user.core.language
 
 							next()
 						} else {
@@ -762,7 +763,7 @@ export default {
 
 					// Check if token belongs to a user
 					const user = await Client.findOne({ _id: decoded._id }).select(
-						'_id email permission flags timestamps.lastCall access.activeTokens settings.language' +
+						'_id email permission flags core.timestamps.lastCall access.activeTokens core.language' +
 							(extraClientSelect ? ' ' + extraClientSelect : '')
 					)
 
@@ -785,14 +786,14 @@ export default {
 
 						if (valid) {
 							// Pass the user that belongs to the token for next routes
-							user.timestamps.lastCall = new Date()
+							user.core.timestamps.lastCall = new Date()
 							await user.save()
 							req.user = user
 							req.token = token
 							// @ts-ignore: Object is possibly 'undefined'.
 							req.tokenExpiration = decoded.exp * 1000
 							req.permission = user.permission
-							if (user.settings.language) req.lang = user.settings.language
+							if (user.core.language) req.lang = user.core.language
 
 							next()
 						} else {

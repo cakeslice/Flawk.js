@@ -236,8 +236,7 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 			})
 			global.socket.on('disconnect', function () {
 				setSocketConnected(false)
-				console.warn('Websocket disconnected!')
-				if (!global.socket.connected) global.socket.connect()
+				console.warn('Websocket disconnected, reconnecting...')
 			})
 
 			if (

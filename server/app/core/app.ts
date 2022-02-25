@@ -34,6 +34,7 @@ import { RateLimiterMemory } from 'rate-limiter-flexible'
 import responseTime from 'response-time'
 import { Server as SocketServer } from 'socket.io'
 import 'source-map-support/register'
+import { FilesManager } from 'turbodepot-node'
 import validator from 'validator'
 
 cachegoose(mongoose, {
@@ -85,7 +86,26 @@ const corsOrigins = <CustomOrigin>(
 	}
 )
 
-async function extractRouteTypes(file: string) {
+async function extractRouteTypes(file: string): Promise<{ noChanges: boolean; calls: Path[] }> {
+	const fileSplit = file.split('/')
+	const cacheFolder = './local-storage/api-cache/' + fileSplit[fileSplit.length - 2] + '/'
+	const cachedPath = cacheFolder + fileSplit[fileSplit.length - 1]
+	await fs.promises.mkdir(cacheFolder, { recursive: true })
+	//
+	const filesManager = new FilesManager()
+	let noChanges = false
+	try {
+		noChanges = filesManager.isFileEqualTo(file, cachedPath)
+	} catch (e) {
+		// Fail silently
+	}
+	if (noChanges) {
+		const c = fs.readFileSync(cachedPath + '.output')
+		return { noChanges: true, calls: JSON.parse(c.toString()) as Path[] }
+	}
+
+	//
+
 	const ts = await import('typescript')
 
 	const output: Obj[] = []
@@ -186,7 +206,14 @@ async function extractRouteTypes(file: string) {
 		}
 	})
 
-	return output
+	fs.copyFile(file, cachedPath, (err) => {
+		if (err) console.error(err)
+	})
+	fs.writeFile(cachedPath + '.output', JSON.stringify(output), (err) => {
+		if (err) console.error(err)
+	})
+
+	return { noChanges, calls: output as Path[] }
 }
 type Path = {
 	call: string
@@ -644,11 +671,11 @@ async function generateOpenApi() {
 		},
 	}
 
-	for (let i = 0; i < config.publicRoutes.length; i++) {
-		const calls = await extractRouteTypes('./app/project' + config.publicRoutes[i] + '.ts')
+	async function processRoute(routePath: string, type: string) {
+		const output = await extractRouteTypes(routePath)
 
-		calls.forEach((c) => {
-			const path = c as Path
+		output.calls.forEach((c) => {
+			const path = c
 
 			if (path.tag && !_.find(obj.tags, (e) => e.name === path.tag))
 				obj.tags.push({ name: path.tag })
@@ -656,55 +683,29 @@ async function generateOpenApi() {
 			// @ts-ignore
 			if (obj.paths[path.call]) {
 				console.error(
-					'OpenAPI: Duplicate path found!' +
-						'\n' +
-						path.call +
-						' (' +
-						'./app/project' +
-						config.publicRoutes[i] +
-						'.ts' +
-						')'
+					'OpenAPI: Duplicate path found!' + '\n' + path.call + ' (' + routePath + ')'
 				)
 			}
 			try {
 				// @ts-ignore
-				obj.paths[path.call] = addPath(path, 'public')
+				obj.paths[path.call] = addPath(path, type)
+				if (!output.noChanges) console.log(common.colorizeLog(path.call, 'grey'))
 			} catch (e) {
 				const error = e as Error
 				console.error(error.message + ':\n' + JSON.stringify(path, null, 2))
 			}
 		})
 	}
+
+	await processRoute('./app/core/routes/public/public.ts', 'public')
+	for (let i = 0; i < config.publicRoutes.length; i++) {
+		await processRoute('./app/project' + config.publicRoutes[i] + '.ts', 'public')
+	}
+
+	await processRoute('./app/core/routes/private/private.ts', 'public')
+	await processRoute('./app/core/routes/private/notifications.ts', 'public')
 	for (let i = 0; i < config.routes.length; i++) {
-		const calls = await extractRouteTypes('./app/project' + config.routes[i] + '.ts')
-
-		calls.forEach((c) => {
-			const path = c as Path
-
-			if (path.tag && !_.find(obj.tags, (e) => e.name === path.tag))
-				obj.tags.push({ name: path.tag })
-
-			// @ts-ignore
-			if (obj.paths[path.call]) {
-				console.error(
-					'OpenAPI: Duplicate path found!' +
-						'\n' +
-						path.call +
-						' (' +
-						'./app/project' +
-						config.routes[i] +
-						'.ts' +
-						')'
-				)
-			}
-			try {
-				// @ts-ignore
-				obj.paths[path.call] = addPath(path, 'private')
-			} catch (e) {
-				const error = e as Error
-				console.error(error.message + ':\n' + JSON.stringify(path, null, 2))
-			}
-		})
+		await processRoute('./app/project' + config.routes[i] + '.ts', 'private')
 	}
 
 	const file = './app/project/api/api.json'
@@ -795,7 +796,7 @@ function setup() {
 				duration: 60 * 15, // per X second by IP
 			}),
 		}
-		console.log('Rate limited:')
+		console.log('[Rate limited]')
 		config.rateLimitedCalls.forEach((c) => {
 			const split = c.split('/')
 			console.log(common.colorizeLog(split[split.length - 1], 'blue'))
@@ -811,7 +812,7 @@ function setup() {
 					})
 			})
 		})
-		console.log('Extremely Rate limited:')
+		console.log('[Extremely rate limited]')
 		config.extremeRateLimitedCalls.forEach((c) => {
 			const split = c.split('/')
 			console.log(common.colorizeLog(split[split.length - 1], 'orange'))
@@ -827,7 +828,6 @@ function setup() {
 					})
 			})
 		})
-		console.log('')
 		app.use(config.path + '/*', (req, res, next) => {
 			rateLimiter.default
 				.consume(req.ip)
@@ -918,7 +918,12 @@ function setup() {
 			config.path + '/*',
 			responseTime(function (req: express.Request, res: express.Response, time: number) {
 				let user: string | undefined
-				if (req.user) user = req.user.email ? req.user.email : req.user.phone
+				if (req.user)
+					user = req.user.email
+						? req.user.email
+						: req.user.phone
+						? req.user.phone
+						: req.user._id.toString()
 				const stat =
 					((req.method || '') + (req.url || ''))
 						.toLowerCase()
@@ -1057,6 +1062,11 @@ function setup() {
 			console.error(common.colorizeLog('--- MISSING ', 'red') + file + ' in config')
 	})
 
+	//
+
+	// eslint-disable-next-line
+	app.use(config.path + '/', require('core/routes/public/public').default)
+
 	for (let i = 0; i < config.publicRoutes.length; i++) {
 		// eslint-disable-next-line
 		const route = require('project' + config.publicRoutes[i]).default
@@ -1072,6 +1082,13 @@ function setup() {
 			)
 		}
 	}
+	app.useAsync('/*', common.tokenMiddleware())
+
+	// eslint-disable-next-line
+	app.use(config.path + '/', require('core/routes/private/private').default)
+	// eslint-disable-next-line
+	app.use(config.path + '/', require('core/routes/private/notifications').default)
+
 	for (let i = 0; i < config.routes.length; i++) {
 		// eslint-disable-next-line
 		const route = require('project' + config.routes[i]).default

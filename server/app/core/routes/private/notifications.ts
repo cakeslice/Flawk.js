@@ -6,9 +6,9 @@
  */
 
 import { Router } from '@awaitjs/express'
-import config from 'core/config'
 import db, { AggregationCount, ObjectId } from 'core/functions/db'
 import { clientSocketNotification } from 'core/functions/sockets'
+import { Obj } from 'flawk-types'
 import mongoose from 'mongoose'
 import { Client } from 'project/database'
 
@@ -24,7 +24,7 @@ export const clientNotification = async (
 	clientID: mongoose.Types.ObjectId,
 	data?: NotificationData
 ) => {
-	await db.unshiftToArray(Client, clientID, 'arrays.notifications', { date: -1 }, [
+	await db.unshiftToArray(Client, clientID, 'core.arrays.notifications', { date: -1 }, [
 		{
 			isRead: false,
 			date: Date.now(),
@@ -37,6 +37,7 @@ export const clientNotification = async (
 		data && data.message ? 'Notification' : 'You got a new notification!',
 		data && data.message ? data.message : ''
 	)
+	// TODO: Add also web push and mobile push support (configurable)
 }
 
 async function outputNotification(
@@ -54,18 +55,20 @@ async function outputNotification(
 		isRead: boolean
 		date: Date
 		notificationType: string
-		message: string
-		imageURL?: string
-		fullName?: string
+		data?: Obj
+	} & {
+		clientData?: {
+			photo?: string
+			name?: string
+		}
 	} = {
 		_id: notification._id,
 		isRead: notification.isRead,
 		date: notification.date,
 		notificationType: notification.notificationType,
-		message: '',
+		data: notification.data,
+		clientData: {},
 	}
-
-	if (notification.data) output.message = notification.data.message
 
 	if (notification.data && notification.data.client) {
 		const selection = 'personal'
@@ -74,9 +77,10 @@ async function outputNotification(
 			.select(selection)
 
 		if (client) {
-			output.imageURL = client.personal.photoURL
 			// @ts-ignore
-			output.fullName = client.personal.fullName
+			output.clientData.photo = client.personal.photoURL
+			// @ts-ignore
+			output.clientData.name = client.personal.fullName
 		}
 	}
 
@@ -98,9 +102,12 @@ const Notifications = {
 					isRead: boolean
 					date: Date
 					notificationType: string
-					message: string
-					imageURL?: string
-					fullName?: string
+					//
+					data?: Obj
+					clientData?: {
+						photo?: string
+						name?: string
+					}
 				}[]
 				unreadCount: number
 			},
@@ -113,17 +120,17 @@ router.getAsync(Notifications.call, async (req, res) => {
 	const client = await schema
 		.findOne(query)
 		.lean()
-		.select('arrays.notifications')
-		.slice('arrays.notifications', [req.skip, req.limit])
+		.select('core.arrays.notifications')
+		.slice('core.arrays.notifications', [req.skip, req.limit])
 	const r: AggregationCount = await schema
 		.aggregate()
 		.allowDiskUse(true)
 		.match(query)
 		.project({
-			count: { $size: '$arrays.notifications' },
+			count: { $size: '$core.arrays.notifications' },
 		})
 	const pagination = res.countAggregationPages(
-		client ? client.arrays.notifications : undefined,
+		client ? client.core.arrays.notifications : undefined,
 		r
 	)
 
@@ -134,9 +141,9 @@ router.getAsync(Notifications.call, async (req, res) => {
 
 	const notifications = []
 	let unreadCount = 0
-	for (let i = 0; i < client.arrays.notifications.length; i++) {
-		if (!client.arrays.notifications[i].isRead) unreadCount++
-		notifications.push(await outputNotification(req.lang, client.arrays.notifications[i]))
+	for (let i = 0; i < client.core.arrays.notifications.length; i++) {
+		if (!client.core.arrays.notifications[i].isRead) unreadCount++
+		notifications.push(await outputNotification(req.lang, client.core.arrays.notifications[i]))
 	}
 
 	res.do(200, '', {
@@ -156,8 +163,8 @@ router.postAsync(ReadNotification.call, async (req, res) => {
 	const body: typeof ReadNotification.body = req.body
 
 	await Client.updateOne(
-		{ _id: req.user._id, 'arrays.notifications._id': body.notificationID },
-		{ $set: { 'arrays.notifications.$.isRead': true } }
+		{ _id: req.user._id, 'core.arrays.notifications._id': body.notificationID },
+		{ $set: { 'core.arrays.notifications.$.isRead': true } }
 	)
 
 	res.do(200)
@@ -177,30 +184,6 @@ router.postAsync(CreateNotification.call, async (req, res) => {
 		message: body.message,
 	})
 
-	res.do(200)
-})
-
-///////////////////////////////////// MOBILE PUSH NOTIFICATIONS
-
-const AddPushNotificationID = {
-	call: '/client/add_push_notification_id',
-	description: 'Add the push notification ID of a mobile device',
-	method: 'post',
-	body: {} as { playerID: string },
-}
-router.postAsync(AddPushNotificationID.call, async (req, res) => {
-	const body: typeof AddPushNotificationID.body = req.body
-
-	const selection = '_id appState.mobileNotificationDevices'
-	const user = await Client.findOne({ _id: req.user._id }).select(selection)
-	if (user) {
-		user.appState.mobileNotificationDevices.push(body.playerID)
-		while (user.appState.mobileNotificationDevices.length > config.maxTokens) {
-			user.appState.mobileNotificationDevices.splice(0, 1)
-		}
-
-		await user.save()
-	}
 	res.do(200)
 })
 

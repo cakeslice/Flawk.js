@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { Obj } from 'flawk-types'
-import { RequestUser, SocketUser } from 'project-types'
+import { SocketUser } from 'core/functions/sockets'
+import { Obj, RequestUser } from 'flawk-types'
 type SocketIONamespace = import('socket.io').Namespace
 type DocumentArray = import('mongoose').DocumentArray
 

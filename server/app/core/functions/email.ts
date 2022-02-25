@@ -6,6 +6,7 @@
  */
 
 import config from 'core/config'
+import { AppState, EmailTrack } from 'core/database'
 import crypto from 'crypto'
 import { Obj } from 'flawk-types'
 import moment from 'moment'
@@ -13,7 +14,7 @@ import nodemailer from 'nodemailer'
 import hbs from 'nodemailer-express-handlebars'
 import { htmlToText } from 'nodemailer-html-to-text'
 import postmark from 'postmark'
-import { AppState, Client, EmailTrack } from 'project/database'
+import { Client } from 'project/database'
 
 const postmarkClient = config.postmarkKey
 	? new postmark.ServerClient(config.postmarkKey)

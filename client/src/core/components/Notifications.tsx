@@ -17,9 +17,15 @@ import TrackedComponent from './TrackedComponent'
 
 type Notification = {
 	_id: string
-	message: string
-	imageURL?: string
 	isRead: boolean
+} & {
+	data?: {
+		message: string
+	}
+	clientData?: {
+		photo?: string
+		name?: string
+	}
 }
 
 type Props = { children?: React.ReactNode }
@@ -232,23 +238,27 @@ class Popup extends React.Component<{
 																		: undefined,
 																}}
 															></div>
-															{n.imageURL && (
+															{n.clientData && n.clientData.photo && (
 																<Avatar
 																	style={{
 																		width: 30,
 																		height: 30,
 																	}}
-																	src={n.imageURL}
+																	src={
+																		n.clientData &&
+																		n.clientData.photo
+																	}
 																></Avatar>
 															)}
 
-															{Parser(
-																n
-																	? '<p style="max-width: 230px; margin-left:10px">' +
-																			n.message +
-																			'</p>'
-																	: '<p>N/A</p>'
-															)}
+															{n.data &&
+																Parser(
+																	n
+																		? '<p style="max-width: 230px; margin-left:10px">' +
+																				n.data.message +
+																				'</p>'
+																		: '<p>N/A</p>'
+																)}
 														</div>
 													</button>
 												)

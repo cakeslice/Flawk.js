@@ -7,7 +7,6 @@
 
 import { Router } from '@awaitjs/express'
 import bcrypt from 'bcryptjs'
-import common from 'core/common'
 import config from 'core/config'
 import { sendEmail } from 'core/functions/email'
 import { ObjectId } from 'flawk-types'
@@ -36,64 +35,6 @@ router.postAsync(Logout.call, async (req, res) => {
 		res.do(200)
 	}
 })
-
-const UploadURL = {
-	call: '/client/upload_url',
-	method: 'post',
-	description: 'Get a S3 URL to upload a file to',
-	body: {} as {
-		contentType: string
-	},
-	responses: {
-		_200: {
-			body: {} as {
-				putURL: string
-				getURL: string
-			},
-		},
-	},
-}
-router.postAsync(UploadURL.call, async (req, res) => {
-	const body: typeof UploadURL.body = req.body
-	const folderPath = config.publicUploadsPath + '/client/' + req.user._id
-
-	const url = await common.getS3SignedURL(body.contentType, folderPath)
-	if (!url || url.error) {
-		common.bucketError(req, res, url && url.error)
-		return
-	}
-
-	const response: typeof UploadURL.responses._200.body = {
-		putURL: url.putURL,
-		getURL:
-			config.bucketCDNOriginal && config.bucketCDNTarget
-				? url.getURL.replace(config.bucketCDNOriginal, config.bucketCDNTarget)
-				: url.getURL,
-	}
-	res.do(200, '', response)
-})
-
-const ManageStripeLink = {
-	call: '/client/manage_stripe_link',
-	method: 'get',
-	description: 'Get a link to manage the Stripe subscription',
-}
-if (common.stripe) {
-	router.getAsync(ManageStripeLink.call, async (req, res) => {
-		const selection = '_id stripeCustomer'
-		const user = await Client.findOne({ _id: req.user._id }).select(selection)
-
-		if (user && user.stripeCustomer) {
-			const session = await common.stripe.billingPortal.sessions.create({
-				customer: user.stripeCustomer,
-				return_url: config.frontendURL,
-			})
-			res.do(200, '', {
-				link: session.url,
-			})
-		} else res.do(500)
-	})
-}
 
 const Data = {
 	call: '/client/data',

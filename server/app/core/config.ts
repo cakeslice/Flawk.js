@@ -26,10 +26,6 @@ const _tokenDays = 30
 
 ///////////////////////
 
-const _appName = process.env.appName
-
-//
-
 const _port = process.env.PORT || 8000
 const _staging = process.env.JEST !== 'true' && process.env.staging === 'true'
 const _prod =
@@ -43,6 +39,7 @@ const _debugSockets = process.env.debugSockets || (!_prod && !_staging)
 //
 
 const publicConfig: Config = {
+	appName: 'Flawk',
 	mobileAppOrigins: true,
 	websocketSupport: true,
 	publicSockets: false,
@@ -82,7 +79,6 @@ const config: Config & InternalConfig = {
 
 	port: _port,
 	responseTimeAlert: _responseTimeAlert,
-	appName: _appName,
 	prod: _prod,
 	jest: _jest,
 	staging: _staging,
@@ -140,7 +136,7 @@ const config: Config & InternalConfig = {
 	nexmo: {
 		ID: process.env.nexmoID,
 		token: process.env.nexmoToken,
-		phoneNumber: _appName,
+		phoneNumber: publicConfig.appName,
 	},
 
 	/////////////////////////////////
@@ -183,7 +179,6 @@ export default config
 type InternalConfig = {
 	port: typeof _port
 	responseTimeAlert: typeof _responseTimeAlert
-	appName: typeof _appName
 	prod: typeof _prod
 	jest: typeof _jest
 	staging: typeof _staging
@@ -239,7 +234,7 @@ type InternalConfig = {
 	nexmo: {
 		ID: string | undefined
 		token: string | undefined
-		phoneNumber: typeof _appName
+		phoneNumber: string | undefined
 	}
 
 	/////////////////////////////////
@@ -248,6 +243,7 @@ type InternalConfig = {
 	text: (id: string, req: Request, obj?: Obj) => string
 }
 export type Config = {
+	appName: string
 	mobileAppOrigins: boolean
 	websocketSupport: boolean
 	publicSockets: boolean

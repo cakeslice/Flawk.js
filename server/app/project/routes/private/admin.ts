@@ -9,55 +9,11 @@ import { Router } from '@awaitjs/express'
 import common from 'core/common'
 import { isOnline } from 'core/functions/sockets'
 import { Obj } from 'flawk-types'
-import _ from 'lodash'
-import { SocketUser } from 'project-types'
 import { Client, IClient } from 'project/database'
 
 const router = Router()
 
 router.useAsync('/admin/*', common.adminMiddleware)
-
-const OnlineUsers = {
-	call: '/admin/online_users',
-	description: 'Get online users (connected with websockets)',
-	method: 'get',
-	responses: {
-		_200: {
-			body: {} as {
-				unknownClients: number
-				clients: {
-					amount: number
-					id: string
-					email?: string
-					phone?: string
-					permission: number
-				}[]
-			},
-		},
-	},
-	tag: 'admin',
-}
-router.getAsync(OnlineUsers.call, async (req, res) => {
-	const websockets: { clients: SocketUser[]; unknownClients: number } = {
-		clients: [],
-		unknownClients: 0,
-	}
-	// eslint-disable-next-line
-	for (const [s, socket] of global.clientSockets.sockets) {
-		if (socket._client) {
-			websockets.clients.push(socket._client)
-		} else websockets.unknownClients++
-	}
-	const groupedClients = _(websockets.clients)
-		.groupBy('id')
-		.values()
-		.map((group) => ({ ...group[0], amount: group.length }))
-
-	res.do(200, '', {
-		unknownClients: websockets.unknownClients,
-		clients: groupedClients,
-	})
-})
 
 const SearchUsers = {
 	call: '/admin/search_users',

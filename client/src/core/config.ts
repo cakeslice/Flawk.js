@@ -289,7 +289,7 @@ const publicConfig: Config = {
 	hasEssentialCookies: true,
 	cookiePolicyURL: 'https://services.cakeslice.dev/cookies',
 
-	toastCloseTime: 2000,
+	toastCloseTime: 4000,
 
 	mobileWidthTrigger: 700,
 	publicMaxWidth: 1281.5,

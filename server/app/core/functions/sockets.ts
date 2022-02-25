@@ -7,12 +7,21 @@
 
 import config from 'core/config'
 import db from 'core/functions/db'
-import { Obj } from 'flawk-types'
+import { JwtPayload, Obj } from 'flawk-types'
 import jwt from 'jsonwebtoken'
 import _ from 'lodash'
-import { JwtPayload, SocketUser } from 'project-types'
 import { Client } from 'project/database'
 import { Socket } from 'socket.io'
+
+export type SocketUser = {
+	id: string
+	token: string
+	email?: string
+	phone?: string
+	permission: number
+}
+
+//
 
 function disconnectUnidentified(socket: Socket) {
 	socket.disconnect(true)
@@ -127,7 +136,11 @@ export function globalSocketMessage(channel: string, data: Obj, loggedInData?: O
 	const loggedInSockets: Socket[] = []
 	// eslint-disable-next-line
 	for (const [s, socket] of global.clientSockets.sockets) {
-		if (loggedInData && socket._client && socket._client.permission <= 100) {
+		if (
+			loggedInData &&
+			socket._client &&
+			socket._client.permission <= config.permissions.user
+		) {
 			// eslint-disable-next-line
 			loggedInSockets.push(socket)
 		} else {
@@ -188,8 +201,7 @@ const checkSocket = (
 	data: Obj
 ) => {
 	if (!config.publicSockets) {
-		disconnectUnidentified(socket)
-		return next(new Error(errorMessage))
+		return disconnectUnidentified(socket)
 	} else {
 		if (config.debugSockets)
 			console.log(
@@ -212,12 +224,61 @@ export function init() {
 	}
 	console.log('Websockets are enabled')
 
-	// ! Disconnect all logged in sockets once in a while to make sure they still have permissions
-	setInterval(() => {
-		for (const [s, socket] of global.clientSockets.sockets) {
-			if (socket._client) socket.disconnect(true)
-		}
-	}, 60000 * 10)
+	// ! Update all logged-in sockets once in a while to make sure they still have permissions and are logged-in
+	setInterval(
+		() => {
+			void (async function () {
+				let authenticated = 0
+				let total = 0
+				for (const [s, socket] of global.clientSockets.sockets) {
+					if (socket._client) {
+						const user = await Client.findOne({ _id: socket._client.id })
+							.lean()
+							.select('_id email phone permission access.activeTokens')
+
+						if (user) {
+							let valid = false
+							for (let j = user.access.activeTokens.length - 1; j >= 0; j--) {
+								if (user.access.activeTokens[j] === socket._client.token)
+									valid = true
+							}
+
+							if (valid) {
+								const client: SocketUser = {
+									id: user._id.toString(),
+									email: user.email,
+									phone: user.phone,
+									permission: user.permission,
+									token: socket._client.token,
+								}
+								socket._client = client
+							} else {
+								socket._client = undefined
+								socket.disconnect(true)
+							}
+						} else {
+							socket._client = undefined
+							socket.disconnect(true)
+						}
+					}
+
+					if (socket._client) {
+						authenticated++
+					}
+					total++
+				}
+
+				adminSocketNotification(
+					'Online users',
+					'Total: <b>' + total + '</b><br/>Authenticated: <b>' + authenticated + '</b>'
+				)
+				console.log(
+					'[SOCKET.IO] Online users: ' + total + ' | Authenticated: ' + authenticated
+				)
+			})()
+		},
+		config.prod || config.staging ? 60000 * 10 : 60000 * 10
+	)
 
 	global.clientSockets.on('connection', (socket: Socket) => {
 		if (config.debugSockets) console.log('[SOCKET.IO] New socket connection: ' + socket.id)
@@ -254,7 +315,7 @@ export function init() {
 						// Check if token belongs to someone
 						Client.findOne({ _id: decoded._id })
 							.lean()
-							.select('_id email permission access.activeTokens')
+							.select('_id email phone permission access.activeTokens')
 							.exec(function (err, user) {
 								if (err || !user) {
 									return checkSocket(
@@ -276,41 +337,40 @@ export function init() {
 										email: user.email,
 										phone: user.phone,
 										permission: user.permission,
+										token: data.token as string,
 									}
 
 									// If user not assigned to socket yet
-									if (!socket._client) {
-										socket._client = client
+									socket._client = client
 
-										let unknownUsers = 0
-										let onlineClients = 0
-										const alreadyCounted = []
-										// eslint-disable-next-line
-										for (const [s, socket] of global.clientSockets.sockets) {
-											if (socket._client) {
-												if (
-													!_.find(alreadyCounted, (e) => e === client.id)
-												) {
-													alreadyCounted.push(socket._client.id)
-													onlineClients++
-												}
-											} else unknownUsers++
-										}
-										if (config.debugSockets) {
-											adminSocketNotification(
-												'Socket connection',
-												'Client ' + user.email + ' just connected!'
-											)
-											console.log(
-												'[SOCKET.IO] ' +
-													user.email +
-													' socket connected! (online: ' +
-													onlineClients.toString() +
-													' | unidentified: ' +
-													unknownUsers.toString() +
-													')'
-											)
-										}
+									let unknownUsers = 0
+									let onlineClients = 0
+									const alreadyCounted = []
+									// eslint-disable-next-line
+									for (const [s, socket] of global.clientSockets.sockets) {
+										if (socket._client) {
+											if (!_.find(alreadyCounted, (e) => e === client.id)) {
+												alreadyCounted.push(socket._client.id)
+												onlineClients++
+											}
+										} else unknownUsers++
+									}
+									if (config.debugSockets) {
+										adminSocketNotification(
+											'Socket connection',
+											'Client <b>' +
+												(client.email || client.id) +
+												'</b> just connected'
+										)
+										console.log(
+											'[SOCKET.IO] ' +
+												client.email +
+												' socket connected! (online: ' +
+												onlineClients.toString() +
+												' | unidentified: ' +
+												unknownUsers.toString() +
+												')'
+										)
 									}
 
 									if (config.debugSockets) {
