@@ -9,14 +9,17 @@ declare module 'project-types' {
 	type UserState = import('project/redux/AppReducer').UserState
 	type DashboardWrapperProps = import('core/components/Dashboard').DashboardWrapperProps
 
-	export type DashboardProps = DashboardWrapperProps & {
+	export type ReduxProps = {
 		structures?: KeyArrayKeyObject
 		fetchingStructures: boolean
 		user?: UserState
 		fetchingUser: boolean
 		fetchUser: () => Promise<void>
 		fetchStructures: () => Promise<void>
-		//
-		superAdmin?: boolean
 	}
+	export type DashboardProps = DashboardWrapperProps &
+		ReduxProps & {
+			//
+			superAdmin?: boolean
+		}
 }

@@ -46,7 +46,11 @@ if (common.stripe) {
 			'url/?success=' + encodeURIComponent(user.email),
 		cancel_url: url,
 		client_reference_id: user._id.toString(),
+		//
+		// If a new customer
 		customer_email: user.email,
+		// If an existing customer
+		customer: user.core.stripeCustomer,
 	})
 	res.do(200, undefined, { session: session.id })
 	*/

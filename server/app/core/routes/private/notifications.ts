@@ -116,14 +116,11 @@ const Notifications = {
 }
 router.getAsync(Notifications.call, async (req, res) => {
 	const query = { _id: req.user._id }
-	const schema = Client
-	const client = await schema
-		.findOne(query)
+	const client = await Client.findOne(query)
 		.lean()
 		.select('core.arrays.notifications')
 		.slice('core.arrays.notifications', [req.skip, req.limit])
-	const r: AggregationCount = await schema
-		.aggregate()
+	const r: AggregationCount = await Client.aggregate()
 		.allowDiskUse(true)
 		.match(query)
 		.project({

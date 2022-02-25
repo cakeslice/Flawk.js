@@ -683,7 +683,12 @@ async function generateOpenApi() {
 			// @ts-ignore
 			if (obj.paths[path.call]) {
 				console.error(
-					'OpenAPI: Duplicate path found!' + '\n' + path.call + ' (' + routePath + ')'
+					common.colorizeLog('OpenAPI: Duplicate path found!', 'red') +
+						'\n' +
+						path.call +
+						' (' +
+						routePath +
+						')'
 				)
 			}
 			try {

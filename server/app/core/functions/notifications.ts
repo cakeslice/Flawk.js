@@ -38,7 +38,7 @@ export const webPushNotification = async (
 	try {
 		await webpush.sendNotification(body, JSON.stringify(payload))
 	} catch (e) {
-		console.error('Failed to send web push: ' + JSON.stringify(body, null, 2) + '\n' + e)
+		console.error('Failed to send web push: ' + body.keys.auth)
 	}
 }
 export const globalWebPushNotification = async (
