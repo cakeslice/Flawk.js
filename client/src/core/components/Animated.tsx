@@ -262,7 +262,7 @@ export default class Animated extends TrackedComponent<Props> {
 						skipFirstTrigger ||
 						keepMounted ||
 						this.state.mounted ||
-						(this.props.controlled === undefined && inView)
+						(this.props.controlled === undefined && this.state.visible)
 
 					return (
 						<motion.div

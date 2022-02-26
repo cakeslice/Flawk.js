@@ -10,7 +10,8 @@ import TrackedComponent from './TrackedComponent'
 
 type Props = {
 	txt: string
-	classOverride?: string
+	className?: string
+	style?: React.CSSProperties
 }
 export default class TextFileReader extends TrackedComponent<Props> {
 	trackedName = 'TextFileReader'
@@ -19,16 +20,12 @@ export default class TextFileReader extends TrackedComponent<Props> {
 		return this.deepEqualityCheck(nextProps, nextState)
 	}
 
-	timer: ReturnType<typeof setTimeout> | undefined = undefined
 	state = {
-		text: '',
+		text: [] as string[],
 	}
 
 	componentDidMount() {
-		this.timer = setTimeout(() => this.readTextFile(this.props.txt), 500)
-	}
-	componentWillUnmount() {
-		if (this.timer) clearTimeout(this.timer)
+		this.readTextFile(this.props.txt)
 	}
 
 	readTextFile = (file: string) => {
@@ -39,7 +36,11 @@ export default class TextFileReader extends TrackedComponent<Props> {
 				if (rawFile.status === 200 || rawFile.status === 0) {
 					const allText = rawFile.responseText
 					this.setState({
-						text: allText,
+						text: allText
+							.split('\n')
+							.map((item) =>
+								item.replace(/\t/g, '\u00a0\u00a0\u00a0').replace(/\s/g, '\u00a0')
+							),
 					})
 				}
 			}
@@ -55,11 +56,11 @@ export default class TextFileReader extends TrackedComponent<Props> {
 	render() {
 		return (
 			<div>
-				<span className={this.props.classOverride}>
-					{this.state.text.split('\n').map((item, key) => {
+				<span style={this.props.style} className={this.props.className}>
+					{this.state.text.map((item, key) => {
 						return (
 							<span key={key}>
-								{item.replace(/\t/g, '\u00a0\u00a0\u00a0').replace(/\s/g, '\u00a0')}
+								{item}
 								<br />
 							</span>
 						)
