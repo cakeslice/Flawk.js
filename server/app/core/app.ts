@@ -368,8 +368,12 @@ function addPath(path: Path, tag: string) {
 				const p = path.query[k] as string
 
 				const property = k.replace('?', '')
-				if (property === 'limit' || property === 'page')
+				if (property === 'limit' || property === 'page') {
+					console.log(
+						common.colorizeLog('Query parameter ' + property + ' is reserved', 'red')
+					)
 					throw new Error('Query parameter ' + property + ' is reserved')
+				}
 				query.push({
 					schema: mapApiType(p),
 					in: 'query',

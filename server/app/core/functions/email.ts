@@ -279,93 +279,90 @@ export async function sendAdminEmail(data: EmailData, template = 'generic', deve
 if (!config.postmarkKey && config.nodemailerHost) {
 	setupNodemailer()
 
-	setInterval(
-		() => {
-			void (async function () {
-				const sevenDaysAgo = moment().subtract(7, 'days').toDate()
-				const emailTracks = await EmailTrack.find({
-					timestamp: { $gt: sevenDaysAgo },
-				})
-					.select('read template')
-					.lean()
+	setInterval(() => {
+		void (async function () {
+			const sevenDaysAgo = moment().subtract(7, 'days').toDate()
+			const emailTracks = await EmailTrack.find({
+				timestamp: { $gt: sevenDaysAgo },
+			})
+				.select('read template')
+				.lean()
 
-				let count = 0
-				let openedCount = 0
-				const stats: {
-					template: string
-					count: number
-					openedCount: number
-				}[] = []
-				emailTracks.forEach((e) => {
-					count++
-					if (e.read) openedCount++
+			let count = 0
+			let openedCount = 0
+			const stats: {
+				template: string
+				count: number
+				openedCount: number
+			}[] = []
+			emailTracks.forEach((e) => {
+				count++
+				if (e.read) openedCount++
 
-					const temp = e.template || 'unknown'
-					const found = stats.find((s) => s.template === temp)
-					if (!found)
-						stats.push({
-							template: temp,
-							count: 1,
-							openedCount: e.read ? 1 : 0,
-						})
-					else {
-						found.count++
-						if (e.read) found.openedCount++
-					}
-				})
-				const openedPercent = !count ? 0 : (openedCount / count) * 100
-
-				if (!process.env.emailTrackingURL)
-					console.log(
-						'[E-mail Tracking] No emailTrackingURL is set, e-mail opens will not be tracked!'
-					)
-				console.log(
-					'\n[Email Tracking] Last 7 days: ' +
-						count +
-						' sent (' +
-						openedPercent.toFixed(1) +
-						'% opened)\n'
-				)
-
-				//
-
-				let appState = await AppState.findOne({}).select('lastEmailReport')
-				if (!appState) {
-					appState = new AppState({})
-				}
-				if (
-					!appState.lastEmailReport ||
-					new Date(appState.lastEmailReport).getTime() < sevenDaysAgo.getTime()
-				) {
-					await sendAdminEmail({
-						subject: 'Weekly E-mail Report',
-						substitutions: {
-							text:
-								'In the last week, we sent <b>' +
-								count +
-								' e-mails</b> and about <b>' +
-								openedPercent.toFixed(1) +
-								'%</b> of them were opened.<br/><br/>Template statistics:<br/>' +
-								stats
-									.map(
-										(s) =>
-											'<b>' +
-											s.template +
-											'</b>' +
-											': ' +
-											s.count +
-											' sent, ' +
-											s.openedCount +
-											' read'
-									)
-									.join('<br/>'),
-						},
+				const temp = e.template || 'unknown'
+				const found = stats.find((s) => s.template === temp)
+				if (!found)
+					stats.push({
+						template: temp,
+						count: 1,
+						openedCount: e.read ? 1 : 0,
 					})
-					appState.lastEmailReport = new Date()
-					await appState.save()
+				else {
+					found.count++
+					if (e.read) found.openedCount++
 				}
-			})()
-		},
-		config.prod || config.staging ? 60000 * 60 : 30000
-	)
+			})
+			const openedPercent = !count ? 0 : (openedCount / count) * 100
+
+			if (!process.env.emailTrackingURL)
+				console.log(
+					'[E-mail Tracking] No emailTrackingURL is set, e-mail opens will not be tracked!'
+				)
+			console.log(
+				'\n[Email Tracking] Last 7 days: ' +
+					count +
+					' sent (' +
+					openedPercent.toFixed(1) +
+					'% opened)\n'
+			)
+
+			//
+
+			let appState = await AppState.findOne({}).select('lastEmailReport')
+			if (!appState) {
+				appState = new AppState({})
+			}
+			if (
+				!appState.lastEmailReport ||
+				new Date(appState.lastEmailReport).getTime() < sevenDaysAgo.getTime()
+			) {
+				await sendAdminEmail({
+					subject: 'Weekly E-mail Report',
+					substitutions: {
+						text:
+							'In the last week, we sent <b>' +
+							count +
+							' e-mails</b> and about <b>' +
+							openedPercent.toFixed(1) +
+							'%</b> of them were opened.<br/><br/>Template statistics:<br/>' +
+							stats
+								.map(
+									(s) =>
+										'<b>' +
+										s.template +
+										'</b>' +
+										': ' +
+										s.count +
+										' sent, ' +
+										s.openedCount +
+										' read'
+								)
+								.join('<br/>'),
+					},
+				})
+				appState.lastEmailReport = new Date()
+				await appState.save()
+			}
+		})()
+	}, 60000 * 60)
 }

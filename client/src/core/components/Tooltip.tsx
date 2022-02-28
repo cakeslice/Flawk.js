@@ -17,8 +17,9 @@ import OutsideAlerter from './OutsideAlerter'
 
 type Props = {
 	children: React.ReactNode
-	content: React.ReactNode
+	content: React.ReactNode | ((forceHide: () => void) => React.ReactNode)
 	tooltipProps?: Partial<TooltipTriggerProps>
+	hidden?: boolean
 	offset?: number
 	offsetAlt?: number
 	selectable?: boolean
@@ -32,15 +33,20 @@ export default class Tooltip extends TrackedComponent<Props> {
 		return this.deepEqualityCheck(nextProps, nextState)
 	}
 
-	state = { visible: false }
+	state = { visible: false, forceHide: false }
 	constructor(props: Props) {
 		super(props)
 
 		this.clickedOutside = this.clickedOutside.bind(this)
+		this.forceHide = this.forceHide.bind(this)
 	}
 
 	clickedOutside() {
 		this.setState({ visible: false })
+	}
+	forceHide() {
+		this.setState({ forceHide: true })
+		setTimeout(() => this.setState({ forceHide: false }), 1000)
 	}
 
 	render() {
@@ -88,7 +94,13 @@ export default class Tooltip extends TrackedComponent<Props> {
 							]}
 							trigger={desktop ? ['hover'] : []}
 							{...props.tooltipProps}
-							tooltipShown={desktop ? undefined : this.state.visible}
+							tooltipShown={
+								this.state.forceHide || props.hidden
+									? false
+									: desktop
+									? undefined
+									: this.state.visible
+							}
 							tooltip={({ tooltipRef, getTooltipProps }) =>
 								desktop ? (
 									<div
@@ -107,7 +119,9 @@ export default class Tooltip extends TrackedComponent<Props> {
 											delay={0}
 											style={animatedStyle}
 										>
-											{props.content}
+											{typeof props.content === 'function'
+												? props.content(this.forceHide)
+												: props.content}
 										</Animated>
 									</div>
 								) : (
@@ -131,7 +145,9 @@ export default class Tooltip extends TrackedComponent<Props> {
 												delay={0}
 												style={animatedStyle}
 											>
-												{props.content}
+												{typeof props.content === 'function'
+													? props.content(this.forceHide)
+													: props.content}
 											</Animated>
 										</div>
 									</OutsideAlerter>

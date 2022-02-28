@@ -14,6 +14,7 @@ import { Obj } from 'flawk-types'
 import React, { Component } from 'react'
 import FocusLock from 'react-focus-lock'
 import { Portal } from 'react-portal'
+import MediaQuery from 'react-responsive'
 
 type HeaderStyle = React.CSSProperties & {
 	line?: boolean
@@ -253,75 +254,85 @@ export default class Modal extends TrackedComponent<Props> {
 						right: 0,
 						bottom: 0,
 						zIndex: 99,
+						background:
+							styles.modalBackground ||
+							config.replaceAlpha(
+								global.nightMode ? styles.colors.white : 'rgba(127,127,127,1)',
+								global.nightMode ? 0.5 : 0.25
+							),
 					}}
 					animateOffscreen
 					effects={['fade']}
 					duration={0.25}
 				>
-					<FocusLock>
-						<div
-							style={{
-								//backdropFilter: 'blur(2px)', // ! Bad for performance
-								display: 'flex',
-								justifyContent: 'center',
-								alignItems: 'center',
-								width: '100vw',
-								height: '100vh',
-								background:
-									styles.modalBackground ||
-									config.replaceAlpha(
-										global.nightMode
-											? styles.colors.white
-											: 'rgba(127,127,127,1)',
-										0.25
-									),
-							}}
-						>
-							<div>
-								<div style={{ margin: 10 }}>
+					<MediaQuery minWidth={config.mobileWidthTrigger}>
+						{(desktop) => (
+							<FocusLock>
+								<div
+									style={{
+										display: 'flex',
+										justifyContent: 'center',
+										alignItems: 'center',
+									}}
+								>
 									<div
+										className='flex justify-center items-center'
 										style={{
-											...styles.card,
-											...{
-												boxShadow: styles.strongerShadow,
-												margin: 0,
-												borderRadius: 5,
-												maxWidth: 'calc(100vw - 10px)',
-												maxHeight: 'calc(100vh - 100px)', // ! Needs to be like this to compensate for browser bars
-												minHeight: 20,
-												width: styles.modalWidth || 500,
-												display: 'flex',
-												flexDirection: 'column',
-												justifyContent: 'space-between',
-												padding: 0,
-												...(styles.modalCard && styles.modalCard()),
-												...this.props.style,
-											},
+											backdropFilter: 'blur(2px)',
+											padding: 10,
+											paddingBottom: 30,
+											paddingTop: 30,
+											position: 'fixed',
+											top: 0,
+											bottom: 0,
+											left: 0,
+											right: 0,
 										}}
 									>
-										{this.props.title && (
-											<ModalHeader
-												modalPadding={modalPadding}
-												headerStyle={this.props.headerStyle}
-												title={this.props.title}
-												onClose={this.onClose}
-											/>
-										)}
+										<div
+											style={{
+												...styles.card,
+												...{
+													width: styles.modalWidth || 500,
+													boxShadow: styles.strongerShadow,
+													margin: 0,
+													borderRadius: 5,
+													minHeight: 20,
+													display: 'flex',
+													flexDirection: 'column',
+													justifyContent: 'space-between',
+													padding: 0,
+													maxWidth: '100%',
+													maxHeight: '100%',
+													...(styles.modalCard && styles.modalCard()),
+													...this.props.style,
+												},
+											}}
+										>
+											{this.props.title && (
+												<ModalHeader
+													modalPadding={modalPadding}
+													headerStyle={this.props.headerStyle}
+													title={this.props.title}
+													onClose={this.onClose}
+												/>
+											)}
 
-										{this.props.content
-											? this.props.content(
-													this.onClose,
-													this.renderContent,
-													this.renderButtons,
-													this.renderParent,
-													this.renderHeader
-											  )
-											: undefined}
+											{this.props.content
+												? this.props.content(
+														this.onClose,
+														this.renderContent,
+														this.renderButtons,
+														this.renderParent,
+														this.renderHeader
+												  )
+												: undefined}
+										</div>
 									</div>
 								</div>
-							</div>
-						</div>
-					</FocusLock>
+							</FocusLock>
+						)}
+					</MediaQuery>
 				</Animated>
 			</Portal>
 		)

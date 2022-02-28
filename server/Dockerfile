@@ -20,7 +20,7 @@
 #     [web]
 #         bind to = 10.1.1.1:19999 localhost:19999
 #   sudo systemctl restart netdata
-# [Digital Ocean] Remove default monitoring: sudo apt-get purge do-agent
+# [Digital Ocean] Add default monitoring if not enabled: sudo apt-get purge do-agent
 
 # Access CapRover: SERVER_IP:3000 -> Password captain42
 # Update CapRover
