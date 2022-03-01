@@ -29,7 +29,7 @@ export type DashboardWrapperProps = {
 	children: Element
 	parentTitle: string
 	path: string
-	params: string
+	params?: { id: string }
 }
 
 export type LinkStyle = React.CSSProperties & {
