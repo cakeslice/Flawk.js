@@ -314,37 +314,36 @@ export default function RouterBase({ children }: { children: React.ReactNode }) 
 			})
 
 			global.gotConsent = async function () {
-				if (!global.analytics) {
-					let gotConsent = false
-					if (!config.showCookieNotice) gotConsent = true
-					else {
-						const cookie = await global.storage.getItem('cookie_notice')
-						gotConsent = cookie === 'all'
+				let gotConsent = false
+				if (!config.showCookieNotice) gotConsent = true
+				else {
+					const cookie = await global.storage.getItem('cookie_notice')
+					gotConsent = cookie === 'all'
+				}
+
+				// ! NOTE: Do not track (DNT) is not a legal requirement which is why it's ignored
+
+				if (gotConsent) {
+					console.log('Got cookies consent')
+
+					if (config.twitterPixelID) {
+						// TODO: If later Twitter add a way to disable cookies, we can start it before consent
+						TwitterPixel.init(config.twitterPixelID)
+						TwitterPixel.pageView()
 					}
 
-					// ! NOTE: Do not track (DNT) is not a legal requirement which is why it's ignored
-
-					if (gotConsent) {
-						if (config.twitterPixelID) {
-							// TODO: If later Twitter add a way to disable cookies, we can start it before consent
-							TwitterPixel.init(config.twitterPixelID)
-							TwitterPixel.pageView()
+					if (config.googleAdsID || config.googleAnalyticsID) {
+						try {
+							gtag('consent', 'update', {
+								ad_storage: 'granted',
+								analytics_storage: 'granted',
+							})
+						} catch (e) {
+							console.warn('gtag initialization error: ' + e)
 						}
-
-						if (config.googleAdsID || config.googleAnalyticsID) {
-							console.log('Got cookies consent')
-							try {
-								gtag('consent', 'update', {
-									ad_storage: 'granted',
-									analytics_storage: 'granted',
-								})
-							} catch (e) {
-								console.warn('gtag initialization error: ' + e)
-							}
-						}
-					} else {
-						console.log('No cookies consent')
 					}
+				} else {
+					console.log('No cookies consent')
 				}
 			}
 			await global.gotConsent()
