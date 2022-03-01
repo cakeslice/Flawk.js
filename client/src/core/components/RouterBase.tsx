@@ -15,16 +15,19 @@ import navigation from 'core/functions/navigation'
 import ScrollToTop from 'core/internal/ScrollToTop'
 import styles from 'core/styles'
 // @ts-ignore
-import { install as installGoogleAds } from 'ga-gtag'
+import { gtag, install as installGoogleAds } from 'ga-gtag'
 import { createBrowserHistory } from 'history'
 import _ from 'lodash'
 import { useStoreSelector } from 'project/redux/_store'
 import React, { useCallback, useEffect, useState } from 'react'
-import ReactGA from 'react-ga'
 import GitInfo from 'react-git-info/macro'
+// @ts-ignore
+import RedditPixel from 'react-reddit-pixel'
 import MediaQuery, { Context as ResponsiveContext } from 'react-responsive'
 import { Router } from 'react-router-dom'
 import { Bounce, toast, ToastContainer, ToastContentProps } from 'react-toastify'
+// @ts-ignore
+import TwitterPixel from 'react-twitter-pixel'
 import FButton from './FButton'
 
 const gitHash = GitInfo().commit.shortHash
@@ -217,36 +220,134 @@ export default function RouterBase({ children }: { children: React.ReactNode }) 
 					'color: orange; font-weight: 700; font-size: 14px'
 				)
 
-			global.startAnalytics = async function () {
+			if (config.redditPixelID) {
+				RedditPixel.init(config.redditPixelID)
+				RedditPixel.disableFirstPartyCookies() // TODO: If there's a way to enable cookies, do it after consent
+				RedditPixel.pageVisit()
+			}
+			if (config.googleAdsID || config.googleAnalyticsID) {
+				try {
+					installGoogleAds(config.googleAnalyticsID || config.googleAdsID)
+					gtag('consent', 'default', {
+						ad_storage: 'denied',
+						analytics_storage: 'denied',
+					})
+					if (config.googleAnalyticsID) gtag('config', config.googleAnalyticsID)
+					if (config.googleAdsID) gtag('config', config.googleAdsID)
+
+					//
+
+					const w = window.location.pathname + window.location.search
+					gtag('set', 'page_path', w)
+					gtag('event', 'page_view')
+
+					global.analytics = {
+						conversion: (sendTo: string, transactionID: string) => {
+							if (!config.googleAdsID)
+								return console.warn('Google Ads is not configured')
+
+							try {
+								gtag('event', 'conversion', {
+									send_to: config.googleAdsID + sendTo,
+									transaction_id: transactionID,
+								})
+							} catch (e) {
+								console.warn('gtag error: ' + e)
+							}
+						},
+						set: (obj: { userId: string }) => {
+							if (!config.googleAnalyticsID)
+								return console.warn('Google Analytics is not configured')
+
+							try {
+								gtag('set', { user_id: obj.userId })
+							} catch (e) {
+								console.warn('gtag error: ' + e)
+							}
+						},
+						event: (event: {
+							category: string
+							action: string
+							label?: string
+							value?: number
+							nonInteraction?: boolean
+						}) => {
+							if (!config.googleAnalyticsID)
+								return console.warn('Google Analytics is not configured')
+
+							try {
+								gtag('event', event.action, {
+									event_category: event.category,
+									event_label: event.label,
+									value: event.value,
+									non_interaction: event.nonInteraction,
+								})
+							} catch (e) {
+								console.warn('gtag error: ' + e)
+							}
+						},
+					}
+				} catch (e) {
+					console.warn('gtag initialization error: ' + e)
+				}
+			}
+
+			history.listen((location) => {
+				const l = location.pathname + location.search
+
+				if (config.redditPixelID) RedditPixel.pageVisit()
+				if (config.twitterPixelID) {
+					try {
+						TwitterPixel.pageView()
+					} catch (e) {
+						console.warn('Twitter Pixel error: ' + e)
+					}
+				}
+				if (config.googleAdsID || config.googleAnalyticsID) {
+					try {
+						gtag('set', 'page_path', l)
+						gtag('event', 'page_view')
+					} catch (e) {
+						console.warn('gtag error: ' + e)
+					}
+				}
+			})
+
+			global.gotConsent = async function () {
 				if (!global.analytics) {
-					let startAnalytics = false
-					if (!config.showCookieNotice) startAnalytics = true
+					let gotConsent = false
+					if (!config.showCookieNotice) gotConsent = true
 					else {
 						const cookie = await global.storage.getItem('cookie_notice')
-						startAnalytics = cookie === 'all'
+						gotConsent = cookie === 'all'
 					}
+
 					// ! NOTE: Do not track (DNT) is not a legal requirement which is why it's ignored
-					if (startAnalytics) {
-						console.log('Starting analytics - Got consent')
-						if (config.googleAdsID) {
-							installGoogleAds(config.googleAdsID)
+
+					if (gotConsent) {
+						if (config.twitterPixelID) {
+							// TODO: If later Twitter add a way to disable cookies, we can start it before consent
+							TwitterPixel.init(config.twitterPixelID)
+							TwitterPixel.pageView()
 						}
-						if (config.googleAnalyticsID) {
-							ReactGA.initialize(config.googleAnalyticsID)
-							const w = window.location.pathname + window.location.search
-							ReactGA.pageview(w)
-							history.listen((location) => {
-								const l = location.pathname + location.search
-								ReactGA.pageview(l)
-							})
-							global.analytics = ReactGA
+
+						if (config.googleAdsID || config.googleAnalyticsID) {
+							console.log('Got cookies consent')
+							try {
+								gtag('consent', 'update', {
+									ad_storage: 'granted',
+									analytics_storage: 'granted',
+								})
+							} catch (e) {
+								console.warn('gtag initialization error: ' + e)
+							}
 						}
 					} else {
-						console.log("Can't start analytics - No consent")
+						console.log('No cookies consent')
 					}
 				}
 			}
-			await global.startAnalytics()
+			await global.gotConsent()
 		})()
 
 		if (config.websocketSupport && global.socket) {

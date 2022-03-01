@@ -521,8 +521,7 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 														'cookie_notice',
 														'all'
 													)
-													if (global.startAnalytics)
-														await global.startAnalytics()
+													if (global.gotConsent) await global.gotConsent()
 													setCookieNotice('all')
 												}}
 											>

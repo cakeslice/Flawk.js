@@ -59,6 +59,7 @@ declare global {
 	var lang: Lang
 	var analytics:
 		| {
+				conversion: (sendTo: string, transactionID: string) => void
 				set: (obj: { userId: string }) => void
 				event: (event: {
 					category: string
@@ -69,7 +70,7 @@ declare global {
 				}) => void
 		  }
 		| undefined
-	var startAnalytics: () => Promise<void>
+	var gotConsent: () => Promise<void>
 	var storage:
 		| StorageFallback
 		| {
