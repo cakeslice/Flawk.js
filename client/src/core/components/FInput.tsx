@@ -164,6 +164,7 @@ type Props = {
 	form?: FormikProps<Obj>
 	onClick?: (event: React.MouseEvent<HTMLInputElement | HTMLTextAreaElement, MouseEvent>) => void
 	onChange?: (value: string | number | undefined | Moment) => void
+	onChangeNoBuffer?: (value: string | number | undefined | Moment) => void
 	onBlur?: (event: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>) => void
 	onFocus?: (event: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>) => void
 	onKeyPress?: (event: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => void
@@ -242,7 +243,7 @@ export default class FInput extends TrackedComponent<Props> {
 				? undefined
 				: e.target.value
 		if (this.timer) clearTimeout(this.timer)
-		this.timer = setTimeout(this.triggerChange, this.props.bufferInterval || 250)
+		this.timer = setTimeout(this.triggerChange, this.props.bufferInterval || 500)
 	}
 	handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
 		if (e.key === 'Enter') {
@@ -502,31 +503,22 @@ export default class FInput extends TrackedComponent<Props> {
 		const valueProps = {
 			value: controlled ? (value === undefined ? '' : value) : undefined,
 			onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-				if (formIK && name && formIK.setFieldValue)
-					formIK.setFieldValue(
-						name,
-						this.props.type === 'number'
-							? e.target.value === ''
-								? undefined
-								: Number(e.target.value)
-							: e.target.value === ''
+				const v =
+					this.props.type === 'number'
+						? e.target.value === ''
 							? undefined
-							: e.target.value
-					)
+							: Number(e.target.value)
+						: e.target.value === ''
+						? undefined
+						: e.target.value
+
+				if (formIK && name && formIK.setFieldValue) formIK.setFieldValue(name, v)
 
 				if (this.props.bufferedInput && !formIK) {
+					if (this.props.onChangeNoBuffer) this.props.onChangeNoBuffer(v)
 					this.handleChangeBuffered(e)
 				} else {
-					this.props.onChange &&
-						this.props.onChange(
-							this.props.type === 'number'
-								? e.target.value === ''
-									? undefined
-									: Number(e.target.value)
-								: e.target.value === ''
-								? undefined
-								: e.target.value
-						)
+					this.props.onChange && this.props.onChange(v)
 				}
 			},
 		}

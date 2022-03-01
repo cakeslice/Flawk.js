@@ -60,9 +60,14 @@ export default function Router(): React.ReactNode {
 		if (config.websocketSupport && global.socket) global.socket.on('data_update', onUpdateData)
 
 		global.playNotificationSound = async () => {
-			// eslint-disable-next-line
-			//const audio = new Audio(notificationSound)
-			//await audio.play()
+			/* try {
+				// eslint-disable-next-line
+				const audio = new Audio(notificationSound)
+				await audio.play()
+			} catch (e) {
+				// In case audio is not allowed because user didn't interact yet
+				console.warn(e)
+			} */
 		}
 	})
 

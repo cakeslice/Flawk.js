@@ -80,7 +80,8 @@ const corsOrigins = <CustomOrigin>(
 
 		if (origin && origin.includes('uptimerobot.com')) allowed = true
 
-		if (!allowed) console.log('CORS: ' + origin && origin.toString() + ' is not allowed!')
+		if (!allowed)
+			console.log('CORS: ' + (origin ? origin.toString() : 'unknown') + ' is not allowed!')
 
 		callback(allowed ? null : new Error('Origin is not allowed'), allowed)
 	}

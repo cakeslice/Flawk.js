@@ -271,6 +271,12 @@ const rgbaToObj = (color: string) => {
 	}
 }
 
+const _appleBrowser =
+	// eslint-disable-next-line
+	!!navigator.userAgent.match(/Version\/[\d\.]+.*Safari/) ||
+	// @ts-ignore
+	(/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream)
+
 const publicConfig: Config = {
 	supportedLanguages: ['en'],
 	backendURL: undefined,
@@ -320,6 +326,8 @@ const config: Config & InternalConfig = {
 	googleAdsID: _googleAdsID,
 	recaptchaSiteKey: _recaptchaSiteKey,
 	recaptchaBypass: _recaptchaBypass,
+
+	appleBrowser: _appleBrowser,
 
 	lockFetch: async (ref: React.Component, method: () => Promise<void>, key?: string) => {
 		await _setStateAsync(ref, { [key || 'fetching']: true })
@@ -430,10 +438,11 @@ const config: Config & InternalConfig = {
 	},
 
 	webPushNotificationsEnabled() {
-		return Notification.permission === 'granted'
+		return !_appleBrowser && Notification.permission === 'granted'
 	},
 	getWebPushSubscription: async () => {
-		if (global.serviceWorker) return await global.serviceWorker.pushManager.getSubscription()
+		if (!_appleBrowser && global.serviceWorker)
+			return await global.serviceWorker.pushManager.getSubscription()
 		else return null
 	},
 	enableWebPushNotifications: async () => {
@@ -494,7 +503,7 @@ const config: Config & InternalConfig = {
 
 		//
 
-		if (global.serviceWorker) {
+		if (!_appleBrowser && global.serviceWorker) {
 			// eslint-disable-next-line
 			await setupPushNotifications(global.serviceWorker)
 		}
@@ -525,6 +534,8 @@ type InternalConfig = {
 	googleAdsID: string | undefined
 	recaptchaSiteKey: string | undefined
 	recaptchaBypass: string | undefined
+
+	appleBrowser: boolean
 
 	lockFetch: (ref: React.Component, method: () => Promise<void>, key?: string) => Promise<void>
 	setStateAsync: typeof _setStateAsync
