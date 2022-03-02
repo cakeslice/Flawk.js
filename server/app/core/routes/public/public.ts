@@ -40,6 +40,9 @@ const session = await common.stripe.checkout.sessions.create({
 	automatic_tax: {
 		enabled: true,
 	},
+	tax_id_collection: {
+		enabled: true,
+	},
 	mode: 'subscription',
 	success_url:
 		'url/?success=' + encodeURIComponent(user._id.toString() + '_' + new Date().getTime().toString()),
