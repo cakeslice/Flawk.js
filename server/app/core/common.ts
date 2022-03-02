@@ -620,7 +620,7 @@ export default {
 		else next()
 	},
 
-	tokenMiddleware: (extraClientSelect?: string) => {
+	tokenMiddleware: () => {
 		async function middleware(req: Request, res: Response, next: NextFunction) {
 			// Check header or URL parameters or POST parameters for token or cookie
 			const token: string =
@@ -667,8 +667,7 @@ export default {
 
 					// Check if token belongs to a user
 					const user = await Client.findOne({ _id: decoded._id }).select(
-						'_id email permission flags core.timestamps.lastCall access.activeTokens core.language' +
-							(extraClientSelect ? ' ' + extraClientSelect : '')
+						'_id email permission flags core.timestamps.lastCall access.activeTokens core.language'
 					)
 					if (!user) {
 						_setResponse(
@@ -720,7 +719,7 @@ export default {
 		}
 		return middleware
 	},
-	optionalTokenMiddleware: (extraClientSelect?: string) => {
+	optionalTokenMiddleware: () => {
 		async function middleware(req: Request, res: Response, next: NextFunction) {
 			// Check header or URL parameters or POST parameters for token or cookie
 			const token: string =
@@ -763,8 +762,7 @@ export default {
 
 					// Check if token belongs to a user
 					const user = await Client.findOne({ _id: decoded._id }).select(
-						'_id email permission flags core.timestamps.lastCall access.activeTokens core.language' +
-							(extraClientSelect ? ' ' + extraClientSelect : '')
+						'_id email permission flags core.timestamps.lastCall access.activeTokens core.language'
 					)
 
 					if (!user) {
