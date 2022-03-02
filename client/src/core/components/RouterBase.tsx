@@ -292,6 +292,23 @@ export default function RouterBase({ children }: { children: React.ReactNode }) 
 				}
 			}
 
+			if (config.microsoftClarityKey) {
+				try {
+					config.injectScript(
+						`(function(c,l,a,r,i,t,y){
+								c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+								t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+								y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+							})(window, document, "clarity", "script", "${config.microsoftClarityKey}");`,
+						'text',
+						false,
+						true
+					)
+				} catch (e) {
+					console.warn('Microsoft Clarity initialization error: ' + e)
+				}
+			}
+
 			history.listen((location) => {
 				const l = location.pathname + location.search
 
@@ -326,6 +343,15 @@ export default function RouterBase({ children }: { children: React.ReactNode }) 
 				if (gotConsent) {
 					console.log('Got cookies consent')
 
+					if (config.microsoftClarityKey) {
+						try {
+							// @ts-ignore
+							window.clarity('consent')
+						} catch (e) {
+							console.warn('Microsoft Clarity consent error: ' + e)
+						}
+					}
+
 					if (config.twitterPixelID) {
 						// TODO: If later Twitter add a way to disable cookies, we can start it before consent
 						TwitterPixel.init(config.twitterPixelID)
@@ -339,7 +365,7 @@ export default function RouterBase({ children }: { children: React.ReactNode }) 
 								analytics_storage: 'granted',
 							})
 						} catch (e) {
-							console.warn('gtag initialization error: ' + e)
+							console.warn('gtag consent error: ' + e)
 						}
 					}
 				} else {
