@@ -59,7 +59,7 @@ declare global {
 	var lang: Lang
 	var analytics:
 		| {
-				conversion: (sendTo: string, transactionID: string) => void
+				conversion: (sendTo: string, transactionID?: string) => void
 				set: (obj: { userId: string }) => void
 				event: (event: {
 					category: string

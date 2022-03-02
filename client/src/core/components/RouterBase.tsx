@@ -242,7 +242,7 @@ export default function RouterBase({ children }: { children: React.ReactNode }) 
 					gtag('event', 'page_view')
 
 					global.analytics = {
-						conversion: (sendTo: string, transactionID: string) => {
+						conversion: (sendTo: string, transactionID?: string) => {
 							if (!config.googleAdsID)
 								return console.warn('Google Ads is not configured')
 
