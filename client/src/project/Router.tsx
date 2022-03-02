@@ -272,7 +272,7 @@ export default function Router(): React.ReactNode {
 				{(desktop) => (
 					<Switch>
 						<Route path='/dashboard'>
-							<div>
+							<>
 								<Helmet>
 									<title>{config.title() + config.separator + 'Dashboard'}</title>
 								</Helmet>
@@ -296,7 +296,7 @@ export default function Router(): React.ReactNode {
 											await fetchStructures(dispatch),
 									}}
 								></Dashboard>
-							</div>
+							</>
 						</Route>
 
 						{/* {!config.prod && !config.staging && ( */}

@@ -78,7 +78,7 @@ export default class ComponentsViewer extends Component {
 							</button>
 						</div>
 					) : (
-						<div>
+						<>
 							<div className='flex justify-center items-center'>
 								<div
 									className='flex items-center'
@@ -110,7 +110,7 @@ export default class ComponentsViewer extends Component {
 								}}
 							></div>
 							<div style={{ minHeight: 20 }}></div>
-						</div>
+						</>
 					),
 			},
 			{
@@ -314,7 +314,7 @@ export const Section: React.FC<{
 				return (
 					<MediaQuery minWidth={880}>
 						{(tablet) => (
-							<div>
+							<>
 								{!top && <sp />}
 								{!top && <sp />}
 								{!top && <sp />}
@@ -384,7 +384,7 @@ export const Section: React.FC<{
 								{!code && !tags && <sp />}
 								{!code && <sp />}
 								{!code && children}
-							</div>
+							</>
 						)}
 					</MediaQuery>
 				)

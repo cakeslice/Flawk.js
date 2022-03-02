@@ -19,6 +19,14 @@ import ReactQuill from 'react-quill'
 import MediaQuery from 'react-responsive'
 import { Section } from './ComponentsViewer'
 
+// @ts-ignore
+const ChunkLoadErrorTest = React.lazy(() => {
+	const test = async () => {
+		return <></>
+	}
+	return test
+})
+
 export default class Misc extends QueryParams<{
 	bool?: boolean
 	number?: number
@@ -27,7 +35,7 @@ export default class Misc extends QueryParams<{
 	none?: string
 	default?: number
 }> {
-	state = { quill: '' }
+	state = { quill: '', chunkLoadError: false }
 
 	defaultQueryParams = { default: 1 }
 	render() {
@@ -234,6 +242,35 @@ export default class Misc extends QueryParams<{
 						</Section>
 						<Section title='Scroll to top' tags={['config.scrollToTop()']}>
 							<FButton onClick={() => config.scrollToTop()}>Scroll</FButton>
+						</Section>
+						<Section title='Error Handling'>
+							<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+								{this.state.chunkLoadError && (
+									<ChunkLoadErrorTest></ChunkLoadErrorTest>
+								)}
+								<FButton
+									onClick={() => {
+										// @ts-ignore
+										global.something.that.does.not.exist.and.will.throw.an.error()
+									}}
+								>
+									Function Error
+								</FButton>
+								<FButton
+									onClick={() => {
+										this.setState({ chunkLoadError: true })
+									}}
+								>
+									React Error
+								</FButton>
+								<FButton
+									onClick={() => {
+										console.error('Testing error logs')
+									}}
+								>
+									Log Error
+								</FButton>
+							</div>
 						</Section>
 						<Section title='Text editor' tags={['<ReactQuill/>']}>
 							<ReactQuill

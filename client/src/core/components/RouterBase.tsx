@@ -454,13 +454,11 @@ export default function RouterBase({ children }: { children: React.ReactNode }) 
 
 	return (
 		<MobileSimulator active={!config.prod && !config.staging}>
-			<div>
-				<Router history={history}>
-					<ScrollToTop>{children}</ScrollToTop>
-				</Router>
+			<Router history={history}>
+				<ScrollToTop>{children}</ScrollToTop>
+			</Router>
 
-				<ToastContainer />
-			</div>
+			<ToastContainer />
 		</MobileSimulator>
 	)
 }
@@ -480,7 +478,7 @@ function MobileSimulator({ children, active }: { children: React.ReactNode; acti
 	return (
 		<MediaQuery minWidth={config.mobileWidthTrigger}>
 			{(desktop) => (
-				<div>
+				<>
 					{active && desktop && (
 						<div
 							onMouseEnter={() => setHover(true)}
@@ -570,7 +568,7 @@ function MobileSimulator({ children, active }: { children: React.ReactNode; acti
 						</div>
 					)}
 					{children}
-				</div>
+				</>
 			)}
 		</MediaQuery>
 	)

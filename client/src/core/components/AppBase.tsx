@@ -75,33 +75,29 @@ setTimeout(() => {
 	global.storage.setItem('alreadyTriedReload', 'false')
 }, 10000)
 function ErrorFallback({ error }: FallbackProps) {
-	if (Capacitor.isNativePlatform())
-		return (
-			<div>
-				<span style={{ color: 'white' }}>Chunk Load Error!</span>{' '}
-				<button type='button' onClick={() => window.location.reload()}>
-					Try Again
-				</button>
-			</div>
-		)
-
 	const alreadyTriedReload = global.storage.getItem('alreadyTriedReload')
-
 	const chunkFailedMessage = /Loading chunk [\d]+ failed/
-	if (alreadyTriedReload !== 'true') {
-		if (error?.message && chunkFailedMessage.test(error.message)) {
-			global.storage.setItem('alreadyTriedReload', 'true')
-			window.location.reload()
-		}
 
-		return <div></div>
+	if (
+		!Capacitor.isNativePlatform() &&
+		alreadyTriedReload !== 'true' &&
+		error?.message &&
+		chunkFailedMessage.test(error.message)
+	) {
+		global.storage.setItem('alreadyTriedReload', 'true')
+		window.location.reload()
+
+		return <></>
 	} else {
 		global.storage.setItem('alreadyTriedReload', 'false')
 		return (
-			<div>
-				<span style={{ color: 'white' }}>Chunk Load Error!</span>{' '}
+			<div
+				className='flex-col items-center'
+				style={{ padding: 15, paddingTop: 45, textAlign: 'center' }}
+			>
+				<h3 style={{ marginBottom: 45 }}>{"We're sorry but something went wrong 😞"}</h3>
 				<button type='button' onClick={() => window.location.reload()}>
-					Try Again
+					<a style={{ fontWeight: 'bold', fontSize: 18 }}>Try Again</a>
 				</button>
 			</div>
 		)
@@ -361,10 +357,10 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 
 	return (
 		<ErrorBoundary FallbackComponent={ErrorFallback}>
-			<Suspense fallback={<div></div>}>
+			<Suspense fallback={<></>}>
 				<MediaQuery minWidth={config.mobileWidthTrigger}>
 					{(desktop) => (
-						<div>
+						<>
 							<Helmet>
 								<title>{title}</title>
 								<meta name='description' content={config.description()} />
@@ -624,7 +620,7 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 									)}
 								</div>
 							)}
-						</div>
+						</>
 					)}
 				</MediaQuery>
 			</Suspense>

@@ -313,104 +313,98 @@ export default class Dashboard extends TrackedComponent<
 												</Animated>
 											</div>
 										) : (
-											<div>
-												<div
-													className='flex-col w-full'
-													style={{
-														minHeight: !this.props.dontFillSpace
-															? desktop
-																? desktopHeightTop
-																: mobileHeightTop
-															: 0,
-													}}
+											<div
+												className='flex-col w-full'
+												style={{
+													minHeight: !this.props.dontFillSpace
+														? desktop
+															? desktopHeightTop
+															: mobileHeightTop
+														: 0,
+												}}
+											>
+												<Animated
+													trackedName='Dashboard'
+													animateOffscreen
+													effects={['fade', 'down']}
+													distance={mobileHeight}
+													duration={0.75}
+													//
+													className='blur-background w-full flex-col items-center'
+													style={mobileStyle}
 												>
-													<Animated
-														trackedName='Dashboard'
-														animateOffscreen
-														effects={['fade', 'down']}
-														distance={mobileHeight}
-														duration={0.75}
-														//
-														className='blur-background w-full flex-col items-center'
-														style={mobileStyle}
+													<div
+														className='flex justify-between w-full'
+														style={{
+															maxWidth: maxWidth,
+															minHeight: desktop
+																? this.state.showHeaderBackground
+																	? desktopHeight
+																	: desktopHeightTop
+																: this.state.showHeaderBackground
+																? mobileHeight
+																: mobileHeightTop,
+															maxHeight: desktop
+																? this.state.showHeaderBackground
+																	? desktopHeight
+																	: desktopHeightTop
+																: this.state.showHeaderBackground
+																? mobileHeight
+																: mobileHeightTop,
+															transition:
+																'max-height .5s, min-height .5s',
+															paddingLeft: desktop ? 15 : 35,
+															paddingRight: desktop ? 15 : 35,
+															boxSizing: 'border-box',
+														}}
 													>
-														<div
-															className='flex justify-between w-full'
+														<button
+															className='flex items-center'
+															type='button'
+															onClick={() =>
+																global.routerHistory().push('/')
+															}
 															style={{
-																maxWidth: maxWidth,
-																minHeight: desktop
-																	? this.state
-																			.showHeaderBackground
-																		? desktopHeight
-																		: desktopHeightTop
-																	: this.state
-																			.showHeaderBackground
-																	? mobileHeight
-																	: mobileHeightTop,
-																maxHeight: desktop
-																	? this.state
-																			.showHeaderBackground
-																		? desktopHeight
-																		: desktopHeightTop
-																	: this.state
-																			.showHeaderBackground
-																	? mobileHeight
-																	: mobileHeightTop,
+																marginBottom: this.state
+																	.showHeaderBackground
+																	? 10
+																	: 15,
+																marginTop: this.state
+																	.showHeaderBackground
+																	? 10
+																	: 15,
 																transition:
-																	'max-height .5s, min-height .5s',
-																paddingLeft: desktop ? 15 : 35,
-																paddingRight: desktop ? 15 : 35,
-																boxSizing: 'border-box',
+																	'margin-top .5s, margin-bottom .5s',
 															}}
 														>
-															<button
-																className='flex items-center'
-																type='button'
-																onClick={() =>
-																	global.routerHistory().push('/')
-																}
+															<img
 																style={{
-																	marginBottom: this.state
-																		.showHeaderBackground
-																		? 10
-																		: 15,
-																	marginTop: this.state
-																		.showHeaderBackground
-																		? 10
-																		: 15,
-																	transition:
-																		'margin-top .5s, margin-bottom .5s',
+																	maxHeight: 30,
+																	minHeight: 30,
+																	objectFit: 'contain',
+																	...this.props.logoStyle,
 																}}
-															>
-																<img
-																	style={{
-																		maxHeight: 30,
-																		minHeight: 30,
-																		objectFit: 'contain',
-																		...this.props.logoStyle,
-																	}}
-																	src={this.props.logo}
-																></img>
-															</button>
+																src={this.props.logo}
+															></img>
+														</button>
 
-															<MobileDrawer
-																burgerStyle={mobileBurgerStyle}
-																menuStyle={mobileMenuStyle}
-																linkStyle={this.props.linkStyle}
-																headerHeight={
-																	this.state.showHeaderBackground
-																		? mobileHeight
-																		: mobileHeightTop
-																}
-																toggleOpen={this.toggleOpen}
-																//
-																pageProps={this.props.pageProps}
-																path={this.props.path}
-																links={mobileRoutes}
-															></MobileDrawer>
-														</div>
-													</Animated>
-												</div>
+														<MobileDrawer
+															burgerStyle={mobileBurgerStyle}
+															menuStyle={mobileMenuStyle}
+															linkStyle={this.props.linkStyle}
+															headerHeight={
+																this.state.showHeaderBackground
+																	? mobileHeight
+																	: mobileHeightTop
+															}
+															toggleOpen={this.toggleOpen}
+															//
+															pageProps={this.props.pageProps}
+															path={this.props.path}
+															links={mobileRoutes}
+														></MobileDrawer>
+													</div>
+												</Animated>
 											</div>
 										)}
 
@@ -462,9 +456,7 @@ export default class Dashboard extends TrackedComponent<
 																		}
 																		render={({ match }) => (
 																			<Suspense
-																				fallback={
-																					<div></div>
-																				}
+																				fallback={<></>}
 																			>
 																				{/* @ts-ignore */}
 																				<WrapperComponent
@@ -501,7 +493,7 @@ export default class Dashboard extends TrackedComponent<
 																							}
 																						></Page>
 																					) : (
-																						<div></div>
+																						<></>
 																					)}
 																				</WrapperComponent>
 																			</Suspense>
@@ -542,7 +534,7 @@ export default class Dashboard extends TrackedComponent<
 															}
 															exact={route.notExact ? false : true}
 															render={({ match }) => (
-																<Suspense fallback={<div></div>}>
+																<Suspense fallback={<></>}>
 																	{/* @ts-ignore */}
 																	<WrapperComponent
 																		overrideHeader={
@@ -566,7 +558,7 @@ export default class Dashboard extends TrackedComponent<
 																				title={route.name}
 																			></Page>
 																		) : (
-																			<div></div>
+																			<></>
 																		)}
 																	</WrapperComponent>
 																</Suspense>

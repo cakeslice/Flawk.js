@@ -14,9 +14,7 @@ import Router from './Router'
 export default function App() {
 	return (
 		<Provider store={store}>
-			<div>
-				<AppBase component={Router}></AppBase>
-			</div>
+			<AppBase component={Router}></AppBase>
 		</Provider>
 	)
 }
