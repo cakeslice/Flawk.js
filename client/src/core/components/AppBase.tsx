@@ -376,7 +376,7 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 							</Helmet>
 
 							{inRestrictedRoute && oldBuild && (
-								<div style={{ maxHeight: 0 }}>
+								<div data-nosnippet style={{ maxHeight: 0 }}>
 									<Animated
 										trackedName='AppBase'
 										animateOffscreen
@@ -418,7 +418,7 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 								config.websocketSupport &&
 								!socketConnected &&
 								socketConnectionDelay && (
-									<div style={{ maxHeight: 0 }}>
+									<div data-nosnippet style={{ maxHeight: 0 }}>
 										<Animated
 											trackedName='AppBase-socketConnectionDelay'
 											animateOffscreen
@@ -440,7 +440,7 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 									</div>
 								)}
 							{config.showCookieNotice && cookieNotice === 'false' && (
-								<div style={{ maxHeight: 0 }}>
+								<div data-nosnippet style={{ maxHeight: 0 }}>
 									<Animated
 										trackedName='AppBase-cookieNotice'
 										animateOffscreen
@@ -535,6 +535,7 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 							<Child></Child>
 							{!config.prod && (
 								<div
+									data-nosnippet
 									style={{
 										position: 'fixed',
 										bottom: 0,

@@ -242,6 +242,7 @@ export default class FTable extends QueryParams<
 					<MediaQuery minWidth={config.mobileWidthTrigger}>
 						{(desktop) => (
 							<div
+								data-nosnippet
 								className={
 									'w-full h-full flex-col' +
 									(this.props.className ? ' ' + this.props.className : '')
