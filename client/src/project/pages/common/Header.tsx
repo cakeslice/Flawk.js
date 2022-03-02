@@ -75,6 +75,7 @@ export default class Header extends Component<HeaderProps> {
 			<MediaQuery minWidth={config.mobileWidthTrigger}>
 				{(desktop) => (
 					<div
+						data-nosnippet
 						className='flex-col w-full'
 						style={{
 							minHeight: this.props.fillSpace

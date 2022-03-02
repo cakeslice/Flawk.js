@@ -17,6 +17,7 @@ export default class Footer extends Component {
 			<MediaQuery minWidth={config.mobileWidthTrigger}>
 				{(desktop) => (
 					<div
+						data-nosnippet
 						className='flex-col items-center justify-center w-full'
 						style={{
 							minHeight: 279,
