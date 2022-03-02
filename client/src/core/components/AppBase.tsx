@@ -70,6 +70,10 @@ if (Capacitor.isNativePlatform()) {
 }
 global.storage = storage
 
+setTimeout(() => {
+	// After 10 seconds we can assume the app is loading correctly so we set alreadyTriedReload to false again
+	global.storage.setItem('alreadyTriedReload', 'false')
+}, 10000)
 function ErrorFallback({ error }: FallbackProps) {
 	if (Capacitor.isNativePlatform())
 		return (
@@ -86,14 +90,12 @@ function ErrorFallback({ error }: FallbackProps) {
 	const chunkFailedMessage = /Loading chunk [\d]+ failed/
 	if (alreadyTriedReload !== 'true') {
 		if (error?.message && chunkFailedMessage.test(error.message)) {
-			// eslint-disable-next-line
 			global.storage.setItem('alreadyTriedReload', 'true')
 			window.location.reload()
 		}
 
 		return <div></div>
 	} else {
-		// eslint-disable-next-line
 		global.storage.setItem('alreadyTriedReload', 'false')
 		return (
 			<div>
