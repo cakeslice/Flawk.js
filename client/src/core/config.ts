@@ -26,6 +26,16 @@ export const projectConfig = pC
 export const projectStyles = pS
 export const projectStylesOverrides = pSO
 
+// Support older browsers that don't implement replaceAll
+if (!String.prototype.replaceAll) {
+	// @ts-ignore
+	String.prototype.replaceAll = function (search: string, replace: string) {
+		// eslint-disable-next-line
+		const target = this
+		return target.replace(new RegExp(search, 'g'), replace)
+	}
+}
+
 const _prod =
 	process.env.NODE_ENV === 'production' &&
 	process.env.REACT_APP_STAGING !== 'true' &&
