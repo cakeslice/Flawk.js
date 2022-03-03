@@ -103,7 +103,9 @@ function ErrorFallback({ error }: FallbackProps) {
 				>
 					<a style={{ fontWeight: 'bold', fontSize: 18 }}>Try Again</a>
 				</button>
-				<div style={{ opacity: 0.5, fontSize: 13 }}>Error: {error && error.message}</div>
+				{error && error.message && (
+					<div style={{ opacity: 0.5, fontSize: 13 }}>Error: {error.message}</div>
+				)}
 			</div>
 		)
 	}
