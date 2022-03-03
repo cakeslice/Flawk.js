@@ -218,11 +218,11 @@ export default class FTable extends QueryParams<
 			...(overrideStyle && overrideStyle.headerWrapperStyle),
 		}
 		bottomBarStyle = {
-			paddingLeft: bottomBarStyle.paddingLeft,
-			paddingRight: bottomBarStyle.paddingRight,
-			paddingTop: bottomBarStyle.paddingTop,
-			paddingBottom: bottomBarStyle.paddingBottom,
 			padding: bottomBarStyle.padding,
+			...(bottomBarStyle.paddingLeft && { paddingLeft: bottomBarStyle.paddingLeft }),
+			...(bottomBarStyle.paddingRight && { paddingRight: bottomBarStyle.paddingRight }),
+			...(bottomBarStyle.paddingBottom && { paddingBottom: bottomBarStyle.paddingBottom }),
+			...(bottomBarStyle.paddingTop && { paddingTop: bottomBarStyle.paddingTop }),
 		}
 
 		//

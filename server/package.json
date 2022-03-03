@@ -53,6 +53,8 @@
 		"cookie-parser": "^1.4.6",
 		"cors": "^2.8.5",
 		"crypto-extra": "^1.0.1",
+		"dd-trace": "^2.3.0",
+		"del-cli": "^4.0.1",
 		"delay": "^5.0.0",
 		"diacritic-regex": "^1.1.0",
 		"express": "^4.17.1",

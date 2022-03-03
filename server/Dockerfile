@@ -11,16 +11,17 @@
 # [Ubuntu] Install Docker and CapRover: deploy/ubuntu.txt
 # Then connect using SSH again using port 1000
 
-# Add Netdata monitoring to server: https://app.netdata.cloud/
-# Change config:
-#   cd /etc/netdata
-#   sudo ./edit-config netdata.conf
-# 		[global]
-# 		    hostname = SERVER_NAME
-#     [web]
-#         bind to = 10.1.1.1:19999 localhost:19999
-#   sudo systemctl restart netdata
-# [Digital Ocean] Add default monitoring if not enabled: sudo apt-get purge do-agent
+# ------------ Monitoring ------------
+# [Datadog]
+#     - Setup Docker: https://app.datadoghq.eu/account/settings#integrations/docker
+#     - Setup APM: https://docs.datadoghq.com/tracing/setup_overview/setup/nodejs/?tab=containers
+#         - To send traces from containers you need to XXXXXXXXXX
+#         - Set app env var DD_TRACE_DEBUG=true to check for issues
+#     - Use the following dashboards: Docker / System Metrics
+#     - Add desired alerts
+# [Digital Ocean] 
+#     - Add default monitoring if not enabled: sudo apt-get purge do-agent
+#     - Add alerts for CPU/Memory/Disk usage
 
 # Access CapRover: SERVER_IP:3000 -> Password captain42
 # Update CapRover

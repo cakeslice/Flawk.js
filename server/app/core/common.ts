@@ -33,6 +33,7 @@ import Stripe from 'stripe'
 import { URLSearchParams } from 'url'
 import * as uuid from 'uuid'
 import winston from 'winston'
+import './internal/datadog'
 
 const _stripe = process.env.stripeSecret
 	? new Stripe(process.env.stripeSecret, {

@@ -63,6 +63,8 @@ const styles: Styles & { colors: Colors; gradients: Gradients } = {
 	inputHeight: 31,
 	inputPaddingLeft: 10,
 
+	checkboxLabelStyle: undefined,
+
 	// Button Config
 
 	buttonBorderRadius: 6,
@@ -355,6 +357,8 @@ export type Styles = {
 
 	inputHeight: number
 	inputPaddingLeft: number
+
+	checkboxLabelStyle?: React.CSSProperties
 
 	// Button Config
 

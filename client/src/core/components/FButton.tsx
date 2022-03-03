@@ -425,7 +425,12 @@ export default class FButton extends TrackedComponent<Props> {
 
 					return (
 						<div style={{ width: finalStyle.width, flexGrow: finalStyle.flexGrow }}>
-							<div style={{ display: 'flex', alignItems: 'flex-start' }}>
+							<div
+								style={{
+									display: 'flex',
+									alignItems: this.props.checkbox ? 'center' : 'flex-start',
+								}}
+							>
 								<button
 									ref={this.setButtonRef}
 									className='f-button'
@@ -528,6 +533,7 @@ export default class FButton extends TrackedComponent<Props> {
 											fontSize: styles.defaultFontSize,
 											marginLeft: 7.5,
 											...styles.inputLabelStyle,
+											...styles.checkboxLabelStyle,
 											...this.props.checkboxLabelStyle,
 										}}
 									>
