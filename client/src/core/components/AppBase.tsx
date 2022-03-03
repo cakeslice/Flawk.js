@@ -329,6 +329,7 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 
 	const bannerStyle = (desktop: boolean): React.CSSProperties => {
 		return {
+			backdropFilter: 'blur(2px)',
 			borderTop: '1px solid rgba(255,255,255,.1)',
 			display: 'flex',
 			minWidth: '100vw',
