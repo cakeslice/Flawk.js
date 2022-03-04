@@ -5,7 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { clearAllBodyScrollLocks } from 'body-scroll-lock'
 import Animated from 'core/components/Animated'
 import MobileDrawer from 'core/components/MobileDrawer'
 import Tooltip from 'core/components/Tooltip'
@@ -608,26 +607,6 @@ class MenuClass extends TrackedComponent<MenuProps> {
 	shouldComponentUpdate(nextProps: MenuProps, nextState: typeof this.state) {
 		super.shouldComponentUpdate(nextProps, nextState, false)
 		return this.deepEqualityCheck(nextProps, nextState)
-	}
-
-	componentDidMount() {
-		if (this.props.isHover) {
-			if (!this.props.horizontal) config.disableScroll()
-		} else {
-			clearAllBodyScrollLocks()
-		}
-	}
-	componentDidUpdate(prevProps: MenuProps) {
-		if (this.props.isHover !== prevProps.isHover) {
-			if (this.props.isHover) {
-				if (!this.props.horizontal && !config.appleBrowser) config.disableScroll()
-			} else {
-				clearAllBodyScrollLocks()
-			}
-		}
-	}
-	componentWillUnmount() {
-		clearAllBodyScrollLocks()
 	}
 
 	render() {
