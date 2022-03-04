@@ -5,17 +5,15 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as Sentry from '@sentry/react'
+import { captureException } from '@sentry/react'
 import { disableBodyScroll } from 'body-scroll-lock'
 import { difference, normal } from 'color-blend'
-import { countries, Country } from 'countries-list'
 import { KeyObject, KeyUnknown, Obj } from 'flawk-types'
 import hexRgb from 'hex-rgb'
 import Parser from 'html-react-parser'
-import _ from 'lodash'
-import moment from 'moment'
+import _find from 'lodash/find'
+import _get from 'lodash/get'
 import numeral from 'numeral'
-import 'numeral/locales'
 import _projectText from 'project/text'
 import projectOverrides, { projectConfig as pC } from 'project/_config'
 import pSO, { projectStyles as pS } from 'project/_styles'
@@ -93,7 +91,7 @@ const _logCatch = function (err: Error, useSentry: boolean, identifier = '') {
 	console.log(identifier + JSON.stringify(err.message) + ' ' + JSON.stringify(err.stack || err))
 	if (useSentry) {
 		err.message = identifier + err.message
-		Sentry.captureException(err)
+		captureException(err)
 	}
 }
 
@@ -166,7 +164,6 @@ function _changeLang(): void {
 	_updateLang()
 }
 function _updateLang() {
-	moment.locale(global.lang.moment)
 	numeral.locale(global.lang.numeral)
 }
 _updateLang()
@@ -221,7 +218,7 @@ function _text(
 	replaces?: Array<{ key: string; value: string }>,
 	text?: Obj
 ) {
-	const get = _.get(text || _projectText, key + '.' + (lang || global.lang.text))
+	const get = _get(text || _projectText, key + '.' + (lang || global.lang.text))
 
 	let o: string | undefined
 	if (typeof get === 'string') o = get
@@ -417,7 +414,7 @@ const config: Config & InternalConfig = {
 
 	getRemoteConfig: (structures: KeyObject, key: string, code = 'default'): Obj | undefined => {
 		if (structures && structures['remoteconfigs']) {
-			const s = _.find(structures['remoteconfigs'], { code: code }) as KeyObject
+			const s = _find(structures['remoteconfigs'], { code: code }) as KeyObject
 			return s ? s[key] : undefined
 		}
 		return undefined
@@ -427,15 +424,6 @@ const config: Config & InternalConfig = {
 		const ageDifMs = Date.now() - birthday.getTime()
 		const ageDate = new Date(ageDifMs) // miliseconds from epoch
 		return Math.abs(ageDate.getUTCFullYear() - 1970)
-	},
-
-	countriesSearch: (candidate: { value: string }, input: string): boolean => {
-		const countriesList: Record<string, Country> = countries
-		return (
-			countriesList[candidate.value].name.toLowerCase().includes(input.toLowerCase()) ||
-			candidate.value.toLowerCase().includes(input.toLowerCase()) ||
-			('+' + countriesList[candidate.value].phone).includes(input)
-		)
 	},
 
 	replaceAlpha(color: string, amount: number) {
@@ -596,8 +584,6 @@ type InternalConfig = {
 	getRemoteConfig: (structures: KeyObject, key: string, code?: string) => Obj | undefined
 
 	calculateAge: (birthday: Date) => number
-
-	countriesSearch: (candidate: { value: string }, input: string) => boolean
 
 	replaceAlpha: (color: string, amount: number) => string
 	overlayColor: (background: string, color: string) => string

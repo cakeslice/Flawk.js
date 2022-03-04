@@ -198,7 +198,7 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 			if (global.socket) {
 				global.socket.close()
 			}
-			global.socket = io(config.websocketURL, { autoConnect: false })
+			if (io) global.socket = io(config.websocketURL, { autoConnect: false })
 			global.socket.on('reconnect_attempt', (attempt) => {
 				console.log('Socket.IO: Reconnect attempt #' + attempt)
 			})

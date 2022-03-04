@@ -5,9 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+//
 import { SplashScreen } from '@capacitor/splash-screen'
-import * as Sentry from '@sentry/react'
-import { Integrations } from '@sentry/tracing'
+import { init as sentryInit, reactRouterV5Instrumentation, showReportDialog } from '@sentry/react'
+import { BrowserTracing } from '@sentry/tracing/dist/browser'
 import { useConstructor } from '@toolz/use-constructor'
 import { get } from 'core/api'
 import config from 'core/config'
@@ -17,18 +18,33 @@ import styles from 'core/styles'
 // @ts-ignore
 import { gtag, install as installGoogleAds } from 'ga-gtag'
 import { createBrowserHistory } from 'history'
-import _ from 'lodash'
+import _find from 'lodash/find'
+import _isFunction from 'lodash/isFunction'
+import _sortBy from 'lodash/sortBy'
 import { useStoreSelector } from 'project/redux/_store'
 import React, { useCallback, useEffect, useState } from 'react'
 import GitInfo from 'react-git-info/macro'
-// @ts-ignore
-import RedditPixel from 'react-reddit-pixel'
 import MediaQuery, { Context as ResponsiveContext } from 'react-responsive'
 import { Router } from 'react-router-dom'
 import { Bounce, toast, ToastContainer, ToastContentProps } from 'react-toastify'
-// @ts-ignore
-import TwitterPixel from 'react-twitter-pixel'
 import FButton from './FButton'
+
+//
+
+// @ts-ignore
+let RedditPixel: typeof import('react-reddit-pixel') | undefined
+// @ts-ignore
+let TwitterPixel: typeof import('react-twitter-pixel') | undefined
+if (config.redditPixelID) {
+	// @ts-ignore
+	RedditPixel = import('react-reddit-pixel')
+}
+if (config.twitterPixelID) {
+	// @ts-ignore
+	TwitterPixel = import('react-twitter-pixel')
+}
+
+//
 
 if (process.env.REACT_APP_STRIPE_KEY) import('@stripe/stripe-js')
 
@@ -79,7 +95,7 @@ function addFlagFunction(
 			return (
 				(customComponent && (
 					<div style={{ color: styles.colors.black, fontSize: styles.defaultFontSize }}>
-						{_.isFunction(customComponent) ? customComponent(props) : customComponent}
+						{_isFunction(customComponent) ? customComponent(props) : customComponent}
 					</div>
 				)) || (
 					<div style={{ padding: 5 }}>
@@ -110,7 +126,7 @@ function addFlagFunction(
 									color: styles.colors.black,
 								}}
 							>
-								{_.isFunction(description) ? description(props) : description}
+								{_isFunction(description) ? description(props) : description}
 							</div>
 						)}
 						{(autoClose || closeAfter) && <div style={{ minHeight: 3 }} />}
@@ -196,7 +212,7 @@ export default function RouterBase({ children }: { children: React.ReactNode }) 
 					'%c\n' + buildEnv + ' | @' + gitHash + ' | SERV@' + buildNumber + '\n',
 					'color: orange; font-weight: 700; font-size: 14px'
 				)
-				Sentry.init({
+				sentryInit({
 					release: '@' + gitHash + '-SERV@' + buildNumber,
 					environment: buildEnv,
 					dsn: config.sentryID,
@@ -204,13 +220,13 @@ export default function RouterBase({ children }: { children: React.ReactNode }) 
 					beforeSend(event, hint) {
 						// Check if it is an exception, and if so, show the report dialog
 						if (event.exception) {
-							Sentry.showReportDialog({ eventId: event.event_id })
+							showReportDialog({ eventId: event.event_id })
 						}
 						return event
 					},
 					integrations: [
-						new Integrations.BrowserTracing({
-							routingInstrumentation: Sentry.reactRouterV5Instrumentation(history),
+						new BrowserTracing({
+							routingInstrumentation: reactRouterV5Instrumentation(history),
 						}),
 					],
 					// Leaving the sample rate at 1.0 means that automatic instrumentation will send a transaction each time a user loads any page or navigates anywhere in your app, which is a lot of transactions. Sampling enables you to collect representative data without overwhelming either your system or your Sentry transaction quota.
@@ -223,9 +239,11 @@ export default function RouterBase({ children }: { children: React.ReactNode }) 
 				)
 
 			if (config.redditPixelID) {
-				RedditPixel.init(config.redditPixelID)
-				RedditPixel.disableFirstPartyCookies() // TODO: If there's a way to enable cookies, do it after consent
-				RedditPixel.pageVisit()
+				if (RedditPixel) {
+					RedditPixel.init(config.redditPixelID)
+					RedditPixel.disableFirstPartyCookies() // TODO: If there's a way to enable cookies, do it after consent
+					RedditPixel.pageVisit()
+				}
 			}
 			if (config.googleAdsID || config.googleAnalyticsID) {
 				try {
@@ -314,8 +332,8 @@ export default function RouterBase({ children }: { children: React.ReactNode }) 
 			history.listen((location) => {
 				const l = location.pathname + location.search
 
-				if (config.redditPixelID) RedditPixel.pageVisit()
-				if (config.twitterPixelID) {
+				if (config.redditPixelID && RedditPixel) RedditPixel.pageVisit()
+				if (config.twitterPixelID && TwitterPixel) {
 					try {
 						TwitterPixel.pageView()
 					} catch (e) {
@@ -354,7 +372,7 @@ export default function RouterBase({ children }: { children: React.ReactNode }) 
 						}
 					}
 
-					if (config.twitterPixelID) {
+					if (config.twitterPixelID && TwitterPixel) {
 						// TODO: If later Twitter add a way to disable cookies, we can start it before consent
 						TwitterPixel.init(config.twitterPixelID)
 						TwitterPixel.pageView()
@@ -397,7 +415,7 @@ export default function RouterBase({ children }: { children: React.ReactNode }) 
 				components: [],
 				track: (component, prop) => {
 					if (global.stats) {
-						let found = _.find(global.stats.components, (e) => e.name === component)
+						let found = _find(global.stats.components, (e) => e.name === component)
 						if (!found) {
 							found = {
 								name: component,
@@ -410,7 +428,7 @@ export default function RouterBase({ children }: { children: React.ReactNode }) 
 						if (prop === 'totalRenders') {
 							if (found) found.totalRenders++
 						} else {
-							let foundChanges = _.find(found.changes, (e) => e.prop === prop)
+							let foundChanges = _find(found.changes, (e) => e.prop === prop)
 							if (!foundChanges) {
 								foundChanges = {
 									prop: prop,
@@ -427,7 +445,7 @@ export default function RouterBase({ children }: { children: React.ReactNode }) 
 			setInterval(() => {
 				if (global.stats) {
 					let totalRenders = 0
-					global.stats.components = _.sortBy(
+					global.stats.components = _sortBy(
 						global.stats.components,
 						(c) => -c.totalRenders
 					)
@@ -445,7 +463,7 @@ export default function RouterBase({ children }: { children: React.ReactNode }) 
 								'%c' + c.name + ': ' + c.totalRenders,
 								i === 0 ? 'color: yellow' : ''
 							)
-							c.changes = _.sortBy(c.changes, (c) => -c.amount)
+							c.changes = _sortBy(c.changes, (c) => -c.amount)
 							c.changes.forEach((change, k) => {
 								console.log(
 									'%c' + change.prop + ': ' + change.amount,

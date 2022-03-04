@@ -13,7 +13,8 @@ import config from 'core/config'
 import styles from 'core/styles'
 import { motion } from 'framer-motion'
 import { css } from 'glamor'
-import _ from 'lodash'
+import _find from 'lodash/find'
+import _uniqBy from 'lodash/uniqBy'
 import React, { Component } from 'react'
 import MediaQuery from 'react-responsive'
 import { Link } from 'react-router-dom'
@@ -499,7 +500,7 @@ export default class Style extends Component<Props> {
 									label='Appearance'
 									value={this.state.buttonAppearance}
 									onChange={(e) => {
-										const appearance = _.find(styles.buttonAppearances(), {
+										const appearance = _find(styles.buttonAppearances(), {
 											name: e,
 										})
 										this.setState({
@@ -508,7 +509,7 @@ export default class Style extends Component<Props> {
 												appearance && appearance.usageBackground,
 										})
 									}}
-									options={_.uniqBy(
+									options={_uniqBy(
 										[
 											{ label: 'Default', value: 'default' },
 											{ label: 'Primary', value: 'primary' },

@@ -8,15 +8,16 @@
 import TrackedComponent from 'core/components/TrackedComponent'
 import config from 'core/config'
 import styles from 'core/styles'
+import { format } from 'date-fns'
 import { FormIKStruct, GlamorProps, Obj } from 'flawk-types'
 import { FieldInputProps, FormikProps } from 'formik'
 import { css, StyleAttribute } from 'glamor'
-import moment, { Moment } from 'moment'
 import React from 'react'
-import Datetime from 'react-datetime'
-import InputMask from 'react-input-mask'
 import MediaQuery from 'react-responsive'
 import TextareaAutosize, { TextareaAutosizeProps } from 'react-textarea-autosize'
+
+const Datetime = React.lazy(() => import('react-datetime'))
+const InputMask = React.lazy(() => import('react-input-mask'))
 
 const MaskedInput = (
 	props: {
@@ -74,7 +75,7 @@ const DatePicker = (props: {
 	utc?: boolean
 	locale?: string
 	value?: string
-	onChange?: (value: string | Moment) => void
+	onChange?: (value: string) => void
 	onBlur?: (event: React.FocusEvent<HTMLInputElement, Element>) => void
 	onFocus?: (event: React.FocusEvent<HTMLInputElement, Element>) => void
 	onKeyPress?: (event: React.KeyboardEvent<HTMLInputElement>) => void
@@ -114,6 +115,7 @@ const DatePicker = (props: {
 				? new Date(props.value)
 				: props.value
 		}
+		// @ts-ignore
 		onChange={props.onChange}
 		renderInput={(p) => {
 			return (
@@ -163,8 +165,8 @@ type Props = {
 	field?: FieldInputProps<Obj>
 	form?: FormikProps<Obj>
 	onClick?: (event: React.MouseEvent<HTMLInputElement | HTMLTextAreaElement, MouseEvent>) => void
-	onChange?: (value: string | number | undefined | Moment) => void
-	onChangeNoBuffer?: (value: string | number | undefined | Moment) => void
+	onChange?: (value: string | number | undefined) => void
+	onChangeNoBuffer?: (value: string | number | undefined) => void
 	onBlur?: (event: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>) => void
 	onFocus?: (event: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>) => void
 	onKeyPress?: (event: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => void
@@ -458,7 +460,7 @@ export default class FInput extends TrackedComponent<Props> {
 		const placeholder = this.props.datePicker
 			? !value && new Date().toLocaleDateString(global.lang.date)
 			: this.props.timeInput
-			? !value && moment().format('HH:mm')
+			? !value && format(new Date(), 'HH:mm')
 			: undefined
 
 		const defaultWidth = (desktop: boolean) => {
@@ -526,7 +528,7 @@ export default class FInput extends TrackedComponent<Props> {
 		const datePickerValueProps = {
 			isControlled: controlled ? true : false,
 			value: controlled ? (value === undefined ? '' : (value as DatePickerValue)) : undefined,
-			onChange: (e: string | Moment) => {
+			onChange: (e: string) => {
 				if (formIK && name && formIK.setFieldValue)
 					formIK.setFieldValue(name, e === '' ? undefined : e)
 

@@ -9,9 +9,9 @@ import { Router } from '@awaitjs/express'
 import bcrypt from 'bcryptjs'
 import config from 'core/config'
 import { sendEmail } from 'core/functions/email'
+import { differenceInDays } from 'date-fns'
 import { ObjectId } from 'flawk-types'
 import jwt from 'jsonwebtoken'
-import moment from 'moment'
 import { Client } from 'project/database'
 
 const router = Router()
@@ -73,7 +73,12 @@ router.getAsync(Data.call, async (req, res) => {
 	if (user && userToken) {
 		let token = undefined
 		// Refresh token if getting old...
-		if (moment(req.tokenExpiration).diff(moment(), 'days') < config.tokenDays / 2) {
+		const diff = req.tokenExpiration ? differenceInDays(req.tokenExpiration, new Date()) : 0
+		if (!config.prod && !config.staging)
+			console.log(
+				'Token expiration check: ' + diff + ' days < ' + config.tokenDays / 2 + ' days'
+			)
+		if (diff < config.tokenDays / 2) {
 			token = jwt.sign({ _id: user._id }, config.jwtSecret, {
 				expiresIn: config.tokenDays.toString() + ' days',
 			})

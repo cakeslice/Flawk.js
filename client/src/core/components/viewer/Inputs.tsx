@@ -16,7 +16,8 @@ import config from 'core/config'
 import styles from 'core/styles'
 import { Form, Formik } from 'formik'
 import { css } from 'glamor'
-import _ from 'lodash'
+import _find from 'lodash/find'
+import _uniqBy from 'lodash/uniqBy'
 import React, { Component } from 'react'
 import MediaQuery from 'react-responsive'
 import { Section } from './ComponentsViewer'
@@ -49,13 +50,13 @@ export default class Inputs extends Component {
 				label='Appearance'
 				value={this.state.inputAppearance}
 				onChange={(e) => {
-					const appearance = _.find(appearances, { name: e })
+					const appearance = _find(appearances, { name: e })
 					this.setState({
 						inputAppearance: e,
 						usageBackground: appearance && appearance.usageBackground,
 					})
 				}}
-				options={_.uniqBy(
+				options={_uniqBy(
 					[{ label: 'Default', value: 'default' }].concat(
 						appearances.map((e) => {
 							return {

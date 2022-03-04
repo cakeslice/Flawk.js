@@ -11,7 +11,8 @@ import FInput from 'core/components/FInput'
 import config from 'core/config'
 import { FastField as FormFastField, Field as FormField } from 'formik'
 import React from 'react'
-import validator from 'validator'
+import isDate from 'validator/lib/isDate'
+import isEmail from 'validator/lib/isEmail'
 
 export default function Field(
 	props: {
@@ -57,10 +58,9 @@ export default function Field(
 							  value.split('T')[0]
 							: value
 						: undefined
-					if (!validator.isDate(d as string))
-						error = validationError || config.text('invalid.date')
+					if (!isDate(d as string)) error = validationError || config.text('invalid.date')
 				} else if (props.type === 'email') {
-					if (!validator.isEmail(value as string)) {
+					if (!isEmail(value as string)) {
 						error = validationError || config.text('invalid.email')
 					}
 				} else if (props.type === 'password') {

@@ -14,7 +14,8 @@ import config from 'core/config'
 import styles from 'core/styles'
 import { GlamorProps, Obj } from 'flawk-types'
 import { css, StyleAttribute } from 'glamor'
-import _ from 'lodash'
+import _find from 'lodash/find'
+import _get from 'lodash/get'
 import React from 'react'
 import MediaQuery from 'react-responsive'
 import { SizeMe } from 'react-sizeme'
@@ -465,14 +466,11 @@ export default class FTable extends QueryParams<
 													const k =
 														typeof props.keySelector === 'function'
 															? props.keySelector(d)
-															: (_.get(
-																	d,
-																	props.keySelector
-															  ) as string)
+															: (_get(d, props.keySelector) as string)
 
 													let sR: undefined | SpecialRow
 													if (d.specialRow) {
-														sR = _.find(props.specialRows, {
+														sR = _find(props.specialRows, {
 															key: d.specialRow,
 														})
 													}
@@ -604,7 +602,7 @@ export default class FTable extends QueryParams<
 																										c.alwaysVisible) &&
 																										(c.cell ? (
 																											c.cell(
-																												_.get(
+																												_get(
 																													d,
 																													c.selector
 																												) as Value,
@@ -627,7 +625,7 @@ export default class FTable extends QueryParams<
 																												}}
 																											>
 																												{
-																													_.get(
+																													_get(
 																														d,
 																														c.selector
 																													) as Value

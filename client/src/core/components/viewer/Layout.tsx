@@ -15,7 +15,7 @@ import Paginate from 'core/components/Paginate'
 import QueryParams from 'core/components/QueryParams'
 import config from 'core/config'
 import styles from 'core/styles'
-import _ from 'lodash'
+import _remove from 'lodash/remove'
 import React from 'react'
 import MediaQuery from 'react-responsive'
 import Collapsible from '../Collapsible'
@@ -349,7 +349,7 @@ export default class Layout extends QueryParams<
 																		d.id as string
 																	)
 																else {
-																	_.remove(
+																	_remove(
 																		this.state.selected,
 																		(e) => e === d.id
 																	)

@@ -6,17 +6,21 @@
  */
 
 import Avatar from 'core/components/Avatar'
+import Dropdown from 'core/components/Dropdown'
 import FButton from 'core/components/FButton'
 import LanguageSelect from 'core/components/LanguageSelect'
 import Loading from 'core/components/Loading'
 import QueryParams from 'core/components/QueryParams'
 import config from 'core/config'
 import styles from 'core/styles'
+import { formatDistanceToNow, subDays } from 'date-fns'
+import { pt } from 'date-fns/locale'
 import Parser from 'html-react-parser'
 import React from 'react'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import ReactQuill from 'react-quill'
 import MediaQuery from 'react-responsive'
+import FInput from '../FInput'
 import { Section } from './ComponentsViewer'
 
 // @ts-ignore
@@ -239,6 +243,45 @@ export default class Misc extends QueryParams<{
 						</Section>
 						<Section title='Localization' tags={['<LanguageSelect/>']}>
 							<LanguageSelect></LanguageSelect>
+							<sp />
+							<div style={styles.card}>
+								<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+									<div>
+										<FInput label='Date' datePicker></FInput>
+									</div>
+									<div>
+										<Dropdown label='Dropdown'></Dropdown>
+									</div>
+								</div>
+								<sp />
+								<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+									<div>
+										<tag>{config.text('common.searching')}</tag>
+									</div>
+									<div>
+										<tag>{config.formatNumber(15000)}</tag>
+									</div>
+									<div>
+										<tag>{config.formatDecimal(15000)}</tag>
+									</div>
+									<div>
+										<tag>
+											{new Date().toLocaleDateString(global.lang.date, {
+												day: '2-digit',
+												month: 'long',
+												year: 'numeric',
+											})}
+										</tag>
+									</div>
+									<div>
+										<tag>
+											{formatDistanceToNow(subDays(new Date(), 1), {
+												...(global.lang.moment === 'pt' && { locale: pt }),
+											})}
+										</tag>
+									</div>
+								</div>
+							</div>
 						</Section>
 						<Section title='Scroll to top' tags={['config.scrollToTop()']}>
 							<FButton onClick={() => config.scrollToTop()}>Scroll</FButton>

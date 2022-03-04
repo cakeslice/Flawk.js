@@ -8,8 +8,8 @@
 import config from 'core/config'
 import { AppState, EmailTrack } from 'core/database'
 import crypto from 'crypto'
+import { subDays } from 'date-fns'
 import { Obj } from 'flawk-types'
-import moment from 'moment'
 import nodemailer from 'nodemailer'
 import hbs from 'nodemailer-express-handlebars'
 import { htmlToText } from 'nodemailer-html-to-text'
@@ -281,7 +281,7 @@ if (!config.postmarkKey && config.nodemailerHost) {
 
 	setInterval(() => {
 		void (async function () {
-			const sevenDaysAgo = moment().subtract(7, 'days').toDate()
+			const sevenDaysAgo = subDays(new Date(), 7)
 			const emailTracks = await EmailTrack.find({
 				timestamp: { $gt: sevenDaysAgo },
 			})

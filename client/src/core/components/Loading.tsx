@@ -8,8 +8,11 @@
 import config from 'core/config'
 import styles from 'core/styles'
 import React from 'react'
-import { MetroSpinner } from 'react-spinners-kit'
 import TrackedComponent from './TrackedComponent'
+
+const MetroSpinner = React.lazy(() =>
+	import('react-spinners-kit').then((module) => ({ default: module.MetroSpinner }))
+)
 
 type Props = {
 	noDelay?: boolean

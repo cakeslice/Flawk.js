@@ -5,9 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import { addDays } from 'date-fns'
 import { Request } from 'express'
 import { KeyObject, Obj } from 'flawk-types'
-import moment from 'moment'
 import _projectText from 'project/text'
 import projectOverrides, { projectConfig as pC } from 'project/_config'
 
@@ -20,7 +20,7 @@ const _maxTokens = 6
 const _cookieSettings = {
 	httpOnly: true,
 	secure: true,
-	maxAge: moment().add(30, 'days').valueOf() / 1000,
+	maxAge: addDays(new Date(), 30).getTime() / 1000,
 }
 const _tokenDays = 30
 

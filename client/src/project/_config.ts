@@ -6,8 +6,6 @@
  */
 
 import { Config } from 'core/config'
-import 'moment/locale/fr'
-import 'moment/locale/pt'
 
 const _backendURL = process.env.REACT_APP_BACKEND || ''
 const _noTokenRedirect = '/login'

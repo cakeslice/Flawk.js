@@ -16,9 +16,11 @@ export default function LanguageSelect() {
 		<Dropdown
 			style={{ menu: { minWidth: 65, width: 65 } }}
 			onChange={async (e) => {
-				config.setLang(e as string)
-				await global.storage.setItem('lang', JSON.stringify(global.lang))
-				window.location.reload()
+				if (e !== lang) {
+					config.setLang(e as string)
+					await global.storage.setItem('lang', JSON.stringify(global.lang))
+					window.location.reload()
+				}
 			}}
 			value={lang}
 			options={config.supportedLanguages.map((l) => {

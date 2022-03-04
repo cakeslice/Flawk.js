@@ -8,7 +8,7 @@
 import config from 'core/config'
 import navigation from 'core/functions/navigation'
 import { KeyUnknown } from 'flawk-types'
-import _ from 'lodash'
+import _find from 'lodash/find'
 
 type Response = {
 	status: number
@@ -146,7 +146,7 @@ async function bodyOf(
 			(!noErrorFlag ||
 				(noErrorFlag !== 'all' &&
 					(!Array.isArray(noErrorFlag) ||
-						!_.find(noErrorFlag, function (o) {
+						!_find(noErrorFlag, function (o) {
 							return o === response.status
 						}))))
 		) {
@@ -171,7 +171,7 @@ async function bodyOf(
 			!noErrorFlag ||
 			(noErrorFlag !== 'all' &&
 				(!Array.isArray(noErrorFlag) ||
-					!_.find(noErrorFlag, function (o) {
+					!_find(noErrorFlag, function (o) {
 						return o === 0
 					})))
 		)
