@@ -35,6 +35,7 @@ export default class Slider extends TrackedComponent<Props> {
 	render() {
 		return (
 			<div
+				data-nosnippet
 				className='flex-col'
 				style={{
 					width: this.props.width || 150,

@@ -554,6 +554,7 @@ export default class FInput extends TrackedComponent<Props> {
 
 					return (
 						<div
+							data-nosnippet
 							style={{
 								width: finalStyle.width || defaultWidth(desktop),
 								maxWidth: finalStyle.maxWidth,

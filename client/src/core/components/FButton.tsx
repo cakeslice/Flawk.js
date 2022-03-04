@@ -424,7 +424,10 @@ export default class FButton extends TrackedComponent<Props> {
 					const cssStyle = desktop ? cssDesktop : cssMobile
 
 					return (
-						<div style={{ width: finalStyle.width, flexGrow: finalStyle.flexGrow }}>
+						<div
+							data-nosnippet
+							style={{ width: finalStyle.width, flexGrow: finalStyle.flexGrow }}
+						>
 							<div
 								style={{
 									display: 'flex',

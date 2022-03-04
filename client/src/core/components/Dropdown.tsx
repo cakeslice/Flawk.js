@@ -595,6 +595,7 @@ export default class Dropdown extends TrackedComponent<Props> {
 
 					return (
 						<div
+							data-nosnippet
 							style={{
 								width: width,
 								maxWidth: this.props.style
