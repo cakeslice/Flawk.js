@@ -458,10 +458,15 @@ const config: Config & InternalConfig = {
 	},
 
 	webPushNotificationsEnabled() {
-		return !_appleBrowser && Notification.permission === 'granted'
+		return !_appleBrowser && Notification && Notification.permission === 'granted'
 	},
 	getWebPushSubscription: async () => {
-		if (!_appleBrowser && global.serviceWorker)
+		if (
+			!_appleBrowser &&
+			global.serviceWorker &&
+			global.serviceWorker.pushManager &&
+			global.serviceWorker.pushManager.getSubscription
+		)
 			return await global.serviceWorker.pushManager.getSubscription()
 		else return null
 	},
@@ -484,7 +489,7 @@ const config: Config & InternalConfig = {
 			}
 
 			const key = process.env.REACT_APP_VAPID_KEY
-			if (key) {
+			if (key && worker.pushManager && worker.pushManager.getSubscription) {
 				try {
 					const oldSubscription = await worker.pushManager.getSubscription()
 					if (oldSubscription) {
