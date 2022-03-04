@@ -30,7 +30,7 @@
 		"startAndroid": "npm run buildLocal && npx cap sync && cd android && gradlew assembleDebug && gradlew installDebug && cd ..",
 		"startiOS": "npm run buildLocal && npx cap sync && npx cap open ios",
 		"buildCI": "npx browserslist@latest --update-db updates caniuse-lite && cross-env CI=false GENERATE_SOURCEMAP=true react-scripts --max_old_space_size=4096 build && npm run addPreloadLinks",
-		"buildLocal": "npm run auditCI && npm run testCI && npm run buildCI",
+		"buildLocal": "npm run auditCI && npm run testCI && npm run buildCI && npm run analyzeBundle",
 		"buildPushDocker": "npm run buildLocal && cross-env-shell docker image build -t $DOCKER_IMAGE . -f Dockerfile.local && cross-env-shell docker push $DOCKER_IMAGE && cross-env-shell docker run caprover/cli-caprover:v2.1.1 caprover deploy --caproverUrl $CAPROVER_URL --caproverPassword $CAPROVER_PASSWORD --caproverApp $CAPROVER_APP --imageName $DOCKER_IMAGE && cross-env-shell docker image rm $DOCKER_IMAGE",
 		"buildAndroid": "npm run buildLocal && npx cap sync && cd android && gradlew bundleRelease && cd .. && cross-env-shell jarsigner -keystore ./_env/android_keystore.env -storepass $ANDROID_KEYSTORE_PASS ./android/app/build/outputs/bundle/release/app-release.aab $ANDROID_KEYSTORE_ALIAS",
 		"- EXTRA SCRIPTS -": "-----------------------------",
@@ -48,7 +48,8 @@
 		"auditFix": "npm audit fix && npm run auditCI",
 		"auditCI": "npm audit --production --audit-level=high",
 		"addPreloadLinks": "babel-node ./src/core/internal/addPreloadLinks.js",
-		"checkStaged": "lint-staged"
+		"checkStaged": "lint-staged",
+		"analyzeBundle": "source-map-explorer ./build/static/js/*.js"
 	},
 	"dependencies": {
 		"@capacitor/android": "^3.3.2",
@@ -167,6 +168,7 @@
 		"prettier": "^2.4.1",
 		"react-scripts": "5.0.0",
 		"sass": "^1.43.4",
+		"source-map-explorer": "^2.5.2",
 		"typescript": "^4.5.2"
 	},
 	"lint-staged": {
