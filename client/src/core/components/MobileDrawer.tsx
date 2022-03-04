@@ -355,6 +355,7 @@ class MobileDrawer extends TrackedComponent<Props> {
 		this.setState({ isOpen: newState !== undefined ? newState : !this.state.isOpen }, () => {
 			if (target) {
 				if (!this.state.isOpen) enableBodyScroll(target)
+				else if (!config.appleBrowser) config.disableScroll()
 			}
 		})
 	}

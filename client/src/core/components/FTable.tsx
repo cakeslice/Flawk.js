@@ -256,7 +256,10 @@ export default class FTable extends QueryParams<
 										flexDirection: 'column',
 										width: '100%',
 										minHeight: 250,
-										overflowY: 'hidden',
+										overflowY:
+											global.olderBrowser && config.appleBrowser
+												? 'auto'
+												: 'hidden',
 										overflowX: 'auto',
 										...(overrideStyle && overrideStyle.wrapperStyle),
 

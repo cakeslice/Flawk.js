@@ -139,6 +139,27 @@ export default class Layout extends QueryParams<
 			/>
 		)
 	}
+	bigModal() {
+		return (
+			<Modal
+				name='bigModal'
+				parent={this}
+				title={''}
+				content={(close, Content, Buttons, Parent) => (
+					<Parent>
+						<Content>
+							<div style={{ minHeight: 1500 }}>Content</div>
+						</Content>
+						<Buttons>
+							<FButton appearance='primary' onClick={close}>
+								Button
+							</FButton>
+						</Buttons>
+					</Parent>
+				)}
+			/>
+		)
+	}
 
 	render() {
 		const fixedExample = {
@@ -164,6 +185,7 @@ export default class Layout extends QueryParams<
 						<div>
 							{this.exampleModal()}
 							{this.confirmModal()}
+							{this.bigModal()}
 							<Section title='Dashboard' top tags={['<Dashboard/>']}>
 								<FButton
 									onClick={async () => {
@@ -476,6 +498,9 @@ export default class Layout extends QueryParams<
 										onClick={() => this.setState({ confirmModal: true })}
 									>
 										Delete
+									</FButton>
+									<FButton onClick={() => this.setState({ bigModal: true })}>
+										Big
 									</FButton>
 								</div>
 							</Section>

@@ -30,6 +30,8 @@ import { Bounce, toast, ToastContainer, ToastContentProps } from 'react-toastify
 import TwitterPixel from 'react-twitter-pixel'
 import FButton from './FButton'
 
+if (process.env.REACT_APP_STRIPE_KEY) import('@stripe/stripe-js')
+
 const gitHash = GitInfo().commit.shortHash
 
 let amountToasts = 0

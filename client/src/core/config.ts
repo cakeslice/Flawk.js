@@ -28,6 +28,7 @@ export const projectStylesOverrides = pSO
 
 // Support older browsers that don't implement replaceAll
 if (!String.prototype.replaceAll) {
+	global.olderBrowser = true
 	// @ts-ignore
 	String.prototype.replaceAll = function (search: string, replace: string) {
 		// eslint-disable-next-line
@@ -185,6 +186,7 @@ const _capitalizeAll = (s: string) => {
 }
 
 const _formatNumber = function (n: number, onlyPositive = false, decimals = 0) {
+	if (!n) return ''
 	n = Number.parseFloat(n.toString())
 
 	if (onlyPositive && n < 0) n = 0
@@ -197,6 +199,7 @@ const _formatNumber = function (n: number, onlyPositive = false, decimals = 0) {
 	}
 }
 const _formatDecimal = function (n: number, onlyPositive = false) {
+	if (!n) return ''
 	n = Number.parseFloat(n.toString())
 
 	if (onlyPositive && n < 0) n = 0
@@ -204,6 +207,7 @@ const _formatDecimal = function (n: number, onlyPositive = false) {
 	return numeral(n).format('0,0.0')
 }
 const _formatDecimalTwo = function (n: number, onlyPositive = false) {
+	if (!n) return ''
 	n = Number.parseFloat(n.toString())
 
 	if (onlyPositive && n < 0) n = 0

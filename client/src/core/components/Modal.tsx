@@ -77,7 +77,7 @@ export default class Modal extends TrackedComponent<Props> {
 	}
 
 	onVisible() {
-		config.disableScroll()
+		if (!config.appleBrowser) config.disableScroll()
 	}
 
 	componentDidMount() {
@@ -309,7 +309,7 @@ export default class Modal extends TrackedComponent<Props> {
 												},
 											}}
 										>
-											{this.props.title && (
+											{this.props.title !== undefined && (
 												<ModalHeader
 													modalPadding={modalPadding}
 													headerStyle={this.props.headerStyle}
@@ -346,7 +346,7 @@ class ModalHeader extends Component<{
 }> {
 	render() {
 		return (
-			<div className='flex-col justify-center'>
+			<>
 				<div
 					className='flex justify-between items-center'
 					style={{
@@ -413,7 +413,7 @@ class ModalHeader extends Component<{
 						}}
 					></div>
 				)}
-			</div>
+			</>
 		)
 	}
 }

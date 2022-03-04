@@ -82,6 +82,7 @@ declare global {
 	var socket: Socket
 	var socketClientID: string | undefined
 	var serviceWorker: ServiceWorkerRegistration | undefined
+	var olderBrowser: boolean
 	//
 	var playNotificationSound: () => Promise<void>
 	//

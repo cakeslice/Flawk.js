@@ -89,7 +89,7 @@ export default function CodeBlock(props: {
 						<div style={{ position: 'relative', right: 55, top: 25 }}>
 							<Tooltip
 								tooltipProps={{ placement: 'left' }}
-								offsetAlt={13}
+								offsetAlt={14}
 								content='Copy code'
 							>
 								<CopyToClipboard

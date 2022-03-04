@@ -620,7 +620,7 @@ class MenuClass extends TrackedComponent<MenuProps> {
 	componentDidUpdate(prevProps: MenuProps) {
 		if (this.props.isHover !== prevProps.isHover) {
 			if (this.props.isHover) {
-				if (!this.props.horizontal) config.disableScroll()
+				if (!this.props.horizontal && !config.appleBrowser) config.disableScroll()
 			} else {
 				clearAllBodyScrollLocks()
 			}

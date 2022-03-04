@@ -86,7 +86,11 @@ export default class Tooltip extends TrackedComponent<Props> {
 									name: 'offset',
 									options: {
 										offset: [
-											props.offsetAlt === undefined ? 0 : props.offsetAlt,
+											props.offsetAlt === undefined
+												? 0
+												: desktop
+												? props.offsetAlt
+												: 0,
 											props.offset === undefined ? 5 : props.offset,
 										],
 									},

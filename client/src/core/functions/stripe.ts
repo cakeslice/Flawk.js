@@ -8,15 +8,17 @@
 import { loadStripe, Stripe } from '@stripe/stripe-js'
 
 let stripe: Stripe | null
-export const initStripe = async () => {
+const initStripe = async () => {
 	if (process.env.REACT_APP_STRIPE_KEY) {
 		if (!stripe) stripe = await loadStripe(process.env.REACT_APP_STRIPE_KEY)
 	} else console.error('Stripe error: No Stripe key provided!')
 }
-export const redirectToCheckout = (sessionId: string) => {
+export const redirectToCheckout = async (sessionId: string) => {
+	if (!stripe) await initStripe()
+
 	if (stripe)
-		stripe.redirectToCheckout({
+		await stripe.redirectToCheckout({
 			sessionId: sessionId,
 		})
-	else console.error('Stripe error: Stripe is not initialized!')
+	else console.error('Stripe error: Stripe failed to initialize!')
 }
