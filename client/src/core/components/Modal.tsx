@@ -46,13 +46,13 @@ type Props = {
 	| {
 			parent: Component
 			visible?: undefined
-			onClose?: () => void
+			onClose?: (fromHeader: boolean) => void
 	  }
 	| {
 			parent?: undefined
 			// To set modal state manually
 			visible?: boolean
-			onClose: () => void
+			onClose: (fromHeader: boolean) => void
 	  }
 )
 export default class Modal extends TrackedComponent<Props> {
@@ -123,7 +123,7 @@ export default class Modal extends TrackedComponent<Props> {
 	}
 
 	onClose() {
-		this.props.onClose && this.props.onClose()
+		this.props.onClose && this.props.onClose(false)
 
 		if (this.props.parent && this.props.name) {
 			const s: Obj = {}
@@ -342,7 +342,7 @@ class ModalHeader extends Component<{
 	title?: React.ReactNode
 	headerStyle?: HeaderStyle
 	modalPadding: number
-	onClose?: () => void
+	onClose?: (fromHeader: boolean) => void
 }> {
 	render() {
 		return (
@@ -379,7 +379,7 @@ class ModalHeader extends Component<{
 								height: 24,
 								background: 'transparent',
 							}}
-							onClick={this.props.onClose}
+							onClick={() => this.props.onClose && this.props.onClose(true)}
 						>
 							<div
 								style={{

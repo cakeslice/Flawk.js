@@ -119,7 +119,8 @@ export default class FButton extends TrackedComponent<Props> {
 	}
 
 	componentDidMount() {
-		if (this.props.checkbox && this.props.defaultChecked) this.setState({ checked: true })
+		if (this.props.checkbox !== undefined && this.props.defaultChecked)
+			this.setState({ checked: true })
 	}
 	componentWillUnmount() {
 		if (this.timer) clearTimeout(this.timer)
@@ -152,6 +153,7 @@ export default class FButton extends TrackedComponent<Props> {
 		const invalid =
 			formIK && (formIK.touch || formIK.submitCount > 0) ? formIK.error : this.props.invalid
 
+		const checkbox = this.props.checkbox !== undefined
 		const mainStyle: React.CSSProperties & GlamorProps & { loadingColor?: string } = {
 			fontSize: styles.defaultFontSize,
 			fontFamily: styles.font,
@@ -168,10 +170,10 @@ export default class FButton extends TrackedComponent<Props> {
 
 			cursor: 'pointer',
 
-			minHeight: !this.props.checkbox ? styles.inputHeight : 20,
-			minWidth: !this.props.checkbox ? 100 : 20,
+			minHeight: !checkbox ? styles.inputHeight : 20,
+			minWidth: !checkbox ? 100 : 20,
 
-			padding: !this.props.checkbox ? '0px 12px 0px 12px' : undefined,
+			padding: !checkbox ? '0px 12px 0px 12px' : undefined,
 			margin: 0,
 
 			userSelect: 'none',
@@ -251,7 +253,7 @@ export default class FButton extends TrackedComponent<Props> {
 				},
 			}),
 			...(this.props.appearance === 'secondary' && {
-				...((!this.props.checkbox || this.state.checked) && {
+				...((!checkbox || this.state.checked) && {
 					borderColor: styles.colors.mainLight,
 				}),
 				color: styles.colors.main,
@@ -268,25 +270,23 @@ export default class FButton extends TrackedComponent<Props> {
 					finalStyle = {
 						...finalStyle,
 						...b,
-						...(this.props.checkbox && { minWidth: 20 }),
-						...(this.props.checkbox && { ...b[':checkbox'] }),
+						...(checkbox && { minWidth: 20 }),
+						...(checkbox && { ...b[':checkbox'] }),
 						':hover': {
 							...finalStyle[':hover'],
 							...b[':hover'],
-							...(this.props.checkbox &&
-								b[':checkbox'] && { ...b[':checkbox'][':hover'] }),
+							...(checkbox && b[':checkbox'] && { ...b[':checkbox'][':hover'] }),
 						},
 						':focus-visible': {
 							...finalStyle[':focus-visible'],
 							...b[':focus-visible'],
-							...(this.props.checkbox &&
+							...(checkbox &&
 								b[':checkbox'] && { ...b[':checkbox'][':focus-visible'] }),
 						},
 						':active': {
 							...finalStyle[':active'],
 							...b[':active'],
-							...(this.props.checkbox &&
-								b[':checkbox'] && { ...b[':checkbox'][':active'] }),
+							...(checkbox && b[':checkbox'] && { ...b[':checkbox'][':active'] }),
 						},
 					}
 					usageBackground = b.usageBackground ? true : false
@@ -298,11 +298,11 @@ export default class FButton extends TrackedComponent<Props> {
 				...finalStyle,
 
 				...this.props.style,
-				...(this.props.checkbox && { ...this.props.style[':checkbox'] }),
+				...(checkbox && { ...this.props.style[':checkbox'] }),
 				':hover': {
 					...finalStyle[':hover'],
 					...(this.props.style && this.props.style[':hover']),
-					...(this.props.checkbox &&
+					...(checkbox &&
 						this.props.style[':checkbox'] && {
 							...this.props.style[':checkbox'][':hover'],
 						}),
@@ -310,7 +310,7 @@ export default class FButton extends TrackedComponent<Props> {
 				':focus-visible': {
 					...finalStyle[':focus-visible'],
 					...(this.props.style && this.props.style[':focus-visible']),
-					...(this.props.checkbox &&
+					...(checkbox &&
 						this.props.style[':checkbox'] && {
 							...this.props.style[':checkbox'][':focus-visible'],
 						}),
@@ -318,14 +318,14 @@ export default class FButton extends TrackedComponent<Props> {
 				':active': {
 					...finalStyle[':active'],
 					...(this.props.style && this.props.style[':active']),
-					...(this.props.checkbox &&
+					...(checkbox &&
 						this.props.style[':checkbox'] && {
 							...this.props.style[':checkbox'][':active'],
 						}),
 				},
 			}
 
-		if (this.props.checkbox) {
+		if (checkbox) {
 			if (!this.state.checked)
 				finalStyle.background = usageBackground
 					? config.overlayColor(
@@ -388,7 +388,7 @@ export default class FButton extends TrackedComponent<Props> {
 			}),
 		}
 
-		if (this.props.checkbox)
+		if (checkbox)
 			finalStyle = {
 				...finalStyle,
 				':focus-visible': {
@@ -431,7 +431,7 @@ export default class FButton extends TrackedComponent<Props> {
 							<div
 								style={{
 									display: 'flex',
-									alignItems: this.props.checkbox ? 'center' : 'flex-start',
+									alignItems: checkbox ? 'center' : 'flex-start',
 								}}
 							>
 								<button
@@ -445,7 +445,7 @@ export default class FButton extends TrackedComponent<Props> {
 											scrollToErrors(this.props.formErrors, this.buttonRef)
 										}
 
-										if (this.props.checkbox) {
+										if (checkbox) {
 											if (checked !== undefined) {
 												formIK &&
 													formIK.setFieldValue &&
@@ -487,7 +487,7 @@ export default class FButton extends TrackedComponent<Props> {
 									type={this.props.type ? this.props.type : 'button'}
 									disabled={this.props.isDisabled || this.props.isLoading}
 								>
-									{this.props.checkbox && this.state.checked && (
+									{checkbox && this.state.checked && (
 										<div
 											style={{
 												display: 'flex',
@@ -504,7 +504,7 @@ export default class FButton extends TrackedComponent<Props> {
 											)}
 										</div>
 									)}
-									{this.props.isLoading && !this.props.checkbox ? (
+									{this.props.isLoading && !checkbox ? (
 										<div>
 											<div style={{ maxHeight: 0, opacity: 0 }}>
 												{this.props.children}
