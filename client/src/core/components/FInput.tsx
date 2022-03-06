@@ -147,6 +147,7 @@ type Props = {
 	labelStyle?: React.CSSProperties
 	emptyLabel?: boolean
 	icon?: React.ReactNode
+	clickableIcon?: boolean
 	button?: React.ReactNode
 	buttonStyle?: React.CSSProperties
 	//
@@ -683,7 +684,9 @@ export default class FInput extends TrackedComponent<Props> {
 									<div style={{ maxWidth: 0, maxHeight: 0 }}>
 										<div
 											style={{
-												pointerEvents: 'none',
+												...(!this.props.clickableIcon && {
+													pointerEvents: 'none',
+												}),
 												position: 'relative',
 												display: 'flex',
 												justifyContent: 'center',
