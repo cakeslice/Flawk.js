@@ -7,7 +7,7 @@
 
 import config from 'core/config'
 import styles from 'core/styles'
-import React from 'react'
+import React, { Suspense } from 'react'
 import TrackedComponent from './TrackedComponent'
 
 const MetroSpinner = React.lazy(() =>
@@ -39,11 +39,13 @@ export default class Loading extends TrackedComponent<Props> {
 
 	render() {
 		return (
-			<MetroSpinner
-				size={this.props.size || 42}
-				color={this.props.color || config.replaceAlpha(styles.colors.black, 0.2)}
-				loading={this.props.noDelay || this.state.actuallyLoading}
-			/>
+			<Suspense fallback={<></>}>
+				<MetroSpinner
+					size={this.props.size || 42}
+					color={this.props.color || config.replaceAlpha(styles.colors.black, 0.2)}
+					loading={this.props.noDelay || this.state.actuallyLoading}
+				/>
+			</Suspense>
 		)
 	}
 }

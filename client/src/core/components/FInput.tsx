@@ -12,7 +12,7 @@ import { format } from 'date-fns'
 import { FormIKStruct, GlamorProps, Obj } from 'flawk-types'
 import { FieldInputProps, FormikProps } from 'formik'
 import { css, StyleAttribute } from 'glamor'
-import React from 'react'
+import React, { Suspense } from 'react'
 import MediaQuery from 'react-responsive'
 import TextareaAutosize, { TextareaAutosizeProps } from 'react-textarea-autosize'
 
@@ -32,32 +32,34 @@ const MaskedInput = (
 		onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
 	} & React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>
 ) => (
-	<InputMask
-		maskChar={'_'}
-		formatChars={props.formatChars}
-		mask={props.mask}
-		placeholder={props.placeholder}
-		value={props.value}
-		onChange={props.onChange}
-		autoFocus={props.autoFocus}
-		disabled={props.disabled}
-	>
-		{(
-			inputProps: React.DetailedHTMLProps<
-				React.InputHTMLAttributes<HTMLInputElement>,
-				HTMLInputElement
-			>
-		) => (
-			<input
-				{...inputProps}
-				// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-				{...props.inputStyle}
-				autoFocus={props.autoFocus}
-				disabled={props.disabled}
-				required={props.required}
-			/>
-		)}
-	</InputMask>
+	<Suspense fallback={<></>}>
+		<InputMask
+			maskChar={'_'}
+			formatChars={props.formatChars}
+			mask={props.mask}
+			placeholder={props.placeholder}
+			value={props.value}
+			onChange={props.onChange}
+			autoFocus={props.autoFocus}
+			disabled={props.disabled}
+		>
+			{(
+				inputProps: React.DetailedHTMLProps<
+					React.InputHTMLAttributes<HTMLInputElement>,
+					HTMLInputElement
+				>
+			) => (
+				<input
+					{...inputProps}
+					// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+					{...props.inputStyle}
+					autoFocus={props.autoFocus}
+					disabled={props.disabled}
+					required={props.required}
+				/>
+			)}
+		</InputMask>
+	</Suspense>
 )
 const TextAreaAuto = (props: TextareaAutosizeProps & React.RefAttributes<HTMLTextAreaElement>) => (
 	<TextareaAutosize minRows={2} maxRows={10} {...props}></TextareaAutosize>
@@ -87,55 +89,58 @@ const DatePicker = (props: {
 	width?: number
 	inputStyle: StyleAttribute
 }) => (
-	<Datetime
-		renderView={(mode, renderDefault) => {
-			if (mode === 'time') return <div>NOT IMPLEMENTED</div>
+	<Suspense fallback={<></>}>
+		<Datetime
+			renderView={(mode, renderDefault) => {
+				if (mode === 'time') return <div>NOT IMPLEMENTED</div>
 
-			return (
-				<div
-					style={{
-						animation: 'openDown 0.2s ease-in-out',
-						color: styles.colors.black,
-					}}
-					className={
-						'rdtPickerCustom ' + (global.nightMode ? 'rdtPickerNight' : 'rdtPickerDay')
-					}
-				>
-					{renderDefault()}
-				</div>
-			)
-		}}
-		//
-		closeOnSelect={true}
-		utc={props.utc}
-		locale={global.lang.moment}
-		timeFormat={false}
-		value={
-			props.value && props.value.includes && props.value.includes('T')
-				? new Date(props.value)
-				: props.value
-		}
-		// @ts-ignore
-		onChange={props.onChange}
-		renderInput={(p) => {
-			return (
-				<input
-					{...props.inputStyle}
-					{...p}
-					value={props.value || !props.isControlled ? p.value : ''}
-				/>
-			)
-		}}
-		inputProps={{
-			disabled: props.isDisabled,
-			name: props.name,
-			required: props.required,
-			onBlur: props.onBlur,
-			onKeyPress: props.onKeyPress,
-			onFocus: props.onFocus,
-			placeholder: props.placeholder,
-		}}
-	/>
+				return (
+					<div
+						style={{
+							animation: 'openDown 0.2s ease-in-out',
+							color: styles.colors.black,
+						}}
+						className={
+							'rdtPickerCustom ' +
+							(global.nightMode ? 'rdtPickerNight' : 'rdtPickerDay')
+						}
+					>
+						{renderDefault()}
+					</div>
+				)
+			}}
+			//
+			closeOnSelect={true}
+			utc={props.utc}
+			locale={global.lang.moment}
+			timeFormat={false}
+			value={
+				props.value && props.value.includes && props.value.includes('T')
+					? new Date(props.value)
+					: props.value
+			}
+			// @ts-ignore
+			onChange={props.onChange}
+			renderInput={(p) => {
+				return (
+					<input
+						{...props.inputStyle}
+						{...p}
+						value={props.value || !props.isControlled ? p.value : ''}
+					/>
+				)
+			}}
+			inputProps={{
+				disabled: props.isDisabled,
+				name: props.name,
+				required: props.required,
+				onBlur: props.onBlur,
+				onKeyPress: props.onKeyPress,
+				onFocus: props.onFocus,
+				placeholder: props.placeholder,
+			}}
+		/>
+	</Suspense>
 )
 
 type Props = {
