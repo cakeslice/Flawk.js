@@ -31,17 +31,18 @@ export type DashboardWrapperProps = {
 	params?: { id: string }
 }
 
-export type LinkStyle = React.CSSProperties & {
-	':selected'?: React.CSSProperties
-	subRoute?: React.CSSProperties &
-		GlamorProps & {
-			':selected'?: React.CSSProperties
-		}
-	icon?: React.CSSProperties &
-		GlamorProps & {
-			':selected'?: React.CSSProperties
-		}
-}
+export type LinkStyle = GlamorProps &
+	React.CSSProperties & {
+		':selected'?: React.CSSProperties
+		subRoute?: React.CSSProperties &
+			GlamorProps & {
+				':selected'?: React.CSSProperties
+			}
+		icon?: React.CSSProperties &
+			GlamorProps & {
+				':selected'?: React.CSSProperties
+			}
+	}
 
 export type TabProps = Obj & { toggleOpen?: (open?: boolean) => void; isOpen: boolean }
 
@@ -50,6 +51,7 @@ export type DashboardRoute = {
 	params?: string
 	name?: string
 	justIcon?: boolean
+	tooltipOffset?: number
 	icon?: string
 	iconActive?: string
 	customIcon?: (active: boolean) => React.ReactNode
@@ -69,6 +71,7 @@ export type DashboardRoute = {
 
 type DashboardProps = {
 	style?: React.CSSProperties
+	mobileStyle?: React.CSSProperties
 	wrapperComponent: React.ReactNode
 	path: string
 	logo: string
@@ -251,6 +254,7 @@ export default class Dashboard extends TrackedComponent<
 										this.props.style.opacity && {
 											opacity: this.props.style.opacity,
 										}),
+									...this.props.mobileStyle,
 								}
 
 								return (
@@ -836,6 +840,7 @@ class MenuClass extends TrackedComponent<MenuProps> {
 							>
 								{link.justIcon && link.name ? (
 									<Tooltip
+										offset={link.tooltipOffset}
 										containerStyle={{ width: '100%', height: '100%' }}
 										tooltipProps={{
 											placement: this.props.horizontal ? 'bottom' : 'right',
@@ -964,6 +969,7 @@ class MenuClass extends TrackedComponent<MenuProps> {
 					else
 						return link.justIcon && link.name ? (
 							<Tooltip
+								offset={link.tooltipOffset}
 								containerStyle={
 									this.props.horizontal ? { height: '100%' } : { width: '100%' }
 								}

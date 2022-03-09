@@ -15,7 +15,7 @@
 # [Datadog]
 #     - Setup Docker: https://app.datadoghq.eu/account/settings#integrations/docker
 #     - Setup APM: https://docs.datadoghq.com/tracing/setup_overview/setup/nodejs/?tab=containers
-#         - To send traces from containers you need to XXXXXXXXXX
+#         - To send traces from containers: [TODO - https://github.com/caprover/caprover/issues/1361]
 #         - Set app env var DD_TRACE_DEBUG=true to check for issues
 #     - Use the following dashboards: Docker / System Metrics
 #     - Add desired alerts

@@ -229,7 +229,7 @@ export function init() {
 		() => {
 			void (async function () {
 				let authenticated = 0
-				let total = 0
+				let external = 0
 				for (const [s, socket] of global.clientSockets.sockets) {
 					if (socket._client) {
 						const user = await Client.findOne({ _id: socket._client.id })
@@ -264,16 +264,19 @@ export function init() {
 
 					if (socket._client) {
 						authenticated++
-					}
-					total++
+					} else external++
 				}
 
 				adminSocketNotification(
 					'Online users',
-					'Total: <b>' + total + '</b><br/>Authenticated: <b>' + authenticated + '</b>'
+					'Public: <b>' +
+						external +
+						'</b><br/>Authenticated: <b>' +
+						authenticated +
+						'</b>'
 				)
 				console.log(
-					'[SOCKET.IO] Online users: ' + total + ' | Authenticated: ' + authenticated
+					'[SOCKET.IO] Online users: ' + external + ' | Authenticated: ' + authenticated
 				)
 			})()
 		},
