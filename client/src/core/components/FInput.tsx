@@ -304,6 +304,20 @@ export default class FInput extends TrackedComponent<Props> {
 			borderRadius: styles.inputBorder === 'bottom' ? 0 : styles.defaultBorderRadius,
 			borderTopLeftRadius: styles.defaultBorderRadius,
 			borderTopRightRadius: styles.defaultBorderRadius,
+			...(this.props.textArea && {
+				borderRadius:
+					styles.defaultBorderRadius && styles.defaultBorderRadius <= 6
+						? styles.defaultBorderRadius
+						: 6,
+				borderTopLeftRadius:
+					styles.defaultBorderRadius && styles.defaultBorderRadius <= 6
+						? styles.defaultBorderRadius
+						: 6,
+				borderTopRightRadius:
+					styles.defaultBorderRadius && styles.defaultBorderRadius <= 6
+						? styles.defaultBorderRadius
+						: 6,
+			}),
 			borderTopStyle: styles.inputBorder === 'full' ? 'solid' : 'none',
 			borderBottomStyle:
 				styles.inputBorder === 'full' || styles.inputBorder === 'bottom' ? 'solid' : 'none',
