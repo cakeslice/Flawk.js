@@ -122,8 +122,8 @@ export default class Modal extends TrackedComponent<Props> {
 		clearAllBodyScrollLocks()
 	}
 
-	onClose() {
-		this.props.onClose && this.props.onClose(false)
+	onClose(fromHeader = false) {
+		this.props.onClose && this.props.onClose(fromHeader)
 
 		if (this.props.parent && this.props.name) {
 			const s: Obj = {}
@@ -248,6 +248,7 @@ export default class Modal extends TrackedComponent<Props> {
 							: undefined
 					}
 					style={{
+						backdropFilter: 'blur(2px)',
 						position: 'fixed',
 						top: 0,
 						left: 0,
@@ -278,7 +279,6 @@ export default class Modal extends TrackedComponent<Props> {
 									<div
 										className='flex justify-center items-center'
 										style={{
-											backdropFilter: 'blur(2px)',
 											padding: 10,
 											paddingBottom: 30,
 											paddingTop: 30,
