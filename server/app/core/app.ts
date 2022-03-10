@@ -229,9 +229,13 @@ type Path = {
 	recaptcha?: 'true'
 	tag?: string
 }
-function mapApiType(type: string): {
+function mapApiType(
+	type: string,
+	required: boolean
+): {
 	$ref?: string
 	type?: string
+	nullable?: boolean
 	format?: string
 	items?: { $ref?: string; type?: string; format?: string }
 } {
@@ -253,7 +257,9 @@ function mapApiType(type: string): {
 		throw Error('Type ' + type + ' is not supported')
 	}
 
-	let output: { $ref?: string; type?: string; format?: string } = { type: typeCheck }
+	let output: { $ref?: string; type?: string; format?: string; nullable?: boolean } = {
+		type: typeCheck,
+	}
 
 	if (typeCheck === 'Obj')
 		output = {
@@ -278,6 +284,8 @@ function mapApiType(type: string): {
 		}
 	}
 
+	if (!required) output.nullable = true
+
 	return output
 }
 function parseObject(obj: Obj) {
@@ -295,7 +303,15 @@ function parseObject(obj: Obj) {
 		if (!k.includes('?')) required.push(property)
 
 		if (typeof p[k] === 'string') {
-			newObject[property] = mapApiType(p[k] as string)
+			let schema: Obj | undefined = undefined
+			if ((p[k] as string).includes(' | '))
+				schema = {
+					oneOf: (p[k] as string)
+						.split(' | ')
+						.map((split) => mapApiType(split, !k.includes('?'))),
+				}
+			else schema = mapApiType(p[k] as string, !k.includes('?'))
+			newObject[property] = schema
 		} else newObject[property] = parseObject(p[k] as Obj)
 	})
 
@@ -330,13 +346,21 @@ function addPath(path: Path, tag: string) {
 				if (!k.includes('?')) requiredBody.push(property)
 
 				if (typeof p === 'string') {
-					const map = mapApiType(p)
-					if (map.type === 'array') {
+					let schema: Obj | undefined = undefined
+					if (p.includes(' | '))
+						schema = {
+							oneOf: p
+								.split(' | ')
+								.map((split) => mapApiType(split, !k.includes('?'))),
+						}
+					else schema = mapApiType(p, !k.includes('?'))
+
+					if (schema.type === 'array') {
 						body[property] = {
 							type: 'array',
-							items: map.items,
+							items: schema.items,
 						}
-					} else body[property] = map
+					} else body[property] = schema
 				} else {
 					body[property] = parseObject(p)
 				}
@@ -375,8 +399,15 @@ function addPath(path: Path, tag: string) {
 					)
 					throw new Error('Query parameter ' + property + ' is reserved')
 				}
+
+				let schema: Obj | undefined = undefined
+				if (p.includes(' | '))
+					schema = {
+						oneOf: p.split(' | ').map((split) => mapApiType(split, !k.includes('?'))),
+					}
+				else schema = mapApiType(p, !k.includes('?'))
 				query.push({
-					schema: mapApiType(p),
+					schema: schema,
 					in: 'query',
 					name: property,
 					...(!k.includes('?') && { required: true }),
@@ -416,15 +447,23 @@ function addPath(path: Path, tag: string) {
 						if (!bodyKey.includes('?')) requiredResponseBody.push(property)
 
 						if (typeof p === 'string') {
-							const map = mapApiType(p)
-							if (map.type === 'array') {
+							let schema: Obj | undefined = undefined
+							if (p.includes(' | '))
+								schema = {
+									oneOf: p
+										.split(' | ')
+										.map((split) => mapApiType(split, !bodyKey.includes('?'))),
+								}
+							else schema = mapApiType(p, !bodyKey.includes('?'))
+
+							if (schema.type === 'array') {
 								if (responseBody)
 									responseBody[property] = {
 										type: 'array',
-										items: map.items,
+										items: schema.items,
 									}
 							} else {
-								if (responseBody) responseBody[property] = map
+								if (responseBody) responseBody[property] = schema
 							}
 						} else {
 							if (responseBody) responseBody[property] = parseObject(p)
@@ -1244,10 +1283,9 @@ async function listen() {
 
 	const server = app.listen(config.port, () => {
 		console.log(
-			common.colorizeLog(
-				'Listening to requests on port ' + config.port.toString() + '\n\n',
-				'green'
-			)
+			common.colorizeLog('Listening to requests on port ', 'green') +
+				common.colorizeLog(config.port.toString(), 'yellow') +
+				'\n\n'
 		)
 	})
 
