@@ -12,6 +12,7 @@ import jwt from 'jsonwebtoken'
 import _ from 'lodash'
 import { Client } from 'project/database'
 import { Socket } from 'socket.io'
+import * as uuid from 'uuid'
 
 export type SocketUser = {
 	id: string
@@ -228,8 +229,8 @@ export function init() {
 	setInterval(
 		() => {
 			void (async function () {
-				let authenticated = 0
-				let external = 0
+				const authenticated: string[] = []
+				const external: string[] = []
 				for (const [s, socket] of global.clientSockets.sockets) {
 					if (socket._client) {
 						const user = await Client.findOne({ _id: socket._client.id })
@@ -263,20 +264,31 @@ export function init() {
 					}
 
 					if (socket._client) {
-						authenticated++
-					} else external++
+						if (authenticated.indexOf(socket._client.id) === -1)
+							authenticated.push(socket._client.id)
+					} else {
+						if (socket._uuid) {
+							if (external.indexOf(socket._uuid) === -1) external.push(socket._uuid)
+						} else {
+							external.push(uuid.v1())
+							console.warn('[SOCKET.IO] No UUID found')
+						}
+					}
 				}
 
 				adminSocketNotification(
 					'Online users',
 					'Public: <b>' +
-						external +
+						external.length +
 						'</b><br/>Authenticated: <b>' +
-						authenticated +
+						authenticated.length +
 						'</b>'
 				)
 				console.log(
-					'[SOCKET.IO] Online users: ' + external + ' | Authenticated: ' + authenticated
+					'[SOCKET.IO] Online users: ' +
+						external.length +
+						' | Authenticated: ' +
+						authenticated.length
 				)
 			})()
 		},
@@ -414,6 +426,7 @@ export function init() {
 		})
 
 		socket.on('init', (data, res) => {
+			socket._uuid = data.socketUUID
 			res({
 				success: true,
 				buildNumber: global.buildNumber,

@@ -519,7 +519,7 @@ const config: Config & InternalConfig = {
 		if (!_appleBrowser && global.serviceWorker) {
 			// eslint-disable-next-line
 			await setupPushNotifications(global.serviceWorker)
-		}
+		} else console.warn("Couldn't enable web push notifications")
 	},
 
 	prettierConfig: {

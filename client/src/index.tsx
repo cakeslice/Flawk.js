@@ -26,7 +26,7 @@ const registerServiceWorker = async function () {
 		} catch (e) {
 			console.error(prefix + e)
 		}
-	}
+	} else console.warn("Coulnd't register service worker")
 	return worker
 }
 

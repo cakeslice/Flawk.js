@@ -18,6 +18,7 @@ declare global {
 declare module 'socket.io' {
 	interface Socket {
 		_client?: SocketUser
+		_uuid?: string
 	}
 }
 

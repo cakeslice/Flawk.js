@@ -39,7 +39,6 @@
 
 # ----- CloudFlare flow
 # Make sure CloudFlare SSL is in Full (strict) mode
-# Also in CloudFlare "Always use HTTPS"
 # In CloudFlare, set DNS A records 
 #     - captain.mydomain.com (no proxy)
 #     - registry.mydomain.com (no proxy)
@@ -49,8 +48,14 @@
 # Don't force HTTPS on that panel!
 # Now access using captain.mydomain.com
 # In CloudFlare turn on the proxy for all entries and delete the "*" entry
-# Also in CloudFlare enable DNSSEC
-# Make sure Auto Minify is disabled for everything
+#
+# Extra CloudFlare settings to check:
+#     - Always use HTTPS
+#     - Enable DNSSEC
+#     - Browser Cache TTL: "Respect Existing Headers"
+#     - Disable Always Offline
+#     - Disable Auto Minify for all
+#
 # Also create a NGINX-Redirect app from one-click named www that redirects to your root domain (and force SSL)
 # ---------------------------------------
 

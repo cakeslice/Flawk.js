@@ -23,6 +23,7 @@ import GitInfo from 'react-git-info/macro'
 import { Helmet } from 'react-helmet'
 import MediaQuery from 'react-responsive'
 import io from 'socket.io-client'
+import * as uuid from 'uuid'
 import FButton from './FButton'
 
 const gitHash = GitInfo().commit.shortHash
@@ -207,10 +208,12 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 				setSocketConnected(true)
 
 				void (async function () {
+					const socketUUID = await global.storage.getItem('socket_uuid')
+					if (!socketUUID) await global.storage.setItem('socket_uuid', uuid.v1())
 					const token = await global.storage.getItem('token')
 					global.socket.emit(
 						'init',
-						{ token: token },
+						{ token: token, socketUUID: socketUUID },
 						async (res: {
 							success: boolean
 							buildNumber?: string
