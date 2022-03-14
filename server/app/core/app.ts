@@ -257,7 +257,12 @@ function mapApiType(
 		throw Error('Type ' + type + ' is not supported')
 	}
 
-	let output: { $ref?: string; type?: string; format?: string; nullable?: boolean } = {
+	let output: {
+		$ref?: string
+		type?: string
+		format?: string
+		nullable?: boolean
+	} = {
 		type: typeCheck,
 	}
 
@@ -385,7 +390,11 @@ function addPath(path: Path, tag: string) {
 			  ]
 			: []
 	if (path.recaptcha === 'true')
-		query.push({ schema: { type: 'string' }, in: 'query', name: 'recaptchaToken' })
+		query.push({
+			schema: { type: 'string' },
+			in: 'query',
+			name: 'recaptchaToken',
+		})
 
 	if (path.query) {
 		Object.keys(path.query).forEach((k) => {
@@ -982,14 +991,14 @@ function setup() {
 					' | ' +
 					(user || '')
 				if (time > config.responseTimeAlert)
-					console.log('RESPONSE TIME: ' + stat + ' | ' + time.toString())
-				if (time > config.responseTimeAlert) {
+					console.warn('RESPONSE TIME: ' + stat + ' | ' + time.toString())
+				/* if (time > config.responseTimeAlert) {
 					try {
 						throw new Error('RESPONSE TIME: ' + stat + ' | ' + time.toString())
 					} catch (err) {
 						common.logCatch(err as Error)
 					}
-				}
+				} */
 			})
 		)
 
@@ -1029,7 +1038,9 @@ function setup() {
 	/* } */
 
 	app.getAsync(config.path + '/build_number', async function (req, res) {
-		common.setResponse(200, req, res, undefined, { buildNumber: global.buildNumber })
+		common.setResponse(200, req, res, undefined, {
+			buildNumber: global.buildNumber,
+		})
 	})
 
 	app.getAsync(config.path + '/structures', async function (req, res) {
