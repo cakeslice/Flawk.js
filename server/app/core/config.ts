@@ -146,11 +146,12 @@ const config: Config & InternalConfig = {
 
 		const responses = _projectText.responses as KeyObject
 
-		if (req.lang) {
+		const lang = req.lang || 'en'
+		if (lang) {
 			let o: Obj | undefined
 			if (obj && obj[id]) o = obj[id] as Obj
 
-			const s = (o && o[req.lang]) || responses[id][req.lang]
+			const s = (o && o[lang]) || responses[id][lang]
 			if (typeof s === 'string') output = s
 		}
 
@@ -161,11 +162,12 @@ const config: Config & InternalConfig = {
 
 		const messages = _projectText.messages as KeyObject
 
-		if (req.lang) {
+		const lang = req.lang || 'en'
+		if (lang) {
 			let o: Obj | undefined
 			if (obj && obj[id]) o = obj[id] as Obj
 
-			const s = (o && o[req.lang]) || messages[id][req.lang]
+			const s = (o && o[lang]) || messages[id][lang]
 			if (typeof s === 'string') output = s
 		}
 
