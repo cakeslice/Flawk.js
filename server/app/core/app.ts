@@ -838,6 +838,10 @@ function setup() {
 		const tooManyMessage = 'Too many requests, try again later'
 
 		const rateLimiter = {
+			defaultDay: new RateLimiterMemory({
+				points: 10000, // X requests
+				duration: 60 * 60 * 24, // per X second by IP
+			}),
 			default: new RateLimiterMemory({
 				points: 12, // X requests
 				duration: 1, // per X second by IP
@@ -851,22 +855,6 @@ function setup() {
 				duration: 60 * 15, // per X second by IP
 			}),
 		}
-		console.log('[Rate limited]')
-		config.rateLimitedCalls.forEach((c) => {
-			const split = c.split('/')
-			console.log(common.colorizeLog(split[split.length - 1], 'blue'))
-			app.use(c, (req, res, next) => {
-				rateLimiter.limited
-					.consume(req.ip)
-					.then(() => {
-						next()
-					})
-					.catch(() => {
-						console.log(req.baseUrl + ': Too many requests from ' + req.ip)
-						common.setResponse(429, req, res, tooManyMessage)
-					})
-			})
-		})
 		console.log('[Extremely rate limited]')
 		config.extremeRateLimitedCalls.forEach((c) => {
 			const split = c.split('/')
@@ -883,8 +871,35 @@ function setup() {
 					})
 			})
 		})
+		console.log('[Rate limited]')
+		config.rateLimitedCalls.forEach((c) => {
+			const split = c.split('/')
+			console.log(common.colorizeLog(split[split.length - 1], 'blue'))
+			app.use(c, (req, res, next) => {
+				rateLimiter.limited
+					.consume(req.ip)
+					.then(() => {
+						next()
+					})
+					.catch(() => {
+						console.log(req.baseUrl + ': Too many requests from ' + req.ip)
+						common.setResponse(429, req, res, tooManyMessage)
+					})
+			})
+		})
 		app.use(config.path + '/*', (req, res, next) => {
 			rateLimiter.default
+				.consume(req.ip)
+				.then(() => {
+					next()
+				})
+				.catch(() => {
+					console.log(req.baseUrl + ': Too many requests from ' + req.ip)
+					common.setResponse(429, req, res, tooManyMessage)
+				})
+		})
+		app.use(config.path + '/*', (req, res, next) => {
+			rateLimiter.defaultDay
 				.consume(req.ip)
 				.then(() => {
 					next()
