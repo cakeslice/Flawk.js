@@ -1017,11 +1017,6 @@ function setup() {
 		})
 	)
 
-	// Request logger
-	app.use(config.path + '/*', function (req, res, next) {
-		common.logCall(req, req.originalUrl.includes('_rawbody'))
-		next()
-	})
 	// Response time monitor
 	if (config.prod || config.staging)
 		app.use(
@@ -1032,10 +1027,10 @@ function setup() {
 					.replace(/[:.]/g, '')
 					.replace(/\//g, '_')
 				if (time > config.responseTimeAlert)
-					console.warn('RESPONSE TIME: ' + stat + ' | ' + time.toString())
+					console.warn('[RESPONSE TIME] ' + stat + ' | ' + time.toString())
 				/* if (time > config.responseTimeAlert) {
 					try {
-						throw new Error('RESPONSE TIME: ' + stat + ' | ' + time.toString())
+						throw new Error('[RESPONSE TIME]: ' + stat + ' | ' + time.toString())
 					} catch (err) {
 						common.logCatch(err as Error)
 					}

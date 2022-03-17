@@ -259,9 +259,56 @@ const _setResponse = function (
 	message?: string,
 	data?: Obj
 ) {
+	/* const { ip } = _getUserIP(req)
+
+	let str =
+		req.originalUrl +
+		' | ' +
+		(req.useragent.isBot ? 'ROBOT' : req.useragent.isMobile ? 'MOBILE' : 'DESKTOP') +
+		' | ' +
+		req.useragent.browser +
+		' | ' +
+		ip
+	let o
+	if (!req.originalUrl.includes('_rawbody') && req.body && !_.isEmpty(req.body)) {
+		o = JSON.parse(JSON.stringify(req.body, null, 3))
+		if (o.password) o.password = '*******'
+		str += '\nbody ' + JSON.stringify(o, null, 3)
+	}
+	if (req.query && !_.isEmpty(req.query)) {
+		o = JSON.parse(JSON.stringify(req.query, null, 3))
+		if (o.password) o.password = '*******'
+		str += '\nquery ' + JSON.stringify(o, null, 3)
+	}
+
+	console.log('\n-- ' + req.method + ': ' + str) */
+
+	///
+
 	const { user, ip } = _getUserIP(req)
 
-	const str: string = req.originalUrl + ' | ' + user + ' | ' + ip + ' | '
+	const str: string =
+		req.path +
+		' (' +
+		(user ? user + ' ' : '') +
+		ip +
+		' ' +
+		(req.useragent.isBot
+			? 'Robot'
+			: (req.useragent.isMobile ? 'Mobile' : 'Desktop') + '/' + req.useragent.browser) +
+		')'
+
+	let extra = ''
+	if (!req.originalUrl.includes('_rawbody') && req.body && !_.isEmpty(req.body)) {
+		const o = JSON.parse(JSON.stringify(req.body, null, 3))
+		if (o.password) o.password = '*******'
+		extra += '\nbody ' + JSON.stringify(o, null, 3)
+	}
+	if (req.query && !_.isEmpty(req.query)) {
+		const o = JSON.parse(JSON.stringify(req.query, null, 3))
+		if (o.password) o.password = '*******'
+		extra += '\nquery ' + JSON.stringify(o, null, 3)
+	}
 
 	res.header('message', message)
 
@@ -269,14 +316,14 @@ const _setResponse = function (
 	res.setHeader('Content-Type', 'application/json')
 	res.end(JSON.stringify(data))
 	console.log(
-		'\n------ RES: ' +
+		colorizeLog('\n[' + req.method + '] ', 'green') +
 			str +
-			'(' +
-			code.toString() +
-			') ' +
-			(code < 300 ? 'SUCCESS' : 'FAILED') +
 			' ' +
-			(message ? ': ' + message : '')
+			code.toString() +
+			' - ' +
+			(code < 300 ? 'SUCCESS' : 'FAILED') +
+			(message ? ': ' + message : '') +
+			extra
 	)
 }
 
@@ -393,32 +440,6 @@ export default {
 	colorizeLog: colorizeLog,
 
 	logCatch: _logCatch,
-
-	logCall: function (req: Request, skipBody = false) {
-		const { ip } = _getUserIP(req)
-
-		let str =
-			req.originalUrl +
-			' | ' +
-			(req.useragent.isBot ? 'ROBOT' : req.useragent.isMobile ? 'MOBILE' : 'DESKTOP') +
-			' | ' +
-			req.useragent.browser +
-			' | ' +
-			ip
-		let o
-		if (!skipBody && req.body && !_.isEmpty(req.body)) {
-			o = JSON.parse(JSON.stringify(req.body, null, 3))
-			if (o.password) o.password = '*******'
-			str += '\nbody ' + JSON.stringify(o, null, 3)
-		}
-		if (req.query && !_.isEmpty(req.query)) {
-			o = JSON.parse(JSON.stringify(req.query, null, 3))
-			if (o.password) o.password = '*******'
-			str += '\nquery ' + JSON.stringify(o, null, 3)
-		}
-
-		console.log('\n-- ' + req.method + ': ' + str)
-	},
 
 	///////////////////////////////////// COMMON RESPONSES
 
