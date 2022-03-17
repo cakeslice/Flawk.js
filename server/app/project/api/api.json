@@ -162,7 +162,8 @@
           },
           {
             "schema": {
-              "type": "string"
+              "type": "string",
+              "nullable": true
             },
             "in": "query",
             "name": "_id"
@@ -682,16 +683,19 @@
                             "type": "string"
                           },
                           "data": {
-                            "type": "object"
+                            "type": "object",
+                            "nullable": true
                           },
                           "clientData": {
                             "type": "object",
                             "properties": {
                               "photo": {
-                                "type": "string"
+                                "type": "string",
+                                "nullable": true
                               },
                               "name": {
-                                "type": "string"
+                                "type": "string",
+                                "nullable": true
                               }
                             }
                           }
@@ -867,10 +871,12 @@
                       "$ref": "#/components/schemas/ObjectId"
                     },
                     "email": {
-                      "type": "string"
+                      "type": "string",
+                      "nullable": true
                     },
                     "phone": {
-                      "type": "string"
+                      "type": "string",
+                      "nullable": true
                     },
                     "permission": {
                       "type": "number"
@@ -885,13 +891,16 @@
                       "type": "object",
                       "properties": {
                         "firstName": {
-                          "type": "string"
+                          "type": "string",
+                          "nullable": true
                         },
                         "lastName": {
-                          "type": "string"
+                          "type": "string",
+                          "nullable": true
                         },
                         "photoURL": {
-                          "type": "string"
+                          "type": "string",
+                          "nullable": true
                         }
                       }
                     },
@@ -899,12 +908,14 @@
                       "type": "object",
                       "properties": {
                         "language": {
-                          "type": "string"
+                          "type": "string",
+                          "nullable": true
                         }
                       }
                     },
                     "token": {
-                      "type": "string"
+                      "type": "string",
+                      "nullable": true
                     }
                   },
                   "required": [
@@ -980,10 +991,12 @@
                     "type": "string"
                   },
                   "password": {
-                    "type": "string"
+                    "type": "string",
+                    "nullable": true
                   },
                   "photoURL": {
-                    "type": "string"
+                    "type": "string",
+                    "nullable": true
                   }
                 },
                 "required": [
@@ -1057,10 +1070,12 @@
                 "type": "object",
                 "properties": {
                   "search": {
-                    "type": "string"
+                    "type": "string",
+                    "nullable": true
                   },
                   "includeUnverified": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "nullable": true
                   }
                 }
               }
@@ -1084,14 +1099,16 @@
           },
           {
             "schema": {
-              "type": "string"
+              "type": "string",
+              "nullable": true
             },
             "in": "query",
             "name": "sort"
           },
           {
             "schema": {
-              "type": "string"
+              "type": "string",
+              "nullable": true
             },
             "in": "query",
             "name": "order"

@@ -258,8 +258,7 @@ const _setResponse = function (
 ) {
 	const { user, ip } = _getUserIP(req)
 
-	const str: string =
-		req.originalUrl + ' | ' + '' /*new Date().toISOString() + ": "*/ + user + ' (' + ip + ') - '
+	const str: string = req.originalUrl + ' | ' + user + ' | ' + ip + ' - '
 
 	res.header('message', message)
 
@@ -391,16 +390,16 @@ export default {
 	logCatch: _logCatch,
 
 	logCall: function (req: Request, skipBody = false) {
-		const { user, ip } = _getUserIP(req)
+		const { ip } = _getUserIP(req)
 
 		let str =
 			req.originalUrl +
 			' | ' +
-			'' /*new Date().toISOString() + ": "*/ +
-			user +
-			' (' +
-			ip +
-			')'
+			(req.useragent.isBot ? 'ROBOT' : req.useragent.isMobile ? 'MOBILE' : 'DESKTOP') +
+			' | ' +
+			req.useragent.browser +
+			' | ' +
+			ip
 		let o
 		if (!skipBody && req.body && !_.isEmpty(req.body)) {
 			o = JSON.parse(JSON.stringify(req.body, null, 3))
@@ -412,12 +411,7 @@ export default {
 			if (o.password) o.password = '*******'
 			str += '\nquery ' + JSON.stringify(o, null, 3)
 		}
-		/* if (req.headers && !_.isEmpty(req.headers)) {
-            var o = JSON.parse(JSON.stringify(req.headers, null, 3));
-            if (o.password)
-                o.password = "*******";
-            str += "\nheaders " + JSON.stringify(req.headers, null, 3);
-        } */
+
 		console.log('\n-- ' + req.method + ': ' + str)
 	},
 

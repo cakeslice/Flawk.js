@@ -19,9 +19,11 @@ import { init as socketInit } from 'core/functions/sockets'
 import HttpException from 'core/internal/HttpException'
 import cors from 'cors'
 import express, { ErrorRequestHandler, RequestHandler } from 'express'
+import { IpDeniedError, IpFilter } from 'express-ipfilter'
 import mongoSanitize from 'express-mongo-sanitize'
 import * as OpenApiValidator from 'express-openapi-validator'
 import paginate from 'express-paginate'
+import userAgent from 'express-useragent'
 import { ArrayKeyObject, KeyArrayKeyObject, Obj } from 'flawk-types'
 import fs from 'fs'
 import helmet from 'helmet'
@@ -802,6 +804,25 @@ function setup() {
 	app.use(cors(corsOptions))
 	if ((config.prod || config.staging) && !config.jest) app.use(requireHTTPS)
 
+	// IP blocker
+	if (process.env.blockedIps) {
+		const blockedIps = process.env.blockedIps.split(',')
+		app.use(IpFilter(blockedIps, { log: false }))
+		app.use(
+			(
+				err: unknown,
+				req: express.Request,
+				res: express.Response,
+				next: express.NextFunction
+			) => {
+				if (err instanceof IpDeniedError) {
+					console.log('Blocked IP: ' + req.ip)
+					res.status(401)
+				}
+			}
+		)
+	}
+
 	app.use(helmet())
 	app.use(compression())
 	app.use(cookieParser())
@@ -900,12 +921,6 @@ function setup() {
 		})
 	}
 
-	// Request logger
-	app.use(config.path + '/*', function (req, res, next) {
-		common.logCall(req, req.originalUrl.includes('_rawbody'))
-		next()
-	})
-
 	openAPIDocument.servers = [
 		{
 			url: config.path,
@@ -971,25 +986,22 @@ function setup() {
 		})
 	)
 
+	// User agent
+	app.use(userAgent.express())
+	// Request logger
+	app.use(config.path + '/*', function (req, res, next) {
+		common.logCall(req, req.originalUrl.includes('_rawbody'))
+		next()
+	})
 	// Response time monitor
 	if (config.prod || config.staging)
 		app.use(
 			config.path + '/*',
 			responseTime(function (req: express.Request, res: express.Response, time: number) {
-				let user: string | undefined
-				if (req.user)
-					user = req.user.email
-						? req.user.email
-						: req.user.phone
-						? req.user.phone
-						: req.user._id.toString()
-				const stat =
-					((req.method || '') + (req.url || ''))
-						.toLowerCase()
-						.replace(/[:.]/g, '')
-						.replace(/\//g, '_') +
-					' | ' +
-					(user || '')
+				const stat = ((req.method || '') + (req.url || ''))
+					.toLowerCase()
+					.replace(/[:.]/g, '')
+					.replace(/\//g, '_')
 				if (time > config.responseTimeAlert)
 					console.warn('RESPONSE TIME: ' + stat + ' | ' + time.toString())
 				/* if (time > config.responseTimeAlert) {

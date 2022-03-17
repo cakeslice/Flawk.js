@@ -7,6 +7,7 @@
 
 import { SocketUser } from 'core/functions/sockets'
 import { Obj, RequestUser } from 'flawk-types'
+type UserAgent = import('express-useragent').Agent
 type SocketIONamespace = import('socket.io').Namespace
 type DocumentArray = import('mongoose').DocumentArray
 
@@ -24,6 +25,7 @@ declare module 'socket.io' {
 
 declare module 'express-serve-static-core' {
 	interface Request {
+		useragent: UserAgent
 		user: RequestUser
 		token: string
 		tokenExpiration?: number
