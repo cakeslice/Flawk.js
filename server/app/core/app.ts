@@ -807,7 +807,15 @@ function setup() {
 	// IP blocker
 	if (process.env.blockedIps) {
 		const blockedIps = process.env.blockedIps.split(',')
-		app.use(IpFilter(blockedIps, { log: false }))
+		app.use(
+			IpFilter(blockedIps, {
+				log: false,
+				detectIp: (req: express.Request) => {
+					const { ip } = common.getUserIP(req)
+					return ip
+				},
+			})
+		)
 		app.use(
 			(
 				err: unknown,

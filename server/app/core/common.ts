@@ -220,8 +220,11 @@ const _getUserIP = function (req: Request) {
 	}
 
 	let ip = 'Unknown'
-	if (req.headers['x-forwarded-for']) ip = req.headers['x-forwarded-for'] as string
-	else if (req.connection.remoteAddress) ip = req.connection.remoteAddress
+	if (req.headers['cf-connecting-ip']) ip = req.headers['cf-connecting-ip'] as string
+	else if (req.headers['x-forwarded-for']) ip = req.headers['x-forwarded-for'] as string
+	else if (req.socket.remoteAddress) ip = req.socket.remoteAddress
+
+	if (ip) ip = ip.split(',')[0]
 
 	return { user, ip }
 }
@@ -382,6 +385,8 @@ export default {
 			.sort()
 			.join('&')
 	},
+
+	getUserIP: _getUserIP,
 
 	///////////////////////////////////// LOGGER
 
