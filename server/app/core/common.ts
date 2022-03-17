@@ -259,32 +259,6 @@ const _setResponse = function (
 	message?: string,
 	data?: Obj
 ) {
-	/* const { ip } = _getUserIP(req)
-
-	let str =
-		req.originalUrl +
-		' | ' +
-		(req.useragent.isBot ? 'ROBOT' : req.useragent.isMobile ? 'MOBILE' : 'DESKTOP') +
-		' | ' +
-		req.useragent.browser +
-		' | ' +
-		ip
-	let o
-	if (!req.originalUrl.includes('_rawbody') && req.body && !_.isEmpty(req.body)) {
-		o = JSON.parse(JSON.stringify(req.body, null, 3))
-		if (o.password) o.password = '*******'
-		str += '\nbody ' + JSON.stringify(o, null, 3)
-	}
-	if (req.query && !_.isEmpty(req.query)) {
-		o = JSON.parse(JSON.stringify(req.query, null, 3))
-		if (o.password) o.password = '*******'
-		str += '\nquery ' + JSON.stringify(o, null, 3)
-	}
-
-	console.log('\n-- ' + req.method + ': ' + str) */
-
-	///
-
 	const { user, ip } = _getUserIP(req)
 
 	const str: string =
