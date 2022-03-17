@@ -791,6 +791,11 @@ function setup() {
 	console.log(common.colorizeLog('Build: ' + '@' + global.buildNumber, 'grey'))
 	console.log(common.colorizeLog('Running on NodeJS ' + process.version + '\n', 'grey'))
 
+	if (config.prod || config.staging) app.enable('trust proxy') // Only if you're behind a reverse proxy (Heroku, Bluemix, AWS ELB, Nginx, etc)
+	app.disable('x-powered-by')
+
+	// Force HTTPS
+	if ((config.prod || config.staging) && !config.jest) app.use(requireHTTPS)
 	// CORS
 	const corsOptions: cors.CorsOptions = {
 		credentials: true,
@@ -802,8 +807,6 @@ function setup() {
 		next()
 	})
 	app.use(cors(corsOptions))
-	if ((config.prod || config.staging) && !config.jest) app.use(requireHTTPS)
-
 	// IP blocker
 	if (process.env.blockedIps) {
 		const blockedIps = process.env.blockedIps.split(',')
@@ -830,43 +833,7 @@ function setup() {
 			}
 		)
 	}
-
-	app.use(helmet())
-	app.use(compression())
-	app.use(cookieParser())
-	app.use(
-		express.json({
-			verify: function (req: express.Request, res: express.Response, buf, encoding) {
-				if (req.originalUrl.includes('_rawbody')) {
-					req.rawBody = buf.toString((encoding as BufferEncoding) || 'utf8')
-				}
-			},
-		})
-	)
-	app.use(express.urlencoded({ extended: true }))
-	if (config.prod || config.staging) app.enable('trust proxy') // Only if you're behind a reverse proxy (Heroku, Bluemix, AWS ELB, Nginx, etc)
-
-	// Helper functions and defaults
-	app.all(config.path + '/*', function (req, res, next) {
-		req.token = 'no-token' // To prevent comparing to undefined
-
-		res.do = (status: number, message?: string, data?: Obj) => {
-			common.setResponse(status, req, res, message, data)
-		}
-		res.response = (key: string) => config.response(key, req)
-		res.text = (key: string) => config.text(key, req)
-
-		res.countPages = (itemCount: number) => common.countPages(itemCount, req)
-		res.countAggregationPages = (
-			items: Obj[] | undefined,
-			itemCount: { count: number }[] | undefined
-		) => common.countAggregationPages(items, itemCount, req)
-		next()
-	})
-
-	// Prevent mongo injection attacks
-	app.use(config.path + '/*', mongoSanitize())
-
+	// Rate limiting
 	if (!config.jest) {
 		const tooManyMessage = 'Too many requests, try again later'
 
@@ -928,6 +895,47 @@ function setup() {
 				})
 		})
 	}
+
+	// Sanitize
+	app.use(helmet())
+	// Compress response bodies
+	app.use(compression())
+
+	// Parsing
+	app.use(cookieParser())
+	app.use(
+		express.json({
+			verify: function (req: express.Request, res: express.Response, buf, encoding) {
+				if (req.originalUrl.includes('_rawbody')) {
+					req.rawBody = buf.toString((encoding as BufferEncoding) || 'utf8')
+				}
+			},
+		})
+	)
+	app.use(express.urlencoded({ extended: true }))
+
+	// Prevent mongo injection attacks
+	app.use(config.path + '/*', mongoSanitize())
+
+	// Helper functions and defaults
+	app.all(config.path + '/*', function (req, res, next) {
+		req.token = 'no-token' // To prevent comparing to undefined
+
+		res.do = (status: number, message?: string, data?: Obj) => {
+			common.setResponse(status, req, res, message, data)
+		}
+		res.response = (key: string) => config.response(key, req)
+		res.text = (key: string) => config.text(key, req)
+
+		res.countPages = (itemCount: number) => common.countPages(itemCount, req)
+		res.countAggregationPages = (
+			items: Obj[] | undefined,
+			itemCount: { count: number }[] | undefined
+		) => common.countAggregationPages(items, itemCount, req)
+		next()
+	})
+	// User agent
+	app.use(userAgent.express())
 
 	openAPIDocument.servers = [
 		{
@@ -994,8 +1002,6 @@ function setup() {
 		})
 	)
 
-	// User agent
-	app.use(userAgent.express())
 	// Request logger
 	app.use(config.path + '/*', function (req, res, next) {
 		common.logCall(req, req.originalUrl.includes('_rawbody'))
@@ -1022,7 +1028,7 @@ function setup() {
 			})
 		)
 
-	// Multiple language support
+	// Localization
 	app.use(config.path + '/*', function (req, res, next) {
 		let lang = 'en'
 		if (req.headers['lang']) lang = req.headers['lang'] as string
@@ -1030,7 +1036,6 @@ function setup() {
 
 		next()
 	})
-
 	// Pagination
 	app.use(config.path + '/*', paginate.middleware(10, 50))
 	app.all(config.path + '/*', function (req, res, next) {
@@ -1046,16 +1051,21 @@ function setup() {
 
 	/////////////////////// ROUTES
 
+	// Disallow robots
+	app.use('/robots.txt', function (req, res, next) {
+		res.type('text/plain')
+		res.send('User-agent: *\nDisallow: /')
+	})
+
 	// Is server online
 	app.getAsync(config.path + '/online', async function (req, res) {
 		common.setResponse(200, req, res)
 	})
 
-	/* if (!config.prod && !config.staging) { */
-	app.getAsync(config.path + '/api', async function (req, res) {
-		common.setResponse(200, req, res, undefined, openAPIDocument)
-	})
-	/* } */
+	if (!config.prod && !config.staging)
+		app.getAsync(config.path + '/api', async function (req, res) {
+			common.setResponse(200, req, res, undefined, openAPIDocument)
+		})
 
 	app.getAsync(config.path + '/build_number', async function (req, res) {
 		common.setResponse(200, req, res, undefined, {
@@ -1184,8 +1194,6 @@ function setup() {
 		}
 	}
 	console.log('')
-
-	app.disable('x-powered-by')
 
 	if (config.sentryID) {
 		app.use(Sentry.Handlers.requestHandler())

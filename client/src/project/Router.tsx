@@ -299,11 +299,11 @@ export default function Router(): React.ReactNode {
 							</>
 						</Route>
 
-						{/* {!config.prod && !config.staging && ( */}
-						<Route /* exact */ path='/components'>
-							<ComponentsViewer />
-						</Route>
-						{/* )} */}
+						{!config.prod && !config.staging && (
+							<Route /* exact */ path='/components'>
+								<ComponentsViewer />
+							</Route>
+						)}
 
 						<Route>
 							<div style={{ background: styles.colors.white }}>
