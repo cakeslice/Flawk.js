@@ -261,7 +261,7 @@ const _setResponse = function (
 ) {
 	const { user, ip } = _getUserIP(req)
 
-	const str: string = req.originalUrl + ' | ' + user + ' | ' + ip + ' - '
+	const str: string = req.originalUrl + ' | ' + user + ' | ' + ip + ' | '
 
 	res.header('message', message)
 
@@ -271,7 +271,7 @@ const _setResponse = function (
 	console.log(
 		'\n------ RES: ' +
 			str +
-			' (' +
+			'(' +
 			code.toString() +
 			') ' +
 			(code < 300 ? 'SUCCESS' : 'FAILED') +
