@@ -21,7 +21,7 @@ import Select, {
 } from 'react-select'
 
 export type Option = {
-	value: string | number
+	value: string | number | boolean
 	label: React.ReactNode
 	isDisabled?: boolean
 	style?: CSSObjectWithLabel

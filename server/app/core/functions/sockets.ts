@@ -240,11 +240,14 @@ export function init() {
 						if (user) {
 							let valid = false
 							for (let j = user.access.activeTokens.length - 1; j >= 0; j--) {
-								if (user.access.activeTokens[j] === socket._client.token)
+								if (
+									socket._client &&
+									user.access.activeTokens[j] === socket._client.token
+								)
 									valid = true
 							}
 
-							if (valid) {
+							if (valid && socket._client) {
 								const client: SocketUser = {
 									id: user._id.toString(),
 									email: user.email,
