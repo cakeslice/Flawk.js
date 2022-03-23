@@ -78,6 +78,7 @@ export default class CodeCollapse extends TrackedComponent<Props> {
 							<div className={'flex-col items-end'}>
 								<div style={{ width: 0 }} className={'flex-col items-end'}>
 									<Tooltip
+										hidden={!desktop}
 										tooltipProps={{ placement: 'left' }}
 										content='Show code'
 									>

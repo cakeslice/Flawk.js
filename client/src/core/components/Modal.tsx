@@ -233,7 +233,7 @@ export default class Modal extends TrackedComponent<Props> {
 		const modalPadding = styles.modalPadding || 20
 
 		return (
-			<Portal>
+			<Portal node={document.getElementById('portals-foreground')}>
 				<Animated
 					trackedName='Modal'
 					className='scrollTarget'

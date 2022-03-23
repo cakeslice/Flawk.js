@@ -46,7 +46,7 @@ class MobileDrawer extends TrackedComponent<Props> {
 		const selectedRoute = this.props.location.pathname.toString()
 
 		return (
-			<Portal>
+			<Portal node={document.getElementById('portals-background')}>
 				<Animated
 					trackedName='MobileDrawer'
 					animateOffscreen

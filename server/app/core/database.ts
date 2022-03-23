@@ -25,7 +25,10 @@ export const clientProperties = {
 		select: false,
 
 		language: { type: String, enum: ['en', 'pt'] }, // Used for req.lang and config.text/config.response
+		timezoneOffset: { type: Number },
+
 		stripeCustomer: String, // Used for stripe payments
+
 		mobileNotificationDevices: [String], // Used for mobile push notifications
 
 		timestamps: {

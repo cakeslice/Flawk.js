@@ -240,29 +240,35 @@ export default class ComponentsViewer extends Component {
 			})
 
 		return (
-			<Dashboard
-				horizontal={this.state.horizontalDashboard}
-				horizontalHeight={50}
-				path={'/components/'}
-				style={{ background: styles.colors.white }}
-				linkStyle={{
-					...(this.state.horizontalDashboard && { height: 40 }),
-					':selected': { color: styles.colors.black },
-				}}
-				logo={logo}
-				wrapperComponent={Wrapper}
-				routes={routes}
-				pageProps={{
-					horizontalDashboard: this.state.horizontalDashboard,
-					toggleDashboardLayout: () => {
-						global.localStorage.setItem(
-							'horizontalDashboard',
-							!this.state.horizontalDashboard ? 'true' : 'false'
-						)
-						this.setState({ horizontalDashboard: !this.state.horizontalDashboard })
-					},
-				}}
-			></Dashboard>
+			<MediaQuery minWidth={config.mobileWidthTrigger}>
+				{(desktop) => (
+					<Dashboard
+						horizontal={this.state.horizontalDashboard}
+						horizontalHeight={50}
+						path={'/components/'}
+						style={{ background: styles.colors.white }}
+						linkStyle={{
+							...(this.state.horizontalDashboard && desktop && { height: 40 }),
+							':selected': { color: styles.colors.black },
+						}}
+						logo={logo}
+						wrapperComponent={Wrapper}
+						routes={routes}
+						pageProps={{
+							horizontalDashboard: this.state.horizontalDashboard,
+							toggleDashboardLayout: () => {
+								global.localStorage.setItem(
+									'horizontalDashboard',
+									!this.state.horizontalDashboard ? 'true' : 'false'
+								)
+								this.setState({
+									horizontalDashboard: !this.state.horizontalDashboard,
+								})
+							},
+						}}
+					></Dashboard>
+				)}
+			</MediaQuery>
 		)
 	}
 }
@@ -529,8 +535,8 @@ const backendLogo = (color: string) => (
 		version='1.1'
 		id='Capa_1'
 		xmlns='http://www.w3.org/2000/svg'
-		x='0px'
-		y='0px'
+		width='487px'
+		height='487px'
 		viewBox='0 0 487 487'
 	>
 		<g>

@@ -78,6 +78,9 @@ export default class Tooltip extends TrackedComponent<Props> {
 				{(desktop) => {
 					return (
 						<TooltipTrigger
+							portalContainer={
+								document.getElementById('portals-background') as HTMLElement
+							}
 							placement='top'
 							delayHide={200}
 							delayShow={50}

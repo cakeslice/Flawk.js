@@ -14,6 +14,7 @@ import styles from 'core/styles'
 import { GlamorProps, Obj } from 'flawk-types'
 import { css } from 'glamor'
 import React, { Suspense } from 'react'
+import { Portal } from 'react-portal'
 import MediaQuery from 'react-responsive'
 import { Link, Redirect, Route, RouteComponentProps, Switch, withRouter } from 'react-router-dom'
 
@@ -187,7 +188,7 @@ export default class Dashboard extends TrackedComponent<
 									position: 'fixed',
 									left: 0,
 									top: 0,
-									zIndex: 2,
+									zIndex: 30,
 								}
 								const mobileStyle: React.CSSProperties = {
 									transition:
@@ -273,47 +274,53 @@ export default class Dashboard extends TrackedComponent<
 													this.toggleOpen(false)
 												}
 											>
-												<Animated
-													trackedName='Dashboard'
-													animateOffscreen
-													effects={[
-														'fade',
-														this.props.horizontal ? 'down' : 'left',
-													]}
-													distance={closedWidth}
-													duration={0.75}
-													//
-													style={desktopStyle}
+												<Portal
+													node={document.getElementById(
+														'portals-foreground'
+													)}
 												>
-													<Menu
-														style={this.props.style}
-														logo={this.props.logo}
-														isOpen={
-															bigScreen ||
-															this.props.alwaysOpen ||
-															this.state.open
-														}
-														isHover={this.state.open}
-														linkStyle={this.props.linkStyle}
-														linkMaxWidth={
-															bigScreen || this.props.alwaysOpen
-																? openWidth
-																: this.state.linkMaxWidth
-														}
-														headerHeight={headerHeight}
-														desktop={desktop}
-														horizontal={this.props.horizontal}
-														toggleOpen={
-															bigScreen || this.props.alwaysOpen
-																? toggleOpenDesktop
-																: this.toggleOpen
-														}
+													<Animated
+														trackedName='Dashboard'
+														animateOffscreen
+														effects={[
+															'fade',
+															this.props.horizontal ? 'down' : 'left',
+														]}
+														distance={closedWidth}
+														duration={0.75}
 														//
-														pageProps={this.props.pageProps}
-														path={this.props.path}
-														routes={routes}
-													/>
-												</Animated>
+														style={desktopStyle}
+													>
+														<Menu
+															style={this.props.style}
+															logo={this.props.logo}
+															isOpen={
+																bigScreen ||
+																this.props.alwaysOpen ||
+																this.state.open
+															}
+															isHover={this.state.open}
+															linkStyle={this.props.linkStyle}
+															linkMaxWidth={
+																bigScreen || this.props.alwaysOpen
+																	? openWidth
+																	: this.state.linkMaxWidth
+															}
+															headerHeight={headerHeight}
+															desktop={desktop}
+															horizontal={this.props.horizontal}
+															toggleOpen={
+																bigScreen || this.props.alwaysOpen
+																	? toggleOpenDesktop
+																	: this.toggleOpen
+															}
+															//
+															pageProps={this.props.pageProps}
+															path={this.props.path}
+															routes={routes}
+														/>
+													</Animated>
+												</Portal>
 											</div>
 										) : (
 											<div
@@ -326,88 +333,98 @@ export default class Dashboard extends TrackedComponent<
 														: 0,
 												}}
 											>
-												<Animated
-													trackedName='Dashboard'
-													animateOffscreen
-													effects={['fade', 'down']}
-													distance={mobileHeight}
-													duration={0.75}
-													//
-													className='blur-background w-full flex-col items-center'
-													style={mobileStyle}
+												<Portal
+													node={document.getElementById(
+														'portals-foreground'
+													)}
 												>
-													<div
-														className='flex justify-between w-full'
-														style={{
-															maxWidth: maxWidth,
-															minHeight: desktop
-																? this.state.showHeaderBackground
-																	? desktopHeight
-																	: desktopHeightTop
-																: this.state.showHeaderBackground
-																? mobileHeight
-																: mobileHeightTop,
-															maxHeight: desktop
-																? this.state.showHeaderBackground
-																	? desktopHeight
-																	: desktopHeightTop
-																: this.state.showHeaderBackground
-																? mobileHeight
-																: mobileHeightTop,
-															transition:
-																'max-height .5s, min-height .5s',
-															paddingLeft: desktop ? 15 : 35,
-															paddingRight: desktop ? 15 : 35,
-															boxSizing: 'border-box',
-														}}
+													<Animated
+														trackedName='Dashboard'
+														animateOffscreen
+														effects={['fade', 'down']}
+														distance={mobileHeight}
+														duration={0.75}
+														//
+														className='blur-background w-full flex-col items-center'
+														style={mobileStyle}
 													>
-														<button
-															className='flex items-center'
-															type='button'
-															onClick={() =>
-																global.routerHistory().push('/')
-															}
+														<div
+															className='flex justify-between w-full'
 															style={{
-																marginBottom: this.state
-																	.showHeaderBackground
-																	? 10
-																	: 15,
-																marginTop: this.state
-																	.showHeaderBackground
-																	? 10
-																	: 15,
+																maxWidth: maxWidth,
+																minHeight: desktop
+																	? this.state
+																			.showHeaderBackground
+																		? desktopHeight
+																		: desktopHeightTop
+																	: this.state
+																			.showHeaderBackground
+																	? mobileHeight
+																	: mobileHeightTop,
+																maxHeight: desktop
+																	? this.state
+																			.showHeaderBackground
+																		? desktopHeight
+																		: desktopHeightTop
+																	: this.state
+																			.showHeaderBackground
+																	? mobileHeight
+																	: mobileHeightTop,
 																transition:
-																	'margin-top .5s, margin-bottom .5s',
+																	'max-height .5s, min-height .5s',
+																paddingLeft: desktop ? 15 : 35,
+																paddingRight: desktop ? 15 : 35,
+																boxSizing: 'border-box',
 															}}
 														>
-															<img
+															<button
+																className='flex items-center'
+																type='button'
+																onClick={() =>
+																	global.routerHistory().push('/')
+																}
 																style={{
-																	maxHeight: 30,
-																	minHeight: 30,
-																	objectFit: 'contain',
-																	...this.props.logoStyle,
+																	marginBottom: this.state
+																		.showHeaderBackground
+																		? 10
+																		: 15,
+																	marginTop: this.state
+																		.showHeaderBackground
+																		? 10
+																		: 15,
+																	transition:
+																		'margin-top .5s, margin-bottom .5s',
 																}}
-																src={this.props.logo}
-															></img>
-														</button>
+															>
+																<img
+																	style={{
+																		maxHeight: 30,
+																		minHeight: 30,
+																		objectFit: 'contain',
+																		...this.props.logoStyle,
+																	}}
+																	src={this.props.logo}
+																></img>
+															</button>
 
-														<MobileDrawer
-															burgerStyle={mobileBurgerStyle}
-															menuStyle={mobileMenuStyle}
-															linkStyle={this.props.linkStyle}
-															headerHeight={
-																this.state.showHeaderBackground
-																	? mobileHeight
-																	: mobileHeightTop
-															}
-															toggleOpen={this.toggleOpen}
-															//
-															pageProps={this.props.pageProps}
-															path={this.props.path}
-															links={mobileRoutes}
-														></MobileDrawer>
-													</div>
-												</Animated>
+															<MobileDrawer
+																burgerStyle={mobileBurgerStyle}
+																menuStyle={mobileMenuStyle}
+																linkStyle={this.props.linkStyle}
+																headerHeight={
+																	this.state.showHeaderBackground
+																		? mobileHeight
+																		: mobileHeightTop
+																}
+																toggleOpen={this.toggleOpen}
+																//
+																pageProps={this.props.pageProps}
+																path={this.props.path}
+																links={mobileRoutes}
+															></MobileDrawer>
+														</div>
+													</Animated>
+												</Portal>
 											</div>
 										)}
 

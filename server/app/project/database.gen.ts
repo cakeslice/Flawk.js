@@ -55,6 +55,7 @@ export type Client = {
 	core: {
 		
 		language?: 'en' | 'pt'
+		timezoneOffset?: number
 		stripeCustomer?: string
 		mobileNotificationDevices: string[]
 		timestamps: {
@@ -188,6 +189,7 @@ export type ClientDocument = mongoose.Document<mongoose.Types.ObjectId, ClientQu
 		core: {
 			
 			language?: 'en' | 'pt'
+			timezoneOffset?: number
 			stripeCustomer?: string
 			mobileNotificationDevices: mongoose.Types.Array<string>
 			timestamps: {

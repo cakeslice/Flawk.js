@@ -29,7 +29,7 @@
 		"startLocal": "react-scripts start",
 		"startAndroid": "npm run buildLocal && npx cap sync && cd android && gradlew assembleDebug && gradlew installDebug && cd ..",
 		"startiOS": "npm run buildLocal && npx cap sync && npx cap open ios",
-		"buildCI": "npx browserslist@latest --update-db updates caniuse-lite && cross-env CI=false GENERATE_SOURCEMAP=true react-scripts --max_old_space_size=4096 build && npm run addPreloadLinks",
+		"buildCI": "npx browserslist@latest --update-db updates caniuse-lite && cross-env CI=false GENERATE_SOURCEMAP=true DISABLE_ESLINT_PLUGIN=true react-scripts --max_old_space_size=4096 build && npm run addPreloadLinks",
 		"buildLocal": "npm run auditCI && npm run testCI && npm run buildCI && npm run analyzeBundle",
 		"buildPushDocker": "npm run buildLocal && cross-env-shell docker image build -t $DOCKER_IMAGE . -f Dockerfile.local && cross-env-shell docker push $DOCKER_IMAGE && cross-env-shell docker run caprover/cli-caprover:v2.1.1 caprover deploy --caproverUrl $CAPROVER_URL --caproverPassword $CAPROVER_PASSWORD --caproverApp $CAPROVER_APP --imageName $DOCKER_IMAGE && cross-env-shell docker image rm $DOCKER_IMAGE",
 		"buildAndroid": "npm run buildLocal && npx cap sync && cd android && gradlew bundleRelease && cd .. && cross-env-shell jarsigner -keystore ./_env/android_keystore.env -storepass $ANDROID_KEYSTORE_PASS ./android/app/build/outputs/bundle/release/app-release.aab $ANDROID_KEYSTORE_ALIAS",

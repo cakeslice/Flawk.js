@@ -380,7 +380,7 @@ export default class Dropdown extends TrackedComponent<Props> {
 		const selectStyles: StylesConfig = {
 			menuPortal: (base): CSSObjectWithLabel => ({
 				...base,
-				zIndex: 9999,
+				zIndex: 25,
 			}),
 			valueContainer: (s): CSSObjectWithLabel => {
 				return {
@@ -672,7 +672,9 @@ export default class Dropdown extends TrackedComponent<Props> {
 									noOptionsMessage={() => config.text('common.noOptions')}
 									loadingMessage={() => config.text('common.searching')}
 									menuPortalTarget={
-										!this.props.noPortal ? document.body : undefined
+										!this.props.noPortal
+											? document.getElementById('portals-background')
+											: undefined
 									}
 									isClearable={this.props.erasable}
 									isDisabled={this.props.isDisabled}

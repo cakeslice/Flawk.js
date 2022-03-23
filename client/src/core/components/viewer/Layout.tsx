@@ -7,7 +7,10 @@
 
 import { get } from 'core/api'
 import logo from 'core/assets/images/logo.svg'
+import Animated from 'core/components/Animated'
+import ExitPrompt from 'core/components/ExitPrompt'
 import FButton from 'core/components/FButton'
+import Field from 'core/components/Field'
 import FInput from 'core/components/FInput'
 import FTable from 'core/components/FTable'
 import Modal from 'core/components/Modal'
@@ -15,6 +18,7 @@ import Paginate from 'core/components/Paginate'
 import QueryParams from 'core/components/QueryParams'
 import config from 'core/config'
 import styles from 'core/styles'
+import { Form, Formik } from 'formik'
 import _remove from 'lodash/remove'
 import React from 'react'
 import MediaQuery from 'react-responsive'
@@ -49,6 +53,7 @@ export default class Layout extends QueryParams<
 		isOpen: false,
 		fetching: false,
 		selected: [] as string[],
+		collapse: false,
 	}
 
 	defaultQueryParams = {
@@ -146,16 +151,66 @@ export default class Layout extends QueryParams<
 				parent={this}
 				title={''}
 				content={(close, Content, Buttons, Parent) => (
-					<Parent>
-						<Content>
-							<div style={{ minHeight: 1500 }}>Content</div>
-						</Content>
-						<Buttons>
-							<FButton appearance='primary' onClick={close}>
-								Button
-							</FButton>
-						</Buttons>
-					</Parent>
+					<Formik
+						enableReinitialize
+						initialValues={
+							{ checkbox: false } as {
+								email?: string
+								password?: string
+								phone?: string
+								firstName?: string
+								lastName?: string
+								checkbox: boolean
+							}
+						}
+						onSubmit={async (values, { setSubmitting }) => {
+							setSubmitting(true)
+
+							await config.sleep(500)
+							close()
+
+							setSubmitting(false)
+						}}
+					>
+						{({ handleReset, isSubmitting, dirty, errors }) => {
+							return (
+								<Form noValidate>
+									<ExitPrompt dirty={dirty} noRouter />
+
+									<Content>
+										<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+											<Field
+												component={FInput}
+												required
+												type={'text'}
+												name='firstName'
+												label={config.text('auth.firstName')}
+											/>
+											<Field
+												component={FInput}
+												required
+												type={'text'}
+												name='lastName'
+												label={config.text('auth.lastName')}
+											/>
+										</div>
+										<div style={{ minHeight: 1500 }} />
+									</Content>
+									<Buttons>
+										<FButton onClick={close}>Cancel</FButton>
+										<FButton
+											{...(isSubmitting ? { isLoading: true } : {})}
+											appearance='primary'
+											formErrors={errors}
+											type='submit'
+										>
+											Add Item
+										</FButton>
+									</Buttons>
+								</Form>
+							)
+						}}
+					</Formik>
 				)}
 			/>
 		)
@@ -500,41 +555,47 @@ export default class Layout extends QueryParams<
 										Delete
 									</FButton>
 									<FButton onClick={() => this.setState({ bigModal: true })}>
-										Big
+										Submit
 									</FButton>
 								</div>
 							</Section>
 							<Section title='Collapse' tags={['<Collapsible/>', '<Animated/>']}>
 								<div style={{ ...styles.card }}>
-									<Collapsible
-										customTrigger
-										trigger={(isOpen, set) => (
-											<FButton onClick={() => set(!isOpen)}>
-												{isOpen ? 'Close' : 'Expand'}
-											</FButton>
-										)}
-										content={(set) => (
+									<div>
+										<FButton
+											onClick={() =>
+												this.setState({ collapse: !this.state.collapse })
+											}
+										>
+											{this.state.collapse ? 'Close' : 'Expand'}
+										</FButton>
+										<sp />
+										<Animated
+											controlled={this.state.collapse}
+											effects={['fade', 'height']}
+											duration={0.25}
+											style={{ overflow: 'visible' }}
+										>
 											<div
-												style={{
-													paddingTop: 15,
-													paddingLeft: 0,
-												}}
+												className='flex-col'
+												style={{ ...styles.outlineCard }}
 											>
-												<div
-													className='flex-col'
-													style={{ ...styles.outlineCard }}
-												>
-													<p>Content</p>
-													<sp />
-													<div style={{ alignSelf: 'flex-end' }}>
-														<FButton onClick={() => set(false)}>
-															{'Close'}
-														</FButton>
-													</div>
+												<p>Content</p>
+												<sp />
+												<div style={{ alignSelf: 'flex-end' }}>
+													<FButton
+														onClick={() =>
+															this.setState({
+																collapse: false,
+															})
+														}
+													>
+														{'Close'}
+													</FButton>
 												</div>
 											</div>
-										)}
-									></Collapsible>
+										</Animated>
+									</div>
 									<sp />
 									<Collapsible
 										trigger={(isOpen, set) => (

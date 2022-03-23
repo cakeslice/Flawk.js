@@ -154,8 +154,9 @@ export default class Misc extends QueryParams<{
 										<sp />
 										<p>
 											<tag>
-												{p} ({typeof this.queryParams[k]})
+												{p /* + ' (' + typeof this.queryParams[k] + ')' */}
 											</tag>
+											{' ' + this.queryParams[k]}
 										</p>
 									</div>
 								)
@@ -257,6 +258,14 @@ export default class Misc extends QueryParams<{
 								<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
 									<div>
 										<tag>{config.text('common.searching')}</tag>
+									</div>
+									<div>
+										<tag>
+											{config.localize({
+												pt: 'Cancelar',
+												en: 'Cancel',
+											})}
+										</tag>
 									</div>
 									<div>
 										<tag>{config.formatNumber(15000)}</tag>

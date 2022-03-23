@@ -374,6 +374,14 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 						<>
 							<Helmet>
 								<title>{title}</title>
+								{Capacitor.isNativePlatform() && (
+									<meta
+										name='viewport'
+										content={
+											'width=device-width, initial-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover'
+										}
+									/>
+								)}
 								<meta name='description' content={config.description()} />
 								{/* Don't use canonical unless you have to and don't use redudant og tags like description and url */}
 								{/* Helmet replaces the title and meta tags so if you want to use the default description in other pages you don't have to declare it again */}
