@@ -127,14 +127,16 @@ export default class Dropdown extends TrackedComponent<Props> {
 	}
 	triggerChange = () => {
 		if (this.props.loadOptions) {
-			if (this.bufferedValue || !this.props.showOnlyIfSearch)
-				this.props.loadOptions(this.bufferedValue, (options) => {
-					this.setState({ loadedOptions: options })
-				})
-		}
+			this.props.loadOptions(this.bufferedValue, (options) => {
+				this.setState({ loadedOptions: options, bufferedValue: this.bufferedValue })
+			})
+		} else this.setState({ bufferedValue: this.bufferedValue })
 	}
 
-	state: { loadedOptions?: Option[] } = { loadedOptions: undefined }
+	state: { loadedOptions?: Option[]; bufferedValue: string | undefined } = {
+		loadedOptions: undefined,
+		bufferedValue: undefined,
+	}
 
 	componentDidMount() {
 		if (this.props.loadOptions) {
@@ -783,14 +785,12 @@ export default class Dropdown extends TrackedComponent<Props> {
 									}}
 									menuIsOpen={
 										this.props.showOnlyIfSearch
-											? this.state.loadedOptions &&
-											  this.state.loadedOptions.length > 0
+											? this.state.bufferedValue
+												? true
+												: false
 											: undefined
 									}
-									options={
-										this.state.loadedOptions ||
-										(this.props.showOnlyIfSearch ? [] : this.props.options)
-									}
+									options={this.state.loadedOptions || this.props.options}
 								></Select>
 								{invalidType === 'right' && name && (
 									<div style={{ minWidth: 16, display: 'flex' }}>
