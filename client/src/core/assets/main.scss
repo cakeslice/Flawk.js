@@ -704,6 +704,54 @@ td.rdtYear:hover {
 
 //
 
+.rec.rec-carousel {
+	width: 100vw;
+}
+.rec.rec-slider-container {
+	margin: 0px;
+}
+.rec.rec-arrow.rec-arrow-right {
+	display: none;
+}
+.rec.rec-arrow.rec-arrow-left {
+	display: none;
+}
+.rec.rec-arrow.rec-arrow-right:hover {
+	background-color: var(--main);
+}
+.rec.rec-arrow.rec-arrow-left:hover {
+	background-color: var(--main);
+}
+.rec.rec-arrow.rec-arrow-right:focus {
+	background-color: rgba(127, 127, 127, 0.25);
+}
+.rec.rec-arrow.rec-arrow-left:focus {
+	background-color: rgba(127, 127, 127, 0.25);
+}
+.rec.rec-pagination {
+	margin-top: 15px;
+}
+.rec.rec-dot {
+	box-shadow: 0 0 1px 1px var(--main);
+}
+.rec.rec-dot:focus {
+	box-shadow: 0 0 1px 3px rgba(127, 127, 127, 0.25);
+}
+.rec.rec-dot:hover {
+	box-shadow: 0 0 1px 3px rgba(127, 127, 127, 0.25);
+}
+.rec.rec-dot_active {
+	background-color: var(--main);
+}
+.rec.rec-dot_active:focus {
+	box-shadow: 0 0 1px 3px rgba(127, 127, 127, 0.25);
+}
+.rec.rec-dot_active:hover {
+	box-shadow: 0 0 1px 3px rgba(127, 127, 127, 0.25);
+}
+
+//
+
 .lb-container {
 	background-color: rgba(0, 0, 0, 0.15);
 }

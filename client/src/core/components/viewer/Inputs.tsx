@@ -5,12 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import { get } from 'core/api'
 import logo from 'core/assets/images/logo.svg'
 import Dropdown from 'core/components/Dropdown'
 import ExitPrompt from 'core/components/ExitPrompt'
 import FButton from 'core/components/FButton'
 import Field from 'core/components/Field'
 import FInput from 'core/components/FInput'
+import { getSearch } from 'core/components/QueryParams'
 import Slider from 'core/components/Slider'
 import Tooltip from 'core/components/Tooltip'
 import config from 'core/config'
@@ -333,6 +335,48 @@ export default class Inputs extends Component {
 							<div style={{ ...styles.card, maxWidth: 783 }}>
 								<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
 									<Dropdown
+										style={{ flexGrow: 1 }}
+										isSearchable
+										label={'Full width'}
+										defaultValue={'accept'}
+										options={dropdownOptions}
+									/>
+									<Dropdown
+										isSearchable
+										loadOptions={async (input, callback) => {
+											const q = {
+												q: input,
+											}
+
+											const link =
+												'https://jsonplaceholder.typicode.com/todos?' +
+												getSearch(q)
+
+											const res = await get(link, {
+												internal: false,
+											})
+
+											if (res.ok && res.body) {
+												const items = res.body as unknown as {
+													id: string
+													title: string
+												}[]
+												const options =
+													items.map((d) => {
+														return {
+															value: d.id,
+															label: d.title,
+														}
+													}) || []
+												callback(options)
+											}
+										}}
+										label={'Async search'}
+									/>
+								</div>
+								<sp />
+								<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+									<Dropdown
 										name='dropdown'
 										label={'Invalid Label'}
 										erasable
@@ -398,13 +442,6 @@ export default class Inputs extends Component {
 											</div>
 										}
 										placeholder={'Custom indicator'}
-										defaultValue={'accept'}
-										options={dropdownOptions}
-									/>
-									<Dropdown
-										style={{ flexGrow: 1 }}
-										isSearchable
-										placeholder={'Full width'}
 										defaultValue={'accept'}
 										options={dropdownOptions}
 									/>

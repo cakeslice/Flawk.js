@@ -22,6 +22,7 @@ import styles from 'core/styles'
 import { Form, Formik } from 'formik'
 import _remove from 'lodash/remove'
 import React from 'react'
+import Carousel from 'react-elastic-carousel'
 import MediaQuery from 'react-responsive'
 import Collapsible from '../Collapsible'
 import Dropdown from '../Dropdown'
@@ -271,6 +272,8 @@ export default class Layout extends QueryParams<
 			backgroundColor: styles.colors.black,
 		}
 
+		const carouselItems = [1, 2, 3, 4, 5]
+
 		return (
 			<MediaQuery minWidth={config.mobileWidthTrigger}>
 				{(desktop) => {
@@ -319,6 +322,61 @@ export default class Layout extends QueryParams<
 									<div style={gridExample}></div>
 									<div style={gridExample}></div>
 								</div>
+							</Section>
+							<Section title='Carousel' tags={['react-elastic-carousel']}>
+								<Carousel
+									isRTL={false}
+									outerSpacing={desktop ? 40 : undefined}
+									breakPoints={[
+										{ width: 1, itemsToShow: 1 },
+										{
+											width: 550,
+											itemsToShow: 2,
+											itemsToScroll: 2,
+											//pagination: false,
+										},
+										{
+											width: 850,
+											itemsToShow: Math.min(carouselItems.length - 1, 3),
+										},
+										{
+											width: 1150,
+											itemsToShow: Math.min(carouselItems.length - 1, 4),
+											itemsToScroll: 2,
+										},
+										{
+											width: 1450,
+											itemsToShow: Math.min(carouselItems.length - 1, 5),
+										},
+										{
+											width: 1750,
+											itemsToShow: Math.min(carouselItems.length - 1, 6),
+										},
+									]}
+								>
+									{carouselItems.map((b, i) => (
+										<div
+											key={b}
+											style={{
+												...styles.card,
+												minHeight: 100,
+												width: 327,
+												margin: 20,
+												marginTop: 0,
+												marginBottom: 15,
+											}}
+										>
+											<div
+												style={{
+													width: '100%',
+													height: '100%',
+													opacity: 0.1,
+													backgroundColor: styles.colors.black,
+												}}
+											></div>
+										</div>
+									))}
+								</Carousel>
 							</Section>
 							<Section title='Table' tags={['<FTable/>']} noOverflow code={codeTable}>
 								<div>
