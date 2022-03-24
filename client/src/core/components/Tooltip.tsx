@@ -19,6 +19,7 @@ type Props = {
 	children: React.ReactNode
 	content: React.ReactNode | ((forceHide: () => void) => React.ReactNode)
 	tooltipProps?: Partial<TooltipTriggerProps>
+	foreground?: boolean
 	hidden?: boolean
 	offset?: number
 	offsetAlt?: number
@@ -79,7 +80,11 @@ export default class Tooltip extends TrackedComponent<Props> {
 					return (
 						<TooltipTrigger
 							portalContainer={
-								document.getElementById('portals-background') as HTMLElement
+								document.getElementById(
+									this.props.foreground
+										? 'portals-foreground'
+										: 'portals-background'
+								) as HTMLElement
 							}
 							placement='top'
 							delayHide={200}
@@ -113,7 +118,9 @@ export default class Tooltip extends TrackedComponent<Props> {
 									<div
 										{...getTooltipProps({
 											ref: tooltipRef,
-											className: 'tooltip-container',
+											className: this.props.foreground
+												? 'tooltip-container-foreground'
+												: 'tooltip-container',
 										})}
 									>
 										<Animated
@@ -139,7 +146,9 @@ export default class Tooltip extends TrackedComponent<Props> {
 										<div
 											{...getTooltipProps({
 												ref: tooltipRef,
-												className: 'tooltip-container',
+												className: this.props.foreground
+													? 'tooltip-container-foreground'
+													: 'tooltip-container',
 											})}
 										>
 											<Animated

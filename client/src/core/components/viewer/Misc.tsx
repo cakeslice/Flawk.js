@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import Anchor from 'core/components/Anchor'
 import Avatar from 'core/components/Avatar'
 import Dropdown from 'core/components/Dropdown'
 import FButton from 'core/components/FButton'
@@ -12,14 +13,19 @@ import LanguageSelect from 'core/components/LanguageSelect'
 import Loading from 'core/components/Loading'
 import QueryParams from 'core/components/QueryParams'
 import config from 'core/config'
+import { countriesSearch, sortedCountries } from 'core/functions/countries'
 import styles from 'core/styles'
+import { countries } from 'countries-list'
 import { formatDistanceToNow, subDays } from 'date-fns'
 import { pt } from 'date-fns/locale'
 import Parser from 'html-react-parser'
 import React from 'react'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
+import Flag from 'react-flagkit'
+import Helmet from 'react-helmet'
 import ReactQuill from 'react-quill'
 import MediaQuery from 'react-responsive'
+import { SizeMe } from 'react-sizeme'
 import FInput from '../FInput'
 import { Section } from './ComponentsViewer'
 
@@ -39,7 +45,22 @@ export default class Misc extends QueryParams<{
 	none?: string
 	default?: number
 }> {
-	state = { quill: '', chunkLoadError: false }
+	state = {
+		locallyStored: '',
+		newLocallyStored: '',
+		quill: '',
+		chunkLoadError: false,
+		toggleTitle: false,
+	}
+
+	componentDidMount() {
+		let e = global.localStorage.getItem('locallyStored')
+		if (!e) {
+			e = 'Something'
+			global.localStorage.setItem('locallyStored', e)
+		}
+		this.setState({ locallyStored: e, newLocallyStored: e })
+	}
 
 	defaultQueryParams = { default: 1 }
 	render() {
@@ -162,6 +183,152 @@ export default class Misc extends QueryParams<{
 								)
 							})}
 						</Section>
+						<Section title='Local storage' tags={['global.localStorage']}>
+							<div className='flex items-end'>
+								<FInput
+									name='local_storage'
+									isControlled
+									value={this.state.newLocallyStored}
+									onChange={(e) => {
+										this.setState({ newLocallyStored: e })
+									}}
+									style={{
+										width: 100,
+										borderTopRightRadius: 0,
+										borderBottomRightRadius: 0,
+									}}
+								></FInput>
+								<FButton
+									onClick={() => {
+										global.localStorage.setItem(
+											'locallyStored',
+											this.state.newLocallyStored
+										)
+										this.setState({
+											locallyStored: this.state.newLocallyStored,
+										})
+									}}
+									isDisabled={
+										this.state.locallyStored === this.state.newLocallyStored
+									}
+									style={{
+										minWidth: 40,
+										borderTopLeftRadius: 0,
+										borderBottomLeftRadius: 0,
+									}}
+								>
+									Set
+								</FButton>
+							</div>
+						</Section>
+						<Section title='Localization' tags={['<LanguageSelect/>']}>
+							<LanguageSelect></LanguageSelect>
+							<sp />
+							<div style={styles.card}>
+								<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+									<div>
+										<FInput label='Date' datePicker />
+									</div>
+									<div>
+										<Dropdown label='Dropdown'></Dropdown>
+									</div>
+								</div>
+								<sp />
+								<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+									<div>
+										<tag>{config.text('common.searching')}</tag>
+									</div>
+									<div>
+										<tag>
+											{config.localize({
+												pt: 'Cancelar',
+												en: 'Cancel',
+											})}
+										</tag>
+									</div>
+									<div>
+										<tag>{config.formatNumber(15000)}</tag>
+									</div>
+									<div>
+										<tag>{config.formatDecimal(15000)}</tag>
+									</div>
+									<div>
+										<tag>
+											{new Date().toLocaleDateString(global.lang.date, {
+												day: '2-digit',
+												month: 'long',
+												year: 'numeric',
+											})}
+										</tag>
+									</div>
+									<div>
+										<tag>
+											{formatDistanceToNow(subDays(new Date(), 1), {
+												...(global.lang.moment === 'pt' && { locale: pt }),
+											})}
+										</tag>
+									</div>
+								</div>
+							</div>
+						</Section>
+						<Section title='Countries' tags={['countries-list', 'react-flagkit']}>
+							<Dropdown
+								isSearchable={true}
+								searchFunction={countriesSearch}
+								placeholder='Search countries'
+								showOnlyIfSearch
+								options={Object.keys(sortedCountries).map((c) => {
+									return {
+										value: c,
+										label: (
+											<div
+												style={{
+													display: 'flex',
+													alignItems: 'center',
+												}}
+											>
+												<Flag country={c}></Flag>
+												<div
+													style={{
+														minWidth: 10,
+													}}
+												/>
+												<div>
+													{c +
+														' (+' +
+														// @ts-ignore
+														countries[c].phone +
+														')'}
+												</div>
+											</div>
+										),
+									}
+								})}
+							/>
+						</Section>
+						<Section title='Media query' tags={['<MediaQuery/>', '<SizeMe/>']}>
+							<MediaQuery minWidth={config.mobileWidthTrigger}>
+								{(desktop) => (
+									<div>
+										{desktop
+											? 'This is a big screen'
+											: 'This is a small screen'}
+									</div>
+								)}
+							</MediaQuery>
+							<sp />
+							<div style={{ ...styles.card, padding: 0 }}>
+								<SizeMe>
+									{({ size }) => (
+										<div style={{ padding: 10 }}>
+											{'This container is ' +
+												(size.width ? size.width.toFixed(0) : '?') +
+												' pixels wide'}
+										</div>
+									)}
+								</SizeMe>
+							</div>
+						</Section>
 						<Section title='Toast' tags={['global.addFlag()']}>
 							<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
 								<FButton
@@ -242,58 +409,21 @@ export default class Misc extends QueryParams<{
 								<FButton>Copy Link</FButton>
 							</CopyToClipboard>
 						</Section>
-						<Section title='Localization' tags={['<LanguageSelect/>']}>
-							<LanguageSelect></LanguageSelect>
-							<sp />
-							<div style={styles.card}>
-								<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
-									<div>
-										<FInput label='Date' datePicker></FInput>
-									</div>
-									<div>
-										<Dropdown label='Dropdown'></Dropdown>
-									</div>
-								</div>
-								<sp />
-								<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
-									<div>
-										<tag>{config.text('common.searching')}</tag>
-									</div>
-									<div>
-										<tag>
-											{config.localize({
-												pt: 'Cancelar',
-												en: 'Cancel',
-											})}
-										</tag>
-									</div>
-									<div>
-										<tag>{config.formatNumber(15000)}</tag>
-									</div>
-									<div>
-										<tag>{config.formatDecimal(15000)}</tag>
-									</div>
-									<div>
-										<tag>
-											{new Date().toLocaleDateString(global.lang.date, {
-												day: '2-digit',
-												month: 'long',
-												year: 'numeric',
-											})}
-										</tag>
-									</div>
-									<div>
-										<tag>
-											{formatDistanceToNow(subDays(new Date(), 1), {
-												...(global.lang.moment === 'pt' && { locale: pt }),
-											})}
-										</tag>
-									</div>
-								</div>
-							</div>
-						</Section>
 						<Section title='Scroll to top' tags={['config.scrollToTop()']}>
 							<FButton onClick={() => config.scrollToTop()}>Scroll</FButton>
+						</Section>
+						<Section title='Anchor' tags={['<Anchor/>']}>
+							<Anchor id='anchor_example'>
+								<FButton
+									onClick={() => {
+										global
+											.routerHistory()
+											.push('/components/misc#anchor_example')
+									}}
+								>
+									Scroll
+								</FButton>
+							</Anchor>
 						</Section>
 						<Section title='Error Handling'>
 							<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
@@ -321,6 +451,38 @@ export default class Misc extends QueryParams<{
 									}}
 								>
 									Log Error
+								</FButton>
+							</div>
+						</Section>
+						<Section title='Meta tag' tags={['<Helmet/>']}>
+							<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+								<FButton
+									onClick={() => {
+										this.setState({ toggleTitle: !this.state.toggleTitle })
+									}}
+								>
+									Change Page Title
+								</FButton>
+								{this.state.toggleTitle && (
+									<Helmet>
+										<title>Hello World!</title>
+									</Helmet>
+								)}
+							</div>
+						</Section>
+						<Section title='Inject script' tags={['config.injectScript()']}>
+							<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+								<FButton
+									onClick={() => {
+										config.injectScript(
+											`const hello = function (){alert('Hello!')};hello();`,
+											'text',
+											false,
+											true
+										)
+									}}
+								>
+									Inject
 								</FButton>
 							</div>
 						</Section>

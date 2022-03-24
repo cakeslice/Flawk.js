@@ -74,6 +74,7 @@ const Input = (
 	props: React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>
 ) => <input {...props}></input>
 const DatePicker = (props: {
+	foreground?: boolean
 	utc?: boolean
 	locale?: string
 	value?: string
@@ -99,6 +100,7 @@ const DatePicker = (props: {
 						style={{
 							animation: 'openDown 0.2s ease-in-out',
 							color: styles.colors.black,
+							...(props.foreground && { position: 'fixed' }),
 						}}
 						className={
 							'rdtPickerCustom ' +
@@ -153,8 +155,6 @@ type Props = {
 	emptyLabel?: boolean
 	icon?: React.ReactNode
 	clickableIcon?: boolean
-	button?: React.ReactNode
-	buttonStyle?: React.CSSProperties
 	//
 	defaultValue?: number | string
 	autoFocus?: boolean
@@ -167,6 +167,7 @@ type Props = {
 	type?: React.HTMLInputTypeAttribute
 	//
 	datePicker?: boolean
+	foreground?: boolean
 	//
 	field?: FieldInputProps<Obj>
 	form?: FormikProps<Obj>
@@ -615,6 +616,14 @@ export default class FInput extends TrackedComponent<Props> {
 												this.props.labelStyle.opacity && {
 													opacity: this.props.labelStyle.opacity,
 												}),
+											...(this.props.labelStyle &&
+												this.props.labelStyle.width && {
+													width: this.props.labelStyle.width,
+												}),
+											...(this.props.labelStyle &&
+												this.props.labelStyle.height && {
+													height: this.props.labelStyle.height,
+												}),
 										}}
 									>
 										{label}
@@ -643,6 +652,7 @@ export default class FInput extends TrackedComponent<Props> {
 										{...commonProps}
 										{...datePickerValueProps}
 										{...inputEventProps}
+										foreground={this.props.foreground}
 										inputStyle={cssStyle}
 									/>
 								) : this.props.textArea ? (
@@ -716,25 +726,6 @@ export default class FInput extends TrackedComponent<Props> {
 											}}
 										>
 											{this.props.icon}
-										</div>
-									</div>
-								)}
-								{this.props.button && (
-									<div style={{ maxWidth: 0, maxHeight: 0 }}>
-										<div
-											style={{
-												position: 'relative',
-												display: 'flex',
-												justifyContent: 'center',
-												alignItems: 'center',
-												width: 30,
-												right: 35,
-												top: 2,
-												height: styles.inputHeight,
-												...this.props.buttonStyle,
-											}}
-										>
-											{this.props.button}
 										</div>
 									</div>
 								)}

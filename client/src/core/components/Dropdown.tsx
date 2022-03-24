@@ -73,6 +73,7 @@ type Props = {
 	emptyLabel?: boolean
 	dropdownIndicator?: React.ReactNode
 	customInput?: boolean
+	foreground?: boolean
 	//
 	placeholder?: string
 	value?: string | number
@@ -88,6 +89,7 @@ type Props = {
 	noPortal?: boolean
 	erasable?: boolean
 	isSearchable?: boolean
+	showOnlyIfSearch?: boolean
 	menuPlacement?: 'top' | 'bottom' | 'auto'
 	//
 	field?: FieldInputProps<Obj>
@@ -125,9 +127,10 @@ export default class Dropdown extends TrackedComponent<Props> {
 	}
 	triggerChange = () => {
 		if (this.props.loadOptions) {
-			this.props.loadOptions(this.bufferedValue, (options) => {
-				this.setState({ loadedOptions: options })
-			})
+			if (this.bufferedValue || !this.props.showOnlyIfSearch)
+				this.props.loadOptions(this.bufferedValue, (options) => {
+					this.setState({ loadedOptions: options })
+				})
 		}
 	}
 
@@ -380,7 +383,7 @@ export default class Dropdown extends TrackedComponent<Props> {
 		const selectStyles: StylesConfig = {
 			menuPortal: (base): CSSObjectWithLabel => ({
 				...base,
-				zIndex: 25,
+				zIndex: this.props.foreground ? 50 : 25,
 			}),
 			valueContainer: (s): CSSObjectWithLabel => {
 				return {
@@ -640,6 +643,14 @@ export default class Dropdown extends TrackedComponent<Props> {
 												this.props.labelStyle.opacity && {
 													opacity: this.props.labelStyle.opacity,
 												}),
+											...(this.props.labelStyle &&
+												this.props.labelStyle.width && {
+													width: this.props.labelStyle.width,
+												}),
+											...(this.props.labelStyle &&
+												this.props.labelStyle.height && {
+													height: this.props.labelStyle.height,
+												}),
 										}}
 									>
 										{label}
@@ -673,7 +684,11 @@ export default class Dropdown extends TrackedComponent<Props> {
 									loadingMessage={() => config.text('common.searching')}
 									menuPortalTarget={
 										!this.props.noPortal
-											? document.getElementById('portals-background')
+											? document.getElementById(
+													this.props.foreground
+														? 'portals-foreground'
+														: 'portals-background'
+											  )
 											: undefined
 									}
 									isClearable={this.props.erasable}
@@ -766,7 +781,16 @@ export default class Dropdown extends TrackedComponent<Props> {
 									onInputChange={(value?: string) => {
 										this.handleChangeBuffered(value === '' ? undefined : value)
 									}}
-									options={this.state.loadedOptions || this.props.options}
+									menuIsOpen={
+										this.props.showOnlyIfSearch
+											? this.state.loadedOptions &&
+											  this.state.loadedOptions.length > 0
+											: undefined
+									}
+									options={
+										this.state.loadedOptions ||
+										(this.props.showOnlyIfSearch ? [] : this.props.options)
+									}
 								></Select>
 								{invalidType === 'right' && name && (
 									<div style={{ minWidth: 16, display: 'flex' }}>

@@ -16,6 +16,7 @@ import FTable from 'core/components/FTable'
 import Modal from 'core/components/Modal'
 import Paginate from 'core/components/Paginate'
 import QueryParams from 'core/components/QueryParams'
+import Tooltip from 'core/components/Tooltip'
 import config from 'core/config'
 import styles from 'core/styles'
 import { Form, Formik } from 'formik'
@@ -23,6 +24,7 @@ import _remove from 'lodash/remove'
 import React from 'react'
 import MediaQuery from 'react-responsive'
 import Collapsible from '../Collapsible'
+import Dropdown from '../Dropdown'
 import { Section } from './ComponentsViewer'
 
 export default class Layout extends QueryParams<
@@ -133,7 +135,31 @@ export default class Layout extends QueryParams<
 				title={'Title'}
 				content={(close, Content, Buttons, Parent) => (
 					<Parent>
-						<Content>Content</Content>
+						<Content>
+							<div className='wrapMarginTopLeft flex flex-wrap justify-start items-end'>
+								<FInput label='Date' foreground datePicker></FInput>
+								<Dropdown
+									foreground
+									options={[
+										{ value: '1', label: 'Option 1' },
+										{ value: '2', label: 'Option 2' },
+									]}
+								></Dropdown>
+								<Tooltip
+									foreground
+									content={
+										<p>
+											Lorem ipsum dolor sit amet, adipiscing elit, sed do
+											eiusmod tempor ut labore et dolore magna aliqua. Ut enim
+											ad minim veniam, quis nostrud exercitation ullamco
+											laboris nisi ut aliquip ex ea commodo.
+										</p>
+									}
+								>
+									<tag>Tooltip</tag>
+								</Tooltip>
+							</div>
+						</Content>
 						<Buttons>
 							<FButton appearance='primary' onClick={close}>
 								Button
@@ -193,6 +219,18 @@ export default class Layout extends QueryParams<
 												name='lastName'
 												label={config.text('auth.lastName')}
 											/>
+										</div>
+										<sp />
+										<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+											<FInput label='Date' foreground datePicker></FInput>
+											<Dropdown
+												label={'Dropdown'}
+												foreground
+												options={[
+													{ value: '1', label: 'Option 1' },
+													{ value: '2', label: 'Option 2' },
+												]}
+											></Dropdown>
 										</div>
 										<div style={{ minHeight: 1500 }} />
 									</Content>
@@ -509,6 +547,29 @@ export default class Layout extends QueryParams<
 												),
 												selector: 'action',
 												//hide: 'mobile',
+												cell: (value) => (
+													<div className='flex justify-center'>
+														<Dropdown
+															customInput
+															style={{
+																menu: { left: 0, width: 75 },
+															}}
+															options={[
+																{
+																	value: 'edit',
+																	label: 'Edit',
+																},
+																{
+																	value: 'delete',
+																	label: 'Delete',
+																	style: {
+																		color: styles.colors.red,
+																	},
+																},
+															]}
+														/>
+													</div>
+												),
 											},
 										]}
 										data={this.state.data && this.state.data.items}
@@ -546,7 +607,7 @@ export default class Layout extends QueryParams<
 							<Section title='Modal' tags={['<Modal/>']}>
 								<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
 									<FButton onClick={() => this.setState({ exampleModal: true })}>
-										View
+										Open
 									</FButton>
 									<FButton
 										appearance='delete'

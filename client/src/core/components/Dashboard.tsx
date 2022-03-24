@@ -274,11 +274,7 @@ export default class Dashboard extends TrackedComponent<
 													this.toggleOpen(false)
 												}
 											>
-												<Portal
-													node={document.getElementById(
-														'portals-foreground'
-													)}
-												>
+												<Portal node={document.getElementById('portals')}>
 													<Animated
 														trackedName='Dashboard'
 														animateOffscreen
@@ -333,11 +329,7 @@ export default class Dashboard extends TrackedComponent<
 														: 0,
 												}}
 											>
-												<Portal
-													node={document.getElementById(
-														'portals-foreground'
-													)}
-												>
+												<Portal node={document.getElementById('portals')}>
 													<Animated
 														trackedName='Dashboard'
 														animateOffscreen
@@ -811,11 +803,12 @@ class MenuClass extends TrackedComponent<MenuProps> {
 								>
 									{icon}
 									<div>
-										{link.name && !link.justIcon && (
-											<div style={textStyle}>
-												{config.localize(link.name)}
-											</div>
-										)}
+										{link.name &&
+											(!link.justIcon || !this.props.horizontal) && (
+												<div style={textStyle}>
+													{config.localize(link.name)}
+												</div>
+											)}
 									</div>
 								</a>
 							) : (
@@ -837,11 +830,12 @@ class MenuClass extends TrackedComponent<MenuProps> {
 								>
 									{icon}
 									<div>
-										{link.name && !link.justIcon && (
-											<div style={textStyle}>
-												{config.localize(link.name)}
-											</div>
-										)}
+										{link.name &&
+											(!link.justIcon || !this.props.horizontal) && (
+												<div style={textStyle}>
+													{config.localize(link.name)}
+												</div>
+											)}
 									</div>
 								</Link>
 							)}
@@ -855,8 +849,9 @@ class MenuClass extends TrackedComponent<MenuProps> {
 								}
 								key={link.id + (link.params || '')}
 							>
-								{link.justIcon && link.name ? (
+								{link.justIcon && link.name && this.props.horizontal ? (
 									<Tooltip
+										foreground
 										offset={link.tooltipOffset}
 										containerStyle={{ width: '100%', height: '100%' }}
 										tooltipProps={{
@@ -966,15 +961,17 @@ class MenuClass extends TrackedComponent<MenuProps> {
 														}
 													>
 														<div>
-															{sub.name && !link.justIcon && (
-																<div
-																	style={{
-																		whiteSpace: 'nowrap',
-																	}}
-																>
-																	{config.localize(sub.name)}
-																</div>
-															)}
+															{sub.name &&
+																(!link.justIcon ||
+																	!this.props.horizontal) && (
+																	<div
+																		style={{
+																			whiteSpace: 'nowrap',
+																		}}
+																	>
+																		{config.localize(sub.name)}
+																	</div>
+																)}
 														</div>
 													</Link>
 												</div>
@@ -984,8 +981,9 @@ class MenuClass extends TrackedComponent<MenuProps> {
 							</div>
 						)
 					else
-						return link.justIcon && link.name ? (
+						return link.justIcon && link.name && this.props.horizontal ? (
 							<Tooltip
+								foreground
 								offset={link.tooltipOffset}
 								containerStyle={
 									this.props.horizontal ? { height: '100%' } : { width: '100%' }

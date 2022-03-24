@@ -193,6 +193,7 @@ export default class ComponentsViewer extends Component {
 			{
 				name: (!global.nightMode ? 'Dark' : 'Light') + ' mode',
 				notRoute: true,
+				justIcon: true,
 				onClick: () => global.toggleNightMode(),
 				customIcon: (active) => (
 					<div
