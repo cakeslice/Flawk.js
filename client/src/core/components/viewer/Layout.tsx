@@ -5,9 +5,21 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import { ChartData } from 'chart.js'
 import { get } from 'core/api'
 import logo from 'core/assets/images/logo.svg'
 import Animated from 'core/components/Animated'
+import {
+	BarChart,
+	DoughnutChart,
+	LineChart,
+	mockBar,
+	mockColors,
+	mockDoughnut,
+	mockLine,
+	mockPie,
+	PieChart,
+} from 'core/components/Chart'
 import ExitPrompt from 'core/components/ExitPrompt'
 import FButton from 'core/components/FButton'
 import Field from 'core/components/Field'
@@ -314,9 +326,9 @@ export default class Layout extends QueryParams<
 									style={{ ...styles.card, width: '100%' }}
 								>
 									<div style={gridExample}></div>
+									<div className='col-span-2' style={gridExample}></div>
 									<div style={gridExample}></div>
-									<div style={gridExample}></div>
-									<div style={gridExample}></div>
+									<div className='col-span-full' style={gridExample}></div>
 									<div style={gridExample}></div>
 									<div style={gridExample}></div>
 									<div style={gridExample}></div>
@@ -678,6 +690,56 @@ export default class Layout extends QueryParams<
 									</FButton>
 								</div>
 							</Section>
+							<Section title='Chart' tags={['<Chart/>']}>
+								<div
+									className={
+										desktop
+											? 'grid grid-cols-2'
+											: 'wrapMarginBigVertical flex-col'
+									}
+									style={{ gap: 25 }}
+								>
+									<StatCard
+										title='Doughnut Chart'
+										footer={<ChartLabels data={mockDoughnut} />}
+									>
+										<DoughnutChart
+											percentTooltip
+											data={mockDoughnut}
+										></DoughnutChart>
+									</StatCard>
+									<StatCard
+										title={'Pie Chart'}
+										footer={<ChartLabels data={mockPie} />}
+									>
+										<PieChart data={mockPie}></PieChart>
+									</StatCard>
+									{desktop && (
+										<StatCard
+											style={{ marginBottom: 10, height: 400 }}
+											title={'Bar Chart'}
+										>
+											<BarChart
+												dataLabels={desktop}
+												percent
+												data={mockBar}
+											></BarChart>
+										</StatCard>
+									)}
+									{desktop && (
+										<StatCard
+											style={{ marginBottom: 10, height: 400 }}
+											title={'Line Chart'}
+										>
+											<LineChart
+												dataLabels={desktop}
+												percent
+												data={mockLine}
+											></LineChart>
+										</StatCard>
+									)}
+								</div>
+							</Section>
 							<Section title='Collapse' tags={['<Collapsible/>', '<Animated/>']}>
 								<div style={{ ...styles.card }}>
 									<div>
@@ -746,6 +808,90 @@ export default class Layout extends QueryParams<
 		)
 	}
 }
+
+class ChartLabels extends React.Component<{ data?: ChartData<'doughnut' | 'pie', number[]> }> {
+	render() {
+		return (
+			<div className='wrapMarginBig flex flex-wrap items-center justify-center'>
+				{this.props.data?.labels?.map((l, i) => (
+					<div className='flex items-center' key={l as string}>
+						<div
+							style={{
+								borderRadius: '50%',
+								width: 7.5,
+								height: 7.5,
+								background: mockColors[i],
+								marginRight: 7.5,
+							}}
+						/>
+						<div>{l as string}</div>
+					</div>
+				))}
+			</div>
+		)
+	}
+}
+
+class StatCard extends React.Component<{
+	title: string | React.ReactNode
+	footer?: React.ReactNode
+	full?: boolean
+	span?: number
+	style?: React.CSSProperties
+}> {
+	render() {
+		const p = 15
+
+		return (
+			<MediaQuery minWidth={config.mobileWidthTrigger}>
+				{(desktop) => {
+					return (
+						<div
+							className={
+								this.props.span
+									? 'col-span-' + this.props.span
+									: this.props.full
+									? 'col-span-full'
+									: ''
+							}
+							style={{
+								...styles.card,
+								margin: 0,
+								padding: 0,
+								background: styles.colors.white,
+								flexGrow: 1,
+								width: '100%',
+							}}
+						>
+							<div style={{ padding: p, paddingBottom: p, fontWeight: 500 }}>
+								{typeof this.props.title === 'string' ? (
+									<p>{this.props.title}</p>
+								) : (
+									this.props.title
+								)}
+							</div>
+							<hr style={{ margin: 0 }} />
+							<div style={{ padding: p, height: 200, ...this.props.style }}>
+								{this.props.children}
+							</div>
+							{this.props.footer && <hr style={{ margin: 0 }} />}
+							{this.props.footer && (
+								<div
+									className='flex justify-center items-center'
+									style={{ padding: p, paddingTop: p }}
+								>
+									{this.props.footer}
+								</div>
+							)}
+						</div>
+					)
+				}}
+			</MediaQuery>
+		)
+	}
+}
+
+//
 
 const codeTable = `import FTable from 'core/components/FTable'
 
