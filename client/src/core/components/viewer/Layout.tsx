@@ -732,7 +732,7 @@ export default class Layout extends QueryParams<
 											title={'Line Chart'}
 										>
 											<LineChart
-												dataLabels={desktop}
+												dataLabels={false}
 												percent
 												data={mockLine}
 											></LineChart>

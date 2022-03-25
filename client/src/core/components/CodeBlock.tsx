@@ -59,9 +59,10 @@ export default function CodeBlock(props: {
 						style={SyntaxStyle}
 						customStyle={{
 							borderRadius: 6,
-							background: global.nightMode ? 'rgba(30,30,30,1)' : '#282c34',
+							background: 'rgba(30,30,30,1)',
 							padding: 16,
 							fontSize: !desktop ? 14 : 14,
+							fontWeight: 'bold',
 							width: '100%',
 							...props.style,
 						}}

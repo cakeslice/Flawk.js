@@ -14,6 +14,7 @@ import {
 	ChartData,
 	ChartType,
 	CoreChartOptions,
+	Filler,
 	Legend,
 	LinearScale,
 	LineElement,
@@ -36,6 +37,7 @@ ChartJS.register(
 	CategoryScale,
 	ArcElement,
 	LinearScale,
+	Filler,
 	BarElement,
 	Title,
 	LinearScale,
@@ -90,6 +92,12 @@ export const mockLine: ChartData<'line', number[], unknown> = {
 			data: mockBarLabels.map(() => faker.datatype.number({ min: 0, max: 1000 })),
 			backgroundColor: mockColors[0],
 		},
+		{
+			label: 'Dataset 2',
+			borderColor: config.replaceAlpha(mockColors[3], 0.5),
+			data: mockBarLabels.map(() => faker.datatype.number({ min: 0, max: 1000 })),
+			backgroundColor: mockColors[3],
+		},
 	],
 }
 const mockDoughnutLabels = ['Tech', 'Finance', 'Marketing', 'Sales']
@@ -101,7 +109,9 @@ export const mockDoughnut: ChartData<'doughnut', number[], unknown> = {
 			data: mockDoughnutLabels.map(() => faker.datatype.number({ min: 0, max: 1000 })),
 			backgroundColor: mockColors,
 			borderJoinStyle: 'bevel',
-			borderColor: styles.colors.white,
+			borderColor: global.nightMode
+				? config.replaceAlpha(styles.colors.white, 0.25)
+				: styles.colors.white,
 			borderWidth: 1,
 		},
 	],
@@ -115,7 +125,9 @@ export const mockPie: ChartData<'pie', number[], unknown> = {
 			data: mockPieLabels.map(() => faker.datatype.number({ min: 0, max: 1000 })),
 			backgroundColor: mockColors,
 			borderJoinStyle: 'bevel',
-			borderColor: styles.colors.white,
+			borderColor: global.nightMode
+				? config.replaceAlpha(styles.colors.white, 0.25)
+				: styles.colors.white,
 			borderWidth: 1,
 		},
 	],
@@ -182,6 +194,12 @@ export class BarChart extends TrackedComponent<BarProps> {
 			layout: {
 				padding: {
 					top: 30,
+				},
+			},
+			datasets: {
+				// @ts-ignore
+				bar: {
+					maxBarThickness: 40,
 				},
 			},
 			scales: {
@@ -325,6 +343,12 @@ export class LineChart extends TrackedComponent<LineProps> {
 			layout: {
 				padding: {
 					top: 30,
+				},
+			},
+			datasets: {
+				// @ts-ignore
+				line: {
+					borderColor: config.replaceAlpha(styles.colors.main, 0.5),
 				},
 			},
 			scales: {
