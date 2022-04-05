@@ -5,10 +5,10 @@
 # LICENSE file in the root directory of this source tree.
 #
 
-# ---------------------------
+# ------------ Install ------------
 
-# To SSH - Use your SSH key and use "root" username
 # [Ubuntu] Install Docker and CapRover: deploy/ubuntu.txt
+# To SSH - Use your SSH key and use "root" username
 # Then connect using SSH again using port 1000
 
 # ------------ Monitoring ------------

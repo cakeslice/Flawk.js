@@ -123,18 +123,6 @@ const styles: Styles & { colors: Colors; gradients: Gradients } = {
 	// Dropzone
 
 	dropZone: {
-		/* flex: 1,
-		display: 'flex',
-		flexDirection: 'column',
-		alignItems: 'center',
-		padding: '20px',
-		borderWidth: 2,
-		borderRadius: 2,
-		borderColor: '#eeeeee',
-		borderStyle: 'dashed',
-		backgroundColor: '#fafafa',
-		color: '#bdbdbd',
-		outline: 'none', */
 		transition: 'border .24s ease-in-out',
 
 		display: 'flex',
@@ -144,15 +132,11 @@ const styles: Styles & { colors: Colors; gradients: Gradients } = {
 		height: 137,
 		width: '100%',
 		borderRadius: 4,
-		border: '1px dashed ' + _black,
+		border: '1px dashed ' + config.replaceAlpha(_black, 0.33),
 	},
 	dropZoneActive: {
 		borderColor: _main,
 		background: config.replaceAlpha(_main, 0.1),
-	},
-	dropZoneReject: {
-		borderColor: _red,
-		background: config.replaceAlpha(_red, 0.1),
 	},
 
 	// Misc
@@ -416,7 +400,6 @@ export type Styles = {
 
 	dropZone: React.CSSProperties
 	dropZoneActive: React.CSSProperties
-	dropZoneReject: React.CSSProperties
 
 	// Misc
 

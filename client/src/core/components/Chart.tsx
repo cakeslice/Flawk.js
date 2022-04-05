@@ -21,16 +21,37 @@ import {
 	PluginChartOptions,
 	PointElement,
 	ScaleChartOptions,
+	ScriptableContext,
 	Title,
 	Tooltip,
 } from 'chart.js'
+import {
+	TreemapController,
+	TreemapControllerDatasetOptions,
+	TreemapDataPoint,
+	TreemapElement,
+} from 'chartjs-chart-treemap'
 import ChartDataLabels from 'chartjs-plugin-datalabels'
 import Loading from 'core/components/Loading'
 import config from 'core/config'
 import styles from 'core/styles'
 import React from 'react'
-import { Bar, Doughnut, Line, Pie } from 'react-chartjs-2'
+import { Bar, Chart, Doughnut, Line, Pie } from 'react-chartjs-2'
 import TrackedComponent from './TrackedComponent'
+
+export type TreemapData = {
+	datasets: TreemapControllerDatasetOptions<Record<string, unknown>>[]
+}
+export const getTreemapColor = (
+	ctx: ScriptableContext<'treemap'> & TreemapDataPoint,
+	colors: string[]
+): string => {
+	// @ts-ignore
+	if (ctx.type === 'data') {
+		// @ts-ignore
+		return colors[ctx.raw._data._idx]
+	} else return 'transparent'
+}
 
 ChartJS.register(
 	ChartDataLabels,
@@ -44,7 +65,9 @@ ChartJS.register(
 	PointElement,
 	LineElement,
 	Tooltip,
-	Legend
+	Legend,
+	TreemapController,
+	TreemapElement
 )
 
 type Options<T extends ChartType> = Partial<CoreChartOptions<T>> &
@@ -108,7 +131,6 @@ export const mockDoughnut: ChartData<'doughnut', number[], unknown> = {
 			label: 'Dataset 1',
 			data: mockDoughnutLabels.map(() => faker.datatype.number({ min: 0, max: 1000 })),
 			backgroundColor: mockColors,
-			borderJoinStyle: 'bevel',
 			borderColor: global.nightMode
 				? config.replaceAlpha(styles.colors.white, 0.25)
 				: styles.colors.white,
@@ -124,7 +146,6 @@ export const mockPie: ChartData<'pie', number[], unknown> = {
 			label: 'Dataset 1',
 			data: mockPieLabels.map(() => faker.datatype.number({ min: 0, max: 1000 })),
 			backgroundColor: mockColors,
-			borderJoinStyle: 'bevel',
 			borderColor: global.nightMode
 				? config.replaceAlpha(styles.colors.white, 0.25)
 				: styles.colors.white,
@@ -254,7 +275,7 @@ export class BarChart extends TrackedComponent<BarProps> {
 										context[0].parsed.y,
 										context[0].chart.data.datasets[0].data as number[]
 								  )
-								: context[0].parsed.y
+								: config.formatNumber(context[0].parsed.y)
 							return label
 						},
 						label: (context) => {
@@ -268,13 +289,10 @@ export class BarChart extends TrackedComponent<BarProps> {
 					},
 				},
 				datalabels: {
-					formatter: (value, ctx) => {
+					formatter: (value: number, ctx) => {
 						return this.props.percent
-							? getPercent(
-									value as number,
-									ctx.chart.data.datasets[0].data as number[]
-							  )
-							: value
+							? getPercent(value, ctx.chart.data.datasets[0].data as number[])
+							: config.formatNumber(value)
 					},
 					display: this.props.dataLabels !== undefined ? this.props.dataLabels : true,
 					color: styles.colors.black,
@@ -403,7 +421,7 @@ export class LineChart extends TrackedComponent<LineProps> {
 										context[0].parsed.y,
 										context[0].chart.data.datasets[0].data as number[]
 								  )
-								: context[0].parsed.y
+								: config.formatNumber(context[0].parsed.y)
 							return label
 						},
 						label: (context) => {
@@ -411,19 +429,16 @@ export class LineChart extends TrackedComponent<LineProps> {
 							if (label) {
 								label += ': '
 							}
-							label += context.parsed.y
+							label += config.formatNumber(context.parsed.y)
 							return '' //label
 						},
 					},
 				},
 				datalabels: {
-					formatter: (value, ctx) => {
+					formatter: (value: number, ctx) => {
 						return this.props.percent
-							? getPercent(
-									value as number,
-									ctx.chart.data.datasets[0].data as number[]
-							  )
-							: value
+							? getPercent(value, ctx.chart.data.datasets[0].data as number[])
+							: config.formatNumber(value)
 					},
 					display: this.props.dataLabels !== undefined ? this.props.dataLabels : true,
 					color: styles.colors.black,
@@ -501,7 +516,7 @@ export class DoughnutChart extends TrackedComponent<DoughnutProps> {
 							}
 							label += this.props.percentTooltip
 								? getPercent(context.parsed, context.dataset.data)
-								: context.parsed
+								: config.formatNumber(context.parsed)
 							return label
 						},
 					},
@@ -576,7 +591,7 @@ export class PieChart extends TrackedComponent<PieProps> {
 							}
 							label += this.props.percentTooltip
 								? getPercent(context.parsed, context.dataset.data)
-								: context.parsed
+								: config.formatNumber(context.parsed)
 							return label
 						},
 					},
@@ -609,6 +624,124 @@ export class PieChart extends TrackedComponent<PieProps> {
 
 		return (
 			<Pie
+				options={this.options()}
+				data={
+					this.props.data || {
+						labels: [],
+						datasets: [],
+					}
+				}
+			/>
+		)
+	}
+}
+
+type TreemapProps = {
+	data?: TreemapData
+	options?: Options<'treemap'>
+} & CoreProps
+export class TreemapChart extends TrackedComponent<TreemapProps> {
+	trackedName = 'TreemapChart'
+	shouldComponentUpdate(nextProps: TreemapProps, nextState: typeof this.state) {
+		super.shouldComponentUpdate(nextProps, nextState, false)
+		return this.deepEqualityCheck(nextProps, nextState)
+	}
+
+	state = {}
+
+	options = (): Options<'treemap'> => {
+		return {
+			responsive: true,
+			maintainAspectRatio: false,
+			datasets: {
+				// @ts-ignore
+				treemap: {
+					labels: {
+						display: true,
+						color: styles.colors.whiteDay,
+						formatter: (ctx) => {
+							const context = ctx.chart.data
+
+							// @ts-ignore
+							const width = context.datasets[ctx.datasetIndex].data[ctx.dataIndex].w
+							if (width < 100) return ''
+
+							// @ts-ignore
+							const value = context.datasets[ctx.datasetIndex].tree[ctx.dataIndex]
+								.count as number
+							let label = // @ts-ignore
+								context.datasets[ctx.datasetIndex].tree[ctx.dataIndex].label || ''
+							if (label) {
+								label += ': '
+							}
+							label += this.props.percentTooltip
+								? getPercent(
+										value,
+										// @ts-ignore
+										// eslint-disable-next-line
+										context.datasets[ctx.datasetIndex].tree.map((d) => d.count)
+								  )
+								: config.formatNumber(value)
+							return label
+						},
+					},
+				},
+			},
+			plugins: {
+				// @ts-ignore
+				tooltip: {
+					...tooltipStyle,
+					titleMarginBottom: 0,
+					callbacks: {
+						// @ts-ignore
+						yPadding: 3,
+						title: (ctx) => '',
+						label: (ctx) => {
+							const context = ctx.chart.data
+
+							// @ts-ignore
+							const value = context.datasets[ctx.datasetIndex].tree[ctx.dataIndex]
+								.count as number
+							let label = // @ts-ignore
+								context.datasets[ctx.datasetIndex].tree[ctx.dataIndex].label || ''
+							if (label) {
+								label += ': '
+							}
+
+							label += config.formatNumber(value)
+							return label
+						},
+					},
+				},
+				datalabels: {
+					display: this.props.dataLabels !== undefined ? this.props.dataLabels : false,
+				},
+				legend: {
+					display: false,
+					// @ts-ignore
+					labels: {
+						color: styles.colors.black,
+					},
+					position: 'top' as const,
+				},
+				// @ts-ignore
+				title: {
+					display: false,
+				},
+			},
+			...this.props.options,
+		}
+	}
+
+	render() {
+		if (this.props.isLoading)
+			<div style={loadingStyle}>
+				<Loading />
+			</div>
+
+		return (
+			<Chart
+				type='treemap'
 				options={this.options()}
 				data={
 					this.props.data || {
