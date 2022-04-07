@@ -43,11 +43,14 @@
 #     - captain.mydomain.com (no proxy)
 #     - registry.mydomain.com (no proxy)
 # 		- *.mydomain.com (no proxy)
-#     - www
+#     - www (no proxy)
 # In CapRover panel set new root (mydomain.com) and enable HTTPS
 # Don't force HTTPS on that panel!
 # Now access using captain.mydomain.com
+# Create a NGINX-Redirect app from one-click named www that redirects to your root domain (and force SSL)
+#     - This needs to be done before Docker Registry setup
 # In CloudFlare turn on the proxy for all entries and delete the "*" entry
+# Reboot the server
 #
 # Extra CloudFlare settings to check:
 #     - Always use HTTPS
@@ -56,7 +59,6 @@
 #     - Disable Always Offline
 #     - Disable Auto Minify for all
 #
-# Also create a NGINX-Redirect app from one-click named www that redirects to your root domain (and force SSL)
 # ---------------------------------------
 
 # ------------ MONGO SETUP --------------

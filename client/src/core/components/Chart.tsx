@@ -111,12 +111,12 @@ export const mockLine: ChartData<'line', number[], unknown> = {
 	labels: mockBarLabels,
 	datasets: [
 		{
-			label: 'Dataset 1',
+			label: 'Active Users',
 			data: mockBarLabels.map(() => faker.datatype.number({ min: 0, max: 1000 })),
 			backgroundColor: mockColors[0],
 		},
 		{
-			label: 'Dataset 2',
+			label: 'New Users',
 			borderColor: config.replaceAlpha(mockColors[3], 0.5),
 			data: mockBarLabels.map(() => faker.datatype.number({ min: 0, max: 1000 })),
 			backgroundColor: mockColors[3],
@@ -196,6 +196,11 @@ type CoreProps = {
 
 type BarProps = {
 	percent?: boolean
+	stacked?: boolean
+	horizontal?: boolean
+	barThickness?: number
+	rotateLabels?: boolean
+	labelAxis: 'xy' | 'x' | 'y' | 'none'
 	data?: ChartData<'bar', number[]>
 	options?: Options<'bar'>
 } & CoreProps
@@ -217,14 +222,18 @@ export class BarChart extends TrackedComponent<BarProps> {
 					top: 30,
 				},
 			},
+			indexAxis: this.props.horizontal ? 'y' : 'x',
 			datasets: {
 				// @ts-ignore
 				bar: {
-					maxBarThickness: 40,
+					maxBarThickness:
+						this.props.barThickness !== undefined ? this.props.barThickness : 40,
 				},
 			},
 			scales: {
 				x: {
+					stacked: this.props.horizontal && this.props.stacked ? true : false,
+					display: this.props.labelAxis?.includes('x') || false,
 					// @ts-ignore
 					grid: {
 						display: false,
@@ -238,23 +247,26 @@ export class BarChart extends TrackedComponent<BarProps> {
 						font: {
 							size: 13,
 						},
-						maxRotation: 45,
-						minRotation: 45,
+						...(this.props.rotateLabels && { maxRotation: 45, minRotation: 45 }),
 					},
 				},
 				y: {
-					display: false,
+					stacked: this.props.stacked ? true : false,
+					display: this.props.labelAxis?.includes('y') || false,
 					// @ts-ignore
 					grid: {
 						display: false,
 						color: config.replaceAlpha(styles.colors.black, 0.1),
-						borderColor: config.replaceAlpha(styles.colors.black, 0.5),
+						borderColor: 'transparent', //config.replaceAlpha(styles.colors.black, 0.5),
 					},
 					ticks: {
 						// @ts-ignore
 						beginAtZero: true,
 						color: styles.colors.black,
-						fontSize: 13,
+						// @ts-ignore
+						font: {
+							size: 13,
+						},
 					},
 				},
 			},
@@ -272,10 +284,16 @@ export class BarChart extends TrackedComponent<BarProps> {
 							}
 							label += this.props.percentTooltip
 								? getPercent(
-										context[0].parsed.y,
+										this.props.horizontal
+											? context[0].parsed.x
+											: context[0].parsed.y,
 										context[0].chart.data.datasets[0].data as number[]
 								  )
-								: config.formatNumber(context[0].parsed.y)
+								: config.formatNumber(
+										this.props.horizontal
+											? context[0].parsed.x
+											: context[0].parsed.y
+								  )
 							return label
 						},
 						label: (context) => {
@@ -283,7 +301,7 @@ export class BarChart extends TrackedComponent<BarProps> {
 							if (label) {
 								label += ': '
 							}
-							label += context.parsed.y
+							label += this.props.horizontal ? context.parsed.x : context.parsed.y
 							return '' //label
 						},
 					},
@@ -342,6 +360,10 @@ export class BarChart extends TrackedComponent<BarProps> {
 
 type LineProps = {
 	percent?: boolean
+	stacked?: boolean
+	dotRadius?: number
+	rotateLabels?: boolean
+	labelAxis: 'xy' | 'x' | 'y' | 'none'
 	data?: ChartData<'line', number[]>
 	options?: Options<'line'>
 } & CoreProps
@@ -355,6 +377,8 @@ export class LineChart extends TrackedComponent<LineProps> {
 	state = {}
 
 	options = (): Options<'line'> => {
+		const multipleDatasets = (this.props.data?.datasets?.length || 0) > 1
+
 		return {
 			responsive: true,
 			maintainAspectRatio: false,
@@ -369,8 +393,21 @@ export class LineChart extends TrackedComponent<LineProps> {
 					borderColor: config.replaceAlpha(styles.colors.main, 0.5),
 				},
 			},
+			elements: {
+				point: {
+					radius: this.props.dotRadius !== undefined ? this.props.dotRadius : 3,
+				},
+			},
+			...(multipleDatasets && {
+				interaction: {
+					mode: 'nearest',
+					axis: 'x',
+					intersect: false,
+				},
+			}),
 			scales: {
 				x: {
+					display: this.props.labelAxis?.includes('x') || false,
 					// @ts-ignore
 					grid: {
 						display: false,
@@ -384,38 +421,54 @@ export class LineChart extends TrackedComponent<LineProps> {
 						font: {
 							size: 13,
 						},
-						maxRotation: 45,
-						minRotation: 45,
+						...(this.props.rotateLabels && { maxRotation: 45, minRotation: 45 }),
 					},
 				},
 				y: {
-					display: false,
+					stacked: this.props.stacked,
+					display: this.props.labelAxis?.includes('y') || false,
 					// @ts-ignore
 					grid: {
 						display: false,
 						color: config.replaceAlpha(styles.colors.black, 0.1),
-						borderColor: config.replaceAlpha(styles.colors.black, 0.5),
+						borderColor: 'transparent', //config.replaceAlpha(styles.colors.black, 0.5),
 					},
 					ticks: {
 						// @ts-ignore
 						beginAtZero: true,
 						color: styles.colors.black,
-						fontSize: 13,
+						// @ts-ignore
+						font: {
+							size: 13,
+						},
 					},
 				},
 			},
 			plugins: {
 				tooltip: {
 					...tooltipStyle,
-					titleMarginBottom: 0,
+					...(multipleDatasets
+						? {
+								displayColors: true,
+								titleFont: { weight: 'bold' },
+								titleAlign: 'center',
+								bodyAlign: 'left',
+						  }
+						: {
+								titleMarginBottom: 0,
+						  }),
 					callbacks: {
 						// @ts-ignore
 						yPadding: 3,
 						title: (context) => {
 							let label = context[0].label || ''
+
+							if (multipleDatasets) return label
+
 							if (label) {
 								label += ': '
 							}
+
 							label += this.props.percentTooltip
 								? getPercent(
 										context[0].parsed.y,
@@ -430,7 +483,7 @@ export class LineChart extends TrackedComponent<LineProps> {
 								label += ': '
 							}
 							label += config.formatNumber(context.parsed.y)
-							return '' //label
+							return multipleDatasets ? ' ' + label : ''
 						},
 					},
 				},

@@ -86,6 +86,12 @@ declare global {
 	//
 	var playNotificationSound: () => Promise<void>
 	//
+	var sendUnityEvent: (
+		gameObject: string,
+		method: string,
+		...args: (string | boolean | number)[]
+	) => void
+	//
 	var stats:
 		| {
 				lastCount: number

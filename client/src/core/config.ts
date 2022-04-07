@@ -183,7 +183,7 @@ const _capitalizeAll = (s: string) => {
 }
 
 const _formatNumber = function (n: number, onlyPositive = false, decimals = 0) {
-	if (!n) return ''
+	if (n === undefined) return ''
 	n = Number.parseFloat(n.toString())
 
 	if (onlyPositive && n < 0) n = 0
@@ -196,7 +196,7 @@ const _formatNumber = function (n: number, onlyPositive = false, decimals = 0) {
 	}
 }
 const _formatDecimal = function (n: number, onlyPositive = false) {
-	if (!n) return ''
+	if (n === undefined) return ''
 	n = Number.parseFloat(n.toString())
 
 	if (onlyPositive && n < 0) n = 0
@@ -204,7 +204,7 @@ const _formatDecimal = function (n: number, onlyPositive = false) {
 	return numeral(n).format('0,0.0')
 }
 const _formatDecimalTwo = function (n: number, onlyPositive = false) {
-	if (!n) return ''
+	if (n === undefined) return ''
 	n = Number.parseFloat(n.toString())
 
 	if (onlyPositive && n < 0) n = 0

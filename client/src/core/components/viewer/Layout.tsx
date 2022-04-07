@@ -720,6 +720,7 @@ export default class Layout extends QueryParams<
 											title={'Bar Chart'}
 										>
 											<BarChart
+												labelAxis='x'
 												dataLabels={desktop}
 												percent
 												data={mockBar}
@@ -732,6 +733,7 @@ export default class Layout extends QueryParams<
 											title={'Line Chart'}
 										>
 											<LineChart
+												labelAxis='x'
 												dataLabels={false}
 												percent
 												data={mockLine}
