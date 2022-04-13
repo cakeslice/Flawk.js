@@ -56,7 +56,7 @@ class MobileDrawer extends TrackedComponent<Props> {
 					style={{
 						position: 'fixed',
 						left: 0,
-						top: this.props.headerHeight + 1,
+						top: this.props.headerHeight,
 						zIndex: 30,
 						height: 'calc(100vh - ' + this.props.headerHeight.toString() + 'px)',
 						overflowY: 'auto',

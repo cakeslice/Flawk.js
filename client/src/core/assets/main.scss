@@ -79,6 +79,12 @@ h4 {
 	font-weight: bold;
 	font-family: var(--fontAlt);
 }
+h5 {
+	font-size: 20px;
+	line-height: 28px;
+	font-weight: bold;
+	font-family: var(--fontAlt);
+}
 @media screen and (max-width: 700px) {
 	body {
 		font-size: 14px;
@@ -160,30 +166,40 @@ a {
 	margin: 0;
 	color: var(--main);
 	cursor: pointer;
-	text-decoration: none;
+	text-decoration: underline 0.125em rgba(0, 0, 0, 0);
 	font-family: var(--font);
+	transition: text-decoration-color 300ms;
 }
 a:focus-visible {
 	outline: 1px dashed var(--main);
 	outline-offset: 3px;
 }
 a:hover {
-	text-decoration: underline;
+	text-decoration: underline 0.125em;
 }
 a:visited {
 }
 
 //
 
+ul {
+	list-style: disc;
+}
+ol {
+	list-style: auto;
+}
 ul,
 ol {
 	padding-top: 5px;
-	list-style: inside;
-	padding-left: 20px;
+	padding-left: 25px;
 	padding-bottom: 5px;
 }
+
 li {
 	padding-top: 3px;
+}
+ol > li {
+	padding-left: 5px;
 }
 hr {
 	width: 100%;

@@ -84,6 +84,7 @@ export default class Collapsible extends TrackedComponent<Props> {
 					trackedName='Collapsible'
 					duration={0.25}
 					effects={['fade', 'height']}
+					style={{ pointerEvents: this.state.isOpen ? 'auto' : 'none' }}
 					controlled={this.state.isOpen}
 				>
 					{this.props.content(this.set)}

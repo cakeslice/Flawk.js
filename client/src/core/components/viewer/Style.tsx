@@ -874,6 +874,32 @@ export default class Style extends Component<Props> {
 										</div>
 									</div>
 
+									<div
+										style={{
+											...animationCard,
+										}}
+									>
+										<tag>Staggered</tag>
+										<sp />
+										<Animated
+											staggered
+											duration={1}
+											delay={1}
+											triggerID={this.state.animationUUID}
+											onClick={this.toggleAnimation}
+											style={{
+												display: 'flex',
+												flexWrap: 'wrap',
+												justifyContent: 'center',
+											}}
+											effects={['fade', 'up']}
+										>
+											<tag>Item 1</tag>
+											<tag>Item 2</tag>
+											<tag>Item 3</tag>
+										</Animated>
+									</div>
+
 									<Animated
 										onClick={this.toggleAnimation}
 										style={animationCard}

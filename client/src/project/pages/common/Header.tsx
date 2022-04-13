@@ -6,6 +6,7 @@
  */
 
 import Animated from 'core/components/Animated'
+import { DashboardRoute } from 'core/components/Dashboard'
 import config from 'core/config'
 import styles from 'core/styles'
 import logo from 'project/assets/images/logo.svg'
@@ -13,20 +14,19 @@ import React, { Component } from 'react'
 import MediaQuery from 'react-responsive'
 import { Link } from 'react-router-dom'
 
-type Page = { name: string; id: string }
-
-const leftLinks: Page[] = [
+const leftLinks: DashboardRoute[] = [
 	/* { name: 'About', id: '/#about' } */
 ]
-const rightLinks: Page[] = [
+const rightLinks: DashboardRoute[] = [
 	/* { name: 'Contact', id: '/#contact' } */
 ]
-const mobileLinks: Page[] = [
+const mobileLinks: DashboardRoute[] = [
 	/* ...leftLinks,
 	...rightLinks,
 	{
+		id: 'space',
 		notRoute: true,
-		tab: (props) => <div key={props.key} style={{ minHeight: '30%' }}></div>,
+		tab: (props) => <div style={{ minHeight: 30 }}></div>,
 		mobileTab: true,
 	},*/
 	{ name: 'Components', id: '/components' },
@@ -228,13 +228,12 @@ export default class Header extends Component<HeaderProps> {
 								{/* !desktop && (
 									<MobileDrawer
 										className='flex items-center'
-										style={{
+										menuStyle={{
 											minWidth: desktop ? 48 : 30,
 											paddingBottom: this.state.shrink ? 10 : 15,
 											paddingTop: this.state.shrink ? 10 : 15,
 											transition: 'padding-top .5s, padding-bottom .5s',
 										}}
-										background={styles.colors.white}
 										links={mobileLinks}
 										headerHeight={
 											this.state.shrink ? mobileHeight : mobileHeightTop

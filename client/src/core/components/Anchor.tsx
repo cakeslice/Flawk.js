@@ -12,11 +12,14 @@ import TrackedComponent from './TrackedComponent'
 
 type Props = {
 	id: string
-	updateOffset?: number
+	triggerOffset?: number
 	updateHash?: boolean
 	children?: React.ReactNode
+	onTrigger?: () => void
 }
 export default class Anchor extends TrackedComponent<Props> {
+	triggered = false
+
 	trackedName = 'Anchor'
 	shouldComponentUpdate(nextProps: Props, nextState: typeof this.state) {
 		super.shouldComponentUpdate(nextProps, nextState, false)
@@ -31,17 +34,23 @@ export default class Anchor extends TrackedComponent<Props> {
 	}
 
 	render() {
-		const rootMargin = '0px 0px -' + (80 + (this.props.updateOffset || 0)).toString() + '% 0px'
+		const rootMargin = '0px 0px ' + (-80 + (this.props.triggerOffset || 0)).toString() + '% 0px'
 		return (
 			<InView rootMargin={rootMargin}>
 				{({ inView, ref, entry }) => {
-					if (this.props.updateHash) {
-						if (inView) {
-							if (window.location.hash !== '#' + this.props.id) {
-								window.history.replaceState({}, '', '#' + this.props.id)
+					if (inView) {
+						if (!this.triggered) {
+							this.triggered = true
+
+							if (this.props.updateHash) {
+								if (window.location.hash !== '#' + this.props.id) {
+									window.history.replaceState({}, '', '#' + this.props.id)
+								}
 							}
+							if (this.props.onTrigger) this.props.onTrigger()
 						}
-					}
+					} else this.triggered = false
+
 					return (
 						<div ref={ref} id={this.props.id}>
 							{this.props.children}

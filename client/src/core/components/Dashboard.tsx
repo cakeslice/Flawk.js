@@ -145,8 +145,6 @@ export default class Dashboard extends TrackedComponent<
 		const openWidth = this.props.openWidth || 176
 		const closedWidth = this.props.closedWidth || 60
 
-		const maxWidth = config.publicMaxWidth
-
 		const WrapperComponent = this.props.wrapperComponent || this.div // eslint-disable-line
 
 		const foundDefaultRoute =
@@ -343,7 +341,6 @@ export default class Dashboard extends TrackedComponent<
 														<div
 															className='flex justify-between w-full'
 															style={{
-																maxWidth: maxWidth,
 																minHeight: desktop
 																	? this.state
 																			.showHeaderBackground
