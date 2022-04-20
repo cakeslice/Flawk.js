@@ -490,6 +490,12 @@ export default class Style extends Component<Props> {
 										<FButton isLoading style={{ minWidth: 50 }}>
 											Loading
 										</FButton>
+										<FButton
+											target='_blank'
+											href='https://github.com/cakeslice'
+										>
+											Link
+										</FButton>
 										<button type='button'>Basic</button>
 										<FButton style={{ flexGrow: 1 }}>Full width</FButton>
 									</div>
@@ -883,8 +889,8 @@ export default class Style extends Component<Props> {
 										<sp />
 										<Animated
 											staggered
-											duration={1}
-											delay={1}
+											duration={0.5}
+											delay={0.5}
 											triggerID={this.state.animationUUID}
 											onClick={this.toggleAnimation}
 											style={{
@@ -892,7 +898,7 @@ export default class Style extends Component<Props> {
 												flexWrap: 'wrap',
 												justifyContent: 'center',
 											}}
-											effects={['fade', 'up']}
+											effects={['fade']}
 										>
 											<tag>Item 1</tag>
 											<tag>Item 2</tag>

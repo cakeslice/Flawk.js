@@ -382,7 +382,11 @@ export default class Animated extends TrackedComponent<Props> {
 										)) ||
 								  (props.staggered && childrenArray && childrenArray.map
 										? childrenArray.map((e, i) => (
-												<motion.div variants={staggeredItem} key={i}>
+												<motion.div
+													style={{ height: 'auto' }}
+													variants={staggeredItem}
+													key={i}
+												>
 													{e}
 												</motion.div>
 										  ))

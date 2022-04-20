@@ -511,6 +511,9 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 													marginTop: !desktop ? 10 : undefined,
 													minHeight: 30,
 													minWidth: 0,
+													...(!desktop && {
+														width: 100,
+													}),
 												}}
 												onClick={async () => {
 													await global.storage.setItem(
@@ -532,6 +535,9 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 													marginLeft: desktop ? 7.5 : undefined,
 													minHeight: 30,
 													minWidth: 0,
+													...(!desktop && {
+														width: 100,
+													}),
 												}}
 												onClick={async () => {
 													await global.storage.setItem(

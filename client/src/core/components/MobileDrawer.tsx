@@ -50,14 +50,15 @@ class MobileDrawer extends TrackedComponent<Props> {
 				<Animated
 					trackedName='MobileDrawer'
 					animateOffscreen
-					effects={['fade', 'down']}
-					duration={0.25}
+					effects={['fade', 'right']}
+					distance={10}
+					duration={0.15}
 					//
 					style={{
 						position: 'fixed',
 						left: 0,
 						top: this.props.headerHeight,
-						zIndex: 30,
+						zIndex: 29,
 						height: 'calc(100vh - ' + this.props.headerHeight.toString() + 'px)',
 						overflowY: 'auto',
 						overflowX: 'hidden',
@@ -361,7 +362,10 @@ class MobileDrawer extends TrackedComponent<Props> {
 	}
 
 	render() {
-		const color = (this.props.menuStyle && this.props.menuStyle.color) || styles.colors.black
+		const color =
+			(this.props.burgerStyle && this.props.burgerStyle.color) ||
+			(this.props.menuStyle && this.props.menuStyle.color) ||
+			styles.colors.black
 
 		return (
 			<FocusLock className='flex' disabled={!this.state.isOpen}>

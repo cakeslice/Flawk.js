@@ -34,9 +34,6 @@ type Props = {
 	appearance?: Appearance
 	noInvalidLabel?: boolean
 	//
-	onClick?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
-	onBlur?: (event: React.FocusEvent<HTMLButtonElement, Element>) => void
-	//
 	eventOverride?: 'focus' | 'hover' | 'active' | 'focus-visible'
 } & (
 	| {
@@ -93,6 +90,15 @@ type Props = {
 				isDisabled?: undefined
 				simpleDisabled?: undefined
 				isLoading?: boolean
+		  }
+	) &
+	(
+		| { target?: string; href?: string; onClick?: undefined; onBlur?: undefined }
+		| {
+				href?: undefined
+				target?: undefined
+				onClick?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
+				onBlur?: (event: React.FocusEvent<HTMLButtonElement, Element>) => void
 		  }
 	)
 export default class FButton extends TrackedComponent<Props> {
@@ -210,6 +216,7 @@ export default class FButton extends TrackedComponent<Props> {
 				borderColor: styles.colors.main,
 				color: styles.colors.main,
 				boxShadow: '0 0 0 2px ' + styles.colors.mainVeryLight,
+				textDecoration: 'none',
 			},
 			':active': {
 				opacity: 1,
@@ -434,97 +441,121 @@ export default class FButton extends TrackedComponent<Props> {
 									alignItems: checkbox ? 'center' : 'flex-start',
 								}}
 							>
-								<button
-									ref={this.setButtonRef}
-									className='f-button'
-									{...cssStyle}
-									onClick={(e) => {
-										if (this.props.isLoading || this.props.isDisabled) return
-
-										if (this.props.formErrors) {
-											scrollToErrors(this.props.formErrors, this.buttonRef)
+								{this.props.href ? (
+									<a
+										className='f-button'
+										href={this.props.href}
+										target={this.props.target}
+										rel={
+											this.props.target === '_blank'
+												? 'noreferrer'
+												: undefined
 										}
+										{...cssStyle}
+									>
+										{this.props.children}
+									</a>
+								) : (
+									<button
+										ref={this.setButtonRef}
+										className='f-button'
+										{...cssStyle}
+										onClick={(e) => {
+											if (this.props.isLoading || this.props.isDisabled)
+												return
 
-										if (checkbox) {
-											if (checked !== undefined) {
-												formIK &&
-													formIK.setFieldValue &&
-													name &&
-													formIK.setFieldValue(name, !checked)
-
-												this.props.onChange && this.props.onChange(!checked)
-											} else
-												this.setState(
-													{ checked: !this.state.checked },
-													() => {
-														formIK &&
-															formIK.setFieldValue &&
-															name &&
-															formIK.setFieldValue(
-																name,
-																this.state.checked
-															)
-
-														this.props.onChange &&
-															this.props.onChange(this.state.checked)
-													}
+											if (this.props.formErrors) {
+												scrollToErrors(
+													this.props.formErrors,
+													this.buttonRef
 												)
-										} else if (this.props.onClick) this.props.onClick(e)
-									}}
-									onBlur={(e) => {
-										if (formIK && formIK.setFieldTouched) {
-											if (this.timer) clearTimeout(this.timer)
-											this.timer = setTimeout(() => {
-												if (formIK && name)
-													formIK.setFieldTouched(name, true)
-											})
-										}
+											}
 
-										this.props.onBlur && this.props.onBlur(e)
-									}}
-									name={name}
-									// eslint-disable-next-line
-									type={this.props.type ? this.props.type : 'button'}
-									disabled={this.props.isDisabled || this.props.isLoading}
-								>
-									{checkbox && this.state.checked && (
-										<div
-											style={{
-												display: 'flex',
-												justifyContent: 'center',
-												alignItems: 'center',
-												maxWidth: 10,
-												maxHeight: 10,
-											}}
-										>
-											{checkedIcon(
-												(this.props.eventOverride
-													? overridenStyle.color
-													: finalStyle.color) as string
-											)}
-										</div>
-									)}
-									{this.props.isLoading && !checkbox ? (
-										<div>
-											<div style={{ maxHeight: 0, opacity: 0 }}>
-												{this.props.children}
+											if (checkbox) {
+												if (checked !== undefined) {
+													formIK &&
+														formIK.setFieldValue &&
+														name &&
+														formIK.setFieldValue(name, !checked)
+
+													this.props.onChange &&
+														this.props.onChange(!checked)
+												} else
+													this.setState(
+														{ checked: !this.state.checked },
+														() => {
+															formIK &&
+																formIK.setFieldValue &&
+																name &&
+																formIK.setFieldValue(
+																	name,
+																	this.state.checked
+																)
+
+															this.props.onChange &&
+																this.props.onChange(
+																	this.state.checked
+																)
+														}
+													)
+											} else if (this.props.onClick) this.props.onClick(e)
+										}}
+										onBlur={(e) => {
+											if (formIK && formIK.setFieldTouched) {
+												if (this.timer) clearTimeout(this.timer)
+												this.timer = setTimeout(() => {
+													if (formIK && name)
+														formIK.setFieldTouched(name, true)
+												})
+											}
+
+											this.props.onBlur && this.props.onBlur(e)
+										}}
+										name={name}
+										// eslint-disable-next-line
+										type={this.props.type ? this.props.type : 'button'}
+										disabled={this.props.isDisabled || this.props.isLoading}
+									>
+										{checkbox && this.state.checked && (
+											<div
+												style={{
+													display: 'flex',
+													justifyContent: 'center',
+													alignItems: 'center',
+													maxWidth: 10,
+													maxHeight: 10,
+												}}
+											>
+												{checkedIcon(
+													(this.props.eventOverride
+														? overridenStyle.color
+														: finalStyle.color) as string
+												)}
 											</div>
-											<div className='flex items-center justify-center'>
-												<Loading
-													color={
-														this.props.eventOverride
-															? overridenStyle.color
-															: finalStyle.color
-													}
-													noDelay
-													size={18.5}
-												/>
+										)}
+										{this.props.isLoading && !checkbox ? (
+											<div>
+												<div style={{ maxHeight: 0, opacity: 0 }}>
+													{this.props.children}
+												</div>
+												<div className='flex items-center justify-center'>
+													<Loading
+														color={
+															this.props.eventOverride
+																? overridenStyle.color
+																: finalStyle.color
+														}
+														noDelay
+														size={18.5}
+													/>
+												</div>
 											</div>
-										</div>
-									) : (
-										this.props.children
-									)}
-								</button>
+										) : (
+											this.props.children
+										)}
+									</button>
+								)}
+
 								{this.props.checkbox && (
 									<label
 										htmlFor={name}

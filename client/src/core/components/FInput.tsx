@@ -646,7 +646,7 @@ export default class FInput extends TrackedComponent<Props> {
 								</div>
 							)}
 							{label && <div style={{ minHeight: 5 }}></div>}
-							<div style={{ display: 'flex' }}>
+							<div style={{ display: 'flex', alignItems: 'center' }}>
 								{this.props.datePicker ? (
 									<DatePicker
 										{...commonProps}
@@ -710,7 +710,7 @@ export default class FInput extends TrackedComponent<Props> {
 								)}
 
 								{this.props.icon && (
-									<div style={{ maxWidth: 0, maxHeight: 0 }}>
+									<div style={{ maxWidth: 0 }}>
 										<div
 											style={{
 												...(!this.props.clickableIcon && {
@@ -722,7 +722,6 @@ export default class FInput extends TrackedComponent<Props> {
 												alignItems: 'center',
 												width: 30,
 												right: 35,
-												height: styles.inputHeight,
 											}}
 										>
 											{this.props.icon}

@@ -264,8 +264,6 @@ export default function Router(): React.ReactNode {
 		},
 	])
 
-	const landingPage = window.location.pathname.toString() === '/'
-
 	return (
 		<RouterBase>
 			<MediaQuery minWidth={config.mobileWidthTrigger}>
@@ -307,7 +305,6 @@ export default function Router(): React.ReactNode {
 
 						<Route>
 							<div style={{ background: styles.colors.white }}>
-								<Header landingPage={landingPage} fillSpace />
 								<Switch>
 									<Route exact path='/login'>
 										<PublicWrapper auth desktop={desktop}>
@@ -339,7 +336,6 @@ export default function Router(): React.ReactNode {
 										</PublicWrapper>
 									</Route>
 								</Switch>
-								<Footer />
 							</div>
 						</Route>
 					</Switch>
@@ -352,34 +348,38 @@ export default function Router(): React.ReactNode {
 class PublicWrapper extends Component<{ auth?: boolean; desktop: boolean }> {
 	render() {
 		return (
-			<div
-				style={{
-					paddingTop: this.props.auth ? 30 : undefined,
-				}}
-			>
+			<>
+				<Header fillSpace />
 				<div
-					className={
-						this.props.desktop ? 'flex-col justify-center items-center' : undefined
-					}
 					style={{
-						minHeight: this.props.auth ? '80vh' : undefined,
-						padding: this.props.auth && !this.props.desktop ? '5vw' : undefined,
-						width: this.props.auth
-							? !this.props.desktop
-								? '100%'
-								: undefined
-							: '100%',
+						paddingTop: this.props.auth ? 30 : undefined,
 					}}
 				>
-					{this.props.children}
-					{this.props.auth && <sp />}
-					{this.props.auth && <sp />}
-					{this.props.auth && <sp />}
-					{this.props.auth && <sp />}
-					{this.props.auth && <sp />}
-					{this.props.auth && <sp />}
+					<div
+						className={
+							this.props.desktop ? 'flex-col justify-center items-center' : undefined
+						}
+						style={{
+							minHeight: this.props.auth ? '80vh' : undefined,
+							padding: this.props.auth && !this.props.desktop ? '5vw' : undefined,
+							width: this.props.auth
+								? !this.props.desktop
+									? '100%'
+									: undefined
+								: '100%',
+						}}
+					>
+						{this.props.children}
+						{this.props.auth && <sp />}
+						{this.props.auth && <sp />}
+						{this.props.auth && <sp />}
+						{this.props.auth && <sp />}
+						{this.props.auth && <sp />}
+						{this.props.auth && <sp />}
+					</div>
 				</div>
-			</div>
+				<Footer />
+			</>
 		)
 	}
 }

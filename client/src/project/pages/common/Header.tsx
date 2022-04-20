@@ -33,14 +33,13 @@ const mobileLinks: DashboardRoute[] = [
 	/* { name: 'Login', id: '/login' }, */
 ]
 
-const mobileHeight = 50
+const mobileHeight = 60
 const mobileHeightTop = 70
 const desktopHeight = 70
 const desktopHeightTop = 125
 
 type HeaderProps = {
 	fillSpace?: boolean
-	landingPage?: boolean
 }
 export default class Header extends Component<HeaderProps> {
 	state = {
@@ -54,18 +53,20 @@ export default class Header extends Component<HeaderProps> {
 	}
 
 	handleScroll() {
+		const landingPage = window.location.pathname.toString() === '/'
+
 		const scrollTop = document.body.scrollTop || document.documentElement.scrollTop
 
 		this.setState({
-			shrink: this.props.landingPage ? scrollTop > 0 : true,
+			shrink: landingPage ? scrollTop > 0 : true,
 		})
 	}
 	componentDidMount() {
 		this.handleScroll()
-		if (this.props.landingPage) window.addEventListener('scroll', this.handleScroll)
+		window.addEventListener('scroll', this.handleScroll)
 	}
 	componentWillUnmount() {
-		if (this.props.landingPage) window.removeEventListener('scroll', this.handleScroll)
+		window.removeEventListener('scroll', this.handleScroll)
 	}
 
 	render() {
@@ -165,11 +166,7 @@ export default class Header extends Component<HeaderProps> {
 
 								{desktop && <div></div>}
 
-								<button
-									className='flex items-center'
-									type='button'
-									onClick={() => global.routerHistory().push('/')}
-								>
+								<a className='flex items-center' href='/'>
 									<img
 										style={{
 											minWidth: desktop ? 48 : 30,
@@ -182,7 +179,7 @@ export default class Header extends Component<HeaderProps> {
 										}}
 										src={logo}
 									></img>
-								</button>
+								</a>
 
 								{desktop && <div></div>}
 

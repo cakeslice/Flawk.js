@@ -188,8 +188,7 @@ const _formatNumber = function (n: number, onlyPositive = false, decimals = 0) {
 
 	if (onlyPositive && n < 0) n = 0
 
-	if (n > 999999) return numeral(n).format('0,0.[0]a')
-	else if (n > 9999) return numeral(n).format('0,0.[0]a')
+	if (n > config.formatNumberThreshold) return numeral(n).format('0,0.[0]a')
 	else {
 		if (decimals) return numeral(n).format('0,0.' + '0'.repeat(decimals))
 		else return numeral(n).format('0,0')
@@ -313,6 +312,8 @@ const publicConfig: Config = {
 
 	mobileWidthTrigger: 700,
 	publicMaxWidth: 1281.5,
+
+	formatNumberThreshold: 9999,
 
 	//
 
@@ -626,6 +627,8 @@ export type Config = {
 
 	mobileWidthTrigger: number
 	publicMaxWidth: number
+
+	formatNumberThreshold: number
 
 	//
 
