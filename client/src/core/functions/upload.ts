@@ -161,13 +161,15 @@ export default {
 			maxSize?: number
 			minWidth?: number
 			minHeight?: number
+			readAsText?: boolean
 		}
 	): Promise<{ file: File; url: string | ArrayBuffer | null } | undefined> => {
-		const { nonImage, maxSize, minWidth, minHeight } = {
+		const { nonImage, maxSize, minWidth, minHeight, readAsText } = {
 			nonImage: false,
 			maxSize: 10 * 1024 * 1024,
 			minWidth: 100,
 			minHeight: 100,
+			readAsText: false,
 			...options,
 		}
 
@@ -197,7 +199,10 @@ export default {
 						const reader = new FileReader()
 						reader.onloadend = () => {
 							if (nonImage && !isImage) {
-								resolve({ file: file, url: reader.result })
+								resolve({
+									file: file,
+									url: reader.result,
+								})
 							} else {
 								const img = new Image()
 								img.onload = function () {
@@ -227,7 +232,8 @@ export default {
 								img.src = reader.result as string
 							}
 						}
-						reader.readAsDataURL(file)
+						if (readAsText) reader.readAsText(file)
+						else reader.readAsDataURL(file)
 					}
 				} else {
 					global.addFlag(

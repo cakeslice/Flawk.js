@@ -388,6 +388,17 @@ const config: Config & InternalConfig = {
 		else head.appendChild(script)
 	},
 
+	downloadTextFile: (type: 'plain' | 'json', obj: string, fileName?: string) => {
+		const element = document.createElement('a')
+		const file = new Blob([obj], {
+			type: 'text/' + type,
+		})
+		element.href = URL.createObjectURL(file)
+		element.download = (fileName || 'download') + '.' + (type === 'json' ? 'json' : 'txt')
+		document.body.appendChild(element)
+		element.click()
+	},
+
 	scrollToTop: () => {
 		window.scrollTo(0, 0)
 	},
@@ -572,6 +583,8 @@ type InternalConfig = {
 		}>
 	) => React.ExoticComponent
 	injectScript: (src: string, type: 'text' | 'src', top?: boolean, async?: boolean) => void
+
+	downloadTextFile: (type: 'plain' | 'json', obj: string) => void
 
 	scrollToTop: () => void
 	disableScroll: () => void

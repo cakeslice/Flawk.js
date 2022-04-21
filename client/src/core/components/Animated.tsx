@@ -302,8 +302,9 @@ export default class Animated extends TrackedComponent<Props> {
 					key={props.triggerID || key}
 					className={props.className}
 					style={{
-						pointerEvents: animate === 'hidden' ? 'none' : undefined,
-						userSelect: animate === 'hidden' ? 'none' : undefined,
+						pointerEvents:
+							!skipFirstTrigger && animate === 'hidden' ? 'none' : undefined,
+						userSelect: !skipFirstTrigger && animate === 'hidden' ? 'none' : undefined,
 						...style,
 					}}
 					//

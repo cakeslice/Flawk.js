@@ -536,8 +536,8 @@ const backendLogo = (color: string) => (
 		version='1.1'
 		id='Capa_1'
 		xmlns='http://www.w3.org/2000/svg'
-		width='487px'
-		height='487px'
+		width='20px'
+		height='20px'
 		viewBox='0 0 487 487'
 	>
 		<g>
