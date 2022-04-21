@@ -14,6 +14,7 @@ import Loading from 'core/components/Loading'
 import QueryParams from 'core/components/QueryParams'
 import config from 'core/config'
 import { countriesSearch, sortedCountries } from 'core/functions/countries'
+import { connectWallet, Options, setupWallet, Wallet } from 'core/functions/web3wallet'
 import styles from 'core/styles'
 import { countries } from 'countries-list'
 import { formatDistanceToNow, subDays } from 'date-fns'
@@ -51,9 +52,34 @@ export default class Misc extends QueryParams<{
 		quill: '',
 		chunkLoadError: false,
 		toggleTitle: false,
+		wallet: undefined as Wallet | undefined,
 	}
 
-	componentDidMount() {
+	connectWallet = async () => {
+		const wallet = await connectWallet(this.walletOptions)
+		this.setState({ wallet })
+	}
+	walletOptions: Options = {
+		targetChain: 3,
+		callbacks: {
+			accountsChanged: this.connectWallet,
+			chainChanged: this.connectWallet,
+			disconnected: async () => {
+				this.setState({ wallet: undefined })
+			},
+		},
+	}
+	/* async componentDidMount() {
+		const wallet = await setupWallet(this.walletOptions)
+		this.setState({ wallet })
+	} */
+
+	async componentDidMount() {
+		const wallet = await setupWallet(this.walletOptions)
+		this.setState({ wallet })
+
+		//
+
 		let e = global.localStorage.getItem('locallyStored')
 		if (!e) {
 			e = 'Something'
@@ -454,7 +480,12 @@ export default class Misc extends QueryParams<{
 								</FButton>
 							</div>
 						</Section>
-						<Section title='Meta tag' tags={['<Helmet/>']}>
+						<Section title='Web3 wallet' tags={['functions/web3wallet']}>
+							<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+								<FButton onClick={this.connectWallet}>Connect Wallet</FButton>
+							</div>
+						</Section>
+						<Section title='Head manipulation' tags={['<Helmet/>']}>
 							<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
 								<FButton
 									onClick={() => {
