@@ -5,11 +5,15 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import Loading from 'core/components/Loading'
+import config from 'core/config'
 import React from 'react'
 import Unity, { UnityContext } from 'react-unity-webgl'
 
 type Props = {
 	buildPath: string
+	extension?: '.unityweb' | '.gz'
+	backgroundColor?: string
 	fullscreen?: boolean
 	gameStartedEvent?: string
 	onReady?: () => void
@@ -17,7 +21,7 @@ type Props = {
 	events?: { name: string; callback: () => void }[]
 }
 export default class UnityComponent extends React.Component<Props> {
-	state = { ready: false }
+	state = { ready: false, visible: false, progress: 0 }
 	unityContext: UnityContext | undefined = undefined
 
 	constructor(props: Props) {
@@ -25,9 +29,9 @@ export default class UnityComponent extends React.Component<Props> {
 
 		this.unityContext = new UnityContext({
 			loaderUrl: props.buildPath + '.loader.js',
-			dataUrl: props.buildPath + '.data',
-			frameworkUrl: props.buildPath + '.framework.js',
-			codeUrl: props.buildPath + '.wasm',
+			dataUrl: props.buildPath + '.data' + (props.extension || ''),
+			frameworkUrl: props.buildPath + '.framework.js' + (props.extension || ''),
+			codeUrl: props.buildPath + '.wasm' + (props.extension || ''),
 			/* webGLContextAttributes: {
 				alpha: true,
 				antialias: true,
@@ -69,10 +73,24 @@ export default class UnityComponent extends React.Component<Props> {
 			})
 			*/
 		this.unityContext.on(this.props.gameStartedEvent || 'GameStarted', () => {
+			if (this.props.backgroundColor)
+				global.sendUnityEvent(
+					'GraphicsManager',
+					'SetBackgroundColor',
+					config
+						.colorToRgba(this.props.backgroundColor)
+						.replace('rgba(', '')
+						.replace(')', '')
+						.split(',')
+						.map((e) => Number(e) / 255)
+						.join(',')
+				)
+
+			this.setState({ ready: true })
+			this.props.onReady && this.props.onReady()
 			setTimeout(() => {
-				this.setState({ ready: true })
-				this.props.onReady && this.props.onReady()
-			}, 500)
+				this.setState({ visible: true })
+			}, 250)
 		})
 
 		// Unity events
@@ -85,6 +103,7 @@ export default class UnityComponent extends React.Component<Props> {
 		// Other
 
 		this.unityContext.on('progress', (progression: number) => {
+			this.setState({ progress: progression })
 			this.props.onLoadingProgress && this.props.onLoadingProgress(progression)
 		})
 		if (this.props.fullscreen) this.unityContext.setFullscreen(this.props.fullscreen)
@@ -99,6 +118,16 @@ export default class UnityComponent extends React.Component<Props> {
 	render() {
 		return (
 			<>
+				{!this.state.ready && (
+					<div>
+						<Loading></Loading>
+						<sp />
+						<div style={{ minHeight: 20, opacity: 0.75, textAlign: 'center' }}>
+							{this.state.progress !== 0 &&
+								(this.state.progress * 100).toFixed(0) + '%'}
+						</div>
+					</div>
+				)}
 				{this.unityContext && (
 					<Unity
 						matchWebGLToCanvasSize={true}
@@ -106,6 +135,10 @@ export default class UnityComponent extends React.Component<Props> {
 							...(!this.state.ready && {
 								display: 'none',
 							}),
+							...(!this.state.visible && {
+								opacity: 0.0,
+							}),
+							transition: 'opacity 0.25s ease-in-out',
 							width: '100%',
 							height: '100%',
 						}}

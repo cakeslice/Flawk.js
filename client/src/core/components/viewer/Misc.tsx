@@ -12,6 +12,7 @@ import FButton from 'core/components/FButton'
 import LanguageSelect from 'core/components/LanguageSelect'
 import Loading from 'core/components/Loading'
 import QueryParams from 'core/components/QueryParams'
+import Unity from 'core/components/Unity'
 import config from 'core/config'
 import { countriesSearch, sortedCountries } from 'core/functions/countries'
 import { connectWallet, Options, setupWallet, Wallet } from 'core/functions/web3wallet'
@@ -47,13 +48,30 @@ export default class Misc extends QueryParams<{
 	default?: number
 }> {
 	state = {
+		unityReady: false,
+		unityFullscreen: false,
+
+		//
+
 		locallyStored: '',
 		newLocallyStored: '',
 		quill: '',
 		chunkLoadError: false,
 		toggleTitle: false,
+
+		//
+
 		wallet: undefined as Wallet | undefined,
 	}
+
+	unityEvents = [
+		{
+			name: 'GameOver',
+			callback: () => {
+				alert('GameOver')
+			},
+		},
+	]
 
 	connectWallet = async () => {
 		const wallet = await connectWallet(this.walletOptions)
@@ -485,7 +503,54 @@ export default class Misc extends QueryParams<{
 								<FButton onClick={this.connectWallet}>Connect Wallet</FButton>
 							</div>
 						</Section>
-						<Section title='Head manipulation' tags={['<Helmet/>']}>
+						<Section title='Unity' tags={['<Unity/>']}>
+							<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+								<FButton
+									onClick={() => {
+										global.sendUnityEvent('Neo', 'ChangeColor')
+									}}
+								>
+									Change Color
+								</FButton>
+								<FButton
+									onClick={() => {
+										this.setState({
+											unityFullscreen: !this.state.unityFullscreen,
+										})
+									}}
+								>
+									Fullscreen
+								</FButton>
+							</div>
+							<sp />
+							<div
+								className='flex justify-center items-center'
+								style={{
+									...styles.card,
+									padding: 0,
+									overflow: 'hidden',
+									borderRadius: 10,
+									width: '100%',
+									maxWidth: 400,
+									height: 400,
+								}}
+							>
+								<Unity
+									fullscreen={this.state.unityFullscreen}
+									backgroundColor={styles.colors.white}
+									extension={'.unityweb'}
+									events={this.unityEvents}
+									onReady={() => {
+										this.setState({ unityReady: true })
+									}}
+									onLoadingProgress={(progress) => {
+										this.setState({ unityProgress: progress })
+									}}
+									buildPath={process.env.PUBLIC_URL + '/unity/Build'}
+								/>
+							</div>
+						</Section>
+						<Section title='<head/>' tags={['<Helmet/>']}>
 							<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
 								<FButton
 									onClick={() => {

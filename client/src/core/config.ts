@@ -456,6 +456,7 @@ const config: Config & InternalConfig = {
 		const c = difference(c1, c2)
 		return 'rgba(' + c.r + ',' + c.g + ',' + c.b + ',' + c.a + ')'
 	},
+	colorToRgba: colorToRgba,
 
 	webPushNotificationsEnabled() {
 		return !_appleBrowser && Notification && Notification.permission === 'granted'
@@ -602,6 +603,7 @@ type InternalConfig = {
 	replaceAlpha: (color: string, amount: number) => string
 	overlayColor: (background: string, color: string) => string
 	invertColor: (background: string, color: string) => string
+	colorToRgba: (color: string) => string
 
 	webPushNotificationsEnabled: () => boolean
 	getWebPushSubscription: () => Promise<PushSubscription | null>
