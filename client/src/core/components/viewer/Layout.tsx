@@ -36,6 +36,7 @@ import _remove from 'lodash/remove'
 import React from 'react'
 import Carousel from 'react-elastic-carousel'
 import MediaQuery from 'react-responsive'
+import Sticky from 'react-sticky-el'
 import Collapsible from '../Collapsible'
 import Dropdown from '../Dropdown'
 import { Section } from './ComponentsViewer'
@@ -751,6 +752,46 @@ export default class Layout extends QueryParams<
 											</div>
 										)}
 									></Collapsible>
+								</div>
+							</Section>
+							<Section title='Sticky' tags={['react-sticky-el']}>
+								<div
+									className={
+										desktop
+											? 'grid grid-cols-2 sticky_boundary'
+											: 'flex-col sticky_boundary'
+									}
+								>
+									<Sticky
+										topOffset={desktop ? -20 : -80}
+										bottomOffset={desktop ? 20 : 80}
+										stickyStyle={{ marginTop: desktop ? 20 : 80 }}
+										boundaryElement='.sticky_boundary'
+									>
+										<div
+											style={{
+												...styles.card,
+												height: 200,
+												width: 'auto',
+											}}
+										>
+											This element is sticky in this section
+										</div>
+									</Sticky>
+									{!desktop && <sp />}
+									<div>
+										<div style={{ ...styles.card, height: 400, width: 'auto' }}>
+											Card #1
+										</div>
+										<sp />
+										<div style={{ ...styles.card, height: 400, width: 'auto' }}>
+											Card #1
+										</div>
+										<sp />
+										<div style={{ ...styles.card, height: 400, width: 'auto' }}>
+											Card #1
+										</div>
+									</div>
 								</div>
 							</Section>
 							<Section title='Carousel' tags={['react-elastic-carousel']}>
