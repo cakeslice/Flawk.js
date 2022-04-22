@@ -13,13 +13,23 @@ import Unity, { UnityContext } from 'react-unity-webgl'
 type Props = {
 	buildPath: string
 	extension?: '.unityweb' | '.gz'
+	pointerEvents?: boolean
 	backgroundColor?: string
 	fullscreen?: boolean
 	gameStartedEvent?: string
 	onReady?: () => void
 	onLoadingProgress?: (progress: number) => void
 	events?: { name: string; callback: () => void }[]
-}
+} & (
+	| {
+			nativeResolution?: false
+			devicePixelRatio?: number
+	  }
+	| {
+			nativeResolution?: true
+			devicePixelRatio?: undefined
+	  }
+)
 export default class UnityComponent extends React.Component<Props> {
 	state = { ready: false, visible: false, progress: 0 }
 	unityContext: UnityContext | undefined = undefined
@@ -120,7 +130,7 @@ export default class UnityComponent extends React.Component<Props> {
 			<>
 				{!this.state.ready && (
 					<div>
-						<Loading></Loading>
+						<Loading />
 						<sp />
 						<div style={{ minHeight: 20, opacity: 0.75, textAlign: 'center' }}>
 							{this.state.progress !== 0 &&
@@ -130,8 +140,15 @@ export default class UnityComponent extends React.Component<Props> {
 				)}
 				{this.unityContext && (
 					<Unity
+						tabIndex={0}
+						devicePixelRatio={
+							this.props.nativeResolution
+								? undefined
+								: this.props.devicePixelRatio || 1
+						}
 						matchWebGLToCanvasSize={true}
 						style={{
+							pointerEvents: this.props.pointerEvents ? 'auto' : 'none',
 							...(!this.state.ready && {
 								display: 'none',
 							}),

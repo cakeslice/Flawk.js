@@ -9,3 +9,4 @@ ios/*
 *.yml
 *.svg
 package-lock.json
+public/unity/*

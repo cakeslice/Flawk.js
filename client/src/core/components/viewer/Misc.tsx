@@ -115,10 +115,10 @@ export default class Misc extends QueryParams<{
 						<Section title='Avatar' top tags={['<Avatar/>']}>
 							<div style={{ ...styles.card, padding: 0 }}>
 								<div className='wrapMarginBig flex flex-wrap justify-start'>
-									<Avatar name='José Guerreiro'></Avatar>
-									<Avatar isOnline></Avatar>
-									<Avatar></Avatar>
-									<Avatar style={{ width: 40, height: 40 }}></Avatar>
+									<Avatar name='José Guerreiro' />
+									<Avatar isOnline />
+									<Avatar />
+									<Avatar style={{ width: 40, height: 40 }} />
 								</div>
 							</div>
 						</Section>
@@ -241,7 +241,7 @@ export default class Misc extends QueryParams<{
 										borderTopRightRadius: 0,
 										borderBottomRightRadius: 0,
 									}}
-								></FInput>
+								/>
 								<FButton
 									onClick={() => {
 										global.localStorage.setItem(
@@ -266,7 +266,7 @@ export default class Misc extends QueryParams<{
 							</div>
 						</Section>
 						<Section title='Localization' tags={['<LanguageSelect/>']}>
-							<LanguageSelect></LanguageSelect>
+							<LanguageSelect />
 							<sp />
 							<div style={styles.card}>
 								<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
@@ -274,7 +274,7 @@ export default class Misc extends QueryParams<{
 										<FInput label='Date' datePicker />
 									</div>
 									<div>
-										<Dropdown label='Dropdown'></Dropdown>
+										<Dropdown label='Dropdown' />
 									</div>
 								</div>
 								<sp />
@@ -331,7 +331,7 @@ export default class Misc extends QueryParams<{
 													alignItems: 'center',
 												}}
 											>
-												<Flag country={c}></Flag>
+												<Flag country={c} />
 												<div
 													style={{
 														minWidth: 10,
@@ -471,9 +471,7 @@ export default class Misc extends QueryParams<{
 						</Section>
 						<Section title='Error Handling'>
 							<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
-								{this.state.chunkLoadError && (
-									<ChunkLoadErrorTest></ChunkLoadErrorTest>
-								)}
+								{this.state.chunkLoadError && <ChunkLoadErrorTest />}
 								<FButton
 									onClick={() => {
 										// @ts-ignore
@@ -621,7 +619,7 @@ export default class Misc extends QueryParams<{
 									],
 								}}
 							/>
-							<sp></sp>
+							<sp />
 							<div className='ql-editor' style={{ maxWidth: 700 }}>
 								{this.state.quill && Parser(this.state.quill)}
 							</div>
