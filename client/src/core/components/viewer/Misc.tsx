@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import { Capacitor } from '@capacitor/core'
 import Anchor from 'core/components/Anchor'
 import Avatar from 'core/components/Avatar'
 import Dropdown from 'core/components/Dropdown'
@@ -501,53 +502,55 @@ export default class Misc extends QueryParams<{
 								<FButton onClick={this.connectWallet}>Connect Wallet</FButton>
 							</div>
 						</Section>
-						<Section title='Unity' tags={['<Unity/>']}>
-							<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
-								<FButton
-									onClick={() => {
-										global.sendUnityEvent?.('Neo', 'ChangeColor')
+						{!Capacitor.isNativePlatform() && (
+							<Section title='Unity' tags={['<Unity/>']}>
+								<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+									<FButton
+										onClick={() => {
+											global.sendUnityEvent?.('Neo', 'ChangeColor')
+										}}
+									>
+										Change Color
+									</FButton>
+									<FButton
+										onClick={() => {
+											this.setState({
+												unityFullscreen: !this.state.unityFullscreen,
+											})
+										}}
+									>
+										Fullscreen
+									</FButton>
+								</div>
+								<sp />
+								<div
+									className='flex justify-center items-center'
+									style={{
+										...styles.card,
+										padding: 0,
+										overflow: 'hidden',
+										borderRadius: 10,
+										width: '100%',
+										maxWidth: 400,
+										height: 400,
 									}}
 								>
-									Change Color
-								</FButton>
-								<FButton
-									onClick={() => {
-										this.setState({
-											unityFullscreen: !this.state.unityFullscreen,
-										})
-									}}
-								>
-									Fullscreen
-								</FButton>
-							</div>
-							<sp />
-							<div
-								className='flex justify-center items-center'
-								style={{
-									...styles.card,
-									padding: 0,
-									overflow: 'hidden',
-									borderRadius: 10,
-									width: '100%',
-									maxWidth: 400,
-									height: 400,
-								}}
-							>
-								<Unity
-									fullscreen={this.state.unityFullscreen}
-									backgroundColor={styles.colors.white}
-									extension={'.unityweb'}
-									events={this.unityEvents}
-									onReady={() => {
-										this.setState({ unityReady: true })
-									}}
-									onLoadingProgress={(progress) => {
-										this.setState({ unityProgress: progress })
-									}}
-									buildPath={process.env.PUBLIC_URL + '/unity/Build'}
-								/>
-							</div>
-						</Section>
+									<Unity
+										fullscreen={this.state.unityFullscreen}
+										backgroundColor={styles.colors.white}
+										extension={'.unityweb'}
+										events={this.unityEvents}
+										onReady={() => {
+											this.setState({ unityReady: true })
+										}}
+										onLoadingProgress={(progress) => {
+											this.setState({ unityProgress: progress })
+										}}
+										buildPath={process.env.PUBLIC_URL + '/unity/Build'}
+									/>
+								</div>
+							</Section>
+						)}
 						<Section title='<head/>' tags={['<Helmet/>']}>
 							<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
 								<FButton

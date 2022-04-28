@@ -1,6 +1,5 @@
 {
 	"_COMMENT": "Add android:usesCleartextTraffic='true' to <application> in AndroidManifest to test with a local server",
-	"_APP_ICON_FIX": "After cordova-res, copy all icons in android/app/src/main/res/mipmap* to replace ic_launcher_foreground.png",
 	"appId": "io.flawk.mobile",
 	"appName": "Flawk",
 	"bundledWebRuntime": false,
