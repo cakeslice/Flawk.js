@@ -25,6 +25,7 @@
 		"build_docker:prod": "npm run env:prod npm run buildPushDocker",
 		"build_android:staging": "npm run env:staging npm run buildAndroid",
 		"build_android:prod": "npm run env:prod npm run buildAndroid",
+		"generate_android_key": "keytool -genkey -alias android_key -v -keystore ./_env/android_keystore_new.env",
 		"- HELPER SCRIPTS -": "-----------------------------",
 		"startLocal": "react-scripts start",
 		"startAndroid": "npm run buildLocal && npx cap sync && cd android && gradlew assembleDebug && gradlew installDebug && cd ..",
