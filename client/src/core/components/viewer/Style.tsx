@@ -11,7 +11,7 @@ import FButton from 'core/components/FButton'
 import Tooltip from 'core/components/Tooltip'
 import config from 'core/config'
 import styles from 'core/styles'
-import { motion } from 'framer-motion'
+import { motion, Variants } from 'framer-motion'
 import { css } from 'glamor'
 import _find from 'lodash/find'
 import _uniqBy from 'lodash/uniqBy'
@@ -21,6 +21,7 @@ import { Link } from 'react-router-dom'
 import * as uuid from 'uuid'
 import Dropdown from '../Dropdown'
 import { Section } from './ComponentsViewer'
+import cssModule from './Style.module.scss'
 
 // eslint-disable-next-line
 type Props = {}
@@ -226,6 +227,15 @@ export default class Style extends Component<Props> {
 											<p>Line height</p>
 										</div>
 									</div>
+								</div>
+							</Section>
+
+							<Section title='CSS Modules'>
+								<div className={cssModule.class} style={{ ...styles.card }}>
+									<h1>
+										{'Hello. '}
+										<tag>h1</tag>
+									</h1>
 								</div>
 							</Section>
 
@@ -867,15 +877,15 @@ export default class Style extends Component<Props> {
 										<sp />
 										<div className='flex items-center justify-around'>
 											<motion.div layout>
-												<kbd>Esc</kbd>
+												<kbd>Ctrl</kbd>
 											</motion.div>
 											{this.state.animationTrigger && (
 												<motion.div layout>
-													<kbd>Enter</kbd>
+													<kbd>Alt</kbd>
 												</motion.div>
 											)}
 											<motion.div layout>
-												<kbd>Alt</kbd>
+												<kbd>Del</kbd>
 											</motion.div>
 										</div>
 									</div>
@@ -900,10 +910,85 @@ export default class Style extends Component<Props> {
 											}}
 											effects={['fade']}
 										>
-											<tag>Item 1</tag>
-											<tag>Item 2</tag>
-											<tag>Item 3</tag>
+											<kbd>Ctrl</kbd>
+											<kbd>Alt</kbd>
+											<kbd>Del</kbd>
 										</Animated>
+									</div>
+
+									<div
+										style={{
+											...animationCard,
+										}}
+									>
+										<tag>Staggered Children</tag>
+										<sp />
+										<Animated
+											staggered
+											duration={0.5}
+											delay={0.5}
+											distance={10}
+											extraEffects={[[], ['fade', 'right']]}
+											effects={['fade', 'up']}
+											triggerID={this.state.animationUUID}
+											//
+											onClick={this.toggleAnimation}
+											style={{
+												display: 'flex',
+												flexWrap: 'wrap',
+												justifyContent: 'center',
+											}}
+											className={
+												'grid ' + (desktop ? 'grid-cols-2' : 'grid-rows-2')
+											}
+											staggerChildren={(v) => {
+												const variants = v as Variants[]
+												return (
+													<>
+														<motion.div
+															className='flex items-center'
+															variants={variants[1]}
+														>
+															<motion.div variants={variants[2]}>
+																<kbd>Ctrl</kbd>
+															</motion.div>
+															<motion.div
+																className='flex'
+																variants={variants[0]}
+															>
+																<img
+																	style={{
+																		maxHeight: 15,
+																		marginLeft: 7.5,
+																	}}
+																	src={logo}
+																></img>
+															</motion.div>
+														</motion.div>
+														<motion.div
+															className='flex items-center'
+															variants={variants[1]}
+														>
+															<motion.div variants={variants[2]}>
+																<kbd>V</kbd>
+															</motion.div>
+															<motion.div
+																className='flex'
+																variants={variants[0]}
+															>
+																<img
+																	style={{
+																		maxHeight: 15,
+																		marginLeft: 7.5,
+																	}}
+																	src={logo}
+																></img>
+															</motion.div>
+														</motion.div>
+													</>
+												)
+											}}
+										></Animated>
 									</div>
 
 									<Animated
