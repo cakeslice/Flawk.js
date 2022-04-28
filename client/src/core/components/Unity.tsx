@@ -37,6 +37,11 @@ export default class UnityComponent extends React.Component<Props> {
 	constructor(props: Props) {
 		super(props)
 
+		if (global.unityContext) {
+			global.unityContext.removeAllEventListeners()
+			global.unityContext.quitUnityInstance()
+		}
+
 		this.unityContext = new UnityContext({
 			loaderUrl: props.buildPath + '.loader.js',
 			dataUrl: props.buildPath + '.data' + (props.extension || ''),
@@ -56,6 +61,7 @@ export default class UnityComponent extends React.Component<Props> {
 			}, */
 		})
 
+		global.unityContext = this.unityContext
 		global.sendUnityEvent = (
 			gameObject: string,
 			method: string,
@@ -84,7 +90,7 @@ export default class UnityComponent extends React.Component<Props> {
 			*/
 		this.unityContext.on(this.props.gameStartedEvent || 'GameStarted', () => {
 			if (this.props.backgroundColor)
-				global.sendUnityEvent(
+				global.sendUnityEvent?.(
 					'GraphicsManager',
 					'SetBackgroundColor',
 					config

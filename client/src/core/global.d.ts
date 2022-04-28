@@ -7,6 +7,7 @@
 
 import { Lang } from 'flawk-types'
 import { ToastContentProps } from 'react-toastify'
+import { UnityContext } from 'react-unity-webgl'
 import { Socket } from 'socket.io-client'
 
 type StorageFallback = Pick<Storage, 'clear' | 'getItem' | 'setItem' | 'removeItem'>
@@ -86,11 +87,10 @@ declare global {
 	//
 	var playNotificationSound: () => Promise<void>
 	//
-	var sendUnityEvent: (
-		gameObject: string,
-		method: string,
-		...args: (string | boolean | number)[]
-	) => void
+	var unityContext: UnityContext | undefined
+	var sendUnityEvent:
+		| undefined
+		| ((gameObject: string, method: string, ...args: (string | boolean | number)[]) => void)
 	//
 	var stats:
 		| {

@@ -505,7 +505,7 @@ export default class Misc extends QueryParams<{
 							<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
 								<FButton
 									onClick={() => {
-										global.sendUnityEvent('Neo', 'ChangeColor')
+										global.sendUnityEvent?.('Neo', 'ChangeColor')
 									}}
 								>
 									Change Color

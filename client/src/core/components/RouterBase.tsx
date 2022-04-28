@@ -192,6 +192,32 @@ export default function RouterBase({ children }: { children: React.ReactNode }) 
 	global.addFlag = addFlag
 	global.routerHistory = routerHistory
 
+	useEffect(() => {
+		// @ts-ignore
+		const unblock = history.block((location, action) => {
+			if (global.unityContext && location.pathname !== history.location.pathname) {
+				/* const sure = window.confirm('Are you sure?')
+				if (sure) { */
+				void (async function () {
+					global.unityContext?.removeAllEventListeners()
+					await global.unityContext?.quitUnityInstance()
+					global.sendUnityEvent = undefined
+					global.unityContext = undefined
+					// @ts-ignore
+					history.push(location)
+				})()
+				/* }
+				return sure */
+				return false
+			}
+			return true
+		})
+
+		return () => {
+			unblock()
+		}
+	}, [history])
+
 	// Should be on top of your function after state is declared
 	useConstructor(() => {
 		void (async function () {
