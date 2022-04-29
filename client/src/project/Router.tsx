@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import { Capacitor } from '@capacitor/core'
 import { useConstructor } from '@toolz/use-constructor'
 import { post } from 'core/api'
 import flawk from 'core/assets/images/logo.svg'
@@ -18,7 +19,7 @@ import logo from 'project/assets/images/logo.svg'
 import React, { Component, useEffect } from 'react'
 import { Helmet } from 'react-helmet'
 import MediaQuery from 'react-responsive'
-import { Route, Switch } from 'react-router-dom'
+import { Redirect, Route, Switch } from 'react-router-dom'
 import './assets/fonts.css'
 import './assets/main.scss'
 // eslint-disable-next-line
@@ -323,17 +324,21 @@ export default function Router(): React.ReactNode {
 									</Route>
 
 									<Route path='/'>
-										<PublicWrapper desktop={desktop}>
-											<Animated
-												animateOffscreen
-												effects={['fade']}
-												duration={0.5}
-												delay={0.75}
-												style={{ width: '100%' }}
-											>
-												<Main />
-											</Animated>
-										</PublicWrapper>
+										{!Capacitor.isNativePlatform() ? (
+											<Redirect to={'/components'} />
+										) : (
+											<PublicWrapper desktop={desktop}>
+												<Animated
+													animateOffscreen
+													effects={['fade']}
+													duration={0.5}
+													delay={0.75}
+													style={{ width: '100%' }}
+												>
+													<Main />
+												</Animated>
+											</PublicWrapper>
+										)}
 									</Route>
 								</Switch>
 							</div>

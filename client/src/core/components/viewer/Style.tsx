@@ -361,7 +361,13 @@ export default class Style extends Component<Props> {
 								</FButton>
 							</Section>
 							<Section title='Card' tags={['styles.card', 'styles.outlineCard']}>
-								<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+								<div
+									className={
+										desktop
+											? 'wrapMarginTopLeft flex flex-wrap justify-start'
+											: 'flex-col wrapMarginBigVertical'
+									}
+								>
 									<div
 										style={{
 											...styles.card,
@@ -782,7 +788,13 @@ export default class Style extends Component<Props> {
 								<sp />
 								<tag>CSS</tag>
 								<sp />
-								<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+								<div
+									className={
+										desktop
+											? 'wrapMarginTopLeft flex flex-wrap justify-start'
+											: 'flex-col wrapMarginBigVertical'
+									}
+								>
 									<div
 										onClick={this.toggleAnimation}
 										style={{
@@ -816,7 +828,13 @@ export default class Style extends Component<Props> {
 								<sp />
 								<tag>{'<Animated/>'}</tag>
 								<sp />
-								<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+								<div
+									className={
+										desktop
+											? 'wrapMarginTopLeft flex flex-wrap justify-start'
+											: 'flex-col wrapMarginBigVertical'
+									}
+								>
 									<Animated
 										onClick={this.toggleAnimation}
 										style={animationCard}
@@ -891,6 +909,7 @@ export default class Style extends Component<Props> {
 									</div>
 
 									<div
+										onClick={this.toggleAnimation}
 										style={{
 											...animationCard,
 										}}
@@ -917,6 +936,7 @@ export default class Style extends Component<Props> {
 									</div>
 
 									<div
+										onClick={this.toggleAnimation}
 										style={{
 											...animationCard,
 										}}

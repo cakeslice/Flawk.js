@@ -115,7 +115,11 @@ export default class Header extends Component<HeaderProps> {
 								duration={0.5}
 								distance={desktop ? -desktopHeight : -mobileHeightTop}
 								//
-								className='flex justify-between w-full'
+								className={
+									desktop
+										? 'flex justify-between w-full'
+										: 'flex justify-center w-full'
+								}
 								style={{
 									maxWidth: maxWidth,
 									minHeight: desktop
@@ -138,7 +142,22 @@ export default class Header extends Component<HeaderProps> {
 									boxSizing: 'border-box',
 								}}
 							>
-								{desktop && <div style={{ minWidth: 175 }}></div>}
+								{/* !desktop && (
+									<MobileDrawer
+										className='flex items-center'
+										menuStyle={{
+											minWidth: desktop ? 48 : 30,
+											paddingBottom: this.state.shrink ? 10 : 15,
+											paddingTop: this.state.shrink ? 10 : 15,
+											transition: 'padding-top .5s, padding-bottom .5s',
+										}}
+										links={mobileLinks}
+										title={'Flawk.js'}
+										headerHeight={
+											this.state.shrink ? mobileHeight : mobileHeightTop
+										}
+									></MobileDrawer>
+								) */}
 
 								{desktop &&
 									leftLinks.map((l) => {
@@ -169,8 +188,8 @@ export default class Header extends Component<HeaderProps> {
 								<a className='flex items-center' href='/'>
 									<img
 										style={{
-											minWidth: desktop ? 48 : 30,
-											maxWidth: desktop ? 48 : 30,
+											minWidth: desktop ? 48 : 38,
+											maxWidth: desktop ? 48 : 38,
 											objectFit: 'contain',
 											paddingBottom: this.state.shrink ? 10 : 15,
 											paddingTop: this.state.shrink ? 10 : 15,
@@ -206,37 +225,6 @@ export default class Header extends Component<HeaderProps> {
 											</Link>
 										)
 									})}
-
-								{desktop && (
-									<div
-										className='flex items-center'
-										style={{
-											minWidth: 175,
-										}}
-									>
-										{/*
-										<Link to={'/components'}>COMPONENTS</Link>
-										<div style={{ minWidth: 10 }} />
-										<Link to={config.noTokenRedirect}>LOGIN</Link>
-										*/}
-									</div>
-								)}
-
-								{/* !desktop && (
-									<MobileDrawer
-										className='flex items-center'
-										menuStyle={{
-											minWidth: desktop ? 48 : 30,
-											paddingBottom: this.state.shrink ? 10 : 15,
-											paddingTop: this.state.shrink ? 10 : 15,
-											transition: 'padding-top .5s, padding-bottom .5s',
-										}}
-										links={mobileLinks}
-										headerHeight={
-											this.state.shrink ? mobileHeight : mobileHeightTop
-										}
-									></MobileDrawer>
-								) */}
 							</Animated>
 						</div>
 					</div>

@@ -297,14 +297,14 @@ export default class Animated extends TrackedComponent<Props> {
 					onClick={props.onClick}
 					onBlur={props.onBlur}
 					onAnimationComplete={(variant) => {
-						if (variant === 'hidden' && props.controlled) this.setMounted(false)
+						if (variant === 'hidden' && props.controlled !== undefined)
+							this.setMounted(false)
 					}}
 					key={props.triggerID || key}
 					className={props.className}
 					style={{
-						pointerEvents:
-							!skipFirstTrigger && animate === 'hidden' ? 'none' : undefined,
-						userSelect: !skipFirstTrigger && animate === 'hidden' ? 'none' : undefined,
+						pointerEvents: !mounted && animate === 'hidden' ? 'none' : undefined,
+						userSelect: !mounted && animate === 'hidden' ? 'none' : undefined,
 						...style,
 					}}
 					//
@@ -359,7 +359,8 @@ export default class Animated extends TrackedComponent<Props> {
 							onClick={props.onClick}
 							onBlur={props.onBlur}
 							onAnimationComplete={(variant) => {
-								if (variant === 'hidden' && props.controlled) this.setMounted(false)
+								if (variant === 'hidden' && props.controlled !== undefined)
+									this.setMounted(false)
 							}}
 							ref={ref}
 							className={props.className}

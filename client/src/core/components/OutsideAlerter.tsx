@@ -13,6 +13,8 @@ type Props = {
 	children: React.ReactNode
 	clickedOutside: () => void
 	trackedName?: string
+	style?: React.CSSProperties
+	className?: string
 }
 export default class OutsideAlerter extends TrackedComponent<Props> {
 	trackedName = 'OutsideAlerter'
@@ -53,6 +55,10 @@ export default class OutsideAlerter extends TrackedComponent<Props> {
 	}
 
 	render() {
-		return <div ref={this.setWrapperRef}>{this.props.children}</div>
+		return (
+			<div className={this.props.className} style={this.props.style} ref={this.setWrapperRef}>
+				{this.props.children}
+			</div>
+		)
 	}
 }

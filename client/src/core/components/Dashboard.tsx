@@ -18,11 +18,6 @@ import { Portal } from 'react-portal'
 import MediaQuery from 'react-responsive'
 import { Link, Redirect, Route, RouteComponentProps, Switch, withRouter } from 'react-router-dom'
 
-const mobileHeight = 55
-const mobileHeightTop = 65
-const desktopHeight = 55
-const desktopHeightTop = 65
-
 export type DashboardWrapperProps = {
 	overrideHeader: boolean
 	title: string
@@ -55,6 +50,10 @@ export type DashboardRoute = {
 	tooltipOffset?: number
 	icon?: string
 	iconActive?: string
+	style?: {
+		linkStyle?: React.CSSProperties
+		textStyle?: React.CSSProperties
+	}
 	customIcon?: (active: boolean) => React.ReactNode
 	hidden?: boolean
 	mobileTab?: boolean
@@ -76,6 +75,8 @@ type DashboardProps = {
 	wrapperComponent: React.ReactNode
 	path: string
 	logo: string
+	mobileHeader?: React.ReactNode
+	drawerTitle?: string
 	routes: Array<DashboardRoute>
 	pageProps?: Obj
 	alwaysOpen?: boolean
@@ -87,8 +88,8 @@ type DashboardProps = {
 	horizontalHeight?: number
 	logoStyle?: Obj
 	bigScreenWidth?: number
-}
-export default class Dashboard extends TrackedComponent<
+} & RouteComponentProps
+class DashboardClass extends TrackedComponent<
 	DashboardProps,
 	{ open: boolean; linkMaxWidth: number; showHeaderBackground: boolean }
 > {
@@ -140,6 +141,8 @@ export default class Dashboard extends TrackedComponent<
 		return <div>{props.children}</div>
 	}
 	render() {
+		const mobileHeight = 55
+		const mobileHeightTop = 65
 		const horizontalHeight = this.props.horizontalHeight || 43
 
 		const openWidth = this.props.openWidth || 176
@@ -160,14 +163,22 @@ export default class Dashboard extends TrackedComponent<
 
 		const toggleOpenDesktop = (open?: boolean) => this.toggleOpen(open, true)
 
+		let selectedMobileName: string | undefined = undefined
+		const sR = this.props.location.pathname.toString()
+		mobileRoutes.forEach((e) => {
+			if (sR.includes('/' + e.id)) selectedMobileName = e.name
+			if (e.subRoutes)
+				e.subRoutes.forEach((s) => {
+					if (sR.includes('/' + e.id + '/' + s.id)) selectedMobileName = s.name
+				})
+		})
+
 		return (
 			<MediaQuery minWidth={this.props.bigScreenWidth || 1450}>
 				{(bigScreen) => {
 					return (
 						<MediaQuery minWidth={config.mobileWidthTrigger}>
 							{(desktop) => {
-								const headerHeight = desktop ? 90 : 50
-
 								const desktopStyle: React.CSSProperties = {
 									...(this.props.horizontal
 										? {
@@ -300,7 +311,6 @@ export default class Dashboard extends TrackedComponent<
 																	? openWidth
 																	: this.state.linkMaxWidth
 															}
-															headerHeight={headerHeight}
 															desktop={desktop}
 															horizontal={this.props.horizontal}
 															toggleOpen={
@@ -321,9 +331,7 @@ export default class Dashboard extends TrackedComponent<
 												className='flex-col w-full'
 												style={{
 													minHeight: !this.props.dontFillSpace
-														? desktop
-															? desktopHeightTop
-															: mobileHeightTop
+														? mobileHeightTop
 														: 0,
 												}}
 											>
@@ -341,22 +349,12 @@ export default class Dashboard extends TrackedComponent<
 														<div
 															className='flex justify-between w-full'
 															style={{
-																minHeight: desktop
-																	? this.state
-																			.showHeaderBackground
-																		? desktopHeight
-																		: desktopHeightTop
-																	: this.state
-																			.showHeaderBackground
+																minHeight: this.state
+																	.showHeaderBackground
 																	? mobileHeight
 																	: mobileHeightTop,
-																maxHeight: desktop
-																	? this.state
-																			.showHeaderBackground
-																		? desktopHeight
-																		: desktopHeightTop
-																	: this.state
-																			.showHeaderBackground
+																maxHeight: this.state
+																	.showHeaderBackground
 																	? mobileHeight
 																	: mobileHeightTop,
 																transition:
@@ -366,51 +364,66 @@ export default class Dashboard extends TrackedComponent<
 																boxSizing: 'border-box',
 															}}
 														>
-															<button
-																className='flex items-center'
-																type='button'
-																onClick={() =>
-																	global.routerHistory().push('/')
-																}
-																style={{
-																	marginBottom: this.state
-																		.showHeaderBackground
-																		? 10
-																		: 15,
-																	marginTop: this.state
-																		.showHeaderBackground
-																		? 10
-																		: 15,
-																	transition:
-																		'margin-top .5s, margin-bottom .5s',
-																}}
-															>
-																<img
-																	style={{
-																		maxHeight: 30,
-																		minHeight: 30,
-																		objectFit: 'contain',
-																		...this.props.logoStyle,
-																	}}
-																	src={this.props.logo}
-																></img>
-															</button>
-
 															<MobileDrawer
+																title={this.props.drawerTitle}
 																burgerStyle={mobileBurgerStyle}
 																menuStyle={mobileMenuStyle}
 																linkStyle={this.props.linkStyle}
-																headerHeight={
-																	this.state.showHeaderBackground
-																		? mobileHeight
-																		: mobileHeightTop
-																}
+																headerHeight={mobileHeight}
 																toggleOpen={this.toggleOpen}
 																//
 																pageProps={this.props.pageProps}
 																path={this.props.path}
 																links={mobileRoutes}
 															></MobileDrawer>
+
+															{this.props.mobileHeader ||
+																(selectedMobileName ? (
+																	<div
+																		style={{
+																			fontWeight: 'bold',
+																			fontSize: 20,
+																			opacity: 0.6,
+																		}}
+																		className='flex items-center'
+																	>
+																		{selectedMobileName}
+																	</div>
+																) : (
+																	<button
+																		className='flex items-center'
+																		type='button'
+																		onClick={() =>
+																			global
+																				.routerHistory()
+																				.push('/')
+																		}
+																		style={{
+																			marginBottom: this.state
+																				.showHeaderBackground
+																				? 10
+																				: 15,
+																			marginTop: this.state
+																				.showHeaderBackground
+																				? 10
+																				: 15,
+																			transition:
+																				'margin-top .5s, margin-bottom .5s',
+																		}}
+																	>
+																		<img
+																			style={{
+																				maxHeight: 30,
+																				minHeight: 30,
+																				objectFit:
+																					'contain',
+																				...this.props
+																					.logoStyle,
+																			}}
+																			src={this.props.logo}
+																		></img>
+																	</button>
+																))}
 														</div>
 													</Animated>
 												</Portal>
@@ -604,7 +617,6 @@ type MenuProps = {
 	isHover: boolean
 	linkStyle?: LinkStyle
 	linkMaxWidth: number
-	headerHeight: number
 	horizontal?: boolean
 	toggleOpen: (open?: boolean) => void
 	//
@@ -713,6 +725,7 @@ class MenuClass extends TrackedComponent<MenuProps> {
 									marginBottom: 10,
 							  }),
 						...this.props.linkStyle,
+						...(link.style && link.style.linkStyle),
 					}
 					if (selected)
 						linkStyle = {
@@ -779,6 +792,7 @@ class MenuClass extends TrackedComponent<MenuProps> {
 									maxWidth: isOpen ? 'auto' : 0,
 									transition: `opacity 500ms, margin-left 500ms, max-width 500ms`,
 							  }),
+						...(link.style && link.style.textStyle),
 					}
 
 					const output = (
@@ -1001,3 +1015,5 @@ class MenuClass extends TrackedComponent<MenuProps> {
 	}
 }
 const Menu = withRouter(MenuClass)
+const Dashboard = withRouter(DashboardClass)
+export default Dashboard

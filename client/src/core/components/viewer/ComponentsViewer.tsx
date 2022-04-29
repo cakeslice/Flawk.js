@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import { Capacitor } from '@capacitor/core'
 import logo from 'core/assets/images/logo.svg'
 import Anchor from 'core/components/Anchor'
 import Dashboard, { DashboardRoute } from 'core/components/Dashboard'
@@ -188,23 +189,26 @@ export default class ComponentsViewer extends Component {
 				id: 'middle_mobile',
 				notRoute: true,
 				mobileTab: true,
-				tab: (props) => <div style={{ height: 40 }} />,
+				tab: (props) => <div className='grow' style={{ height: 40 }} />,
 			},
 			{
 				name: (!global.nightMode ? 'Dark' : 'Light') + ' mode',
 				notRoute: true,
 				justIcon: true,
+				style: { linkStyle: { opacity: 0.75 } },
 				onClick: () => global.toggleNightMode(),
 				customIcon: (active) => (
 					<div
 						{...css({
-							width: 25,
+							width: 20,
+							overflow: 'visible',
 							padding: 0,
 						})}
 					>
 						<img
 							style={{
 								maxHeight: 30,
+								width: 25,
 								position: 'relative',
 								left: -2,
 							}}
@@ -213,6 +217,35 @@ export default class ComponentsViewer extends Component {
 					</div>
 				),
 				id: 'dark_mode',
+			},
+			{
+				name: 'Flawk.js',
+				notRoute: true,
+				mobileTab: true,
+				style: { linkStyle: { opacity: 0.75 } },
+				onClick: () =>
+					Capacitor.isNativePlatform()
+						? window.open('https://flawk.cakeslice.dev', '_blank')
+						: global.routerHistory().push('/'),
+				customIcon: (active) => (
+					<div
+						{...css({
+							display: 'flex',
+							width: 20,
+							padding: 0,
+						})}
+					>
+						<img
+							style={{
+								width: 20,
+								position: 'relative',
+								top: -1,
+							}}
+							src={logo}
+						></img>
+					</div>
+				),
+				id: 'flawk_link',
 			},
 		]
 
@@ -253,6 +286,8 @@ export default class ComponentsViewer extends Component {
 							':selected': { color: styles.colors.black },
 						}}
 						logo={logo}
+						mobileHeader={Capacitor.isNativePlatform() ? <div /> : undefined}
+						drawerTitle={Capacitor.isNativePlatform() ? 'Flawk.js' : 'Components'}
 						wrapperComponent={Wrapper}
 						routes={routes}
 						pageProps={{

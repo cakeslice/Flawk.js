@@ -295,19 +295,21 @@ export default class Layout extends QueryParams<
 							{this.exampleModal()}
 							{this.confirmModal()}
 							{this.bigModal()}
-							<Section title='Dashboard' top tags={['<Dashboard/>']}>
-								<FButton
-									onClick={async () => {
-										this.props.toggleDashboardLayout()
-									}}
-									style={{
-										minWidth: 50,
-									}}
-								>
-									{!this.props.horizontalDashboard ? 'Top' : 'Side'} menu
-								</FButton>
-							</Section>
-							<Section title='Flex wrap/grow' code={codeFlexGrow}>
+							{desktop && (
+								<Section title='Dashboard' top tags={['<Dashboard/>']}>
+									<FButton
+										onClick={async () => {
+											this.props.toggleDashboardLayout()
+										}}
+										style={{
+											minWidth: 50,
+										}}
+									>
+										{!this.props.horizontalDashboard ? 'Top' : 'Side'} menu
+									</FButton>
+								</Section>
+							)}
+							<Section title='Flex wrap/grow' top={!desktop} code={codeFlexGrow}>
 								<div style={{ ...styles.card }}>
 									<div className='wrapMargin flex flex-wrap'>
 										<div style={fixedExample}></div>
@@ -568,7 +570,7 @@ export default class Layout extends QueryParams<
 														<Dropdown
 															customInput
 															style={{
-																menu: { left: 0, width: 75 },
+																menu: { left: -60, width: 75 },
 															}}
 															options={[
 																{
