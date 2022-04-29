@@ -47,12 +47,12 @@ export default {
 		rejectCookies: { pt: 'Reject All', en: 'Reject All' },
 		acceptCookies: { pt: 'Accept All', en: 'Accept All' },
 		cookieWarning: {
-			pt: "We'd like to set cookies to analyze traffic. View our 🍪 {{cookiePolicy}}",
-			en: "We'd like to set cookies to analyze traffic. View our 🍪 {{cookiePolicy}}",
+			pt: "We'd like to set cookies to analyze traffic.{{break}}View our 🍪 {{cookiePolicy}}",
+			en: "We'd like to set cookies to analyze traffic.{{break}}View our 🍪 {{cookiePolicy}}",
 		},
 		essentialCookieWarning: {
-			pt: "This site uses necessary cookies to deliver its services. We'd like to set additional cookies to analyse traffic. View our 🍪 {{cookiePolicy}}",
-			en: "This site uses necessary cookies to deliver its services. We'd like to set additional cookies to analyse traffic. View our 🍪 {{cookiePolicy}}",
+			pt: "This app uses necessary cookies to deliver its services. We'd like to set additional cookies to analyse traffic.{{break}}View our 🍪 {{cookiePolicy}}",
+			en: "This app uses necessary cookies to deliver its services. We'd like to set additional cookies to analyse traffic.{{break}}View our 🍪 {{cookiePolicy}}",
 		},
 	},
 
@@ -71,7 +71,10 @@ export default {
 
 		andThe: { pt: ' e a ', en: ' and the ' },
 		registerTerms: { pt: 'Li e aceito os', en: "I've read and accept the" },
-		registerMessage1: { pt: 'Ainda não tem conta?', en: "Don't have an account?" },
+		registerMessage1: {
+			pt: 'Ainda não tem conta?',
+			en: "Don't have an account?",
+		},
 		registerMessage2: { pt: 'Registe-se', en: 'Sign-up' },
 
 		recoverMessage: {

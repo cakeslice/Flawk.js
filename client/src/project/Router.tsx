@@ -183,6 +183,7 @@ export default function Router(): React.ReactNode {
 							display: 'flex',
 							justifyContent: 'center',
 							alignItems: 'center',
+							marginRight: 3,
 						}}
 					>
 						<button
@@ -324,7 +325,7 @@ export default function Router(): React.ReactNode {
 									</Route>
 
 									<Route path='/'>
-										{!Capacitor.isNativePlatform() ? (
+										{Capacitor.isNativePlatform() ? (
 											<Redirect to={'/components'} />
 										) : (
 											<PublicWrapper desktop={desktop}>

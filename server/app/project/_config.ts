@@ -13,11 +13,12 @@ const _publicRoutes = [
 ]
 const _routes = ['/routes/private/account', '/routes/private/admin']
 
-const _rateLimitedCalls = [_path + '/client/login', _path + '/client/upload_url']
+const _rateLimitedCalls = [_path + '/client/login']
 const _extremeRateLimitedCalls = [
 	// If using SMS or something that shouldn't be exploited
 	_path + '/client/register',
 	_path + '/client/forgot_password',
+	_path + '/client/upload_url',
 ]
 
 const _allowedOrigins = [

@@ -495,6 +495,10 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 															config.text('common.cookiePolicy') +
 															'</a>',
 													},
+													{
+														key: '{{break}}',
+														value: desktop ? ' ' : '<br/>',
+													},
 												]
 											)}
 										</p>

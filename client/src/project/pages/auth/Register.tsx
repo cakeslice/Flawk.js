@@ -31,7 +31,7 @@ const connector = connect((state: StoreState) => ({
 }))
 type PropsFromRedux = ConnectedProps<typeof connector>
 class Register extends Component<PropsFromRedux> {
-	state = { wrongLogin: undefined, verifyingSignup: undefined }
+	state = { wrongLogin: undefined, emailToVerify: undefined }
 
 	render() {
 		if (!this.props.fetchingUser && this.props.user) navigation.loginRedirect()
@@ -48,7 +48,7 @@ class Register extends Component<PropsFromRedux> {
 						<sp />
 						<sp />
 						<sp />
-						{this.state.verifyingSignup ? (
+						{this.state.emailToVerify ? (
 							<Formik
 								enableReinitialize
 								initialValues={{}}
@@ -60,11 +60,15 @@ class Register extends Component<PropsFromRedux> {
 										'client/register_verify',
 										{
 											...values,
+											email: this.state.emailToVerify,
 										},
 										{ noErrorFlag: [401] }
 									)
 
 									if (res.ok && res.body) {
+										this.setState({
+											emailToVerify: undefined,
+										})
 										if (global.analytics)
 											global.analytics.event({
 												category: 'User',
@@ -103,7 +107,7 @@ class Register extends Component<PropsFromRedux> {
 													label={'Verification code'}
 													type={'number'}
 													name='verificationCode'
-													placeholder={'Use 55555'}
+													placeholder={'Check your e-mail'}
 												/>
 											</div>
 											<sp />
@@ -119,16 +123,28 @@ class Register extends Component<PropsFromRedux> {
 													</div>
 												)}
 
-												<FButton
-													type='submit'
-													formErrors={errors}
-													isLoading={
-														isSubmitting || this.props.fetchingUser
-													}
-													appearance='primary'
-												>
-													{'Verify'}
-												</FButton>
+												<div className='flex'>
+													<FButton
+														onClick={() =>
+															this.setState({
+																emailToVerify: undefined,
+															})
+														}
+													>
+														{'Back'}
+													</FButton>
+													<sp />
+													<FButton
+														type='submit'
+														formErrors={errors}
+														isLoading={
+															isSubmitting || this.props.fetchingUser
+														}
+														appearance='primary'
+													>
+														{'Verify'}
+													</FButton>
+												</div>
 											</Animated>
 										</Form>
 									)
@@ -182,7 +198,7 @@ class Register extends Component<PropsFromRedux> {
 												action: 'Signed up',
 											})
 
-										this.setState({ verifyingSignup: true })
+										this.setState({ emailToVerify: values.email })
 									} else if (res.status === 409)
 										this.setState({ wrongLogin: 'User already exists' })
 
@@ -213,12 +229,14 @@ class Register extends Component<PropsFromRedux> {
 													autoFocus
 													label={'First name'}
 													name='firstName'
+													placeholder={'John'}
 												/>
 												<Field
 													component={FInput}
 													required
 													label={'Last name'}
 													name='lastName'
+													placeholder={'Doe'}
 												/>
 											</div>
 											<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
@@ -230,6 +248,7 @@ class Register extends Component<PropsFromRedux> {
 													type={'email'}
 													autoComplete='new-email'
 													name='email'
+													placeholder={'john.doe@mail.com'}
 												/>
 												<Field
 													component={FInput}

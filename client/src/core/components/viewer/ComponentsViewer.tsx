@@ -286,8 +286,7 @@ export default class ComponentsViewer extends Component {
 							':selected': { color: styles.colors.black },
 						}}
 						logo={logo}
-						mobileHeader={Capacitor.isNativePlatform() ? <div /> : undefined}
-						drawerTitle={Capacitor.isNativePlatform() ? 'Flawk.js' : 'Components'}
+						drawerTitle={'Components'}
 						wrapperComponent={Wrapper}
 						routes={routes}
 						pageProps={{

@@ -103,7 +103,7 @@ router.postAsync(Register.call, async (req, res) => {
 
 	if (!(await common.checkRecaptcha(req, res))) return
 
-	const selection = '_id flags access appState personal'
+	const selection = '_id email flags access appState personal'
 	const user = await Client.findOne({ email: body.email }).select(selection)
 	if (user && user.flags.includes('verified')) {
 		res.do(409, res.response('userTaken'))
@@ -131,7 +131,10 @@ router.postAsync(Register.call, async (req, res) => {
 			personal: {
 				firstName: body.firstName,
 				lastName: body.lastName,
-				photoURL: 'https://i.pravatar.cc/500?u=' + body.email,
+				...(!config.prod &&
+					!config.staging && {
+						photoURL: 'https://i.pravatar.cc/500?u=' + body.email,
+					}),
 			},
 		})
 	} else {
@@ -163,10 +166,10 @@ router.postAsync(Register.call, async (req, res) => {
 			subject: res.text('verifyAccount'),
 			substitutions: {
 				firstName: newUser.personal.firstName,
-				verificationCode: newUser.appState.verificationCode,
+				code: newUser.appState.verificationCode,
 			},
 		},
-		'test'
+		'verify'
 	)
 
 	res.do(200)
@@ -266,12 +269,11 @@ router.postAsync(ForgotPassword.call, async (req, res) => {
 		{
 			subject: res.text('forgotVerify'),
 			substitutions: {
-				email: user.email,
 				firstName: user.personal.firstName,
-				verificationCode: user.appState.verificationCode,
+				code: user.appState.verificationCode,
 			},
 		},
-		'test'
+		'verify'
 	)
 
 	res.do(200)
@@ -300,11 +302,6 @@ router.postAsync(ResetPassword.call, async (req, res) => {
 	const selection = '_id access flags appState personal'
 	const user = await Client.findOne({ email: body.email }).select(selection)
 
-	if (config.prod) {
-		res.do(400, 'Disabled in production')
-		return
-	}
-
 	if (!user || !user.flags.includes('verified')) {
 		res.do(404, res.response('userNotFound'))
 		return
@@ -331,12 +328,10 @@ router.postAsync(ResetPassword.call, async (req, res) => {
 			{
 				subject: res.text('passwordChanged'),
 				substitutions: {
-					fullName:
-						(user.personal.firstName || '') + ' ' + (user.personal.lastName || ''),
-					email: user.email,
+					firstName: user.personal.firstName,
 				},
 			},
-			'test'
+			'password_changed'
 		)
 
 		res.cookie('token', token, config.cookieSettings)

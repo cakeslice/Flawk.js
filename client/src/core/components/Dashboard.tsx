@@ -994,6 +994,7 @@ class MenuClass extends TrackedComponent<MenuProps> {
 					else
 						return link.justIcon && link.name && this.props.horizontal ? (
 							<Tooltip
+								key={link.id + (link.params || '')}
 								foreground
 								offset={link.tooltipOffset}
 								containerStyle={

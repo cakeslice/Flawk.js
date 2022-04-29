@@ -27,7 +27,6 @@ import React, { Component } from 'react'
 import ReCaptcha from 'react-google-recaptcha'
 import { connect, ConnectedProps } from 'react-redux'
 import MediaQuery from 'react-responsive'
-import { Link } from 'react-router-dom'
 import { lock, Section } from './ComponentsViewer'
 
 const cardStyle = (desktop?: boolean) => {
@@ -63,6 +62,13 @@ class Backend extends Component<PropsFromRedux> {
 								}
 							>
 								<div>
+									<tag>Signup</tag>
+									<sp />
+									<Register {...this.props} desktop={desktop}></Register>
+								</div>
+								{!desktop && <sp />}
+								{!desktop && <sp />}
+								<div>
 									<tag>Login</tag>
 									<sp />
 									<Login {...this.props} desktop={desktop}></Login>
@@ -70,19 +76,10 @@ class Backend extends Component<PropsFromRedux> {
 								{!desktop && <sp />}
 								{!desktop && <sp />}
 								<div>
-									<tag>Register</tag>
+									<tag>Forgot password</tag>
 									<sp />
-									<Register {...this.props} desktop={desktop}></Register>
+									<Forgot {...this.props} desktop={desktop}></Forgot>
 								</div>
-								{!desktop && <sp />}
-								{!desktop && <sp />}
-								{!config.prod && (
-									<div>
-										<tag>Forgot password</tag>
-										<sp />
-										<Forgot {...this.props} desktop={desktop}></Forgot>
-									</div>
-								)}
 							</div>
 						</Section>
 						<Section title='Account & Logout'>
@@ -110,7 +107,7 @@ class Backend extends Component<PropsFromRedux> {
 										{({ isSubmitting, errors }) => {
 											return (
 												<Form noValidate>
-													<div className='flex-col items-center'>
+													<div className='flex flex-wrap items-center justify-center'>
 														<button
 															type='button'
 															style={{
@@ -118,7 +115,6 @@ class Backend extends Component<PropsFromRedux> {
 																padding: 0,
 																display: 'flex',
 																alignItems: 'center',
-																marginBottom: 30,
 																color: styles.colors.black,
 															}}
 														>
@@ -132,6 +128,7 @@ class Backend extends Component<PropsFromRedux> {
 																style={{
 																	width: 30,
 																	height: 30,
+																	marginRight: 5,
 																}}
 															></Avatar>
 															{this.props.user && (
@@ -152,6 +149,8 @@ class Backend extends Component<PropsFromRedux> {
 																</p>
 															)}
 														</button>
+														<sp />
+														<sp />
 														{this.props.user && (
 															<FButton
 																type='submit'
@@ -243,31 +242,33 @@ class Backend extends Component<PropsFromRedux> {
 								</div>
 							)}
 						</Section>
-						<Section title='Admin'>
-							{this.props.user && this.props.user.permission <= 10 ? (
-								<Admin></Admin>
-							) : (
-								<div>
+						{!config.prod && (
+							<Section title='Admin'>
+								{this.props.user && this.props.user.permission <= 10 ? (
+									<Admin></Admin>
+								) : (
 									<div>
-										<span>
-											{lock(
-												config.replaceAlpha(
-													styles.colors.black,
-													global.nightMode ? 0.15 : 0.25
-												)
-											)}
-										</span>
-										<span> </span>
-										<span style={{ verticalAlign: 'top' }}>
-											Please login as Admin to view
-										</span>
+										<div>
+											<span>
+												{lock(
+													config.replaceAlpha(
+														styles.colors.black,
+														global.nightMode ? 0.15 : 0.25
+													)
+												)}
+											</span>
+											<span> </span>
+											<span style={{ verticalAlign: 'top' }}>
+												Please login as Admin to view
+											</span>
+										</div>
+										<div style={{ fontSize: 13, opacity: 0.5 }}>
+											{'Check "permission" property in the Client document'}
+										</div>
 									</div>
-									<div style={{ fontSize: 13, opacity: 0.5 }}>
-										{'Check "permission" property in the Client document'}
-									</div>
-								</div>
-							)}
-						</Section>
+								)}
+							</Section>
+						)}
 						<Section title='Remote data'>
 							<div style={{ maxWidth: 700 }} className='flex-col justify-center'>
 								{this.props.structures &&
@@ -361,10 +362,7 @@ class Login extends Component<PropsFromRedux & { desktop?: boolean }> {
 			<div style={cardStyle(this.props.desktop)}>
 				<Formik
 					enableReinitialize
-					initialValues={{
-						email: 'dev_user@email.flawk',
-						password: 'dev_user',
-					}}
+					initialValues={{}}
 					onSubmit={async (values, { setSubmitting }) => {
 						this.setState({ wrongLogin: undefined })
 						setSubmitting(true)
@@ -378,6 +376,11 @@ class Login extends Component<PropsFromRedux & { desktop?: boolean }> {
 						)
 
 						if (res.ok && res.body) {
+							if (global.analytics)
+								global.analytics.event({
+									category: 'User',
+									action: 'Logged in',
+								})
 							await global.storage.setItem('token', res.body.token as string)
 							await fetchUser(this.props.dispatch)
 						} else if (res.status === 401) {
@@ -407,9 +410,6 @@ class Login extends Component<PropsFromRedux & { desktop?: boolean }> {
 										name='password'
 										type={'password'}
 									/>
-									<Link style={{ fontSize: 13, marginTop: 5 }} to='/forgot'>
-										{config.text('auth.recoverMessage')}
-									</Link>
 								</div>
 								<sp />
 								<Animated
@@ -433,17 +433,6 @@ class Login extends Component<PropsFromRedux & { desktop?: boolean }> {
 										{'Login'}
 									</FButton>
 								</Animated>
-								<sp />
-								<sp />
-								<div
-									style={{
-										opacity: 0.8,
-										textAlign: 'center',
-									}}
-								>
-									{(config.text('auth.registerMessage1') as string) + ' '}
-									<Link to=''>{config.text('auth.registerMessage2')}</Link>
-								</div>
 							</Form>
 						)
 					}}
@@ -453,12 +442,12 @@ class Login extends Component<PropsFromRedux & { desktop?: boolean }> {
 	}
 }
 class Register extends Component<PropsFromRedux & { desktop?: boolean }> {
-	state: { verifyingSignup?: boolean; wrongLogin?: string } = {}
+	state: { emailToVerify?: string; wrongLogin?: string } = {}
 
 	render() {
 		return (
 			<div style={cardStyle(this.props.desktop)}>
-				{this.state.verifyingSignup ? (
+				{this.state.emailToVerify ? (
 					<Formik
 						enableReinitialize
 						initialValues={{}}
@@ -470,14 +459,20 @@ class Register extends Component<PropsFromRedux & { desktop?: boolean }> {
 								'client/register_verify',
 								{
 									...values,
+									email: this.state.emailToVerify,
 								},
 								{ noErrorFlag: [401] }
 							)
 
 							if (res.ok && res.body) {
 								this.setState({
-									verifyingSignup: false,
+									emailToVerify: undefined,
 								})
+								if (global.analytics)
+									global.analytics.event({
+										category: 'User',
+										action: 'Verified account',
+									})
 								await global.storage.setItem('token', res.body.token as string)
 								await fetchUser(this.props.dispatch)
 							} else if (res.status === 401)
@@ -498,7 +493,7 @@ class Register extends Component<PropsFromRedux & { desktop?: boolean }> {
 											label={'Verification code'}
 											type={'number'}
 											name='verificationCode'
-											placeholder={'Use 55555'}
+											placeholder={'Check your e-mail'}
 										/>
 									</div>
 									<sp />
@@ -514,14 +509,26 @@ class Register extends Component<PropsFromRedux & { desktop?: boolean }> {
 											</div>
 										)}
 
-										<FButton
-											type='submit'
-											formErrors={errors}
-											isLoading={isSubmitting || this.props.fetchingUser}
-											appearance='primary'
-										>
-											{'Verify'}
-										</FButton>
+										<div className='flex'>
+											<FButton
+												onClick={() =>
+													this.setState({
+														emailToVerify: undefined,
+													})
+												}
+											>
+												{'Back'}
+											</FButton>
+											<sp />
+											<FButton
+												type='submit'
+												formErrors={errors}
+												isLoading={isSubmitting || this.props.fetchingUser}
+												appearance='primary'
+											>
+												{'Verify'}
+											</FButton>
+										</div>
 									</Animated>
 								</Form>
 							)
@@ -544,10 +551,6 @@ class Register extends Component<PropsFromRedux & { desktop?: boolean }> {
 						}}
 						initialValues={
 							{
-								firstName: 'Dev',
-								lastName: 'User',
-								email: 'dev_user@email.flawk',
-								password: 'dev_user',
 								captcha: undefined,
 							} as {
 								firstName?: string
@@ -573,7 +576,12 @@ class Register extends Component<PropsFromRedux & { desktop?: boolean }> {
 							setFieldValue('captcha', undefined)
 
 							if (res.ok) {
-								this.setState({ verifyingSignup: true })
+								if (global.analytics)
+									global.analytics.event({
+										category: 'User',
+										action: 'Signed up',
+									})
+								this.setState({ emailToVerify: values.email })
 							} else if (res.status === 409)
 								this.setState({ wrongLogin: 'User already exists' })
 
@@ -598,12 +606,14 @@ class Register extends Component<PropsFromRedux & { desktop?: boolean }> {
 												//autoFocus
 												label={'First name'}
 												name='firstName'
+												placeholder={'John'}
 											/>
 											<Field
 												component={FInput}
 												required
 												label={'Last name'}
 												name='lastName'
+												placeholder={'Doe'}
 											/>
 										</div>
 										<div className='wrapMargin flex flex-wrap justify-around'>
@@ -615,6 +625,7 @@ class Register extends Component<PropsFromRedux & { desktop?: boolean }> {
 												type={'email'}
 												autoComplete='new-email'
 												name='email'
+												placeholder={'john.doe@mail.com'}
 											/>
 											<Field
 												component={FInput}
@@ -699,20 +710,9 @@ class Register extends Component<PropsFromRedux & { desktop?: boolean }> {
 											isLoading={isSubmitting || this.props.fetchingUser}
 											appearance='primary'
 										>
-											{'Sign up'}
+											{'Signup'}
 										</FButton>
 									</Animated>
-									<sp />
-									<sp />
-									<div
-										style={{
-											opacity: 0.8,
-											textAlign: 'center',
-										}}
-									>
-										{(config.text('auth.loginMessage1') as string) + ' '}
-										<Link to=''>{config.text('auth.loginMessage2')}</Link>
-									</div>
 								</Form>
 							)
 						}}
@@ -723,12 +723,12 @@ class Register extends Component<PropsFromRedux & { desktop?: boolean }> {
 	}
 }
 class Forgot extends Component<PropsFromRedux & { desktop?: boolean }> {
-	state: { verifyingRecover?: boolean; emailToRecover?: string; wrongLogin?: string } = {}
+	state: { emailToRecover?: string; wrongLogin?: string } = {}
 
 	render() {
 		return (
 			<div style={cardStyle(this.props.desktop)}>
-				{this.state.verifyingRecover ? (
+				{this.state.emailToRecover ? (
 					<Formik
 						enableReinitialize
 						key={'reset_password'}
@@ -747,7 +747,12 @@ class Forgot extends Component<PropsFromRedux & { desktop?: boolean }> {
 							)
 
 							if (res.ok && res.body) {
-								this.setState({ verifyingRecover: false })
+								if (global.analytics)
+									global.analytics.event({
+										category: 'User',
+										action: 'Recovered account',
+									})
+								this.setState({ emailToRecover: undefined })
 								await global.storage.setItem('token', res.body.token as string)
 								await fetchUser(this.props.dispatch)
 							} else if (res.status === 401)
@@ -768,6 +773,7 @@ class Forgot extends Component<PropsFromRedux & { desktop?: boolean }> {
 											name='newPassword'
 											autoComplete='new-password'
 											type={'password'}
+											placeholder={'Min. 6 characters'}
 										/>
 										<div style={{ minHeight: 10 }} />
 										<Field
@@ -776,6 +782,7 @@ class Forgot extends Component<PropsFromRedux & { desktop?: boolean }> {
 											label={'Verification code'}
 											type={'number'}
 											name='verificationCode'
+											placeholder={'Check your e-mail'}
 										/>
 									</div>
 									<sp />
@@ -791,14 +798,26 @@ class Forgot extends Component<PropsFromRedux & { desktop?: boolean }> {
 											</div>
 										)}
 
-										<FButton
-											type='submit'
-											formErrors={errors}
-											isLoading={isSubmitting || this.props.fetchingUser}
-											appearance='primary'
-										>
-											{'Change Password'}
-										</FButton>
+										<div className='flex'>
+											<FButton
+												onClick={() =>
+													this.setState({
+														emailToRecover: undefined,
+													})
+												}
+											>
+												{'Back'}
+											</FButton>
+											<sp />
+											<FButton
+												type='submit'
+												formErrors={errors}
+												isLoading={isSubmitting || this.props.fetchingUser}
+												appearance='primary'
+											>
+												{'Change Password'}
+											</FButton>
+										</div>
 									</Animated>
 								</Form>
 							)
@@ -822,7 +841,6 @@ class Forgot extends Component<PropsFromRedux & { desktop?: boolean }> {
 						}}
 						initialValues={
 							{
-								email: 'dev_user@email.flawk',
 								captcha: undefined,
 							} as {
 								email?: string
@@ -845,8 +863,12 @@ class Forgot extends Component<PropsFromRedux & { desktop?: boolean }> {
 							setFieldValue('captcha', undefined)
 
 							if (res.ok) {
+								if (global.analytics)
+									global.analytics.event({
+										category: 'User',
+										action: 'Forgot password',
+									})
 								this.setState({
-									verifyingRecover: true,
 									emailToRecover: values.email,
 								})
 							} else if (res.status === 404)
@@ -944,7 +966,7 @@ class Forgot extends Component<PropsFromRedux & { desktop?: boolean }> {
 											isLoading={isSubmitting || this.props.fetchingUser}
 											appearance='primary'
 										>
-											{'Recover'}
+											{'Reset Password'}
 										</FButton>
 									</Animated>
 									<sp></sp>
@@ -1026,12 +1048,14 @@ class Settings extends Component<PropsFromRedux & { desktop?: boolean }> {
 										required
 										label={'First name'}
 										name='firstName'
+										placeholder={'John'}
 									/>
 									<Field
 										component={FInput}
 										required
 										label={'Last name'}
 										name='lastName'
+										placeholder={'Doe'}
 									/>
 								</div>
 								<div className='wrapMargin flex flex-wrap justify-around'>
@@ -1041,6 +1065,7 @@ class Settings extends Component<PropsFromRedux & { desktop?: boolean }> {
 										label={'E-mail'}
 										type={'email'}
 										name='email'
+										placeholder={'john.doe@mail.com'}
 										autoComplete='new-email'
 									/>
 									<Field

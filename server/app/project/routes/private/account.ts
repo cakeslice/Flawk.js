@@ -165,16 +165,14 @@ router.postAsync(ChangeSettings.call, async (req, res) => {
 			user.access.activeTokens.push(token)
 
 			await sendEmail(
-				user.email,
+				body.email,
 				{
 					subject: res.text('passwordChanged'),
 					substitutions: {
-						fullName:
-							(user.personal.firstName || '') + ' ' + (user.personal.lastName || ''),
-						email: user.email,
+						firstName: user.personal.firstName,
 					},
 				},
-				'test'
+				'password_changed'
 			)
 		}
 	}

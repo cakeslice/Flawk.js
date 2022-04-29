@@ -31,7 +31,6 @@ type PropsFromRedux = ConnectedProps<typeof connector>
 class Forgot extends Component<PropsFromRedux> {
 	state = {
 		wrongLogin: undefined,
-		verifyingRecover: undefined,
 		emailToRecover: undefined as undefined | string,
 	}
 
@@ -50,7 +49,7 @@ class Forgot extends Component<PropsFromRedux> {
 						<sp />
 						<sp />
 						<sp />
-						{this.state.verifyingRecover ? (
+						{this.state.emailToRecover ? (
 							<Formik
 								enableReinitialize
 								key={'reset_password'}
@@ -69,6 +68,7 @@ class Forgot extends Component<PropsFromRedux> {
 									)
 
 									if (res.ok && res.body) {
+										this.setState({ emailToRecover: undefined })
 										if (global.analytics)
 											global.analytics.event({
 												category: 'User',
@@ -108,6 +108,7 @@ class Forgot extends Component<PropsFromRedux> {
 														name='newPassword'
 														autoComplete='new-password'
 														type={'password'}
+														placeholder={'Min. 6 characters'}
 													/>
 												</div>
 												<div style={{ minHeight: 10 }} />
@@ -117,7 +118,7 @@ class Forgot extends Component<PropsFromRedux> {
 													label={'Verification code'}
 													type={'number'}
 													name='verificationCode'
-													placeholder={'Use 55555'}
+													placeholder={'Check your e-mail'}
 												/>
 											</div>
 											<sp />
@@ -133,16 +134,28 @@ class Forgot extends Component<PropsFromRedux> {
 													</div>
 												)}
 
-												<FButton
-													type='submit'
-													formErrors={errors}
-													isLoading={
-														isSubmitting || this.props.fetchingUser
-													}
-													appearance='primary'
-												>
-													{'Change Password'}
-												</FButton>
+												<div className='flex'>
+													<FButton
+														onClick={() =>
+															this.setState({
+																emailToRecover: undefined,
+															})
+														}
+													>
+														{'Back'}
+													</FButton>
+													<sp />
+													<FButton
+														type='submit'
+														formErrors={errors}
+														isLoading={
+															isSubmitting || this.props.fetchingUser
+														}
+														appearance='primary'
+													>
+														{'Reset Password'}
+													</FButton>
+												</div>
 											</Animated>
 										</Form>
 									)
@@ -196,7 +209,6 @@ class Forgot extends Component<PropsFromRedux> {
 											})
 
 										this.setState({
-											verifyingRecover: true,
 											emailToRecover: values.email,
 										})
 									} else if (res.status === 404)
