@@ -51,7 +51,7 @@ export default {
 			en: "We'd like to set cookies to analyze traffic. View our 🍪 {{cookiePolicy}}",
 		},
 		essentialCookieWarning: {
-			pt: "This site uses necessary cookies to deliver its services. We'd like to set additional cookies to analyse traffic. View our 🍪{{cookiePolicy}}",
+			pt: "This site uses necessary cookies to deliver its services. We'd like to set additional cookies to analyse traffic. View our 🍪 {{cookiePolicy}}",
 			en: "This site uses necessary cookies to deliver its services. We'd like to set additional cookies to analyse traffic. View our 🍪 {{cookiePolicy}}",
 		},
 	},
