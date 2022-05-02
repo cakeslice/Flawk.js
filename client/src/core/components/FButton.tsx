@@ -198,10 +198,7 @@ export default class FButton extends TrackedComponent<Props> {
 
 			loadingColor: config.replaceAlpha(styles.colors.black, 0.2),
 			color: config.replaceAlpha(styles.colors.black, global.nightMode ? 0.5 : 0.75),
-			borderColor: config.replaceAlpha(
-				styles.colors.black,
-				global.nightMode ? styles.inputBorderFactorNight : styles.inputBorderFactorDay
-			),
+			borderColor: styles.colors.borderColor,
 
 			':focus-visible': {
 				opacity: 1,

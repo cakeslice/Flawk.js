@@ -15,10 +15,19 @@ import React from 'react'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import MediaQuery from 'react-responsive'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
-import { vscDarkPlus as SyntaxStyle } from 'react-syntax-highlighter/dist/esm/styles/prism'
+import {
+	vs as SyntaxStyleLight,
+	vscDarkPlus as SyntaxStyle,
+} from 'react-syntax-highlighter/dist/esm/styles/prism'
 
 const clipboard = (color: string) => (
-	<svg version='1.1' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'>
+	<svg
+		version='1.1'
+		width={20}
+		height={20}
+		xmlns='http://www.w3.org/2000/svg'
+		viewBox='0 0 512 512'
+	>
 		<g>
 			<path
 				fill={color}
@@ -33,12 +42,14 @@ const clipboard = (color: string) => (
 	</svg>
 )
 
+export type Lang = 'json' | 'tsx' | 'html' | 'jsx'
+
 export default function CodeBlock(props: {
 	visible?: boolean
 	style?: React.CSSProperties
 	containerStyle?: React.CSSProperties
 	data: string
-	lang: 'json' | 'jsx' | 'tsx' | 'html'
+	lang: Lang
 	noPrettier?: boolean
 }) {
 	return (
@@ -56,14 +67,16 @@ export default function CodeBlock(props: {
 						wrapLongLines
 						wrapLines
 						language={props.lang}
-						style={SyntaxStyle}
+						style={global.nightMode ? SyntaxStyle : SyntaxStyleLight}
 						customStyle={{
 							borderRadius: 6,
-							background: 'rgba(30,30,30,1)',
+							background: styles.colors.white,
 							padding: 16,
-							fontSize: !desktop ? 14 : 14,
-							fontWeight: 'bold',
+							fontSize: 13.5,
+							tabSize: 3,
+							fontWeight: 'normal',
 							width: '100%',
+							border: 'none',
 							...props.style,
 						}}
 						codeTagProps={{
@@ -77,7 +90,9 @@ export default function CodeBlock(props: {
 							? props.data
 							: prettier.format(props.data, {
 									parser:
-										props.lang === 'json'
+										props.lang === 'html'
+											? 'html'
+											: props.lang === 'json'
 											? 'json'
 											: props.lang === 'tsx'
 											? 'babel-ts'
@@ -119,15 +134,16 @@ export default function CodeBlock(props: {
 											alignItems: 'center',
 										}}
 									>
-										<tag style={{ opacity: 1, background: 'rgb(60,60,60)' }}>
+										<tag style={{ opacity: 1 }}>
 											<div
+												className='flex items-center justify-center'
 												style={{
 													width: 23,
 													height: 23,
 												}}
 											>
 												{clipboard(
-													config.replaceAlpha(styles.colors.whiteDay, 0.5)
+													config.replaceAlpha(styles.colors.black, 0.5)
 												)}
 											</div>
 										</tag>

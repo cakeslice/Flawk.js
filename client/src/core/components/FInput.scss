@@ -1,0 +1,92 @@
+@import 'react-datetime/css/react-datetime.css';
+
+.rdt {
+	position: relative;
+	width: 100%;
+}
+.rdtPicker {
+	user-select: none;
+
+	width: 210px;
+	min-width: 0%;
+	padding: 0px;
+
+	font-size: 12px;
+
+	border-radius: 0px;
+	border: none;
+	box-shadow: none;
+	background: transparent;
+}
+.rdtPickerCustom {
+	box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.025), 0 2px 4px 0 rgba(0, 0, 0, 0.025);
+	padding: 4px;
+	border-radius: 6px;
+}
+.rdtPickerDay {
+	background: #fff;
+	border: 1px solid rgba(0, 0, 0, 0.1);
+}
+.rdtPickerNight {
+	background: rgba(30, 30, 30, 1);
+	border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.rdtPicker td,
+.rdtPicker th {
+	vertical-align: middle;
+}
+.rdtPicker td.rdtDay:hover,
+.rdtPicker td.rdtHour:hover,
+.rdtPicker td.rdtMinute:hover,
+.rdtPicker td.rdtSecond:hover,
+.rdtPicker .rdtTimeToggle:hover {
+	background: rgba(127, 127, 127, 0.15);
+	border-radius: 6px;
+}
+.rdtPicker td.rdtToday:before {
+	border-bottom: 7px solid var(--main);
+	border-top-color: rgba(127, 127, 127, 0.15);
+	bottom: 2px;
+	right: 2px;
+	opacity: 0.75;
+}
+.rdtPicker td.rdtActive,
+.rdtPicker td.rdtActive:hover {
+	background-color: rgba(127, 127, 127, 0.1);
+	color: inherit;
+	box-shadow: 0px 0px 0px 1px var(--main);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	border-radius: 6px;
+	font-weight: 700;
+	text-shadow: none;
+}
+.rdtPicker td.rdtActive.rdtToday:before {
+	border-bottom-color: var(--main);
+}
+.rdtPicker td.rdtDisabled,
+.rdtPicker td.rdtDisabled:hover {
+	border-radius: 6px;
+	cursor: not-allowed;
+}
+.rdtPicker th {
+	border-bottom: 1px solid rgba(127, 127, 127, 0.15);
+}
+.rdtPicker th.rdtSwitch {
+	font-weight: 700;
+}
+.rdtPicker .dow {
+	opacity: 0.5;
+}
+.rdtPicker thead tr:first-of-type th:hover {
+	background: rgba(127, 127, 127, 0.15);
+	border-radius: 3px;
+}
+td.rdtMonth:hover,
+td.rdtYear:hover {
+	background: rgba(127, 127, 127, 0.15);
+	border-radius: 6px;
+}

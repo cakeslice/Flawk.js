@@ -1,0 +1,7 @@
+.tooltip-container {
+	z-index: 25 !important;
+}
+.tooltip-container-foreground {
+	@extend .tooltip-container;
+	z-index: 50 !important;
+}

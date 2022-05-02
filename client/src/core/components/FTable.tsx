@@ -459,6 +459,7 @@ export default class FTable extends QueryParams<
 												opacity: props.isLoading ? 0.5 : undefined,
 												overflow: 'hidden overlay',
 												flexGrow: 1,
+												zIndex: 0,
 											}}
 										>
 											{props.data &&

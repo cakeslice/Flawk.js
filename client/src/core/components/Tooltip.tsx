@@ -14,6 +14,7 @@ import React from 'react'
 import TooltipTrigger, { TooltipTriggerProps } from 'react-popper-tooltip'
 import MediaQuery from 'react-responsive'
 import OutsideAlerter from './OutsideAlerter'
+import './Tooltip.scss'
 
 type Props = {
 	children: React.ReactNode

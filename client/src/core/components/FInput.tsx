@@ -15,6 +15,7 @@ import { css, StyleAttribute } from 'glamor'
 import React, { Suspense } from 'react'
 import MediaQuery from 'react-responsive'
 import TextareaAutosize, { TextareaAutosizeProps } from 'react-textarea-autosize'
+import './FInput.scss'
 
 const Datetime = React.lazy(() => import('react-datetime'))
 const InputMask = React.lazy(() => import('react-input-mask'))
@@ -343,10 +344,7 @@ export default class FInput extends TrackedComponent<Props> {
 
 			color: styles.colors.black,
 
-			borderColor: config.replaceAlpha(
-				styles.colors.black,
-				global.nightMode ? styles.inputBorderFactorNight : styles.inputBorderFactorDay
-			),
+			borderColor: styles.colors.borderColor,
 			opacity: 1,
 
 			'::placeholder': {
@@ -439,7 +437,6 @@ export default class FInput extends TrackedComponent<Props> {
 						boxShadow: '0 0 0 2px ' + config.replaceAlpha(styles.colors.red, 0.2),
 					}),
 				},
-				opacity: 0.75,
 			}),
 		}
 		finalStyle = {

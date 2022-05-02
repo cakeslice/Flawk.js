@@ -243,7 +243,6 @@ class Register extends Component<PropsFromRedux> {
 												<Field
 													component={FInput}
 													required
-													autoFocus
 													label={'E-mail'}
 													type={'email'}
 													autoComplete='new-email'

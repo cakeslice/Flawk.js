@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import CodeBlock from 'core/components/CodeBlock'
+import CodeBlock, { Lang } from 'core/components/CodeBlock'
 import OutsideAlerter from 'core/components/OutsideAlerter'
 import Tooltip from 'core/components/Tooltip'
 import TrackedComponent from 'core/components/TrackedComponent'
@@ -34,7 +34,7 @@ type Props = {
 	codeStyle?: React.CSSProperties
 	className?: string
 	data: string
-	lang: 'json' | 'jsx' | 'tsx' | 'html'
+	lang: Lang
 }
 export default class CodeCollapse extends TrackedComponent<Props> {
 	trackedName = 'CodeCollapse'

@@ -39,12 +39,28 @@ export default class Loading extends TrackedComponent<Props> {
 
 	render() {
 		return (
-			<Suspense fallback={<></>}>
-				<MetroSpinner
-					size={this.props.size || 42}
-					color={this.props.color || config.replaceAlpha(styles.colors.black, 0.2)}
-					loading={this.props.noDelay || this.state.actuallyLoading}
-				/>
+			<Suspense
+				fallback={
+					<div
+						style={{
+							minWidth: this.props.size || 42,
+							minHeight: this.props.size || 42,
+						}}
+					></div>
+				}
+			>
+				<div
+					style={{
+						minWidth: this.props.size || 42,
+						minHeight: this.props.size || 42,
+					}}
+				>
+					<MetroSpinner
+						size={this.props.size || 42}
+						color={this.props.color || config.replaceAlpha(styles.colors.black, 0.2)}
+						loading={this.props.noDelay || this.state.actuallyLoading}
+					/>
+				</div>
 			</Suspense>
 		)
 	}

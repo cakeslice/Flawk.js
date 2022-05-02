@@ -13,6 +13,7 @@ import FButton from 'core/components/FButton'
 import LanguageSelect from 'core/components/LanguageSelect'
 import Loading from 'core/components/Loading'
 import QueryParams from 'core/components/QueryParams'
+import TextEditor from 'core/components/TextEditor'
 import Unity from 'core/components/Unity'
 import config from 'core/config'
 import { countriesSearch, sortedCountries } from 'core/functions/countries'
@@ -22,11 +23,11 @@ import { countries } from 'countries-list'
 import { formatDistanceToNow, subDays } from 'date-fns'
 import { pt } from 'date-fns/locale'
 import Parser from 'html-react-parser'
+import 'moment/locale/pt'
 import React from 'react'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import Flag from 'react-flagkit'
 import Helmet from 'react-helmet'
-import ReactQuill from 'react-quill'
 import MediaQuery from 'react-responsive'
 import { SizeMe } from 'react-sizeme'
 import FInput from '../FInput'
@@ -56,13 +57,16 @@ export default class Misc extends QueryParams<{
 
 		locallyStored: '',
 		newLocallyStored: '',
-		quill: '',
 		chunkLoadError: false,
 		toggleTitle: false,
 
 		//
 
 		wallet: undefined as Wallet | undefined,
+
+		//
+
+		textEditor: '',
 	}
 
 	unityEvents = [
@@ -125,10 +129,7 @@ export default class Misc extends QueryParams<{
 						</Section>
 						<Section title='Loading' tags={['<Loading/>']}>
 							<div style={{ ...styles.card, padding: 0 }}>
-								<div
-									style={{ minHeight: 94, width: desktop ? 300 : undefined }}
-									className='wrapMarginBig flex flex-wrap justify-start'
-								>
+								<div className='wrapMarginBig flex flex-wrap justify-start'>
 									<Loading size={28 * 3} />
 									<Loading />
 									<Loading size={18.5} />
@@ -272,6 +273,7 @@ export default class Misc extends QueryParams<{
 							<div style={styles.card}>
 								<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
 									<div>
+										{/* Needs "import 'moment/locale/LANGUAGE'" to support other locales */}
 										<FInput label='Date' datePicker />
 									</div>
 									<div>
@@ -497,11 +499,13 @@ export default class Misc extends QueryParams<{
 								</FButton>
 							</div>
 						</Section>
-						<Section title='Web3 wallet' tags={['functions/web3wallet']}>
-							<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
-								<FButton onClick={this.connectWallet}>Connect Wallet</FButton>
-							</div>
-						</Section>
+						{!Capacitor.isNativePlatform() && desktop && (
+							<Section title='Web3 wallet' tags={['functions/web3wallet']}>
+								<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+									<FButton onClick={this.connectWallet}>Connect Wallet</FButton>
+								</div>
+							</Section>
+						)}
 						{!Capacitor.isNativePlatform() && (
 							<Section title='Unity' tags={['<Unity/>']}>
 								<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
@@ -583,50 +587,29 @@ export default class Misc extends QueryParams<{
 								</FButton>
 							</div>
 						</Section>
-						<Section title='Text editor' tags={['<ReactQuill/>']}>
-							<ReactQuill
-								style={{
-									maxWidth: 710,
-									minHeight: 300,
-									background: styles.colors.white,
-									borderWidth: 1,
-									borderStyle: 'solid',
-									borderRadius: styles.defaultBorderRadius,
-									borderColor: styles.colors.borderColor,
-								}}
-								// A lot more options here: https://www.npmjs.com/package/react-quill
-								theme='snow'
-								//value={values.someText || ''}
-								onBlur={() => {
-									this.setState({ quill: this.state.quill })
-								}}
-								onChange={(q) => {
-									this.state.quill = q
-									// For Formik use setFieldValue
-								}}
-								modules={{
-									toolbar: [
-										['bold', 'italic', 'underline', 'strike'], // Toggled buttons
-										['blockquote', 'code-block'],
-										[{ list: 'ordered' }, { list: 'bullet' }],
-										[{ indent: '-1' }, { indent: '+1' }], // Outdent/indent
-										[{ header: [1, 2, 3, 4, 5, 6, false] }],
-										[{ color: [] }, { background: [] }], // Dropdown with defaults from theme
-										[{ font: [] }],
-										[{ align: [] }],
-										//['clean'], // Remove formatting button
-										//[{ header: 1 }, { header: 2 }], // Custom button values
-										//[{ size: ['small', false, 'large', 'huge'] }], // Custom dropdown
-										//[{ script: 'sub' }, { script: 'super' }], // Superscript/Subscript
-										//[{ direction: 'rtl' }], // Text direction
-									],
-								}}
-							/>
-							<sp />
-							<div className='ql-editor' style={{ maxWidth: 700 }}>
-								{this.state.quill && Parser(this.state.quill)}
-							</div>
-						</Section>
+						{desktop && (
+							<Section title='Text editor' tags={['<TextEditor/>']}>
+								<div style={{ maxWidth: 710 }}>
+									<TextEditor
+										style={{
+											...styles.card,
+											padding: 0,
+										}}
+										onBlur={() => {
+											this.setState({ textEditor: this.state.textEditor })
+										}}
+										onChange={(e) => {
+											this.state.textEditor = e
+											// For Formik use setFieldValue
+										}}
+									/>
+									<sp />
+									<div className='ql-editor' style={{ minHeight: 0 }}>
+										{this.state.textEditor && Parser(this.state.textEditor)}
+									</div>
+								</div>
+							</Section>
+						)}
 					</div>
 				)}
 			</MediaQuery>

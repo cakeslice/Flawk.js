@@ -702,11 +702,23 @@ export default class Inputs extends Component {
 							<div
 								style={{
 									...styles.card,
+									...(!desktop && {
+										width: '100%',
+									}),
 									display: 'flex',
 									justifyContent: desktop ? 'flex-start' : 'center',
 								}}
 							>
-								<Slider defaultValue={[0, 900]} min={0} max={900} />
+								<Slider
+									defaultValue={[0, 900]}
+									style={{
+										...(!desktop && {
+											width: '100%',
+										}),
+									}}
+									min={0}
+									max={900}
+								/>
 							</div>
 						</Section>
 					</div>

@@ -258,7 +258,7 @@ export default class Modal extends TrackedComponent<Props> {
 						background:
 							styles.modalBackground ||
 							config.replaceAlpha(
-								global.nightMode ? styles.colors.white : 'rgba(127,127,127,1)',
+								global.nightMode ? 'rgba(40,40,40,1)' : 'rgba(180,180,180,1)',
 								global.nightMode ? 0.5 : 0.25
 							),
 					}}

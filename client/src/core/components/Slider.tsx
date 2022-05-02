@@ -9,6 +9,7 @@ import config from 'core/config'
 import styles from 'core/styles'
 import { Range } from 'rc-slider'
 import React from 'react'
+import './Slider.scss'
 import TrackedComponent from './TrackedComponent'
 
 type Props = {
@@ -36,7 +37,7 @@ export default class Slider extends TrackedComponent<Props> {
 		return (
 			<div
 				data-nosnippet
-				className='flex-col'
+				className={'flex-col'}
 				style={{
 					width: this.props.width || 150,
 					marginRight: 5,

@@ -53,12 +53,10 @@ export default class Header extends Component<HeaderProps> {
 	}
 
 	handleScroll() {
-		const landingPage = window.location.pathname.toString() === '/'
-
 		const scrollTop = document.body.scrollTop || document.documentElement.scrollTop
 
 		this.setState({
-			shrink: landingPage ? scrollTop > 0 : true,
+			shrink: scrollTop > 0,
 		})
 	}
 	componentDidMount() {
@@ -71,6 +69,9 @@ export default class Header extends Component<HeaderProps> {
 
 	render() {
 		const maxWidth = 850
+
+		const landingPage = window.location.pathname.toString() === '/'
+		const shrink = !landingPage ? true : this.state.shrink
 
 		return (
 			<MediaQuery minWidth={config.mobileWidthTrigger}>
@@ -88,21 +89,20 @@ export default class Header extends Component<HeaderProps> {
 					>
 						<div
 							className={
-								'flex-col w-full items-center' +
-								(this.state.shrink ? ' blur-background' : '')
+								'flex-col w-full items-center' + (shrink ? ' blur-background' : '')
 							}
 							style={{
 								transition:
 									'border-color .5s, box-shadow .5s, background-color .5s',
-								backgroundColor: this.state.shrink
+								backgroundColor: shrink
 									? config.replaceAlpha(styles.colors.background, 0.75)
-									: 'transparent',
-								boxShadow: this.state.shrink ? styles.mediumShadow : undefined,
+									: 'rgba(255,255,255,0)',
+								boxShadow: shrink ? styles.mediumShadow : undefined,
 								borderBottomStyle: 'solid',
 								borderWidth: 1,
-								borderColor: this.state.shrink
+								borderColor: shrink
 									? 'rgba(255, 255, 255, 0.05)'
-									: 'transparent',
+									: 'rgba(255,255,255,0)',
 
 								position: 'fixed',
 								top: 0,
@@ -123,17 +123,17 @@ export default class Header extends Component<HeaderProps> {
 								style={{
 									maxWidth: maxWidth,
 									minHeight: desktop
-										? this.state.shrink
+										? shrink
 											? desktopHeight
 											: desktopHeightTop
-										: this.state.shrink
+										: shrink
 										? mobileHeight
 										: mobileHeightTop,
 									maxHeight: desktop
-										? this.state.shrink
+										? shrink
 											? desktopHeight
 											: desktopHeightTop
-										: this.state.shrink
+										: shrink
 										? mobileHeight
 										: mobileHeightTop,
 									transition: 'max-height .5s, min-height .5s',
@@ -147,14 +147,14 @@ export default class Header extends Component<HeaderProps> {
 										className='flex items-center'
 										menuStyle={{
 											minWidth: desktop ? 48 : 30,
-											paddingBottom: this.state.shrink ? 10 : 15,
-											paddingTop: this.state.shrink ? 10 : 15,
+											paddingBottom: shrink ? 10 : 15,
+											paddingTop: shrink ? 10 : 15,
 											transition: 'padding-top .5s, padding-bottom .5s',
 										}}
 										links={mobileLinks}
 										title={'Flawk.js'}
 										headerHeight={
-											this.state.shrink ? mobileHeight : mobileHeightTop
+											shrink ? mobileHeight : mobileHeightTop
 										}
 									></MobileDrawer>
 								) */}
@@ -191,8 +191,8 @@ export default class Header extends Component<HeaderProps> {
 											minWidth: desktop ? 48 : 38,
 											maxWidth: desktop ? 48 : 38,
 											objectFit: 'contain',
-											paddingBottom: this.state.shrink ? 10 : 15,
-											paddingTop: this.state.shrink ? 10 : 15,
+											paddingBottom: shrink ? 10 : 15,
+											paddingTop: shrink ? 10 : 15,
 											transition: 'padding-top .5s, padding-bottom .5s',
 											//filter: !global.nightMode ? 'invert(85%)' : '',
 										}}

@@ -8,6 +8,7 @@
 import { Capacitor } from '@capacitor/core'
 import logo from 'core/assets/images/logo.svg'
 import Anchor from 'core/components/Anchor'
+import { Lang } from 'core/components/CodeBlock'
 import Dashboard, { DashboardRoute } from 'core/components/Dashboard'
 import lightOn from 'core/components/viewer/assets/lightbulb.svg'
 import lightOff from 'core/components/viewer/assets/lightbulb_off.svg'
@@ -345,7 +346,7 @@ export const Section: React.FC<{
 	tags?: string[]
 	code?: string
 	noOverflow?: boolean
-	lang?: 'tsx' | 'jsx' | 'json'
+	lang?: Lang
 }> = ({ children, title, top, tags, code, lang, noOverflow }) => {
 	const id = title.replaceAll(' ', '_').toLowerCase()
 
@@ -409,7 +410,7 @@ export const Section: React.FC<{
 											>
 												<CodeCollapse
 													containerStyle={{
-														width: desktop ? 400 : undefined,
+														width: desktop ? 450 : undefined,
 														height: desktop ? 600 : undefined,
 													}}
 													codeStyle={{

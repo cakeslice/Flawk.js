@@ -195,10 +195,7 @@ export default class Dropdown extends TrackedComponent<Props> {
 			borderRightStyle: styles.inputBorder === 'full' ? 'solid' : 'none',
 			borderWidth: '1px',
 			boxSizing: 'border-box',
-			borderColor: config.replaceAlpha(
-				styles.colors.black,
-				global.nightMode ? styles.inputBorderFactorNight : styles.inputBorderFactorDay
-			),
+			borderColor: styles.colors.borderColor,
 			minHeight: styles.inputHeight,
 			minWidth: 150,
 			width: '100%',
@@ -680,7 +677,13 @@ export default class Dropdown extends TrackedComponent<Props> {
 								<Select
 									// Custom props (access with props.selectProps)
 									// @ts-ignore
-									dropdownIndicator={this.props.dropdownIndicator}
+									dropdownIndicator={
+										this.props.showOnlyIfSearch ? (
+											<div />
+										) : (
+											this.props.dropdownIndicator
+										)
+									}
 									//
 									noOptionsMessage={() => config.text('common.noOptions')}
 									loadingMessage={() => config.text('common.searching')}
@@ -753,7 +756,11 @@ export default class Dropdown extends TrackedComponent<Props> {
 										)
 									}
 									components={
-										this.props.dropdownIndicator || this.props.customInput
+										this.props.showOnlyIfSearch
+											? {
+													DropdownIndicator,
+											  }
+											: this.props.dropdownIndicator || this.props.customInput
 											? {
 													DropdownIndicator,
 											  }

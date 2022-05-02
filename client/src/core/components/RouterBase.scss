@@ -1,0 +1,73 @@
+@import 'react-toastify/dist/ReactToastify.css';
+
+.Toastify__toast--dark {
+	padding: 4px 8px;
+	background: #1e1e1e;
+	border-radius: 6px;
+	border-color: rgba(255, 255, 255, 0.15);
+	border-width: 1px;
+	border-style: solid;
+	box-shadow: 0 20px 32px -8px rgba(0, 0, 0, 0.1), 0 4px 8px 0 rgba(0, 0, 0, 0.025),
+		0 6px 20px 0 rgba(0, 0, 0, 0.025);
+	color: unset;
+}
+.Toastify__toast--default {
+	padding: 4px 8px;
+	background: #fff;
+	border-radius: 6px;
+	border-color: rgba(0, 0, 0, 0.15);
+	border-width: 1px;
+	border-style: solid;
+	box-shadow: 0 20px 32px -8px rgba(0, 0, 0, 0.1), 0 4px 8px 0 rgba(0, 0, 0, 0.025),
+		0 6px 20px 0 rgba(0, 0, 0, 0.025);
+	color: unset;
+}
+.Toastify__toast-container--top-left {
+	top: 1em;
+	left: 2em;
+}
+.Toastify__toast-container--top-right {
+	top: 1em;
+	right: 2em;
+}
+.Toastify__toast-container--bottom-left {
+	bottom: 1em;
+	left: 2em;
+}
+.Toastify__toast-container--bottom-right {
+	bottom: 1em;
+	right: 2em;
+}
+
+.Toastify__toast {
+	min-height: unset;
+	cursor: unset;
+}
+
+.Toastify__toast-body {
+	width: 95%;
+	margin: unset;
+	padding: unset;
+}
+@media only screen and (max-width: 480px) {
+	.Toastify__toast--dark {
+		margin: 10px;
+	}
+	.Toastify__toast--default {
+		margin: 10px;
+	}
+}
+@media only screen and (max-width: 480px) {
+	.Toastify__toast {
+		margin-bottom: 10px;
+		border-radius: unset;
+	}
+}
+.Toastify__close-button {
+	padding: 10;
+}
+.Toastify__progress-bar {
+	bottom: 0px;
+	height: 3px;
+	opacity: unset;
+}

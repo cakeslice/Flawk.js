@@ -6,12 +6,6 @@
  */
 
 @import '../../core/assets/reset.css';
-@import 'core/assets/third-party/quill.snow.css';
-@import 'core/assets/third-party/react-toastify.css';
-@import 'react-awesome-lightbox/build/style.css';
-@import 'react-datetime/css/react-datetime.css';
-@import 'rc-slider/assets/index.css';
-@import 'react-input-range/lib/css/index.css';
 
 *:focus {
 	outline: 0;
@@ -243,11 +237,6 @@ hl {
 code {
 	font-family: monospace;
 }
-.ql-editor pre,
-.ql-snow .ql-editor pre.ql-syntax,
-pre .ql-snow .ql-editor blockquote,
-.ql-editor blockquote,
-.ql-editor code,
 pre,
 blockquote,
 code {
@@ -260,8 +249,6 @@ code {
 	color: inherit;
 	background: rgba(127, 127, 127, 0.15);
 }
-.ql-editor pre,
-.ql-snow .ql-editor pre.ql-syntax,
 pre {
 	overflow-x: auto;
 }
@@ -637,220 +624,32 @@ kbd {
 	}
 }
 
+.shine {
+	-webkit-mask-image: linear-gradient(
+		190deg,
+		rgba(0, 0, 0, 0.3) 10%,
+		#000 50%,
+		rgba(0, 0, 0, 0.3) 90%
+	);
+	mask-image: linear-gradient(190deg, rgba(0, 0, 0, 0.3) 10%, #000 50%, rgba(0, 0, 0, 0.3) 90%);
+	mask-size: 200%;
+	-webkit-mask-size: 200%;
+	//animation: shineEffect 4s linear infinite; /* Bad for performance! */
+}
+@keyframes shineEffect {
+	from {
+		-webkit-mask-position: 150%;
+		mask-position: 150%;
+	}
+	to {
+		-webkit-mask-position: -50%;
+		mask-position: -50%;
+	}
+}
+
 // Extra
 
 .blur-background {
 	-webkit-backdrop-filter: blur(5px);
 	backdrop-filter: blur(5px);
-}
-
-// ----------- Third party overrides
-
-.Toastify__toast--dark {
-	background: #1e1e1e;
-	border-radius: 6px;
-	border-color: rgba(120, 120, 120);
-	border-width: 3px;
-	border-style: solid;
-	box-shadow: 0 20px 32px -8px rgba(0, 0, 0, 0.1), 0 4px 8px 0 rgba(0, 0, 0, 0.05),
-		0 6px 20px 0 rgba(0, 0, 0, 0.05);
-}
-.Toastify__toast--default {
-	background: #fff;
-	border-radius: 6px;
-	border-color: rgba(190, 190, 190);
-	border-width: 3px;
-	border-style: solid;
-	box-shadow: 0 20px 32px -8px rgba(0, 0, 0, 0.1), 0 4px 8px 0 rgba(0, 0, 0, 0.05),
-		0 6px 20px 0 rgba(0, 0, 0, 0.05);
-}
-.Toastify__toast-container--top-left {
-	top: 1em;
-	left: 2em;
-}
-.Toastify__toast-container--top-right {
-	top: 1em;
-	right: 2em;
-}
-.Toastify__toast-container--bottom-left {
-	bottom: 1em;
-	left: 2em;
-}
-.Toastify__toast-container--bottom-right {
-	bottom: 1em;
-	right: 2em;
-}
-
-//
-
-.rdt {
-	position: relative;
-	width: 100%;
-}
-.rdtPicker {
-	user-select: none;
-
-	width: 210px;
-	min-width: 0%;
-	padding: 0px;
-
-	font-size: 12px;
-
-	border-radius: 0px;
-	border: none;
-	box-shadow: none;
-	background: transparent;
-}
-.rdtPickerCustom {
-	box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.025), 0 2px 4px 0 rgba(0, 0, 0, 0.025);
-	padding: 4px;
-	border-radius: 6px;
-}
-.rdtPickerDay {
-	background: #fff;
-	border: 1px solid rgba(0, 0, 0, 0.1);
-}
-.rdtPickerNight {
-	background: rgba(30, 30, 30, 1);
-	border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.rdtPicker td,
-.rdtPicker th {
-	vertical-align: middle;
-}
-.rdtPicker td.rdtDay:hover,
-.rdtPicker td.rdtHour:hover,
-.rdtPicker td.rdtMinute:hover,
-.rdtPicker td.rdtSecond:hover,
-.rdtPicker .rdtTimeToggle:hover {
-	background: rgba(127, 127, 127, 0.15);
-	border-radius: 6px;
-}
-.rdtPicker td.rdtToday:before {
-	border-bottom: 7px solid var(--main);
-	border-top-color: rgba(127, 127, 127, 0.15);
-	bottom: 2px;
-	right: 2px;
-	opacity: 0.75;
-}
-.rdtPicker td.rdtActive,
-.rdtPicker td.rdtActive:hover {
-	background-color: rgba(127, 127, 127, 0.1);
-	color: inherit;
-	box-shadow: 0px 0px 0px 1px var(--main);
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	width: 100%;
-	border-radius: 6px;
-	font-weight: 700;
-	text-shadow: none;
-}
-.rdtPicker td.rdtActive.rdtToday:before {
-	border-bottom-color: var(--main);
-}
-.rdtPicker td.rdtDisabled,
-.rdtPicker td.rdtDisabled:hover {
-	border-radius: 6px;
-	cursor: not-allowed;
-}
-.rdtPicker th {
-	border-bottom: 1px solid rgba(127, 127, 127, 0.15);
-}
-.rdtPicker th.rdtSwitch {
-	font-weight: 700;
-}
-.rdtPicker .dow {
-	opacity: 0.5;
-}
-.rdtPicker thead tr:first-of-type th:hover {
-	background: rgba(127, 127, 127, 0.15);
-	border-radius: 3px;
-}
-td.rdtMonth:hover,
-td.rdtYear:hover {
-	background: rgba(127, 127, 127, 0.15);
-	border-radius: 6px;
-}
-
-//
-
-.rec.rec-carousel {
-	width: 100vw;
-}
-.rec.rec-slider-container {
-	margin: 0px;
-}
-.rec.rec-arrow.rec-arrow-right {
-	display: none;
-}
-.rec.rec-arrow.rec-arrow-left {
-	display: none;
-}
-.rec.rec-arrow.rec-arrow-right:hover {
-	background-color: var(--main);
-}
-.rec.rec-arrow.rec-arrow-left:hover {
-	background-color: var(--main);
-}
-.rec.rec-arrow.rec-arrow-right:focus {
-	background-color: rgba(127, 127, 127, 0.25);
-}
-.rec.rec-arrow.rec-arrow-left:focus {
-	background-color: rgba(127, 127, 127, 0.25);
-}
-.rec.rec-pagination {
-	margin-top: 15px;
-}
-.rec.rec-dot {
-	box-shadow: 0 0 1px 1px var(--main);
-}
-.rec.rec-dot:focus {
-	box-shadow: 0 0 1px 3px rgba(127, 127, 127, 0.25);
-}
-.rec.rec-dot:hover {
-	box-shadow: 0 0 1px 3px rgba(127, 127, 127, 0.25);
-}
-.rec.rec-dot_active {
-	background-color: var(--main);
-}
-.rec.rec-dot_active:focus {
-	box-shadow: 0 0 1px 3px rgba(127, 127, 127, 0.25);
-}
-.rec.rec-dot_active:hover {
-	box-shadow: 0 0 1px 3px rgba(127, 127, 127, 0.25);
-}
-
-//
-
-.lb-container {
-	background-color: rgba(0, 0, 0, 0.15);
-}
-.lb-container .lb-header {
-	background: rgba(0, 0, 0, 0.15);
-	box-shadow: none;
-}
-
-//
-
-.tooltip-container {
-	z-index: 25 !important;
-}
-.tooltip-container-foreground {
-	@extend .tooltip-container;
-	z-index: 50 !important;
-}
-
-//
-
-.ql-snow .ql-stroke {
-	stroke: rgba(127, 127, 127);
-}
-.ql-snow .ql-picker {
-	color: rgba(127, 127, 127);
-}
-.ql-container {
-	font-size: 14px;
-	font-family: var(--font);
 }

@@ -28,6 +28,7 @@ import MediaQuery, { Context as ResponsiveContext } from 'react-responsive'
 import { Router } from 'react-router-dom'
 import { Bounce, toast, ToastContainer, ToastContentProps } from 'react-toastify'
 import FButton from './FButton'
+import './RouterBase.scss'
 
 //
 
@@ -140,7 +141,7 @@ function addFlagFunction(
 			},
 			position: 'bottom-right',
 			autoClose: autoClose || closeAfter ? closeAfter || config.toastCloseTime : false,
-			hideProgressBar: autoClose || closeAfter ? false : true,
+			hideProgressBar: true,
 			closeOnClick: closeOnClick,
 			pauseOnHover: true,
 			pauseOnFocusLoss: pauseOnFocusLoss,
@@ -149,6 +150,7 @@ function addFlagFunction(
 				? ({ closeToast }) => (
 						<div
 							style={{
+								marginTop: 3,
 								height: 17,
 								width: 17,
 								display: 'flex',
@@ -163,12 +165,6 @@ function addFlagFunction(
 				  )
 				: false,
 			transition: Bounce,
-			progressStyle: {
-				background: config.replaceAlpha(
-					styles.colors.black,
-					global.nightMode ? 0.15 : 0.25
-				),
-			},
 		}
 	)
 }

@@ -71,6 +71,7 @@ export type DashboardRoute = {
 
 type DashboardProps = {
 	style?: React.CSSProperties
+	placeholder?: React.ReactNode
 	mobileStyle?: React.CSSProperties
 	wrapperComponent: React.ReactNode
 	path: string
@@ -173,6 +174,41 @@ class DashboardClass extends TrackedComponent<
 				})
 		})
 
+		const placeholderStyle = {
+			borderRadius: 5,
+			background: config.replaceAlpha(styles.colors.black, 0.085),
+		}
+		const defaultPlaceholder = (
+			<div className='shine'>
+				<div
+					style={{
+						...placeholderStyle,
+						height: 30,
+						width: 200,
+					}}
+				></div>
+				<sp />
+				<sp />
+				<div
+					style={{
+						...placeholderStyle,
+						width: '90%',
+						height: '40vh',
+					}}
+				></div>
+				<sp />
+				<sp />
+				<div
+					style={{
+						...placeholderStyle,
+						width: '50%',
+						height: '20vh',
+					}}
+				></div>
+			</div>
+		)
+		const placeholder = this.props.placeholder || defaultPlaceholder
+
 		return (
 			<MediaQuery minWidth={this.props.bigScreenWidth || 1450}>
 				{(bigScreen) => {
@@ -208,7 +244,6 @@ class DashboardClass extends TrackedComponent<
 									borderBottomStyle: 'solid',
 									borderWidth: 1,
 									borderColor: styles.colors.borderColor,
-
 									position: 'fixed',
 									top: 0,
 									zIndex: 30,
@@ -476,11 +511,9 @@ class DashboardClass extends TrackedComponent<
 																				? false
 																				: true
 																		}
-																		render={({ match }) => (
-																			<Suspense
-																				fallback={<></>}
-																			>
-																				{/* @ts-ignore */}
+																		render={({ match }) => {
+																			return (
+																				// @ts-ignore
 																				<WrapperComponent
 																					parentTitle={
 																						route.name ||
@@ -491,35 +524,41 @@ class DashboardClass extends TrackedComponent<
 																					}
 																					title={sub.name}
 																				>
-																					{Page /* @ts-ignore */ ? (
-																						<Page
-																							params={
-																								match.params
-																							}
-																							path={
-																								this
+																					<Suspense
+																						fallback={
+																							placeholder
+																						}
+																					>
+																						{Page /* @ts-ignore */ ? (
+																							<Page
+																								params={
+																									match.params
+																								}
+																								path={
+																									this
+																										.props
+																										.path
+																								}
+																								{...this
 																									.props
-																									.path
-																							}
-																							{...this
-																								.props
-																								.pageProps}
-																							parentTitle={
-																								route.name
-																							}
-																							overrideHeader={
-																								sub.overrideHeader
-																							}
-																							title={
-																								sub.name
-																							}
-																						></Page>
-																					) : (
-																						<></>
-																					)}
+																									.pageProps}
+																								parentTitle={
+																									route.name
+																								}
+																								overrideHeader={
+																									sub.overrideHeader
+																								}
+																								title={
+																									sub.name
+																								}
+																							></Page>
+																						) : (
+																							<></>
+																						)}
+																					</Suspense>
 																				</WrapperComponent>
-																			</Suspense>
-																		)}
+																			)
+																		}}
 																	></Route>
 																)
 															})}
@@ -555,36 +594,43 @@ class DashboardClass extends TrackedComponent<
 																(route.params || '')
 															}
 															exact={route.notExact ? false : true}
-															render={({ match }) => (
-																<Suspense fallback={<></>}>
-																	{/* @ts-ignore */}
+															render={({ match }) => {
+																return (
+																	// @ts-ignore
 																	<WrapperComponent
 																		overrideHeader={
 																			route.overrideHeader
 																		}
 																		title={route.name}
 																	>
-																		{Page /* @ts-ignore */ ? (
-																			<Page
-																				params={
-																					match.params
-																				}
-																				path={
-																					this.props.path
-																				}
-																				{...this.props
-																					.pageProps}
-																				overrideHeader={
-																					route.overrideHeader
-																				}
-																				title={route.name}
-																			></Page>
-																		) : (
-																			<></>
-																		)}
+																		<Suspense
+																			fallback={placeholder}
+																		>
+																			{Page /* @ts-ignore */ ? (
+																				<Page
+																					params={
+																						match.params
+																					}
+																					path={
+																						this.props
+																							.path
+																					}
+																					{...this.props
+																						.pageProps}
+																					overrideHeader={
+																						route.overrideHeader
+																					}
+																					title={
+																						route.name
+																					}
+																				></Page>
+																			) : (
+																				<></>
+																			)}
+																		</Suspense>
 																	</WrapperComponent>
-																</Suspense>
-															)}
+																)
+															}}
 														></Route>
 													)
 												})}
@@ -656,7 +702,12 @@ class MenuClass extends TrackedComponent<MenuProps> {
 						  }),
 					color: styles.colors.black,
 					borderWidth: 1,
-					borderColor: styles.colors.borderColor,
+					borderColor: config.replaceAlpha(
+						styles.colors.black,
+						global.nightMode
+							? styles.inputBorderFactorNight
+							: styles.inputBorderFactorDay
+					),
 					boxShadow: 'rgba(0, 0, 0, 0.075) 0px 0px 15px 2px',
 					background: styles.colors.white,
 					...this.props.style,
