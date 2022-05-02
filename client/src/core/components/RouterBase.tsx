@@ -7,7 +7,7 @@
 
 //
 import { SplashScreen } from '@capacitor/splash-screen'
-import { init as sentryInit, reactRouterV5Instrumentation, showReportDialog } from '@sentry/react'
+import { init as sentryInit, reactRouterV5Instrumentation } from '@sentry/react'
 import { BrowserTracing } from '@sentry/tracing/dist/browser'
 import { useConstructor } from '@toolz/use-constructor'
 import { get } from 'core/api'
@@ -195,10 +195,15 @@ export default function RouterBase({ children }: { children: React.ReactNode }) 
 				/* const sure = window.confirm('Are you sure?')
 				if (sure) { */
 				void (async function () {
-					global.unityContext?.removeAllEventListeners()
-					await global.unityContext?.quitUnityInstance()
 					global.sendUnityEvent = undefined
+					const unityContext = global.unityContext
 					global.unityContext = undefined
+					try {
+						unityContext?.removeAllEventListeners()
+						await unityContext?.quitUnityInstance()
+					} catch (e) {
+						console.warn("Unity didn't exit cleanly: " + e)
+					}
 					// @ts-ignore
 					history.push(location)
 				})()
@@ -242,7 +247,8 @@ export default function RouterBase({ children }: { children: React.ReactNode }) 
 					beforeSend(event, hint) {
 						// Check if it is an exception, and if so, show the report dialog
 						if (event.exception) {
-							showReportDialog({ eventId: event.event_id })
+							// ! Disabled since most users won't submit a bug report anyway and can trigger on non-breaking errors
+							//showReportDialog({ eventId: event.event_id })
 						}
 						return event
 					},

@@ -19,7 +19,8 @@ type Props = {
 	gameStartedEvent?: string
 	onReady?: () => void
 	onLoadingProgress?: (progress: number) => void
-	events?: { name: string; callback: () => void }[]
+	// @ts-ignore
+	events?: { name: string; callback: (...args) => void }[]
 } & (
 	| {
 			nativeResolution?: false
@@ -67,7 +68,7 @@ export default class UnityComponent extends React.Component<Props> {
 			method: string,
 			...args: (string | boolean | number)[]
 		) => {
-			if (this.unityContext) {
+			if (global.unityContext && this.unityContext) {
 				this.unityContext.send(gameObject, method, ...args)
 			}
 		}
@@ -89,6 +90,8 @@ export default class UnityComponent extends React.Component<Props> {
 			})
 			*/
 		this.unityContext.on(this.props.gameStartedEvent || 'GameStarted', () => {
+			if (!global.unityContext) return
+
 			if (this.props.backgroundColor)
 				global.sendUnityEvent?.(
 					'GraphicsManager',
@@ -102,10 +105,10 @@ export default class UnityComponent extends React.Component<Props> {
 						.join(',')
 				)
 
-			this.setState({ ready: true })
-			this.props.onReady && this.props.onReady()
+			if (global.unityContext) this.setState({ ready: true })
+			if (global.unityContext) this.props.onReady && this.props.onReady()
 			setTimeout(() => {
-				this.setState({ visible: true })
+				if (global.unityContext) this.setState({ visible: true })
 			}, 250)
 		})
 
@@ -113,21 +116,26 @@ export default class UnityComponent extends React.Component<Props> {
 
 		if (this.props.events)
 			this.props.events.forEach((event) => {
-				if (this.unityContext) this.unityContext.on(event.name, event.callback)
+				if (global.unityContext && this.unityContext)
+					this.unityContext.on(event.name, (...args) => {
+						if (global.unityContext) event.callback(args)
+					})
 			})
 
 		// Other
 
 		this.unityContext.on('progress', (progression: number) => {
-			this.setState({ progress: progression })
-			this.props.onLoadingProgress && this.props.onLoadingProgress(progression)
+			if (global.unityContext) {
+				this.setState({ progress: progression })
+				this.props.onLoadingProgress && this.props.onLoadingProgress(progression)
+			}
 		})
 		if (this.props.fullscreen) this.unityContext.setFullscreen(this.props.fullscreen)
 	}
 
 	shouldComponentUpdate(nextProps: Props) {
-		if (this.unityContext && this.props.fullscreen !== nextProps.fullscreen)
-			this.unityContext.setFullscreen(nextProps.fullscreen ? true : false)
+		if (global.unityContext && this.props.fullscreen !== nextProps.fullscreen)
+			global.unityContext.setFullscreen(nextProps.fullscreen ? true : false)
 		return true
 	}
 
