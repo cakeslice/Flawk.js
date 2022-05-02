@@ -624,29 +624,6 @@ kbd {
 	}
 }
 
-.shine {
-	-webkit-mask-image: linear-gradient(
-		190deg,
-		rgba(0, 0, 0, 0.3) 10%,
-		#000 50%,
-		rgba(0, 0, 0, 0.3) 90%
-	);
-	mask-image: linear-gradient(190deg, rgba(0, 0, 0, 0.3) 10%, #000 50%, rgba(0, 0, 0, 0.3) 90%);
-	mask-size: 200%;
-	-webkit-mask-size: 200%;
-	//animation: shineEffect 4s linear infinite; /* Bad for performance! */
-}
-@keyframes shineEffect {
-	from {
-		-webkit-mask-position: 150%;
-		mask-position: 150%;
-	}
-	to {
-		-webkit-mask-position: -50%;
-		mask-position: -50%;
-	}
-}
-
 // Extra
 
 .blur-background {

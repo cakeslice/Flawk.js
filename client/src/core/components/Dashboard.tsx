@@ -176,10 +176,10 @@ class DashboardClass extends TrackedComponent<
 
 		const placeholderStyle = {
 			borderRadius: 5,
-			background: config.replaceAlpha(styles.colors.black, 0.085),
+			background: config.replaceAlpha(styles.colors.black, global.nightMode ? 0.075 : 0.075),
 		}
 		const defaultPlaceholder = (
-			<div className='shine'>
+			<div>
 				<div
 					style={{
 						...placeholderStyle,
@@ -243,7 +243,7 @@ class DashboardClass extends TrackedComponent<
 										: undefined,
 									borderBottomStyle: 'solid',
 									borderWidth: 1,
-									borderColor: styles.colors.borderColor,
+									borderColor: styles.colors.lineColor,
 									position: 'fixed',
 									top: 0,
 									zIndex: 30,
@@ -702,12 +702,8 @@ class MenuClass extends TrackedComponent<MenuProps> {
 						  }),
 					color: styles.colors.black,
 					borderWidth: 1,
-					borderColor: config.replaceAlpha(
-						styles.colors.black,
-						global.nightMode
-							? styles.inputBorderFactorNight
-							: styles.inputBorderFactorDay
-					),
+
+					borderColor: styles.colors.lineColor,
 					boxShadow: 'rgba(0, 0, 0, 0.075) 0px 0px 15px 2px',
 					background: styles.colors.white,
 					...this.props.style,
@@ -987,6 +983,7 @@ class MenuClass extends TrackedComponent<MenuProps> {
 																borderLeft:
 																	'rgba(127,127,127,.5)' +
 																	' solid 3px',
+																paddingLeft: 43,
 														  }),
 													...(this.props.linkStyle &&
 														this.props.linkStyle.subRoute &&

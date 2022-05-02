@@ -382,6 +382,7 @@ export type Styles = {
 				rowStyle?: React.CSSProperties & GlamorProps
 				wrapperStyle?: React.CSSProperties
 				rowWrapperStyle?: React.CSSProperties
+				bottomWrapperStyle?: React.CSSProperties
 		  } & React.CSSProperties)
 		| undefined
 

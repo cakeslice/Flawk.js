@@ -99,168 +99,196 @@ class MobileDrawer extends TrackedComponent<Props> {
 							: 'transparent',
 					}}
 				>
-					<Animated
-						trackedName='MobileDrawer'
-						animateOffscreen
-						effects={['fade', 'left']}
-						distance={40}
-						duration={0.15}
-						controlled={this.state.isOpen}
-						//
-						style={{
-							height: '100%',
-							overflowY: 'auto',
-							overflowX: 'hidden',
-							width: '100%',
-						}}
-					>
-						<OutsideAlerter
+					{this.state.isOpen && (
+						<Animated
 							trackedName='MobileDrawer'
-							clickedOutside={() => {
-								this.changeState(false)
+							animateOffscreen
+							effects={['fade', 'left']}
+							distance={40}
+							duration={0.15}
+							//controlled={this.state.isOpen} Better performance if no fade out...
+							//
+							style={{
+								height: '100%',
+								overflowY: 'auto',
+								overflowX: 'hidden',
+								width: '100%',
 							}}
-							style={{ display: 'contents' }}
 						>
-							<div
-								className='flex-col'
-								style={{
-									pointerEvents: this.state.isOpen ? 'auto' : undefined,
-									background: styles.colors.white,
-									maxWidth:
-										'min(' +
-										(this.props.width || '260px') +
-										', ' +
-										'calc(100% - 50px)' +
-										')',
-									boxShadow: styles.mediumShadow,
-									height: '100%',
-									overflow: 'auto',
-									overflowX: 'hidden',
-									...this.props.menuStyle,
+							<OutsideAlerter
+								trackedName='MobileDrawer'
+								clickedOutside={() => {
+									this.changeState(false)
 								}}
+								style={{ display: 'contents' }}
 							>
 								<div
+									className='flex-col'
 									style={{
-										...linkStyle,
-										fontSize: 18,
-										opacity: 1,
-										fontWeight: 'bold',
-										minHeight: this.props.headerHeight,
+										pointerEvents: this.state.isOpen ? 'auto' : undefined,
+										background: styles.colors.white,
+										maxWidth:
+											'min(' +
+											(this.props.width || '260px') +
+											', ' +
+											'calc(100% - 50px)' +
+											')',
+										boxShadow: styles.mediumShadow,
+										height: '100%',
+										overflow: 'auto',
+										overflowX: 'hidden',
+										...this.props.menuStyle,
 									}}
 								>
-									{this.props.title}
-								</div>
-								{this.props.links.map((link, i, arr) => {
-									if (link.notRoute && link.tab)
-										return (
-											<div
-												key={link.id + (link.params || '')}
-												style={{ display: 'contents' }}
-											>
-												{link.tab({
-													...this.props.pageProps,
-													isOpen: this.state.isOpen,
-													toggleOpen: this.props.toggleOpen,
-												})}
-											</div>
-										)
-
-									const hasIcon = link.customIcon || link.icon || link.iconActive
-									const selected = selectedRoute.includes('/' + link.id)
-									const last = arr.length - 1 === i
-
-									let style: React.CSSProperties = {
-										...linkStyle,
-										borderBottom: !last
-											? 'solid 1px ' + styles.colors.lineColor
-											: undefined,
-										...(link.style && link.style.linkStyle),
-									}
-									if (selected)
-										style = {
-											...style,
+									<div
+										style={{
+											...linkStyle,
+											fontSize: 18,
 											opacity: 1,
 											fontWeight: 'bold',
-											color: styles.colors.main,
-											...(this.props.linkStyle &&
-												this.props.linkStyle[':selected']),
-										}
-
-									let imgStyle: React.CSSProperties & GlamorProps = {
-										width: iconSize,
-										height: iconSize,
-										...(!selected && {
-											filter: 'grayscale(100%)',
-										}),
-										...(this.props.linkStyle && this.props.linkStyle.icon),
-									}
-									if (selected)
-										imgStyle = {
-											...imgStyle,
-											...(this.props.linkStyle &&
-												this.props.linkStyle.icon &&
-												this.props.linkStyle.icon[':selected']),
-										}
-									const icon = link.customIcon ? (
-										<div>{link.customIcon(selected)}</div>
-									) : link.icon || link.iconActive ? (
-										<div
-											style={{
-												display: 'flex',
-												alignItems: 'center',
-											}}
-										>
-											<img
-												src={
-													selected
-														? link.iconActive || link.icon
-														: link.icon
-												}
-												{...css(imgStyle)}
-											></img>
-										</div>
-									) : (
-										<div />
-									)
-
-									const textStyle: React.CSSProperties = {
-										marginLeft: hasIcon ? 10 : 0,
-										whiteSpace: 'nowrap',
-										...(link.style && link.style.textStyle),
-									}
-
-									const output = (
-										<div key={link.id + (link.params || '')}>
-											{!link.notRoute ? (
-												<Link
-													className={this.props.className}
-													{...css(style)}
-													onClick={() => {
-														if (link.onClick) {
-															link.onClick()
-														}
-														if (
-															!link.subRoutes ||
-															link.subRoutes.length === 0
-														)
-															this.changeState(false)
-														else this.changeState(true)
-													}}
-													to={
-														this.props.path
-															? this.props.path +
-															  link.id +
-															  (link.subRoutes
-																	? '/' + link.subRoutes[0].id
-																	: '')
-															: link.id +
-															  (link.subRoutes
-																	? '/' + link.subRoutes[0].id
-																	: '')
-													}
+											minHeight: this.props.headerHeight,
+										}}
+									>
+										{this.props.title}
+									</div>
+									{this.props.links.map((link, i, arr) => {
+										if (link.notRoute && link.tab)
+											return (
+												<div
+													key={link.id + (link.params || '')}
+													style={{ display: 'contents' }}
 												>
-													{icon}
-													<div>
+													{link.tab({
+														...this.props.pageProps,
+														isOpen: this.state.isOpen,
+														toggleOpen: this.props.toggleOpen,
+													})}
+												</div>
+											)
+
+										const hasIcon =
+											link.customIcon || link.icon || link.iconActive
+										const selected = selectedRoute.includes('/' + link.id)
+										const last = arr.length - 1 === i
+
+										let style: React.CSSProperties = {
+											...linkStyle,
+											borderBottom: !last
+												? 'solid 1px ' + styles.colors.lineColor
+												: undefined,
+											...(link.style && link.style.linkStyle),
+										}
+										if (selected)
+											style = {
+												...style,
+												opacity: 1,
+												fontWeight: 'bold',
+												color: styles.colors.main,
+												...(this.props.linkStyle &&
+													this.props.linkStyle[':selected']),
+											}
+
+										let imgStyle: React.CSSProperties & GlamorProps = {
+											width: iconSize,
+											height: iconSize,
+											...(!selected && {
+												filter: 'grayscale(100%)',
+											}),
+											...(this.props.linkStyle && this.props.linkStyle.icon),
+										}
+										if (selected)
+											imgStyle = {
+												...imgStyle,
+												...(this.props.linkStyle &&
+													this.props.linkStyle.icon &&
+													this.props.linkStyle.icon[':selected']),
+											}
+										const icon = link.customIcon ? (
+											<div>{link.customIcon(selected)}</div>
+										) : link.icon || link.iconActive ? (
+											<div
+												style={{
+													display: 'flex',
+													alignItems: 'center',
+												}}
+											>
+												<img
+													src={
+														selected
+															? link.iconActive || link.icon
+															: link.icon
+													}
+													{...css(imgStyle)}
+												></img>
+											</div>
+										) : (
+											<div />
+										)
+
+										const textStyle: React.CSSProperties = {
+											marginLeft: hasIcon ? 10 : 0,
+											whiteSpace: 'nowrap',
+											...(link.style && link.style.textStyle),
+										}
+
+										const output = (
+											<div key={link.id + (link.params || '')}>
+												{!link.notRoute ? (
+													<Link
+														className={this.props.className}
+														{...css(style)}
+														onClick={() => {
+															if (link.onClick) {
+																link.onClick()
+															}
+															if (
+																!link.subRoutes ||
+																link.subRoutes.length === 0
+															)
+																this.changeState(false)
+															else this.changeState(true)
+														}}
+														to={
+															this.props.path
+																? this.props.path +
+																  link.id +
+																  (link.subRoutes
+																		? '/' + link.subRoutes[0].id
+																		: '')
+																: link.id +
+																  (link.subRoutes
+																		? '/' + link.subRoutes[0].id
+																		: '')
+														}
+													>
+														{icon}
+														<div>
+															{
+																/* !link.justIcon && */ link.name && (
+																	<div style={textStyle}>
+																		{config.localize(link.name)}
+																	</div>
+																)
+															}
+														</div>
+													</Link>
+												) : (
+													<a
+														className={this.props.className}
+														{...css(style)}
+														onClick={() => {
+															if (link.onClick) {
+																link.onClick()
+															}
+															if (
+																!link.subRoutes ||
+																link.subRoutes.length === 0
+															)
+																this.changeState(false)
+															else this.changeState(true)
+														}}
+													>
+														{icon}
 														{
 															/* !link.justIcon && */ link.name && (
 																<div style={textStyle}>
@@ -268,149 +296,131 @@ class MobileDrawer extends TrackedComponent<Props> {
 																</div>
 															)
 														}
-													</div>
-												</Link>
-											) : (
-												<a
-													className={this.props.className}
-													{...css(style)}
-													onClick={() => {
-														if (link.onClick) {
-															link.onClick()
-														}
-														if (
-															!link.subRoutes ||
-															link.subRoutes.length === 0
-														)
-															this.changeState(false)
-														else this.changeState(true)
-													}}
-												>
-													{icon}
-													{
-														/* !link.justIcon && */ link.name && (
-															<div style={textStyle}>
-																{config.localize(link.name)}
-															</div>
-														)
-													}
-												</a>
-											)}
+													</a>
+												)}
 
-											{last ? (
-												''
-											) : (
-												<div
-													style={{
-														height: 1,
-														minWidth: '100%',
-													}}
-												/>
-											)}
-										</div>
-									)
-
-									if (link.subRoutes)
-										return (
-											<div key={link.id + (link.params || '')}>
-												{output}
-												<Animated
-													animateOffscreen
-													duration={0.25}
-													effects={['fade', 'height']}
-													controlled={selected}
-												>
-													{link.subRoutes &&
-														link.subRoutes.map((sub, i) => {
-															const selectedSub =
-																selectedRoute.includes(
-																	'/' + link.id + '/' + sub.id
-																)
-
-															let linkStyleSub: React.CSSProperties &
-																GlamorProps = {
-																...style,
-																fontSize:
-																	(style.fontSize &&
-																		(style.fontSize as number) -
-																			1) ||
-																	styles.defaultFontSize - 1,
-																color: styles.colors.black,
-																justifyContent: 'space-between',
-																paddingLeft: 35,
-																paddingRight: 35,
-																opacity: 0.5,
-																...(this.props.linkStyle &&
-																	this.props.linkStyle.subRoute),
-															}
-															if (selectedSub)
-																linkStyleSub = {
-																	...linkStyleSub,
-																	opacity: 1,
-																	...(this.props.linkStyle &&
-																		this.props.linkStyle
-																			.subRoute &&
-																		this.props.linkStyle
-																			.subRoute[':selected']),
-																}
-
-															return (
-																<div
-																	key={
-																		link.id +
-																		'/' +
-																		sub.id +
-																		(sub.params || '')
-																	}
-																>
-																	<Link
-																		{...css(linkStyleSub)}
-																		onClick={() => {
-																			if (link.onClick) {
-																				link.onClick()
-																			}
-																			this.changeState(false)
-																		}}
-																		to={
-																			link.notRoute
-																				? ''
-																				: this.props.path
-																				? this.props.path +
-																				  link.id +
-																				  '/' +
-																				  sub.id
-																				: link.id +
-																				  '/' +
-																				  sub.id
-																		}
-																	>
-																		<div>
-																			{sub.name /* && !link.justIcon */ && (
-																				<div
-																					style={{
-																						marginLeft: 20,
-																						whiteSpace:
-																							'nowrap',
-																					}}
-																				>
-																					{config.localize(
-																						sub.name
-																					)}
-																				</div>
-																			)}
-																		</div>
-																	</Link>
-																</div>
-															)
-														})}
-												</Animated>
+												{last ? (
+													''
+												) : (
+													<div
+														style={{
+															height: 1,
+															minWidth: '100%',
+														}}
+													/>
+												)}
 											</div>
 										)
-									else return output
-								})}
-							</div>
-						</OutsideAlerter>
-					</Animated>
+
+										if (link.subRoutes)
+											return (
+												<div key={link.id + (link.params || '')}>
+													{output}
+													<Animated
+														animateOffscreen
+														duration={0.25}
+														effects={['fade', 'height']}
+														controlled={selected}
+													>
+														{link.subRoutes &&
+															link.subRoutes.map((sub, i) => {
+																const selectedSub =
+																	selectedRoute.includes(
+																		'/' + link.id + '/' + sub.id
+																	)
+
+																let linkStyleSub: React.CSSProperties &
+																	GlamorProps = {
+																	...style,
+																	fontSize:
+																		(style.fontSize &&
+																			(style.fontSize as number) -
+																				1) ||
+																		styles.defaultFontSize - 1,
+																	color: styles.colors.black,
+																	justifyContent: 'space-between',
+																	paddingLeft: 35,
+																	paddingRight: 35,
+																	opacity: 0.5,
+																	...(this.props.linkStyle &&
+																		this.props.linkStyle
+																			.subRoute),
+																}
+																if (selectedSub)
+																	linkStyleSub = {
+																		...linkStyleSub,
+																		opacity: 1,
+																		...(this.props.linkStyle &&
+																			this.props.linkStyle
+																				.subRoute &&
+																			this.props.linkStyle
+																				.subRoute[
+																				':selected'
+																			]),
+																	}
+
+																return (
+																	<div
+																		key={
+																			link.id +
+																			'/' +
+																			sub.id +
+																			(sub.params || '')
+																		}
+																	>
+																		<Link
+																			{...css(linkStyleSub)}
+																			onClick={() => {
+																				if (link.onClick) {
+																					link.onClick()
+																				}
+																				this.changeState(
+																					false
+																				)
+																			}}
+																			to={
+																				link.notRoute
+																					? ''
+																					: this.props
+																							.path
+																					? this.props
+																							.path +
+																					  link.id +
+																					  '/' +
+																					  sub.id
+																					: link.id +
+																					  '/' +
+																					  sub.id
+																			}
+																		>
+																			<div>
+																				{sub.name /* && !link.justIcon */ && (
+																					<div
+																						style={{
+																							marginLeft: 20,
+																							whiteSpace:
+																								'nowrap',
+																						}}
+																					>
+																						{config.localize(
+																							sub.name
+																						)}
+																					</div>
+																				)}
+																			</div>
+																		</Link>
+																	</div>
+																)
+															})}
+													</Animated>
+												</div>
+											)
+										else return output
+									})}
+								</div>
+							</OutsideAlerter>
+						</Animated>
+					)}
 				</div>
 			</Portal>
 		)

@@ -48,6 +48,7 @@ type TableStyles = {
 	rowStyle?: React.CSSProperties & GlamorProps
 	rowWrapperStyle?: React.CSSProperties
 	cellStyle?: React.CSSProperties
+	bottomWrapperStyle?: React.CSSProperties
 }
 type TableProps = {
 	data?: (Obj & { specialRow?: string })[]
@@ -219,11 +220,14 @@ export default class FTable extends QueryParams<
 			...(overrideStyle && overrideStyle.headerWrapperStyle),
 		}
 		bottomBarStyle = {
+			borderTop: '1px solid ' + styles.colors.borderColor,
+			background: styles.inputBackground || styles.colors.white,
 			padding: bottomBarStyle.padding,
 			...(bottomBarStyle.paddingLeft && { paddingLeft: bottomBarStyle.paddingLeft }),
 			...(bottomBarStyle.paddingRight && { paddingRight: bottomBarStyle.paddingRight }),
 			...(bottomBarStyle.paddingBottom && { paddingBottom: bottomBarStyle.paddingBottom }),
 			...(bottomBarStyle.paddingTop && { paddingTop: bottomBarStyle.paddingTop }),
+			...(overrideStyle && overrideStyle.bottomWrapperStyle),
 		}
 
 		//
@@ -264,11 +268,6 @@ export default class FTable extends QueryParams<
 										overflowX: 'auto',
 										...(overrideStyle && overrideStyle.wrapperStyle),
 
-										...((props.children || props.pagination) && {
-											borderBottom: 'none',
-											borderBottomLeftRadius: 0,
-											borderBottomRightRadius: 0,
-										}),
 										maxHeight: '100%',
 										flexGrow: 1,
 									}}
@@ -411,11 +410,6 @@ export default class FTable extends QueryParams<
 																								| undefined)
 																						: undefined
 																				)}
-																				<div
-																					style={{
-																						minHeight: 3,
-																					}}
-																				/>
 																			</div>
 																		</button>
 																	)
@@ -645,20 +639,8 @@ export default class FTable extends QueryParams<
 												})}
 										</div>
 									</div>
-								</div>
 
-								{(props.children || props.pagination) && (
-									<div
-										style={{
-											...wrapperStyle,
-											background:
-												styles.inputBackground || styles.colors.white,
-											...(overrideStyle && overrideStyle.wrapperStyle),
-
-											borderTopLeftRadius: 0,
-											borderTopRightRadius: 0,
-										}}
-									>
+									{(props.children || props.pagination) && (
 										<div style={bottomBarStyle}>
 											{props.pagination && (
 												<TablePagination
@@ -668,8 +650,8 @@ export default class FTable extends QueryParams<
 											)}
 											{props.children}
 										</div>
-									</div>
-								)}
+									)}
+								</div>
 							</div>
 						)}
 					</MediaQuery>

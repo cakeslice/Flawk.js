@@ -364,7 +364,7 @@ export const Section: React.FC<{
 									<div className={(tablet ? 'flex' : 'flex-col') + ' w-full'}>
 										<div
 											className={code && 'grow'}
-											style={{ overflow: noOverflow ? 'hidden' : undefined }}
+											//style={{ overflow: noOverflow ? 'hidden' : undefined }}
 										>
 											<div className='flex'>
 												<h3>{title}</h3>

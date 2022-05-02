@@ -68,6 +68,7 @@ export default class Layout extends QueryParams<
 		isOpen: false,
 		fetching: false,
 		selected: [] as string[],
+		tableAppearance: 'custom',
 		collapse: false,
 	}
 
@@ -91,17 +92,24 @@ export default class Layout extends QueryParams<
 				internal: false,
 			})
 
-			if (res.ok)
+			if (res.ok && res.body) {
+				// @ts-ignore
+				const body = res.body as { id: string }[]
 				this.setState({
 					data: {
-						// @ts-ignore
-						items: res.body.map((obj, i) => {
-							return { ...obj, specialRow: i % 5 ? undefined : 'special' }
+						items: body.map((obj, i) => {
+							return {
+								...obj,
+								email: 'someone@gmail.com',
+								price: 10000,
+								specialRow: i % 5 ? undefined : 'special',
+							}
 						}),
-						totalItems: 200,
-						totalPages: 2,
+						totalItems: body.length < 100 ? body.length : 200,
+						totalPages: body.length < 100 ? 1 : 2,
 					},
 				})
+			}
 		})
 	}
 	componentDidMount() {
@@ -348,6 +356,7 @@ export default class Layout extends QueryParams<
 												onChange={async (e) => {
 													this.setQueryParams({
 														search: e as string | undefined,
+														page: 1,
 													})
 													await this.fetchData()
 												}}
@@ -360,6 +369,7 @@ export default class Layout extends QueryParams<
 												onChange={(e) => {
 													this.setQueryParams({
 														search: e as string | undefined,
+														page: 1,
 													})
 												}}
 												onKeyPress={(e) => {
@@ -371,7 +381,7 @@ export default class Layout extends QueryParams<
 												placeholder={'Manual Search (Press Enter)'}
 											></FInput>
 										</div>
-										{this.state.selected.length > 0 && (
+										{this.state.selected.length > 0 ? (
 											<div className='wrapMarginTopLeft flex flex-wrap justify-end items-center'>
 												<div>
 													<span style={{ fontWeight: 500 }}>
@@ -380,10 +390,81 @@ export default class Layout extends QueryParams<
 													selected
 												</div>
 											</div>
+										) : (
+											<Dropdown
+												onChange={(e) =>
+													this.setState({ tableAppearance: e })
+												}
+												value={this.state.tableAppearance}
+												options={[
+													{ label: 'Custom Style', value: 'custom' },
+													{ label: 'Default Style', value: 'default' },
+												]}
+											></Dropdown>
 										)}
 									</div>
 									<div style={{ minHeight: 10 }}></div>
 									<FTable
+										style={
+											this.state.tableAppearance === 'default'
+												? undefined
+												: {
+														headerWrapperStyle: {
+															padding: 0,
+															borderStyle: 'none',
+															borderBottom:
+																'1px solid rgba(223,224,235, ' +
+																(global.nightMode ? 0.1 : 1) +
+																')',
+															boxShadow: 'none',
+															background: 'transparent',
+															//
+															fontSize: 12,
+															fontWeight: 500,
+															textTransform: 'uppercase',
+														},
+														headerStyle: {
+															minHeight: 45,
+														},
+														rowStyle: {
+															boxShadow: 'none',
+															fontSize: 14,
+															padding: 0,
+															paddingLeft: 0,
+															paddingRight: 0,
+															minHeight: 46,
+															background: 'transparent',
+															borderRadius: 0,
+															':hover': {
+																background:
+																	'rgba(246, 248, 250, ' +
+																	(global.nightMode ? 0.1 : 1) +
+																	')',
+															},
+														},
+														wrapperStyle: {
+															...styles.card,
+															width: 'auto',
+															padding: 0,
+															borderStyle: 'none',
+														},
+														rowWrapperStyle: {
+															padding: 0,
+															borderBottom:
+																'1px solid rgba(223,224,235, ' +
+																(global.nightMode ? 0.1 : 1) +
+																')',
+														},
+														bottomWrapperStyle: {
+															borderTop:
+																'1px solid rgba(223,224,235, ' +
+																(global.nightMode ? 0.1 : 1) +
+																')',
+															paddingLeft: 15,
+															paddingRight: 15,
+														},
+												  }
+										}
 										isLoading={this.state.fetching}
 										height={'500px'}
 										expandContent={(data) => (
@@ -397,12 +478,16 @@ export default class Layout extends QueryParams<
 												key: 'special',
 												row: (data) => (
 													<div>
-														<b>{data.id + ': ' + data.title}</b>
+														<b>{data.title as string}</b>
 													</div>
 												),
 												style: {
-													background: styles.colors.mainVeryLight,
+													background: styles.colors.background,
+													paddingLeft: 10,
+													paddingRight: 10,
+													padding: 10,
 													minHeight: 25,
+													textAlign: 'center',
 													justifyContent: 'center',
 												},
 											},
@@ -489,14 +574,9 @@ export default class Layout extends QueryParams<
 												name: 'Name',
 												selector: 'title',
 												grow: 4,
-											},
-											{
-												name: 'Custom Cell',
-												selector: 'completed',
-												grow: 2,
-												cell: (value) => (
-													<div>{value === true ? 'Yes' : 'No'}</div>
-												),
+												style: {
+													fontWeight: 500,
+												},
 											},
 											{
 												name: (
@@ -506,23 +586,24 @@ export default class Layout extends QueryParams<
 													</div>
 												),
 												grow: 2,
+												style: { minWidth: 80 },
 												selector: 'price',
-												//hide: 'mobile',
+												cell: (value) => (
+													<div style={{ color: styles.colors.main }}>
+														{value} €
+													</div>
+												),
+												hide: 'mobile',
 											},
 											{
 												name: 'Email',
 												selector: 'email',
-												//hide: 'mobile',
 												grow: 4,
 												style: { whiteSpace: 'nowrap' },
+												hide: 'mobile',
 											},
 											{
-												name: 'Phone',
-												selector: 'phone',
-												//hide: 'mobile',
-											},
-											{
-												style: { minWidth: 60 },
+												style: { minWidth: 120 },
 												name: (
 													<div style={{ ...styles.textEllipsis }}>
 														Maximum Tax{' '}
@@ -530,11 +611,14 @@ export default class Layout extends QueryParams<
 													</div>
 												),
 												selector: 'tax',
-												//hide: 'mobile',
+												hide: 'mobile',
 												cell: (value) => (
 													<div>
 														<FButton
-															style={{ minWidth: 50, width: '100%' }}
+															style={{
+																minWidth: 50,
+																width: '100%',
+															}}
 														>
 															Add
 														</FButton>
@@ -542,16 +626,7 @@ export default class Layout extends QueryParams<
 												),
 											},
 											{
-												name: 'Country',
-												selector: 'country',
-												//hide: 'mobile',
-												cell: (value) => (
-													<div style={{ ...styles.textEllipsis }}>
-														Very long text is very long and very long
-													</div>
-												),
-											},
-											{
+												style: { minWidth: 45, maxWidth: 45 },
 												name: (
 													<div className='flex items-center justify-center'>
 														<img
