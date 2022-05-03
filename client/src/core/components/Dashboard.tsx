@@ -324,15 +324,15 @@ class DashboardClass extends TrackedComponent<
 												}
 											>
 												<Portal node={document.getElementById('portals')}>
-													<Animated
-														trackedName='Dashboard'
+													<div
+														/* trackedName='Dashboard'
 														animateOffscreen
 														effects={[
 															'fade',
 															this.props.horizontal ? 'down' : 'left',
 														]}
 														distance={closedWidth}
-														duration={0.75}
+														duration={0.75} */
 														//
 														style={desktopStyle}
 													>
@@ -363,7 +363,7 @@ class DashboardClass extends TrackedComponent<
 															path={this.props.path}
 															routes={routes}
 														/>
-													</Animated>
+													</div>
 												</Portal>
 											</div>
 										) : (
@@ -376,12 +376,12 @@ class DashboardClass extends TrackedComponent<
 												}}
 											>
 												<Portal node={document.getElementById('portals')}>
-													<Animated
-														trackedName='Dashboard'
+													<div
+														/* trackedName='Dashboard'
 														animateOffscreen
 														effects={['fade', 'down']}
 														distance={mobileHeight}
-														duration={0.75}
+														duration={0.75} */
 														//
 														className='blur-background w-full flex-col items-center'
 														style={mobileStyle}
@@ -465,7 +465,7 @@ class DashboardClass extends TrackedComponent<
 																	</button>
 																))}
 														</div>
-													</Animated>
+													</div>
 												</Portal>
 											</div>
 										)}
