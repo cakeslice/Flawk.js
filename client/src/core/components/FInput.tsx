@@ -76,20 +76,29 @@ const MaskedInput = (
 const TextAreaAuto = (
 	props: { inputRef: LegacyRef<HTMLTextAreaElement> } & TextareaAutosizeProps &
 		React.RefAttributes<HTMLTextAreaElement>
+) => {
+	const { inputRef, ...other } = props
 	// @ts-ignore
-) => <TextareaAutosize ref={props.inputRef} minRows={2} maxRows={10} {...props}></TextareaAutosize>
+	return <TextareaAutosize ref={inputRef} minRows={2} maxRows={10} {...other}></TextareaAutosize>
+}
 const TextArea = (
 	props: { inputRef: LegacyRef<HTMLTextAreaElement> } & React.DetailedHTMLProps<
 		React.TextareaHTMLAttributes<HTMLTextAreaElement>,
 		HTMLTextAreaElement
 	>
-) => <textarea ref={props.inputRef} {...props}></textarea>
+) => {
+	const { inputRef, ...other } = props
+	return <textarea ref={inputRef} {...other}></textarea>
+}
 const Input = (
 	props: { inputRef: LegacyRef<HTMLInputElement> } & React.DetailedHTMLProps<
 		React.InputHTMLAttributes<HTMLInputElement>,
 		HTMLInputElement
 	>
-) => <input ref={props.inputRef} {...props}></input>
+) => {
+	const { inputRef, ...other } = props
+	return <input ref={inputRef} {...other}></input>
+}
 const DatePicker = (
 	props: {
 		foreground?: boolean
@@ -269,6 +278,7 @@ export default class FInput extends TrackedComponent<Props> {
 		this.setInputRef = this.setInputRef.bind(this)
 	}
 
+	internalValue: string | number | undefined = undefined
 	inputRef: HTMLElement | null = null
 	setInputRef(instance: HTMLElement | null) {
 		this.inputRef = instance
@@ -567,6 +577,8 @@ export default class FInput extends TrackedComponent<Props> {
 						? undefined
 						: e.target.value
 
+				this.internalValue = v
+
 				if (formIK && name && formIK.setFieldValue) formIK.setFieldValue(name, v)
 
 				if (this.props.bufferedInput && !formIK) {
@@ -582,10 +594,13 @@ export default class FInput extends TrackedComponent<Props> {
 			isControlled: controlled ? true : false,
 			value: controlled ? (value === undefined ? '' : (value as DatePickerValue)) : undefined,
 			onChange: (e: string) => {
-				if (formIK && name && formIK.setFieldValue)
-					formIK.setFieldValue(name, e === '' ? undefined : e)
+				const v = e === '' ? undefined : e
 
-				this.props.onChange && this.props.onChange(e)
+				this.internalValue = v
+
+				if (formIK && name && formIK.setFieldValue) formIK.setFieldValue(name, v)
+
+				this.props.onChange && this.props.onChange(v)
 			},
 		}
 
@@ -793,6 +808,7 @@ export default class FInput extends TrackedComponent<Props> {
 											{this.props.icon}
 										</div>
 									)}
+
 									{this.props.rightChild}
 								</div>
 								{invalidType === 'right' && name && (

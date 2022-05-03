@@ -220,6 +220,9 @@ export default class Inputs extends Component {
 											}}
 											rightChild={
 												<FButton
+													onClick={(e) => {
+														e.stopPropagation()
+													}}
 													appearance='primary'
 													style={{
 														minWidth: 30,
