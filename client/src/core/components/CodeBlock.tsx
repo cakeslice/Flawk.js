@@ -72,7 +72,7 @@ export default function CodeBlock(props: {
 							borderRadius: 6,
 							background: styles.colors.white,
 							padding: 16,
-							fontSize: 13.5,
+							fontSize: 13,
 							tabSize: 3,
 							fontWeight: 'normal',
 							width: '100%',

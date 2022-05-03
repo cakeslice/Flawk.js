@@ -293,12 +293,8 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 					global.nightMode ? styles.inputBorderFactorNight : styles.inputBorderFactorDay
 				)
 				styles.colors.lineColor = styles.colors.lineColorNight
-				if (!styles.card.noDarkMode) {
-					styles.card.background = styles.colors.whiteNight
-					styles.card.borderColor = styles.colors.borderColor
-				}
-				if (!styles.outlineCard.noDarkMode)
-					styles.outlineCard.borderColor = styles.colors.borderColor
+				styles.card.background = styles.colors.whiteNight
+				styles.outlineCard.borderColor = styles.colors.borderColor
 			} else {
 				changeBackground(styles.colors.backgroundDay)
 				document.body.style.color = styles.colors.blackDay
@@ -311,12 +307,9 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 					global.nightMode ? styles.inputBorderFactorNight : styles.inputBorderFactorDay
 				)
 				styles.colors.lineColor = styles.colors.lineColorDay
-				if (!styles.card.noDarkMode) {
-					styles.card.background = styles.colors.whiteDay
-					styles.card.borderColor = styles.colors.borderColor
-				}
-				if (!styles.outlineCard.noDarkMode)
-					styles.outlineCard.borderColor = styles.colors.borderColor
+				styles.card.background = styles.colors.whiteDay
+				styles.card.borderColor = styles.colors.borderColor
+				styles.outlineCard.borderColor = styles.colors.borderColor
 			}
 		}
 	}

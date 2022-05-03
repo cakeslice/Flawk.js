@@ -259,7 +259,6 @@ const styles: Styles & { colors: Colors; gradients: Gradients } = {
 		borderRadius: 10,
 		boxSizing: 'border-box',
 		background: _white,
-		noDarkMode: false,
 		borderColor: 'inherit',
 		...projectOverrides.card,
 	},
@@ -270,7 +269,6 @@ const styles: Styles & { colors: Colors; gradients: Gradients } = {
 		boxSizing: 'border-box',
 		padding: 20,
 		borderRadius: 10,
-		noDarkMode: false,
 		borderColor: 'inherit',
 		...projectOverrides.outlineCard,
 	},
@@ -419,8 +417,8 @@ export type Styles = {
 
 	// Cards
 
-	card: React.CSSProperties & { noDarkMode?: boolean }
-	outlineCard: React.CSSProperties & { noDarkMode?: boolean }
+	card: React.CSSProperties
+	outlineCard: React.CSSProperties
 
 	// Colors
 

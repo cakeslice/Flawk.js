@@ -190,7 +190,7 @@ export default class Inputs extends Component {
 								<sp />
 								<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
 									<FInput
-										style={{ width: '100%' }}
+										style={{ width: '100%', minHeight: 50 }}
 										label={'Text Area'}
 										textArea
 									></FInput>
@@ -203,11 +203,40 @@ export default class Inputs extends Component {
 									<FInput
 										label='Icon'
 										style={{ width: 100 }}
-										icon={searchIcon()}
+										rightChild={
+											<div
+												className='flex'
+												style={{ marginLeft: 5, marginRight: 7.5 }}
+											>
+												{searchIcon()}
+											</div>
+										}
 									/>
 									<div className='flex items-end'>
 										<FInput
-											label='Button'
+											label='Inner Button'
+											style={{
+												width: 200,
+											}}
+											rightChild={
+												<FButton
+													appearance='primary'
+													style={{
+														minWidth: 30,
+														minHeight: 22.5,
+														marginLeft: 3,
+														marginRight: 3,
+														padding: '0px 7px',
+													}}
+												>
+													Search
+												</FButton>
+											}
+										></FInput>
+									</div>
+									<div className='flex items-end'>
+										<FInput
+											label='Outer Button'
 											style={{
 												width: 100,
 												borderTopRightRadius: 0,

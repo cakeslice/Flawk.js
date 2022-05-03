@@ -558,6 +558,22 @@ export default class Style extends Component<Props> {
 											<b>{desktop ? 'Hover' : 'Click'} me</b>
 										</div>
 									</Tooltip>
+									<sp />
+									<Tooltip
+										content={(forceHide) => {
+											return <div style={{ padding: 5 }}>Tooltip</div>
+										}}
+									>
+										<div
+											style={{
+												opacity: 0.5,
+												position: 'relative',
+												top: 0.5,
+											}}
+										>
+											{infoIcon(styles.colors.black)}
+										</div>
+									</Tooltip>
 								</div>
 							</Section>
 
@@ -1149,3 +1165,18 @@ export default class Style extends Component<Props> {
 		)
 	}
 }
+
+const infoIcon = (color: string) => (
+	<svg
+		width='10'
+		height='10'
+		viewBox='0 0 460 460'
+		fill='none'
+		xmlns='http://www.w3.org/2000/svg'
+	>
+		<path
+			d='M230 0C102.975 0 0 102.975 0 230C0 357.025 102.975 460 230 460C357.025 460 460 357.026 460 230C460 102.974 357.025 0 230 0ZM268.333 377.36C268.333 386.036 261.299 393.07 252.623 393.07H209.522C200.846 393.07 193.812 386.036 193.812 377.36V202.477C193.812 193.801 200.845 186.767 209.522 186.767H252.623C261.299 186.767 268.333 193.8 268.333 202.477V377.36ZM230 157C208.461 157 191 139.539 191 118C191 96.461 208.461 79 230 79C251.539 79 269 96.461 269 118C269 139.539 251.539 157 230 157Z'
+			fill={color}
+		/>
+	</svg>
+)

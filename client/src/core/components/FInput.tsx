@@ -12,7 +12,7 @@ import { format } from 'date-fns'
 import { FormIKStruct, GlamorProps, Obj } from 'flawk-types'
 import { FieldInputProps, FormikProps } from 'formik'
 import { css, StyleAttribute } from 'glamor'
-import React, { Suspense } from 'react'
+import React, { LegacyRef, Suspense } from 'react'
 import MediaQuery from 'react-responsive'
 import TextareaAutosize, { TextareaAutosizeProps } from 'react-textarea-autosize'
 import './FInput.scss'
@@ -38,7 +38,10 @@ const MaskedInput = (
 		inputStyle: StyleAttribute
 		value?: string | number | undefined
 		onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
-	} & React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>
+	} & { inputRef: LegacyRef<HTMLInputElement> } & React.DetailedHTMLProps<
+			React.InputHTMLAttributes<HTMLInputElement>,
+			HTMLInputElement
+		>
 ) => (
 	<Suspense fallback={<></>}>
 		<InputMask
@@ -58,6 +61,7 @@ const MaskedInput = (
 				>
 			) => (
 				<input
+					ref={props.inputRef}
 					{...inputProps}
 					// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 					{...props.inputStyle}
@@ -69,35 +73,42 @@ const MaskedInput = (
 		</InputMask>
 	</Suspense>
 )
-const TextAreaAuto = (props: TextareaAutosizeProps & React.RefAttributes<HTMLTextAreaElement>) => (
-	<TextareaAutosize minRows={2} maxRows={10} {...props}></TextareaAutosize>
-)
+const TextAreaAuto = (
+	props: { inputRef: LegacyRef<HTMLTextAreaElement> } & TextareaAutosizeProps &
+		React.RefAttributes<HTMLTextAreaElement>
+	// @ts-ignore
+) => <TextareaAutosize ref={props.inputRef} minRows={2} maxRows={10} {...props}></TextareaAutosize>
 const TextArea = (
-	props: React.DetailedHTMLProps<
+	props: { inputRef: LegacyRef<HTMLTextAreaElement> } & React.DetailedHTMLProps<
 		React.TextareaHTMLAttributes<HTMLTextAreaElement>,
 		HTMLTextAreaElement
 	>
-) => <textarea {...props}></textarea>
+) => <textarea ref={props.inputRef} {...props}></textarea>
 const Input = (
-	props: React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>
-) => <input {...props}></input>
-const DatePicker = (props: {
-	foreground?: boolean
-	utc?: boolean
-	locale?: string
-	value?: string
-	onChange?: (value: string) => void
-	onBlur?: (event: React.FocusEvent<HTMLInputElement, Element>) => void
-	onFocus?: (event: React.FocusEvent<HTMLInputElement, Element>) => void
-	onKeyPress?: (event: React.KeyboardEvent<HTMLInputElement>) => void
-	isControlled?: boolean
-	isDisabled?: boolean
-	name?: string
-	placeholder?: string
-	required?: boolean
-	width?: number
-	inputStyle: StyleAttribute
-}) => (
+	props: { inputRef: LegacyRef<HTMLInputElement> } & React.DetailedHTMLProps<
+		React.InputHTMLAttributes<HTMLInputElement>,
+		HTMLInputElement
+	>
+) => <input ref={props.inputRef} {...props}></input>
+const DatePicker = (
+	props: {
+		foreground?: boolean
+		utc?: boolean
+		locale?: string
+		value?: string
+		onChange?: (value: string) => void
+		onBlur?: (event: React.FocusEvent<HTMLInputElement, Element>) => void
+		onFocus?: (event: React.FocusEvent<HTMLInputElement, Element>) => void
+		onKeyPress?: (event: React.KeyboardEvent<HTMLInputElement>) => void
+		isControlled?: boolean
+		isDisabled?: boolean
+		name?: string
+		placeholder?: string
+		required?: boolean
+		width?: number
+		inputStyle: StyleAttribute
+	} & { inputRef: LegacyRef<HTMLInputElement> }
+) => (
 	<Suspense fallback={<></>}>
 		<Datetime
 			renderView={(mode, renderDefault) => {
@@ -134,6 +145,7 @@ const DatePicker = (props: {
 			renderInput={(p) => {
 				return (
 					<input
+						ref={props.inputRef}
 						{...props.inputStyle}
 						{...p}
 						value={props.value || !props.isControlled ? p.value : ''}
@@ -161,8 +173,12 @@ type Props = {
 	label?: React.ReactNode
 	labelStyle?: React.CSSProperties
 	emptyLabel?: boolean
-	icon?: React.ReactNode
-	clickableIcon?: boolean
+	/**
+	 * @deprecated The method should not be used
+	 */
+	icon?: React.ReactNode // ! Deprecated, use leftChild/rightChild instead
+	leftChild?: React.ReactNode
+	rightChild?: React.ReactNode
 	//
 	defaultValue?: number | string
 	autoFocus?: boolean
@@ -245,6 +261,17 @@ export default class FInput extends TrackedComponent<Props> {
 	shouldComponentUpdate(nextProps: Props, nextState: typeof this.state) {
 		super.shouldComponentUpdate(nextProps, nextState, false)
 		return this.deepEqualityCheck(nextProps, nextState)
+	}
+
+	constructor(props: Props) {
+		super(props)
+
+		this.setInputRef = this.setInputRef.bind(this)
+	}
+
+	inputRef: HTMLElement | null = null
+	setInputRef(instance: HTMLElement | null) {
+		this.inputRef = instance
 	}
 
 	timer: ReturnType<typeof setTimeout> | undefined = undefined
@@ -495,6 +522,7 @@ export default class FInput extends TrackedComponent<Props> {
 		//
 
 		const commonProps = {
+			inputRef: this.setInputRef,
 			defaultValue: this.props.defaultValue,
 			autoFocus: this.props.autoFocus,
 			required: this.props.required ? true : false,
@@ -568,17 +596,53 @@ export default class FInput extends TrackedComponent<Props> {
 		const cssDesktop = css({
 			...finalStyle,
 			width: finalStyle.width || defaultWidth(true),
+			...(this.props.textArea &&
+				!this.props.textAreaFixed && {
+					height: 'auto',
+				}),
 		})
 		const cssMobile = css({
 			...finalStyle,
 			width: finalStyle.width || defaultWidth(false),
+			...(this.props.textArea && {
+				height: 'auto',
+				resize: 'vertical',
+			}),
+		})
+		const inputStyleDesktop = css({
+			'::placeholder': finalStyle['::placeholder'],
+			width: '100%',
+			...(this.props.textArea
+				? {
+						minHeight: finalStyle.minHeight,
+						height: finalStyle.height,
+						resize: 'vertical',
+				  }
+				: {
+						height: '100%',
+				  }),
+			textAlign: 'inherit',
+		})
+		const inputStyleMobile = css({
+			'::placeholder': finalStyle['::placeholder'],
+			width: '100%',
+			...(this.props.textArea
+				? {
+						minHeight: finalStyle.minHeight,
+						height: finalStyle.height,
+						resize: 'vertical',
+				  }
+				: {
+						height: '100%',
+				  }),
+			textAlign: 'inherit',
 		})
 
 		return (
 			<MediaQuery minWidth={config.mobileWidthTrigger}>
 				{(desktop) => {
 					const cssStyle = desktop ? cssDesktop : cssMobile
-
+					const inputStyle = desktop ? inputStyleDesktop : inputStyleMobile
 					return (
 						<div
 							data-nosnippet
@@ -650,87 +714,87 @@ export default class FInput extends TrackedComponent<Props> {
 							)}
 							{label && <div style={{ minHeight: 5 }}></div>}
 							<div style={{ display: 'flex', alignItems: 'center' }}>
-								{this.props.datePicker ? (
-									<DatePicker
-										{...commonProps}
-										{...datePickerValueProps}
-										{...inputEventProps}
-										foreground={this.props.foreground}
-										inputStyle={cssStyle}
-									/>
-								) : this.props.textArea ? (
-									this.props.textAreaFixed ? (
-										<TextArea
+								<div
+									onClick={() => {
+										this.inputRef?.focus()
+									}}
+									{...cssStyle}
+								>
+									{this.props.leftChild}
+
+									{this.props.datePicker ? (
+										<DatePicker
+											{...commonProps}
+											{...datePickerValueProps}
+											{...inputEventProps}
+											foreground={this.props.foreground}
+											inputStyle={inputStyle}
+										/>
+									) : this.props.textArea ? (
+										this.props.textAreaFixed ? (
+											<TextArea
+												{...commonProps}
+												{...valueProps}
+												{...inputEventProps}
+												{...inputStyle}
+											/>
+										) : (
+											<TextAreaAuto
+												{...commonProps}
+												{...valueProps}
+												{...inputEventProps}
+												{...inputStyle}
+												minRows={this.props.minRows}
+												maxRows={this.props.maxRows}
+											/>
+										)
+									) : !this.props.mask && !this.props.timeInput ? (
+										<Input
 											{...commonProps}
 											{...valueProps}
 											{...inputEventProps}
-											// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-											{...cssStyle}
+											{...inputStyle}
 										/>
 									) : (
-										<TextAreaAuto
+										<MaskedInput
 											{...commonProps}
 											{...valueProps}
 											{...inputEventProps}
-											// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-											{...cssStyle}
-											minRows={this.props.minRows}
-											maxRows={this.props.maxRows}
+											inputStyle={inputStyle}
+											{...(this.props.mask
+												? {
+														mask: this.props.mask,
+														formatChars: this.props.formatChars,
+												  }
+												: {
+														mask:
+															value && (value as string)[0] === '2'
+																? '23:59'
+																: '29:59',
+														formatChars: {
+															9: '[0-9]',
+															3: '[0-3]',
+															5: '[0-5]',
+															2: '[0-2]',
+														},
+												  })}
 										/>
-									)
-								) : !this.props.mask && !this.props.timeInput ? (
-									<Input
-										{...commonProps}
-										{...valueProps}
-										{...inputEventProps}
-										// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-										{...cssStyle}
-									/>
-								) : (
-									<MaskedInput
-										{...commonProps}
-										{...valueProps}
-										{...inputEventProps}
-										inputStyle={cssStyle}
-										{...(this.props.mask
-											? {
-													mask: this.props.mask,
-													formatChars: this.props.formatChars,
-											  }
-											: {
-													mask:
-														value && (value as string)[0] === '2'
-															? '23:59'
-															: '29:59',
-													formatChars: {
-														9: '[0-9]',
-														3: '[0-3]',
-														5: '[0-5]',
-														2: '[0-2]',
-													},
-											  })}
-									/>
-								)}
+									)}
 
-								{this.props.icon && (
-									<div style={{ maxWidth: 0 }}>
+									{this.props.icon && (
 										<div
 											style={{
-												...(!this.props.clickableIcon && {
-													pointerEvents: 'none',
-												}),
-												position: 'relative',
 												display: 'flex',
 												justifyContent: 'center',
 												alignItems: 'center',
-												width: 30,
-												right: 35,
+												width: 40,
 											}}
 										>
 											{this.props.icon}
 										</div>
-									</div>
-								)}
+									)}
+									{this.props.rightChild}
+								</div>
 								{invalidType === 'right' && name && (
 									<div style={{ minWidth: 16, display: 'flex' }}>
 										{!this.props.isDisabled &&
