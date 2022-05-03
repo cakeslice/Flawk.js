@@ -217,8 +217,8 @@ export default class Modal extends TrackedComponent<Props> {
 					className={styles.modalButtonWrap ? 'wrapMargin' : undefined}
 					style={{
 						padding: modalPadding - 5,
-						paddingBottom: modalPadding / 2 - 5,
-						paddingTop: modalPadding / 2 - 5,
+						paddingBottom: this.props.big ? modalPadding : modalPadding / 2 - 5,
+						paddingTop: this.props.big ? modalPadding : modalPadding / 2 - 5,
 						display: 'flex',
 						flexWrap: 'wrap',
 						justifyContent: 'flex-end',
@@ -349,6 +349,7 @@ export default class Modal extends TrackedComponent<Props> {
 													>
 														{this.props.title !== undefined && (
 															<ModalHeader
+																big={big}
 																modalPadding={modalPadding}
 																headerStyle={this.props.headerStyle}
 																title={this.props.title}
@@ -384,6 +385,7 @@ class ModalHeader extends Component<{
 	headerStyle?: HeaderStyle
 	modalPadding: number
 	onClose?: (fromHeader: boolean) => void
+	big?: boolean
 }> {
 	render() {
 		return (
@@ -391,7 +393,10 @@ class ModalHeader extends Component<{
 				<div
 					className='flex justify-between items-center'
 					style={{
-						padding: this.props.modalPadding / 2,
+						padding: this.props.big
+							? this.props.modalPadding
+							: this.props.modalPadding / 2,
+						paddingRight: this.props.modalPadding / 2,
 						paddingLeft: this.props.modalPadding,
 						...styles.modalHeaderStyle,
 						...this.props.headerStyle,

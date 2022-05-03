@@ -142,14 +142,14 @@ export default class FTable extends QueryParams<
 			paddingTop: cellPaddingY,
 			paddingBottom: cellPaddingY,
 			minWidth: 50,
-			//letterSpacing: 0.4,,
+			//letterSpacing: 0.4,
 			textOverflow: 'ellipsis',
 			whiteSpace: 'nowrap',
 			overflow: 'hidden',
 		}
 
 		const headerWrapperStyle: React.CSSProperties = {
-			fontSize: styles.defaultFontSize,
+			fontSize: styles.defaultFontSize - 1,
 			fontWeight: 500,
 			background: styles.inputBackground || styles.colors.white,
 			padding: '0px ' + paddingX * 2 + 'px 0px ' + paddingX * 2 + 'px',
@@ -159,15 +159,14 @@ export default class FTable extends QueryParams<
 			borderTop: 'none',
 			borderLeft: 'none',
 			borderRight: 'none',
-			boxShadow: 'rgba(0, 0, 0, 0.1) 0px 1px 5px 0px',
+			borderBottom: '1px solid ' + styles.colors.lineColor,
 			zIndex: 1,
 		}
 		const rowStyle: React.CSSProperties & GlamorProps = {
-			...styles.card,
 			borderStyle: 'none',
 			borderRadius: 6,
-			boxShadow: 'rgba(0, 0, 0, 0.04) 0px 2px 4px 0px, rgba(0, 0, 0, 0.04) 0px 6px 4px 0px',
 			margin: 0,
+			borderBottom: '1px solid ' + styles.colors.lineColor,
 			padding: '0px ' + paddingX + 'px 0px ' + paddingX + 'px',
 			boxSizing: 'border-box',
 			display: 'flex',
@@ -199,8 +198,6 @@ export default class FTable extends QueryParams<
 			padding: 0,
 			margin: 0,
 			borderRadius: styles.defaultBorderRadius,
-			background: 'transparent',
-			boxShadow: 'none',
 		}
 		const rowWrapperStyle: React.CSSProperties = {
 			padding: '3px ' + paddingX + 'px 3px ' + paddingX + 'px',
@@ -220,7 +217,7 @@ export default class FTable extends QueryParams<
 			...(overrideStyle && overrideStyle.headerWrapperStyle),
 		}
 		bottomBarStyle = {
-			borderTop: '1px solid ' + styles.colors.borderColor,
+			borderTop: '1px solid ' + styles.colors.lineColor,
 			background: styles.inputBackground || styles.colors.white,
 			padding: bottomBarStyle.padding,
 			...(bottomBarStyle.paddingLeft && { paddingLeft: bottomBarStyle.paddingLeft }),

@@ -68,7 +68,7 @@ export default class Layout extends QueryParams<
 		isOpen: false,
 		fetching: false,
 		selected: [] as string[],
-		tableAppearance: 'custom',
+		tableAppearance: 'default',
 		collapse: false,
 	}
 
@@ -102,7 +102,8 @@ export default class Layout extends QueryParams<
 								...obj,
 								email: 'someone@gmail.com',
 								price: 10000,
-								specialRow: i % 5 ? undefined : 'special',
+								admin: i % 7 === 0,
+								specialRow: i % 5 || i === 0 ? undefined : 'special',
 							}
 						}),
 						totalItems: body.length < 100 ? body.length : 200,
@@ -415,12 +416,6 @@ export default class Layout extends QueryParams<
 												: {
 														headerWrapperStyle: {
 															padding: 0,
-															borderStyle: 'none',
-															borderBottom:
-																'1px solid rgba(223,224,235, ' +
-																(global.nightMode ? 0.1 : 1) +
-																')',
-															boxShadow: 'none',
 															background: 'transparent',
 															//
 															fontSize: 12,
@@ -432,7 +427,6 @@ export default class Layout extends QueryParams<
 														},
 														rowStyle: {
 															boxShadow: 'none',
-															fontSize: 14,
 															padding: 0,
 															paddingLeft: 0,
 															paddingRight: 0,
@@ -440,30 +434,21 @@ export default class Layout extends QueryParams<
 															background: 'transparent',
 															borderRadius: 0,
 															':hover': {
-																background:
-																	'rgba(246, 248, 250, ' +
-																	(global.nightMode ? 0.1 : 1) +
-																	')',
+																background: styles.colors.white,
 															},
 														},
 														wrapperStyle: {
-															...styles.card,
+															...styles.outlineCard,
+															background: 'transparent',
+															boxShadow: 'none',
 															width: 'auto',
 															padding: 0,
-															borderStyle: 'none',
 														},
 														rowWrapperStyle: {
 															padding: 0,
-															borderBottom:
-																'1px solid rgba(223,224,235, ' +
-																(global.nightMode ? 0.1 : 1) +
-																')',
 														},
 														bottomWrapperStyle: {
-															borderTop:
-																'1px solid rgba(223,224,235, ' +
-																(global.nightMode ? 0.1 : 1) +
-																')',
+															background: 'transparent',
 															paddingLeft: 15,
 															paddingRight: 15,
 														},
@@ -481,12 +466,15 @@ export default class Layout extends QueryParams<
 											{
 												key: 'special',
 												row: (data) => (
-													<div>
+													<div style={{ fontSize: 13, opacity: 0.66 }}>
 														<b>{data.title as string}</b>
 													</div>
 												),
 												style: {
-													background: styles.colors.background,
+													background:
+														this.state.tableAppearance === 'custom'
+															? styles.colors.white
+															: styles.colors.background,
 													paddingLeft: 10,
 													paddingRight: 10,
 													padding: 10,
@@ -605,12 +593,32 @@ export default class Layout extends QueryParams<
 												grow: 4,
 												style: { whiteSpace: 'nowrap' },
 												hide: 'mobile',
+												cell: (value, d) => (
+													<div style={{ ...styles.textEllipsis }}>
+														<span>{value}</span>
+														{d.admin && (
+															<tag
+																style={{
+																	color: styles.colors.green,
+																	opacity: 1,
+																	background: config.replaceAlpha(
+																		styles.colors.green,
+																		0.15
+																	),
+																	marginLeft: 15,
+																}}
+															>
+																Admin
+															</tag>
+														)}
+													</div>
+												),
 											},
 											{
 												style: { minWidth: 120 },
 												name: (
 													<div style={{ ...styles.textEllipsis }}>
-														Maximum Tax{' '}
+														Max. Tax{' '}
 														<small style={{ opacity: 0.5 }}>€</small>
 													</div>
 												),
