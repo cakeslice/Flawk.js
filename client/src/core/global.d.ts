@@ -31,6 +31,7 @@ declare global {
 
 	declare namespace JSX {
 		interface IntrinsicElements {
+			hsp: any
 			sp: any
 			bb: any
 			vr: any

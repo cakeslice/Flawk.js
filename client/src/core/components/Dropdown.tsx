@@ -20,12 +20,27 @@ import Select, {
 	StylesConfig,
 } from 'react-select'
 
+const invalidTextStyle = {
+	letterSpacing: 0,
+	fontSize: styles.invalidFontSize,
+	fontWeight: styles.invalidFontWeight,
+	color: styles.colors.red,
+}
+
 export type Option = {
-	value: string | number | boolean
 	label: React.ReactNode
 	isDisabled?: boolean
 	style?: CSSObjectWithLabel
-}
+} & (
+	| {
+			value: string | number | boolean
+			options?: undefined
+	  }
+	| {
+			value?: undefined
+			options?: Option[]
+	  }
+)
 
 const DropdownIndicator = ({ children, ...rest }: DropdownIndicatorProps<unknown, boolean>) => {
 	const { isDisabled, dropdownIndicator } = rest.selectProps as {
@@ -74,6 +89,7 @@ type Props = {
 	dropdownIndicator?: React.ReactNode
 	customInput?: boolean
 	foreground?: boolean
+	uncontrolled?: boolean
 	//
 	placeholder?: string
 	value?: string | number
@@ -468,6 +484,19 @@ export default class Dropdown extends TrackedComponent<Props> {
 
 				return output
 			},
+			group: (internalStyles): CSSObjectWithLabel => {
+				return {
+					...internalStyles,
+					borderTop: '1px solid ' + styles.colors.lineColor,
+				}
+			},
+			menuList: (internalStyles): CSSObjectWithLabel => {
+				return {
+					...internalStyles,
+					paddingBottom: 0,
+					paddingTop: 0,
+				}
+			},
 			menu: (internalStyle): CSSObjectWithLabel => {
 				return {
 					...internalStyle,
@@ -504,6 +533,11 @@ export default class Dropdown extends TrackedComponent<Props> {
 					...internalStyle,
 					...defaultStyle,
 					...{
+						transition: 'background 200ms, border-color 200ms, color 200ms',
+						borderRadius: 5,
+						margin: 3,
+						width: 'calc(100% - 6px)',
+						height: 'calc(100% - 6px)',
 						backgroundColor: d.isDisabled
 							? config.replaceAlpha(
 									styles.colors.black,
@@ -514,7 +548,7 @@ export default class Dropdown extends TrackedComponent<Props> {
 							: isFocused
 							? config.replaceAlpha(
 									styles.colors.black,
-									global.nightMode ? 0.05 : 0.1
+									global.nightMode ? 0.05 : 0.075
 							  )
 							: undefined,
 						color: isSelected
@@ -525,12 +559,12 @@ export default class Dropdown extends TrackedComponent<Props> {
 									global.nightMode ? 0.25 : 0.5
 							  )
 							: undefined,
-						fontWeight: isSelected ? 700 : 400,
+						fontWeight: isSelected ? 500 : 400,
 						opacity: d.isDisabled ? 0.75 : undefined,
 						cursor: d.isDisabled ? 'default' : 'pointer',
 
 						':active': {
-							fontWeight: !d.isDisabled ? 700 : undefined,
+							fontWeight: !d.isDisabled ? 500 : undefined,
 							backgroundColor: !d.isDisabled
 								? styles.colors.mainVeryLight
 								: undefined,
@@ -569,6 +603,13 @@ export default class Dropdown extends TrackedComponent<Props> {
 					return {
 						maxWidth: 0,
 						overflow: 'hidden',
+					}
+				},
+				menuList: (internalStyles): CSSObjectWithLabel => {
+					return {
+						...internalStyles,
+						paddingBottom: 0,
+						paddingTop: 0,
 					}
 				},
 				menu: (internalStyles): CSSObjectWithLabel => {
@@ -662,9 +703,7 @@ export default class Dropdown extends TrackedComponent<Props> {
 												style={{
 													marginLeft: 7.5,
 
-													fontSize: styles.invalidFontSize,
-													fontWeight: styles.invalidFontWeight,
-													color: styles.colors.red,
+													...invalidTextStyle,
 												}}
 											>
 												{invalid}
@@ -739,7 +778,9 @@ export default class Dropdown extends TrackedComponent<Props> {
 										this.props.placeholder || config.text('common.select')
 									}
 									value={
-										this.state.loadedOptions
+										this.props.uncontrolled
+											? undefined
+											: this.state.loadedOptions
 											? this.state.loadedOptions.filter(
 													(option) => option.value === value
 											  )
@@ -806,17 +847,11 @@ export default class Dropdown extends TrackedComponent<Props> {
 											invalid.length > 0 && (
 												<div style={{ minWidth: 7.5 }}></div>
 											)}
-										{!this.props.isDisabled && invalid && invalid.length > 0 && (
-											<p
-												style={{
-													fontSize: styles.invalidFontSize,
-													fontWeight: styles.invalidFontWeight,
-													color: styles.colors.red,
-												}}
-											>
-												{invalid}
-											</p>
-										)}
+										{!this.props.isDisabled &&
+											invalid &&
+											invalid.length > 0 && (
+												<p style={invalidTextStyle}>{invalid}</p>
+											)}
 									</div>
 								)}
 							</div>
@@ -826,15 +861,7 @@ export default class Dropdown extends TrackedComponent<Props> {
 										<div style={{ minHeight: 5 }}></div>
 									)}
 									{!this.props.isDisabled && invalid && invalid.length > 0 && (
-										<p
-											style={{
-												fontSize: styles.invalidFontSize,
-												fontWeight: styles.invalidFontWeight,
-												color: styles.colors.red,
-											}}
-										>
-											{invalid}
-										</p>
+										<p style={invalidTextStyle}>{invalid}</p>
 									)}
 								</div>
 							)}

@@ -656,6 +656,14 @@ export default class Layout extends QueryParams<
 																	label: 'Delete',
 																	style: {
 																		color: styles.colors.red,
+																		':hover': {
+																			background:
+																				config.replaceAlpha(
+																					styles.colors
+																						.red,
+																					0.15
+																				),
+																		},
 																	},
 																},
 															]}
@@ -839,9 +847,9 @@ export default class Layout extends QueryParams<
 									}
 								>
 									<Sticky
-										topOffset={desktop ? -20 : -80}
-										bottomOffset={desktop ? 20 : 80}
-										stickyStyle={{ marginTop: desktop ? 20 : 80 }}
+										topOffset={desktop ? -80 : -80}
+										bottomOffset={desktop ? 80 : 80}
+										stickyStyle={{ marginTop: desktop ? 80 : 80 }}
 										boundaryElement='.sticky_boundary'
 									>
 										<div

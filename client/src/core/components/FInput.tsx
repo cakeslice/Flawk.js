@@ -17,6 +17,13 @@ import MediaQuery from 'react-responsive'
 import TextareaAutosize, { TextareaAutosizeProps } from 'react-textarea-autosize'
 import './FInput.scss'
 
+const invalidTextStyle = {
+	letterSpacing: 0,
+	fontSize: styles.invalidFontSize,
+	fontWeight: styles.invalidFontWeight,
+	color: styles.colors.red,
+}
+
 const Datetime = React.lazy(() => import('react-datetime'))
 const InputMask = React.lazy(() => import('react-input-mask'))
 
@@ -35,7 +42,7 @@ const MaskedInput = (
 ) => (
 	<Suspense fallback={<></>}>
 		<InputMask
-			maskChar={'_'}
+			maskChar={'-'}
 			formatChars={props.formatChars}
 			mask={props.mask}
 			placeholder={props.placeholder}
@@ -632,9 +639,8 @@ export default class FInput extends TrackedComponent<Props> {
 											<span
 												style={{
 													marginLeft: 7.5,
-													fontSize: styles.invalidFontSize,
-													fontWeight: styles.invalidFontWeight,
-													color: styles.colors.red,
+
+													...invalidTextStyle,
 												}}
 											>
 												{invalid}
@@ -732,17 +738,11 @@ export default class FInput extends TrackedComponent<Props> {
 											invalid.length > 0 && (
 												<div style={{ minWidth: 7.5 }}></div>
 											)}
-										{!this.props.isDisabled && invalid && invalid.length > 0 && (
-											<p
-												style={{
-													fontSize: styles.invalidFontSize,
-													fontWeight: styles.invalidFontWeight,
-													color: styles.colors.red,
-												}}
-											>
-												{invalid}
-											</p>
-										)}
+										{!this.props.isDisabled &&
+											invalid &&
+											invalid.length > 0 && (
+												<p style={invalidTextStyle}>{invalid}</p>
+											)}
 									</div>
 								)}
 							</div>
@@ -752,15 +752,7 @@ export default class FInput extends TrackedComponent<Props> {
 										<div style={{ minHeight: 5 }}></div>
 									)}
 									{!this.props.isDisabled && invalid && invalid.length > 0 && (
-										<p
-											style={{
-												fontSize: styles.invalidFontSize,
-												fontWeight: styles.invalidFontWeight,
-												color: styles.colors.red,
-											}}
-										>
-											{invalid}
-										</p>
+										<p style={invalidTextStyle}>{invalid}</p>
 									)}
 								</div>
 							)}

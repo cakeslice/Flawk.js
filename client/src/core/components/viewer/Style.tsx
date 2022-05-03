@@ -427,6 +427,74 @@ export default class Style extends Component<Props> {
 										<tag>Muted</tag>
 									</div>
 								</div>
+								<sp />
+								<div
+									className='flex-col'
+									{...css({
+										...styles.card,
+										borderRadius: 5,
+										transition: 'top 250ms, box-shadow 250ms',
+										top: 0,
+										boxShadow: styles.card.boxShadow,
+										position: 'relative',
+										':hover': {
+											boxShadow: styles.strongerShadow,
+											top: -5,
+										},
+										overflow: 'hidden',
+										padding: 0,
+										width: desktop ? 350 : '100%',
+										height: 350,
+									})}
+								>
+									<div
+										style={{
+											height: '40%',
+											background:
+												// eslint-disable-next-line
+												'url(https://images.pexels.com/photos/11946504/pexels-photo-11946504.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260)',
+											backgroundSize: 'cover',
+										}}
+									/>
+									<div
+										className='grow flex-col justify-between'
+										style={{ padding: 18 }}
+									>
+										<div>
+											<div className='flex justify-between'>
+												<h5>Amazing Pancakes</h5>
+												<hsp />
+												<tag
+													style={{
+														padding: '4px 10px',
+														color: styles.colors.main,
+														opacity: 1,
+														borderRadius: 10,
+														lineHeight: 'normal',
+														fontSize: 12,
+														background: styles.colors.mainVeryLight,
+													}}
+												>
+													PROMO
+												</tag>
+											</div>
+											<hsp />
+											<p style={{ opacity: 0.9 }}>
+												Finally, the Best Pancakes Ever. They are fluffy,
+												crispy on the edges, tender in the middle, and
+												completely stackable. The search is over!
+											</p>
+										</div>
+										<hsp />
+										<div className='flex flex-wrap'>
+											<FButton style={{ flexGrow: 1 }}>Wishlist</FButton>
+											<hsp />
+											<FButton appearance='primary' style={{ flexGrow: 1 }}>
+												Buy now
+											</FButton>
+										</div>
+									</div>
+								</div>
 							</Section>
 
 							<Section title='Tooltip' tags={['<Tooltip/>']}>

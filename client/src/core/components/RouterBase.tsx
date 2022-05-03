@@ -60,26 +60,16 @@ function addFlagFunction(
 		customComponent?: React.ReactNode | ((props: ToastContentProps) => React.ReactNode)
 		playSound?: boolean
 		autoClose?: boolean
-		closeButton?: boolean
 		closeOnClick?: boolean
 		closeAfter?: number
 		pauseOnFocusLoss?: boolean
 	}
 ) {
-	const {
-		customComponent,
-		playSound,
-		autoClose,
-		closeAfter,
-		closeOnClick,
-		closeButton,
-		pauseOnFocusLoss,
-	} = {
+	const { customComponent, playSound, autoClose, closeAfter, closeOnClick, pauseOnFocusLoss } = {
 		customComponent: undefined,
 		playSound: false,
 		autoClose: false,
 		closeOnClick: false,
-		closeButton: true,
 		pauseOnFocusLoss: true,
 		...options,
 	}
@@ -100,24 +90,39 @@ function addFlagFunction(
 					</div>
 				)) || (
 					<div style={{ padding: 5 }}>
-						<b
-							style={{
-								fontFamily: styles.font,
-								fontSize: styles.defaultFontSize,
-								color:
-									type === 'success'
-										? styles.colors.green
-										: type === 'error'
-										? styles.colors.red
-										: type === 'warning'
-										? styles.colors.orange
-										: type === 'info'
-										? styles.colors.main
-										: styles.colors.black,
-							}}
-						>
-							{title}
-						</b>
+						<div className='flex items-center justify-between'>
+							<b
+								style={{
+									fontFamily: styles.font,
+									fontSize: styles.defaultFontSize,
+									color:
+										type === 'success'
+											? styles.colors.green
+											: type === 'error'
+											? styles.colors.red
+											: type === 'warning'
+											? styles.colors.orange
+											: type === 'info'
+											? styles.colors.main
+											: styles.colors.black,
+								}}
+							>
+								{title}
+							</b>
+							<div
+								style={{
+									height: 17,
+									width: 17,
+									display: 'flex',
+									alignItems: 'center',
+									opacity: 0.5,
+									cursor: 'pointer',
+								}}
+								onClick={props.closeToast}
+							>
+								{close(styles.colors.black)}
+							</div>
+						</div>
 						{description && <div style={{ minHeight: 10 }} />}
 						{description && (
 							<div
@@ -130,7 +135,6 @@ function addFlagFunction(
 								{_isFunction(description) ? description(props) : description}
 							</div>
 						)}
-						{(autoClose || closeAfter) && <div style={{ minHeight: 3 }} />}
 					</div>
 				)
 			)
@@ -146,24 +150,7 @@ function addFlagFunction(
 			pauseOnHover: true,
 			pauseOnFocusLoss: pauseOnFocusLoss,
 			draggable: false,
-			closeButton: closeButton
-				? ({ closeToast }) => (
-						<div
-							style={{
-								marginTop: 3,
-								height: 17,
-								width: 17,
-								display: 'flex',
-								alignItems: 'center',
-								opacity: 0.5,
-								cursor: 'pointer',
-							}}
-							onClick={closeToast}
-						>
-							{close(styles.colors.black)}
-						</div>
-				  )
-				: false,
+			closeButton: false,
 			transition: Bounce,
 		}
 	)

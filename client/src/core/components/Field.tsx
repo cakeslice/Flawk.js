@@ -68,6 +68,12 @@ export default function Field(
 						error = validationError || config.text('invalid.password')
 					}
 				}
+				// @ts-ignore
+				else if (props.timeInput) {
+					if ((value as string).includes('-')) {
+						error = validationError || '*'
+					}
+				}
 			}
 		}
 

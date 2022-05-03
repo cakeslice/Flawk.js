@@ -179,7 +179,12 @@ class DashboardClass extends TrackedComponent<
 			background: config.replaceAlpha(styles.colors.black, global.nightMode ? 0.075 : 0.075),
 		}
 		const defaultPlaceholder = (
-			<div>
+			<div
+				style={{
+					opacity: 0.25,
+					animation: 'heartbeat 1s infinite alternate',
+				}}
+			>
 				<div
 					style={{
 						...placeholderStyle,

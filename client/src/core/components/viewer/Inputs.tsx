@@ -335,6 +335,7 @@ export default class Inputs extends Component {
 							<div style={{ ...styles.card, maxWidth: 783 }}>
 								<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
 									<Dropdown
+										uncontrolled
 										style={{ flexGrow: 1 }}
 										isSearchable
 										label={'Full width'}
@@ -342,6 +343,7 @@ export default class Inputs extends Component {
 										options={dropdownOptions}
 									/>
 									<Dropdown
+										uncontrolled
 										isSearchable
 										loadOptions={async (input, callback) => {
 											const q = {
@@ -377,6 +379,7 @@ export default class Inputs extends Component {
 								<sp />
 								<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
 									<Dropdown
+										uncontrolled
 										name='dropdown'
 										label={'Invalid Label'}
 										erasable
@@ -386,6 +389,7 @@ export default class Inputs extends Component {
 										isSearchable
 									/>
 									<Dropdown
+										uncontrolled
 										emptyLabel
 										name='dropdown'
 										defaultValue={'accept'}
@@ -398,6 +402,7 @@ export default class Inputs extends Component {
 									/>
 
 									<Dropdown
+										uncontrolled
 										emptyLabel
 										name='dropdown'
 										menuPlacement='top'
@@ -418,13 +423,36 @@ export default class Inputs extends Component {
 											style={{ menu: { left: 0 } }}
 											options={[
 												{
-													value: 'edit',
-													label: 'Edit',
+													label: (
+														<div className='flex items-center'>
+															{searchIcon()}
+															<hsp />
+															Search
+														</div>
+													),
+													value: 'search',
 												},
 												{
-													value: 'delete',
-													label: 'Delete',
-													style: { color: styles.colors.red },
+													label: 'Danger zone',
+													options: [
+														{
+															value: 'edit',
+															label: 'Edit',
+														},
+														{
+															value: 'delete',
+															label: 'Delete',
+															style: {
+																color: styles.colors.red,
+																':hover': {
+																	background: config.replaceAlpha(
+																		styles.colors.red,
+																		0.15
+																	),
+																},
+															},
+														},
+													],
 												},
 											]}
 										/>
@@ -436,6 +464,7 @@ export default class Inputs extends Component {
 										options={dropdownOptions}
 									/>
 									<Dropdown
+										uncontrolled
 										dropdownIndicator={
 											<div className='flex items-center justify-center'>
 												<img style={{ height: 20 }} src={logo}></img>
@@ -462,6 +491,7 @@ export default class Inputs extends Component {
 									<div style={appearanceStyle}>
 										<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
 											<Dropdown
+												uncontrolled
 												label={'Label'}
 												appearance={this.state.inputAppearance}
 												placeholder={'Default'}
@@ -469,6 +499,7 @@ export default class Inputs extends Component {
 												isSearchable
 											/>
 											<Dropdown
+												uncontrolled
 												label={'Label'}
 												appearance={this.state.inputAppearance}
 												eventOverride='hover'
@@ -477,6 +508,7 @@ export default class Inputs extends Component {
 												isSearchable
 											/>
 											<Dropdown
+												uncontrolled
 												label={'Label'}
 												appearance={this.state.inputAppearance}
 												eventOverride='focus'
@@ -485,6 +517,7 @@ export default class Inputs extends Component {
 												isSearchable
 											/>
 											<Dropdown
+												uncontrolled
 												label={'Label'}
 												isDisabled
 												appearance={this.state.inputAppearance}
@@ -501,6 +534,7 @@ export default class Inputs extends Component {
 									<div style={appearanceStyle}>
 										<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
 											<Dropdown
+												uncontrolled
 												label={'Label'}
 												appearance={this.state.inputAppearance}
 												name='input'
@@ -510,6 +544,7 @@ export default class Inputs extends Component {
 												isSearchable
 											/>
 											<Dropdown
+												uncontrolled
 												label={'Label'}
 												appearance={this.state.inputAppearance}
 												name='input'
@@ -520,6 +555,7 @@ export default class Inputs extends Component {
 												isSearchable
 											/>
 											<Dropdown
+												uncontrolled
 												label={'Label'}
 												appearance={this.state.inputAppearance}
 												name='input'
@@ -545,6 +581,8 @@ export default class Inputs extends Component {
 											phone?: string
 											firstName?: string
 											lastName?: string
+											birthday: string
+											preferred_time: string
 											checkbox: boolean
 										}
 									}
@@ -558,7 +596,9 @@ export default class Inputs extends Component {
 											personal: {
 												firstName: values.firstName,
 												lastName: values.lastName,
+												birthday: values.birthday,
 											},
+											preferred_time: values.preferred_time,
 										}
 										await config.sleep(2000)
 										alert(JSON.stringify(data))
@@ -611,7 +651,7 @@ export default class Inputs extends Component {
 														component={FInput}
 														required
 														invalidType='label'
-														invalidMessage='Min. 12 characters'
+														invalidMessage='Min. 12 char'
 														validate={(value) =>
 															(value as string).length >= 12
 														}
@@ -626,7 +666,6 @@ export default class Inputs extends Component {
 														name='dropdown'
 														invalidType='label'
 														isSearchable={true}
-														placeholder={'Value'}
 														erasable
 														label='Permission'
 														options={[

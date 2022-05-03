@@ -15,6 +15,13 @@ import { css } from 'glamor'
 import React from 'react'
 import MediaQuery from 'react-responsive'
 
+const invalidTextStyle = {
+	letterSpacing: 0,
+	fontSize: styles.invalidFontSize,
+	fontWeight: styles.invalidFontWeight,
+	color: styles.colors.red,
+}
+
 const scrollToErrors = (errors: FormikErrors<unknown>, thisElement: HTMLElement | null) => {
 	const errorKeys = Object.keys(errors)
 	if (errorKeys.length > 0 && thisElement) {
@@ -575,17 +582,7 @@ export default class FButton extends TrackedComponent<Props> {
 							{name && !this.props.noInvalidLabel && (
 								<div style={{ minHeight: 26 }}>
 									{invalid && <div style={{ minHeight: 5 }}></div>}
-									{invalid && (
-										<p
-											style={{
-												fontSize: styles.invalidFontSize,
-												fontWeight: styles.invalidFontWeight,
-												color: styles.colors.red,
-											}}
-										>
-											{invalid}
-										</p>
-									)}
+									{invalid && <p style={invalidTextStyle}>{invalid}</p>}
 								</div>
 							)}
 						</div>
