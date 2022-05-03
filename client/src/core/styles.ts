@@ -116,7 +116,6 @@ const styles: Styles & { colors: Colors; gradients: Gradients } = {
 		whiteSpace: 'nowrap',
 	},
 	mediumShadow: '0 5px 20px 0 rgba(0, 0, 0, 0.05)',
-	shadowFilter: '2px 6px 8px rgba(0, 0, 0, 0.3)',
 	strongerShadow:
 		'0 20px 32px -8px rgba(0, 0, 0, 0.1), 0 4px 8px 0 rgba(0, 0, 0, 0.05), 0 6px 20px 0 rgba(0, 0, 0, 0.05)',
 
@@ -244,7 +243,7 @@ const styles: Styles & { colors: Colors; gradients: Gradients } = {
 					borderColor: config.replaceAlpha(_white, 0.5),
 					boxShadow: '0 0 0 2px ' + config.replaceAlpha(_white, 0.25),
 				},
-				borderColor: _white,
+				borderColor: config.replaceAlpha(_white, 0.75),
 			},
 		])
 	},
@@ -394,7 +393,6 @@ export type Styles = {
 
 	textEllipsis: React.CSSProperties
 	mediumShadow: React.CSSProperties['boxShadow']
-	shadowFilter: React.CSSProperties['boxShadow']
 	strongerShadow: React.CSSProperties['boxShadow']
 
 	// Dropzone

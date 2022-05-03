@@ -119,6 +119,7 @@ export default class Layout extends QueryParams<
 	confirmModal() {
 		return (
 			<Modal
+				closeOnOutsideClick
 				name='confirmModal'
 				parent={this}
 				title={
@@ -151,6 +152,7 @@ export default class Layout extends QueryParams<
 	exampleModal() {
 		return (
 			<Modal
+				closeOnOutsideClick
 				name='exampleModal'
 				parent={this}
 				title={'Title'}
@@ -194,9 +196,11 @@ export default class Layout extends QueryParams<
 	bigModal() {
 		return (
 			<Modal
+				closeOnOutsideClick
 				name='bigModal'
 				parent={this}
-				title={''}
+				big
+				title={'Register'}
 				content={(close, Content, Buttons, Parent) => (
 					<Formik
 						enableReinitialize
@@ -707,7 +711,7 @@ export default class Layout extends QueryParams<
 							<Section title='Modal' tags={['<Modal/>']}>
 								<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
 									<FButton onClick={() => this.setState({ exampleModal: true })}>
-										Open
+										Default
 									</FButton>
 									<FButton
 										appearance='delete'
@@ -716,7 +720,77 @@ export default class Layout extends QueryParams<
 										Delete
 									</FButton>
 									<FButton onClick={() => this.setState({ bigModal: true })}>
-										Submit
+										Big
+									</FButton>
+								</div>
+							</Section>
+							<Section title='Toast' tags={['global.addFlag()']}>
+								<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+									<FButton
+										onClick={() =>
+											global.addFlag(
+												'New message',
+												(props) => (
+													<div>
+														<div>
+															<b>Chris:</b> Have you heard about the
+															new Tesla?
+														</div>
+														<sp />
+														<div className='flex justify-end'>
+															<FButton onClick={props.closeToast}>
+																Reply
+															</FButton>
+														</div>
+													</div>
+												),
+												'info',
+												{
+													playSound: true,
+												}
+											)
+										}
+									>
+										Info
+									</FButton>
+									<FButton
+										onClick={() =>
+											global.addFlag(
+												'Your changes were saved',
+												undefined,
+												'success',
+												{
+													closeAfter: 2000,
+													playSound: true,
+												}
+											)
+										}
+									>
+										Success
+									</FButton>
+									<FButton
+										onClick={() =>
+											global.addFlag(
+												'Warning',
+												'There is out-of-sync data you need to review to continue',
+												'warning',
+												{
+													closeAfter: 5000,
+													playSound: true,
+												}
+											)
+										}
+									>
+										Warning
+									</FButton>
+									<FButton
+										onClick={() =>
+											global.addFlag('Error', 'File upload failed', 'error', {
+												playSound: true,
+											})
+										}
+									>
+										Error
 									</FButton>
 								</div>
 							</Section>

@@ -8,6 +8,7 @@
 import Loading from 'core/components/Loading'
 import config from 'core/config'
 import React from 'react'
+import MediaQuery from 'react-responsive'
 import Unity, { UnityContext } from 'react-unity-webgl'
 
 type Props = {
@@ -141,42 +142,54 @@ export default class UnityComponent extends React.Component<Props> {
 
 	render() {
 		return (
-			<>
-				{!this.state.ready && (
-					<div>
-						<Loading />
-						<sp />
-						<div style={{ minHeight: 20, opacity: 0.75, textAlign: 'center' }}>
-							{this.state.progress !== 0 &&
-								(this.state.progress * 100).toFixed(0) + '%'}
-						</div>
-					</div>
-				)}
-				{this.unityContext && (
-					<Unity
-						tabIndex={0}
-						devicePixelRatio={
-							this.props.nativeResolution
-								? undefined
-								: this.props.devicePixelRatio || 1
-						}
-						matchWebGLToCanvasSize={true}
-						style={{
-							pointerEvents: this.props.pointerEvents ? 'auto' : 'none',
-							...(!this.state.ready && {
-								display: 'none',
-							}),
-							...(!this.state.visible && {
-								opacity: 0.0,
-							}),
-							transition: 'opacity 0.25s ease-in-out',
-							width: '100%',
-							height: '100%',
-						}}
-						unityContext={this.unityContext}
-					/>
-				)}
-			</>
+			<MediaQuery minWidth={config.mobileWidthTrigger}>
+				{(desktop) => {
+					return (
+						<>
+							{!this.state.ready && (
+								<div>
+									<Loading />
+									<sp />
+									<div
+										style={{
+											minHeight: 20,
+											opacity: 0.75,
+											textAlign: 'center',
+										}}
+									>
+										{this.state.progress !== 0 &&
+											(this.state.progress * 100).toFixed(0) + '%'}
+									</div>
+								</div>
+							)}
+							{this.unityContext && (
+								<Unity
+									tabIndex={0}
+									devicePixelRatio={
+										this.props.nativeResolution
+											? undefined
+											: this.props.devicePixelRatio || (desktop ? 1.25 : 1.5)
+									}
+									matchWebGLToCanvasSize={true}
+									style={{
+										pointerEvents: this.props.pointerEvents ? 'auto' : 'none',
+										...(!this.state.ready && {
+											display: 'none',
+										}),
+										...(!this.state.visible && {
+											opacity: 0.0,
+										}),
+										transition: 'opacity 0.25s ease-in-out',
+										width: '100%',
+										height: '100%',
+									}}
+									unityContext={this.unityContext}
+								/>
+							)}
+						</>
+					)
+				}}
+			</MediaQuery>
 		)
 	}
 }

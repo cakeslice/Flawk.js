@@ -7,7 +7,9 @@
 
 import logo from 'core/assets/images/logo.svg'
 import Animated from 'core/components/Animated'
+import Avatar from 'core/components/Avatar'
 import FButton from 'core/components/FButton'
+import Loading from 'core/components/Loading'
 import Tooltip from 'core/components/Tooltip'
 import config from 'core/config'
 import styles from 'core/styles'
@@ -254,15 +256,6 @@ export default class Style extends Component<Props> {
 								</div>
 							</Section>
 
-							<Section title='CSS Modules'>
-								<div className={cssModule.class} style={{ ...styles.card }}>
-									<h1>
-										{'Hello. '}
-										<tag>h1</tag>
-									</h1>
-								</div>
-							</Section>
-
 							<Section title='Color' tags={['styles.colors']}>
 								<div className='wrapMarginBigTopLeft flex flex-wrap justify-start'>
 									<div>
@@ -386,6 +379,74 @@ export default class Style extends Component<Props> {
 							</Section>
 							<Section title='Card' tags={['styles.card', 'styles.outlineCard']}>
 								<div
+									className='flex-col'
+									{...css({
+										...styles.card,
+										borderRadius: 5,
+										transition: 'top 250ms, box-shadow 250ms',
+										top: 0,
+										boxShadow: styles.card.boxShadow,
+										position: 'relative',
+										':hover': {
+											boxShadow: styles.strongerShadow,
+											top: -5,
+										},
+										overflow: 'hidden',
+										padding: 0,
+										width: desktop ? 350 : '100%',
+										height: 350,
+									})}
+								>
+									<div
+										style={{
+											height: '40%',
+											background:
+												// eslint-disable-next-line
+												'url(https://images.pexels.com/photos/11946504/pexels-photo-11946504.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260)',
+											backgroundSize: 'cover',
+										}}
+									/>
+									<div
+										className='grow flex-col justify-between'
+										style={{ padding: 18 }}
+									>
+										<div>
+											<div className='flex justify-between'>
+												<h5>Amazing Pancakes</h5>
+												<hsp />
+												<tag
+													style={{
+														padding: '4px 10px',
+														color: styles.colors.main,
+														opacity: 1,
+														borderRadius: 10,
+														lineHeight: 'normal',
+														fontSize: 12,
+														background: styles.colors.mainVeryLight,
+													}}
+												>
+													PROMO
+												</tag>
+											</div>
+											<hsp />
+											<p style={{ opacity: 0.9 }}>
+												Finally, the Best Pancakes Ever. They are fluffy,
+												crispy on the edges, tender in the middle, and
+												completely stackable. The search is over!
+											</p>
+										</div>
+										<hsp />
+										<div className='flex flex-wrap'>
+											<FButton style={{ flexGrow: 1 }}>Wishlist</FButton>
+											<hsp />
+											<FButton appearance='primary' style={{ flexGrow: 1 }}>
+												Buy now
+											</FButton>
+										</div>
+									</div>
+								</div>
+								<sp />
+								<div
 									className={
 										desktop
 											? 'wrapMarginTopLeft flex flex-wrap justify-start'
@@ -451,72 +512,24 @@ export default class Style extends Component<Props> {
 										<tag>Muted</tag>
 									</div>
 								</div>
-								<sp />
-								<div
-									className='flex-col'
-									{...css({
-										...styles.card,
-										borderRadius: 5,
-										transition: 'top 250ms, box-shadow 250ms',
-										top: 0,
-										boxShadow: styles.card.boxShadow,
-										position: 'relative',
-										':hover': {
-											boxShadow: styles.strongerShadow,
-											top: -5,
-										},
-										overflow: 'hidden',
-										padding: 0,
-										width: desktop ? 350 : '100%',
-										height: 350,
-									})}
-								>
-									<div
-										style={{
-											height: '40%',
-											background:
-												// eslint-disable-next-line
-												'url(https://images.pexels.com/photos/11946504/pexels-photo-11946504.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260)',
-											backgroundSize: 'cover',
-										}}
-									/>
-									<div
-										className='grow flex-col justify-between'
-										style={{ padding: 18 }}
-									>
-										<div>
-											<div className='flex justify-between'>
-												<h5>Amazing Pancakes</h5>
-												<hsp />
-												<tag
-													style={{
-														padding: '4px 10px',
-														color: styles.colors.main,
-														opacity: 1,
-														borderRadius: 10,
-														lineHeight: 'normal',
-														fontSize: 12,
-														background: styles.colors.mainVeryLight,
-													}}
-												>
-													PROMO
-												</tag>
-											</div>
-											<hsp />
-											<p style={{ opacity: 0.9 }}>
-												Finally, the Best Pancakes Ever. They are fluffy,
-												crispy on the edges, tender in the middle, and
-												completely stackable. The search is over!
-											</p>
-										</div>
-										<hsp />
-										<div className='flex flex-wrap'>
-											<FButton style={{ flexGrow: 1 }}>Wishlist</FButton>
-											<hsp />
-											<FButton appearance='primary' style={{ flexGrow: 1 }}>
-												Buy now
-											</FButton>
-										</div>
+							</Section>
+
+							<Section title='Avatar' tags={['<Avatar/>']}>
+								<div style={{ ...styles.card, padding: 0 }}>
+									<div className='wrapMarginBig flex flex-wrap justify-start'>
+										<Avatar name='José Guerreiro' />
+										<Avatar isOnline />
+										<Avatar />
+										<Avatar style={{ width: 40, height: 40 }} />
+									</div>
+								</div>
+							</Section>
+							<Section title='Loading' tags={['<Loading/>']}>
+								<div style={{ ...styles.card, padding: 0 }}>
+									<div className='wrapMarginBig flex flex-wrap justify-start'>
+										<Loading size={28 * 3} />
+										<Loading />
+										<Loading size={18.5} />
 									</div>
 								</div>
 							</Section>
@@ -1118,6 +1131,15 @@ export default class Style extends Component<Props> {
 									>
 										<tag>Offscreen</tag>
 									</Animated>
+								</div>
+							</Section>
+
+							<Section title='CSS Modules'>
+								<div className={cssModule.class} style={{ ...styles.card }}>
+									<h1>
+										{'Hello. '}
+										<tag>h1</tag>
+									</h1>
 								</div>
 							</Section>
 						</div>

@@ -15,6 +15,7 @@ import React, { Component } from 'react'
 import FocusLock from 'react-focus-lock'
 import { Portal } from 'react-portal'
 import MediaQuery from 'react-responsive'
+import OutsideAlerter from './OutsideAlerter'
 
 type HeaderStyle = React.CSSProperties & {
 	line?: boolean
@@ -35,6 +36,8 @@ type Props = {
 	// Props to set modal state on the parent component on close automatically
 	name?: string
 	//
+	big?: boolean
+	closeOnOutsideClick?: boolean
 	style?: React.CSSProperties
 	headerStyle?: HeaderStyle
 	contentStyle?: React.CSSProperties
@@ -232,108 +235,146 @@ export default class Modal extends TrackedComponent<Props> {
 	render() {
 		const modalPadding = styles.modalPadding || 20
 
+		const isOpen =
+			this.props.parent && this.props.name
+				? // @ts-ignore
+				  this.props.parent.state[this.props.name] === true
+					? true
+					: false
+				: this.props.visible !== undefined
+				? this.props.visible
+				: undefined
+
+		const big = this.props.big
+
 		return (
 			<Portal node={document.getElementById('portals')}>
-				<Animated
-					trackedName='Modal'
-					className='scrollTarget'
-					controlled={
-						this.props.parent && this.props.name
-							? // @ts-ignore
-							  this.props.parent.state[this.props.name] === true
-								? true
-								: false
-							: this.props.visible !== undefined
-							? this.props.visible
-							: undefined
-					}
+				<div
 					style={{
-						backdropFilter: 'blur(2px)',
 						position: 'fixed',
-						top: 0,
 						left: 0,
+						top: 0,
 						right: 0,
 						bottom: 0,
 						zIndex: 35,
-						background:
-							styles.modalBackground ||
-							config.replaceAlpha(
-								global.nightMode ? 'rgba(40,40,40,1)' : 'rgba(180,180,180,1)',
-								global.nightMode ? 0.5 : 0.25
-							),
+						transition: 'background 150ms',
+						...(isOpen === true
+							? {
+									backdropFilter: 'blur(2px)',
+									background:
+										styles.modalBackground ||
+										config.replaceAlpha(
+											global.nightMode
+												? 'rgba(40,40,40,1)'
+												: 'rgba(180,180,180,1)',
+											global.nightMode ? 0.5 : 0.25
+										),
+							  }
+							: {
+									pointerEvents: 'none',
+							  }),
 					}}
-					animateOffscreen
-					effects={['fade']}
-					duration={0.25}
 				>
-					<MediaQuery minWidth={config.mobileWidthTrigger}>
-						{(desktop) => (
-							<FocusLock>
-								<div
-									style={{
-										display: 'flex',
-										justifyContent: 'center',
-										alignItems: 'center',
-									}}
-								>
-									<div
-										className='flex justify-center items-center'
-										style={{
-											padding: 10,
-											paddingBottom: 30,
-											paddingTop: 30,
-											position: 'fixed',
-											top: 0,
-											bottom: 0,
-											left: 0,
-											right: 0,
-										}}
-									>
+					<Animated
+						trackedName='Modal'
+						className='scrollTarget'
+						controlled={isOpen}
+						animateOffscreen
+						style={{
+							width: '100%',
+							height: '100%',
+						}}
+						distance={25}
+						effects={['fade', big ? 'left' : 'up']}
+						duration={0.25}
+					>
+						<MediaQuery minWidth={config.mobileWidthTrigger}>
+							{(desktop) => {
+								return (
+									<FocusLock>
 										<div
 											style={{
-												...styles.card,
-												...{
-													width: styles.modalWidth || 500,
-													boxShadow: styles.strongerShadow,
-													margin: 0,
-													borderRadius: 5,
-													minHeight: 20,
-													display: 'flex',
-													flexDirection: 'column',
-													justifyContent: 'space-between',
-													padding: 0,
-													maxWidth: '100%',
-													maxHeight: '100%',
-													...(styles.modalCard && styles.modalCard()),
-													...this.props.style,
-												},
+												display: 'flex',
+												justifyContent: 'center',
+												alignItems: 'center',
 											}}
 										>
-											{this.props.title !== undefined && (
-												<ModalHeader
-													modalPadding={modalPadding}
-													headerStyle={this.props.headerStyle}
-													title={this.props.title}
-													onClose={this.onClose}
-												/>
-											)}
+											<div
+												className={
+													big
+														? 'flex'
+														: 'flex justify-center items-center'
+												}
+												style={{
+													...(!big && {
+														padding: 10,
+														paddingBottom: 30,
+														paddingTop: 30,
+													}),
+													position: 'fixed',
+													top: 0,
+													bottom: 0,
+													left: 0,
+													right: 0,
+												}}
+											>
+												<OutsideAlerter
+													trackedName='MobileDrawer'
+													clickedOutside={() => {
+														if (this.props.closeOnOutsideClick)
+															this.onClose()
+													}}
+													style={{ display: 'contents' }}
+												>
+													<div
+														style={{
+															...styles.card,
+															...{
+																borderRadius: big ? 0 : 5,
+																width: styles.modalWidth || 500,
+																boxShadow: styles.mediumShadow,
+																margin: 0,
+																minHeight: 20,
+																display: 'flex',
+																flexDirection: 'column',
+																justifyContent: 'space-between',
+																padding: 0,
+																maxWidth: '100%',
+																maxHeight: '100%',
+																...(styles.modalCard &&
+																	styles.modalCard()),
+																...this.props.style,
+															},
+														}}
+													>
+														{this.props.title !== undefined && (
+															<ModalHeader
+																modalPadding={modalPadding}
+																headerStyle={this.props.headerStyle}
+																title={this.props.title}
+																onClose={this.onClose}
+															/>
+														)}
 
-											{this.props.content
-												? this.props.content(
-														this.onClose,
-														this.renderContent,
-														this.renderButtons,
-														this.renderParent,
-														this.renderHeader
-												  )
-												: undefined}
+														{this.props.content
+															? this.props.content(
+																	this.onClose,
+																	this.renderContent,
+																	this.renderButtons,
+																	this.renderParent,
+																	this.renderHeader
+															  )
+															: undefined}
+													</div>
+												</OutsideAlerter>
+											</div>
 										</div>
-									</div>
-								</div>
-							</FocusLock>
-						)}
-					</MediaQuery>
-				</Animated>
+									</FocusLock>
+								)
+							}}
+						</MediaQuery>
+					</Animated>
+				</div>
 			</Portal>
 		)
 	}

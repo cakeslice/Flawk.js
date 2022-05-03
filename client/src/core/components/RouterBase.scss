@@ -4,7 +4,7 @@
 	padding: 4px 8px;
 	background: #1e1e1e;
 	border-radius: 6px;
-	border-color: rgba(255, 255, 255, 0.15);
+	border-color: rgba(255, 255, 255, 0.05);
 	border-width: 1px;
 	border-style: solid;
 	box-shadow: 0 20px 32px -8px rgba(0, 0, 0, 0.1), 0 4px 8px 0 rgba(0, 0, 0, 0.025),
@@ -15,7 +15,7 @@
 	padding: 4px 8px;
 	background: #fff;
 	border-radius: 6px;
-	border-color: rgba(0, 0, 0, 0.15);
+	border-color: rgba(0, 0, 0, 0.05);
 	border-width: 1px;
 	border-style: solid;
 	box-shadow: 0 20px 32px -8px rgba(0, 0, 0, 0.1), 0 4px 8px 0 rgba(0, 0, 0, 0.025),
@@ -60,7 +60,6 @@
 @media only screen and (max-width: 480px) {
 	.Toastify__toast {
 		margin-bottom: 10px;
-		border-radius: unset;
 	}
 }
 .Toastify__close-button {

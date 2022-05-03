@@ -556,7 +556,7 @@ function MobileSimulator({ children, active }: { children: React.ReactNode; acti
 											maxHeight: 568,
 											maxWidth: 320,
 											zIndex: 999,
-											boxShadow: hover ? styles.strongerShadow : undefined,
+											boxShadow: hover ? styles.mediumShadow : undefined,
 											background: styles.colors.background,
 											opacity: hover ? 1 : 0.75,
 											transition: 'transform 200ms',

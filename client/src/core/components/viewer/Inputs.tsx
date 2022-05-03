@@ -180,10 +180,12 @@ export default class Inputs extends Component {
 											></input>
 										</span>
 									</div>
-									<FInput
-										placeholder='Full width'
-										style={{ flexGrow: 1 }}
-									></FInput>
+									{desktop && (
+										<FInput
+											placeholder='Full width'
+											style={{ flexGrow: 1 }}
+										></FInput>
+									)}
 								</div>
 								<sp />
 								<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
@@ -334,14 +336,16 @@ export default class Inputs extends Component {
 						<Section title='Dropdown' tags={['<Dropdown/>']}>
 							<div style={{ ...styles.card, maxWidth: 783 }}>
 								<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
-									<Dropdown
-										uncontrolled
-										style={{ flexGrow: 1 }}
-										isSearchable
-										label={'Full width'}
-										defaultValue={'accept'}
-										options={dropdownOptions}
-									/>
+									{desktop && (
+										<Dropdown
+											uncontrolled
+											style={{ flexGrow: 1 }}
+											isSearchable
+											label={'Full width'}
+											defaultValue={'accept'}
+											options={dropdownOptions}
+										/>
+									)}
 									<Dropdown
 										uncontrolled
 										isSearchable

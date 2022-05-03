@@ -175,7 +175,7 @@ class Popup extends React.Component<{
 								overflow: 'hidden',
 								padding: 5,
 								paddingBottom: 0,
-								boxShadow: styles.strongerShadow,
+								boxShadow: styles.mediumShadow,
 							},
 						}}
 					>

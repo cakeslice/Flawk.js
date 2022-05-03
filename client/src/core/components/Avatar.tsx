@@ -64,6 +64,8 @@ export default function Avatar({
 								alignItems: 'center',
 								paddingLeft: 3,
 								letterSpacing: 3,
+								fontSize: 17,
+								fontWeight: 500,
 								color:
 									nameColor && nameColor.isLight
 										? styles.colors.blackDay

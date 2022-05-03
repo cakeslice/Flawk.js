@@ -7,11 +7,9 @@
 
 import { Capacitor } from '@capacitor/core'
 import Anchor from 'core/components/Anchor'
-import Avatar from 'core/components/Avatar'
 import Dropdown from 'core/components/Dropdown'
 import FButton from 'core/components/FButton'
 import LanguageSelect from 'core/components/LanguageSelect'
-import Loading from 'core/components/Loading'
 import QueryParams from 'core/components/QueryParams'
 import TextEditor from 'core/components/TextEditor'
 import Unity from 'core/components/Unity'
@@ -117,26 +115,7 @@ export default class Misc extends QueryParams<{
 			<MediaQuery minWidth={config.mobileWidthTrigger}>
 				{(desktop) => (
 					<div>
-						<Section title='Avatar' top tags={['<Avatar/>']}>
-							<div style={{ ...styles.card, padding: 0 }}>
-								<div className='wrapMarginBig flex flex-wrap justify-start'>
-									<Avatar name='José Guerreiro' />
-									<Avatar isOnline />
-									<Avatar />
-									<Avatar style={{ width: 40, height: 40 }} />
-								</div>
-							</div>
-						</Section>
-						<Section title='Loading' tags={['<Loading/>']}>
-							<div style={{ ...styles.card, padding: 0 }}>
-								<div className='wrapMarginBig flex flex-wrap justify-start'>
-									<Loading size={28 * 3} />
-									<Loading />
-									<Loading size={18.5} />
-								</div>
-							</div>
-						</Section>
-						<Section title='Query parameters' tags={['extends QueryParams']}>
+						<Section title='Query parameters' top tags={['extends QueryParams']}>
 							<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
 								<FButton
 									onClick={() => {
@@ -320,6 +299,7 @@ export default class Misc extends QueryParams<{
 						</Section>
 						<Section title='Countries' tags={['countries-list', 'react-flagkit']}>
 							<Dropdown
+								uncontrolled
 								isSearchable={true}
 								searchFunction={countriesSearch}
 								placeholder='Search countries'
@@ -376,76 +356,7 @@ export default class Misc extends QueryParams<{
 								</SizeMe>
 							</div>
 						</Section>
-						<Section title='Toast' tags={['global.addFlag()']}>
-							<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
-								<FButton
-									onClick={() =>
-										global.addFlag(
-											'New message',
-											(props) => (
-												<div>
-													<div>
-														<b>Chris:</b> Have you heard about the new
-														Tesla?
-													</div>
-													<sp />
-													<div className='flex justify-end'>
-														<FButton onClick={props.closeToast}>
-															Reply
-														</FButton>
-													</div>
-												</div>
-											),
-											'info',
-											{
-												playSound: true,
-											}
-										)
-									}
-								>
-									Info
-								</FButton>
-								<FButton
-									onClick={() =>
-										global.addFlag(
-											'Your changes were saved',
-											undefined,
-											'success',
-											{
-												closeAfter: 2000,
-												playSound: true,
-											}
-										)
-									}
-								>
-									Success
-								</FButton>
-								<FButton
-									onClick={() =>
-										global.addFlag(
-											'Warning',
-											'There is out-of-sync data you need to review to continue',
-											'warning',
-											{
-												closeAfter: 5000,
-												playSound: true,
-											}
-										)
-									}
-								>
-									Warning
-								</FButton>
-								<FButton
-									onClick={() =>
-										global.addFlag('Error', 'File upload failed', 'error', {
-											playSound: true,
-										})
-									}
-								>
-									Error
-								</FButton>
-							</div>
-						</Section>
+
 						<Section title='Copy to clipboard' tags={['<CopyToClipboard/>']}>
 							<CopyToClipboard
 								text={'https://github.com/cakeslice'}
@@ -526,7 +437,7 @@ export default class Misc extends QueryParams<{
 										Fullscreen
 									</FButton>
 								</div>
-								<div style={{ marginTop: 5 }}>
+								<div className='flex items-center' style={{ marginTop: 5 }}>
 									<tag
 										style={{
 											color: styles.colors.red,
@@ -540,9 +451,9 @@ export default class Misc extends QueryParams<{
 									>
 										NOTE
 									</tag>
-									<span style={{ opacity: 0.75 }}>
-										{'Unity cannot load on iOS until Apple releases a fix'}
-									</span>
+									<div style={{ opacity: 0.75 }}>
+										{"Unity won't work on iOS until Apple releases a fix"}
+									</div>
 								</div>
 								<sp />
 								<div

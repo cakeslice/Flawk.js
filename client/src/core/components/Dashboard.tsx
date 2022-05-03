@@ -344,6 +344,12 @@ class DashboardClass extends TrackedComponent<
 																this.props.alwaysOpen ||
 																this.state.open
 															}
+															isOpenDynamic={
+																!bigScreen &&
+																!this.props.alwaysOpen &&
+																this.state.open &&
+																!this.props.horizontal
+															}
 															isHover={this.state.open}
 															linkStyle={this.props.linkStyle}
 															linkMaxWidth={
@@ -665,6 +671,7 @@ type MenuProps = {
 	path: string
 	logo: string
 	isOpen: boolean
+	isOpenDynamic: boolean
 	isHover: boolean
 	linkStyle?: LinkStyle
 	linkMaxWidth: number
@@ -709,7 +716,9 @@ class MenuClass extends TrackedComponent<MenuProps> {
 					borderWidth: 1,
 
 					borderColor: styles.colors.lineColor,
-					//boxShadow: 'rgba(0, 0, 0, 0.075) 0px 0px 15px 2px',
+					boxShadow: this.props.isOpenDynamic
+						? 'rgba(0, 0, 0, 0.075) 0px 0px 15px 2px'
+						: undefined,
 					background: styles.colors.white,
 					...this.props.style,
 				}}
