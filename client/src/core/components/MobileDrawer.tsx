@@ -63,6 +63,7 @@ class MobileDrawer extends TrackedComponent<Props> {
 			fontSize: styles.defaultFontSize,
 			fontWeight: 500,
 			color: 'inherit',
+			textDecoration: 'none',
 
 			':focus-visible': {
 				outline: 'none',

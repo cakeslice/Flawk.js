@@ -751,9 +751,13 @@ export default class Inputs extends Component {
 								<Slider
 									defaultValue={[0, 900]}
 									style={{
-										...(!desktop && {
-											width: '100%',
-										}),
+										...(!desktop
+											? {
+													width: '100%',
+											  }
+											: {
+													width: 300,
+											  }),
 									}}
 									min={0}
 									max={900}

@@ -176,9 +176,33 @@ export default class Style extends Component<Props> {
 									</p>
 									<ul>
 										<li>
-											Lorem <tag>Tag #1</tag>
+											Lorem{' '}
+											<tag
+												style={{
+													color: styles.colors.red,
+													opacity: 1,
+													background: config.replaceAlpha(
+														styles.colors.red,
+														0.15
+													),
+													marginLeft: 10,
+												}}
+											>
+												Tag #1
+											</tag>
 											<vr />
-											<tag>Tag #2</tag>
+											<tag
+												style={{
+													color: styles.colors.green,
+													opacity: 1,
+													background: config.replaceAlpha(
+														styles.colors.green,
+														0.15
+													),
+												}}
+											>
+												Tag #2
+											</tag>
 										</li>
 										<li>Ipsum</li>
 										<li>Dolor</li>

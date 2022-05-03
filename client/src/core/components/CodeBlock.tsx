@@ -113,12 +113,7 @@ export default function CodeBlock(props: {
 									text={props.data}
 									onCopy={() =>
 										global.addFlag(
-											<div>
-												Copied to clipboard{' '}
-												<span style={{ color: styles.colors.green }}>
-													✔️
-												</span>
-											</div>,
+											<div>Copied to clipboard</div>,
 											'',
 											'default',
 											{

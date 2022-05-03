@@ -243,9 +243,9 @@ class DashboardClass extends TrackedComponent<
 								const mobileStyle: React.CSSProperties = {
 									transition:
 										'border-width .5s, box-shadow .5s, background-color .5s',
-									boxShadow: this.state.showHeaderBackground
+									/* boxShadow: this.state.showHeaderBackground
 										? styles.mediumShadow
-										: undefined,
+										: undefined, */
 									borderBottomStyle: 'solid',
 									borderWidth: 1,
 									borderColor: styles.colors.lineColor,
@@ -709,7 +709,7 @@ class MenuClass extends TrackedComponent<MenuProps> {
 					borderWidth: 1,
 
 					borderColor: styles.colors.lineColor,
-					boxShadow: 'rgba(0, 0, 0, 0.075) 0px 0px 15px 2px',
+					//boxShadow: 'rgba(0, 0, 0, 0.075) 0px 0px 15px 2px',
 					background: styles.colors.white,
 					...this.props.style,
 				}}
@@ -743,6 +743,8 @@ class MenuClass extends TrackedComponent<MenuProps> {
 						opacity: 0.5,
 						color: 'inherit',
 						fontWeight: 500,
+						textDecoration: 'none',
+
 						':focus-visible': {
 							outline: 'none',
 							backgroundColor: 'rgba(127,127,127,.15)',

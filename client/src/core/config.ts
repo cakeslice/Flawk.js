@@ -18,12 +18,15 @@ import _projectText from 'project/text'
 import projectOverrides, { projectConfig as pC } from 'project/_config'
 import pSO, { projectStyles as pS } from 'project/_styles'
 import React from 'react'
+import { install } from 'resize-observer'
 import { post } from './api'
 
 export const projectConfig = pC
 export const projectStyles = pS
 export const projectStylesOverrides = pSO
 
+// Support older browsers that don't implement ResizeObserver
+if (!window.ResizeObserver) install()
 // Support older browsers that don't implement replaceAll
 if (!String.prototype.replaceAll) {
 	global.olderBrowser = true
@@ -34,6 +37,14 @@ if (!String.prototype.replaceAll) {
 		return target.replace(new RegExp(search, 'g'), replace)
 	}
 }
+// Hide focus ring unless tabbing
+function handleFirstTab(e: KeyboardEvent) {
+	if (e.keyCode === 9) {
+		document.body.classList.add('user-is-tabbing')
+		window.removeEventListener('keydown', handleFirstTab)
+	}
+}
+window.addEventListener('keydown', handleFirstTab)
 
 const _prod =
 	process.env.NODE_ENV === 'production' &&

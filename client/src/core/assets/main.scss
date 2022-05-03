@@ -12,6 +12,13 @@
 	outline: none;
 }
 
+body:not(.user-is-tabbing) button:focus,
+body:not(.user-is-tabbing) input:focus,
+body:not(.user-is-tabbing) select:focus,
+body:not(.user-is-tabbing) textarea:focus {
+	outline: none;
+}
+
 :root {
 	--safe-area-inset-top: 0px;
 	--safe-area-inset-right: 0px;
@@ -226,7 +233,7 @@ tag {
 	font-weight: bold;
 	font-family: var(--font);
 	border-radius: 6px;
-	vertical-align: text-bottom;
+	vertical-align: top;
 	background: rgba(127, 127, 127, 0.15);
 }
 hl {

@@ -526,6 +526,24 @@ export default class Misc extends QueryParams<{
 										Fullscreen
 									</FButton>
 								</div>
+								<div style={{ marginTop: 5 }}>
+									<tag
+										style={{
+											color: styles.colors.red,
+											opacity: 1,
+											background: config.replaceAlpha(
+												styles.colors.red,
+												0.15
+											),
+											marginRight: 10,
+										}}
+									>
+										NOTE
+									</tag>
+									<span style={{ opacity: 0.75 }}>
+										{'Unity cannot load on iOS until Apple releases a fix'}
+									</span>
+								</div>
 								<sp />
 								<div
 									className='flex justify-center items-center'
