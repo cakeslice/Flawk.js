@@ -174,9 +174,9 @@ type Props = {
 	labelStyle?: React.CSSProperties
 	emptyLabel?: boolean
 	/**
-	 * @deprecated The method should not be used
+	 * @deprecated Use leftChild/rightChild instead
 	 */
-	icon?: React.ReactNode // ! Deprecated, use leftChild/rightChild instead
+	icon?: React.ReactNode
 	leftChild?: React.ReactNode
 	rightChild?: React.ReactNode
 	//

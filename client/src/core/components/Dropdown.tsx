@@ -30,7 +30,7 @@ const invalidTextStyle = {
 export type Option = {
 	label: React.ReactNode
 	isDisabled?: boolean
-	style?: CSSObjectWithLabel
+	style?: CSSObjectWithLabel & { ':selected'?: CSSObjectWithLabel }
 } & (
 	| {
 			value: string | number | boolean
@@ -548,7 +548,7 @@ export default class Dropdown extends TrackedComponent<Props> {
 							: isFocused
 							? config.replaceAlpha(
 									styles.colors.black,
-									global.nightMode ? 0.05 : 0.075
+									global.nightMode ? 0.05 : 0.05
 							  )
 							: undefined,
 						color: isSelected
@@ -571,6 +571,19 @@ export default class Dropdown extends TrackedComponent<Props> {
 						},
 					},
 					...d.style,
+					...(!d.isDisabled && {
+						...(d.style &&
+							d.style[':selected'] &&
+							isSelected && {
+								...d.style[':selected'],
+							}),
+						...(!isSelected &&
+							d.style &&
+							d.style[':hover'] &&
+							isFocused && {
+								...d.style[':hover'],
+							}),
+					}),
 				}
 			},
 
