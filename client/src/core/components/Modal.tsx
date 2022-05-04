@@ -216,9 +216,9 @@ export default class Modal extends TrackedComponent<Props> {
 				<div
 					className={styles.modalButtonWrap ? 'wrapMargin' : undefined}
 					style={{
-						padding: modalPadding - 5,
-						paddingBottom: this.props.big ? modalPadding : modalPadding / 2 - 5,
-						paddingTop: this.props.big ? modalPadding : modalPadding / 2 - 5,
+						padding: this.props.big ? modalPadding : modalPadding / 2,
+						paddingBottom: this.props.big ? modalPadding : modalPadding / 2,
+						paddingTop: this.props.big ? modalPadding : modalPadding / 2,
 						display: 'flex',
 						flexWrap: 'wrap',
 						justifyContent: 'flex-end',
@@ -396,7 +396,9 @@ class ModalHeader extends Component<{
 						padding: this.props.big
 							? this.props.modalPadding
 							: this.props.modalPadding / 2,
-						paddingRight: this.props.modalPadding / 2,
+						paddingRight: this.props.big
+							? this.props.modalPadding
+							: this.props.modalPadding / 2,
 						paddingLeft: this.props.modalPadding,
 						...styles.modalHeaderStyle,
 						...this.props.headerStyle,

@@ -1,0 +1,28 @@
+.example {
+	h1 {
+		font-size: 32px;
+		color: rgba(51, 108, 251, 1);
+	}
+	tag {
+		opacity: 1;
+		background: rgba(51, 108, 251, 0.15);
+	}
+}
+.example_2 {
+	h1 {
+		font-size: 22px;
+		color: rgba(40, 201, 134, 1);
+	}
+	tag {
+		opacity: 1;
+		background: rgba(rgba(40, 201, 134, 1), 0.15);
+	}
+}
+
+.section {
+	code {
+		opacity: 1;
+		font-size: 13.25px;
+		color: rgb(159, 90, 253);
+	}
+}

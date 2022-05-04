@@ -396,33 +396,23 @@ class DashboardWrapper extends Component<DashboardWrapperProps> {
 				{(desktop) => (
 					<div
 						style={{
-							display: 'flex',
-							justifyContent: 'center',
 							padding: desktop ? '5%' : '5%',
 							...(!desktop && { paddingTop: 40, paddingBottom: 40 }),
 							//
 							paddingTop: desktop ? 80 : 40,
+							paddingBottom: 80,
+							//maxWidth: 1200,
 						}}
 					>
-						<div
-							style={{
-								width: '100%',
-								//maxWidth: 1200,
-								marginBottom: 80,
-							}}
-						>
-							{!this.props.overrideHeader && (
-								<div style={projectStyles.dashboardHeader}>
-									<h3>
-										{this.props.parentTitle
-											? this.props.parentTitle + ': '
-											: ''}
-										{this.props.title}
-									</h3>
-								</div>
-							)}
-							{this.props.children}
-						</div>
+						{!this.props.overrideHeader && (
+							<div style={projectStyles.dashboardHeader}>
+								<h3>
+									{this.props.parentTitle ? this.props.parentTitle + ': ' : ''}
+									{this.props.title}
+								</h3>
+							</div>
+						)}
+						{this.props.children}
 					</div>
 				)}
 			</MediaQuery>

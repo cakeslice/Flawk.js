@@ -18,7 +18,9 @@ import { css } from 'glamor'
 import React, { Component } from 'react'
 import MediaQuery from 'react-responsive'
 import CodeCollapse from './common/CodeCollapse'
+import cssModule from './ComponentsViewer.module.scss'
 
+const Start = React.lazy(() => import('core/components/viewer/Start'))
 const Layout = React.lazy(() => import('core/components/viewer/Layout'))
 const Misc = React.lazy(() => import('core/components/viewer/Misc'))
 const Inputs = React.lazy(() => import('core/components/viewer/Inputs'))
@@ -117,6 +119,12 @@ export default class ComponentsViewer extends Component {
 			},
 			{
 				defaultRoute: true,
+				name: 'Get Started',
+				customIcon: (active) => iconWrapper(startLogo, active, 22),
+				id: 'start',
+				page: Start,
+			},
+			{
 				name: 'Style',
 				customIcon: (active) => iconWrapper(styleLogo, active, 22),
 				id: 'style',
@@ -287,7 +295,7 @@ export default class ComponentsViewer extends Component {
 							':selected': { color: styles.colors.black },
 						}}
 						logo={logo}
-						drawerTitle={'Components'}
+						drawerTitle={'Overview'}
 						wrapperComponent={Wrapper}
 						routes={routes}
 						pageProps={{
@@ -316,23 +324,15 @@ class Wrapper extends Component<{ children: React.ReactNode }> {
 				{(desktop) => (
 					<div
 						style={{
-							display: 'flex',
-							justifyContent: 'center',
 							padding: desktop ? '5%' : '5%',
 							...(!desktop && { paddingTop: 40, paddingBottom: 40 }),
 							//
 							paddingTop: desktop ? 80 : 40,
+							maxWidth: 1700,
+							paddingBottom: 160,
 						}}
 					>
-						<div
-							style={{
-								width: '100%',
-								//maxWidth: 1200,
-								marginBottom: 160,
-							}}
-						>
-							{this.props.children}
-						</div>
+						{this.props.children}
 					</div>
 				)}
 			</MediaQuery>
@@ -345,92 +345,131 @@ export const Section: React.FC<{
 	top?: boolean
 	tags?: string[]
 	code?: string
-	noOverflow?: boolean
 	lang?: Lang
-}> = ({ children, title, top, tags, code, lang, noOverflow }) => {
+	description?: React.ReactNode
+}> = ({ children, title, top, tags, code, lang, description }) => {
 	const id = title.replaceAll(' ', '_').toLowerCase()
 
-	return (
-		<MediaQuery minWidth={config.mobileWidthTrigger}>
-			{(desktop) => {
-				return (
-					<MediaQuery minWidth={880}>
-						{(tablet) => (
-							<>
-								{!top && <sp />}
-								{!top && <sp />}
-								{!top && <sp />}
-								<Anchor id={id} updateHash>
-									<div className={(tablet ? 'flex' : 'flex-col') + ' w-full'}>
-										<div
-											className={code && 'grow'}
-											//style={{ overflow: noOverflow ? 'hidden' : undefined }}
-										>
-											<div className='flex'>
-												<h3>{title}</h3>
-												{tags && <div style={{ minWidth: 15 }} />}
-												{tags && (
-													<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
-														{tags.map((tag) => (
-															<div
-																key={id + '_' + tag}
-																style={{
-																	display: 'flex',
-																	position: 'relative',
-																	top: 1,
-																	marginLeft: 5,
-																}}
-															>
-																<tag
-																	style={{
-																		background:
-																			styles.colors.black,
-																		color: styles.colors.white,
-																		opacity: 0.33,
-																	}}
-																>
-																	{tag}
-																</tag>
-															</div>
-														))}
-													</div>
-												)}
-											</div>
-											{code && !tags && <sp />}
-											{code && <sp />}
-											{code && children}
-										</div>
-										{code && (
-											<div
-												className='flex justify-end'
-												style={{
-													marginTop: !tablet ? 25 : 0,
-													justifySelf: !tablet ? 'flex-end' : undefined,
-												}}
-											>
-												<CodeCollapse
-													containerStyle={{
-														width: desktop ? 450 : undefined,
-														height: desktop ? 600 : undefined,
-													}}
-													codeStyle={{
-														marginLeft: tablet ? 25 : undefined,
-													}}
-													data={code}
-													lang={lang || 'tsx'}
-												></CodeCollapse>
-											</div>
-										)}
-									</div>
-								</Anchor>
-								{!code && !tags && <sp />}
-								{!code && <sp />}
-								{!code && children}
-							</>
-						)}
-					</MediaQuery>
-				)
+	const d = description && (
+		<div
+			className={cssModule.section}
+			style={{
+				padding: '10px 15px',
+				borderRadius: 5,
+				border: '1px solid ' + styles.colors.lineColor,
+				borderLeft: '6px solid ' + config.replaceAlpha(styles.colors.black, 0.1),
+				fontSize: 13.5,
+				lineHeight: '19px',
+				//width: 'fit-content',
+				color: config.replaceAlpha(styles.colors.black, 0.85),
+				background: config.replaceAlpha(styles.colors.white, 0.5),
 			}}
+		>
+			{description}
+		</div>
+	)
+	return (
+		<MediaQuery minWidth={880}>
+			{(tablet) => (
+				<>
+					{!top && <sp />}
+					{!top && <sp />}
+					{!top && <sp />}
+					{!top && <sp />}
+					<Anchor id={id} updateHash>
+						<div className={(tablet ? 'flex' : 'flex-col') + ' w-full'}>
+							<div className={code && 'grow'}>
+								<div className='flex'>
+									<h3>{title}</h3>
+									{tags && (
+										<div
+											className={!tablet ? 'grow' : ''}
+											style={{ minWidth: 15 }}
+										/>
+									)}
+									{tags && (
+										<div
+											className={
+												'wrapMargin flex flex-wrap ' +
+												(tablet ? 'justify-start' : 'justify-end')
+											}
+										>
+											{tags.map((tag) => (
+												<div
+													key={id + '_' + tag}
+													style={{
+														display: 'flex',
+														position: 'relative',
+														top: 3,
+													}}
+												>
+													<tag
+														style={{
+															fontFamily: 'monospace',
+															color: styles.colors.main,
+															letterSpacing: 0,
+															opacity: 1,
+															padding: '1px 5px',
+															background: config.replaceAlpha(
+																styles.colors.main,
+																0.15
+															),
+														}}
+													>
+														{tag}
+													</tag>
+												</div>
+											))}
+										</div>
+									)}
+								</div>
+								{code && (
+									<>
+										{!tags ? <hsp /> : <sp />}
+										{!tags && d && <hsp />}
+										{d}
+										{d && <sp />}
+										{!tags && !d && <hsp />} <hsp />
+										{children}
+									</>
+								)}
+							</div>
+							{code && (
+								<div
+									className={tablet ? 'flex justify-end' : 'w-full'}
+									style={{
+										marginTop: !tablet ? 25 : 0,
+										justifySelf: !tablet ? 'flex-end' : undefined,
+									}}
+								>
+									<CodeCollapse
+										containerStyle={{
+											width: tablet ? 450 : undefined,
+											maxHeight: '100%',
+											//height: desktop ? 600 : undefined,
+										}}
+										codeStyle={{
+											marginLeft: tablet ? 25 : undefined,
+										}}
+										data={code}
+										lang={lang || 'tsx'}
+									></CodeCollapse>
+								</div>
+							)}
+						</div>
+					</Anchor>
+					{!code && (
+						<>
+							{!tags ? <hsp /> : <sp />}
+							{!tags && d && <hsp />}
+							{d}
+							{d && <sp />}
+							{!tags && !d && <hsp />} <hsp />
+							{children}
+						</>
+					)}
+				</>
+			)}
 		</MediaQuery>
 	)
 }
@@ -588,6 +627,44 @@ const backendLogo = (color: string) => (
 		v-1.5v-52.9c11.2,8.8,25.8,16.7,43.5,23.4c41.4,15.9,96.2,24.6,154.2,24.6s112.8-8.7,154.2-24.6c17.7-6.8,32.3-14.7,43.5-23.4
 		V195.3z M388,139.1c-38.4,14.7-89.7,22.8-144.5,22.8S137.4,153.8,99,139.1c-33.3-12.8-53.2-29.5-53.2-44.7S65.7,62.5,99,49.7
 		c38.4-14.7,89.7-22.8,144.5-22.8S349.6,35,388,49.7c33.3,12.8,53.2,29.5,53.2,44.7S421.3,126.4,388,139.1z'
+			/>
+		</g>
+		<g></g>
+		<g></g>
+		<g></g>
+		<g></g>
+		<g></g>
+		<g></g>
+		<g></g>
+		<g></g>
+		<g></g>
+		<g></g>
+		<g></g>
+		<g></g>
+		<g></g>
+		<g></g>
+		<g></g>
+	</svg>
+)
+
+const startLogo = (color: string) => (
+	<svg
+		version='1.1'
+		id='Capa_1'
+		xmlns='http://www.w3.org/2000/svg'
+		x='0px'
+		y='0px'
+		viewBox='0 0 488.022 488.022'
+		xmlSpace='preserve'
+	>
+		<g>
+			<path
+				fill={color}
+				d='M471.563,173.778l-145.5-20.8l-64.4-132c-8-15.4-30-12.2-35.3,0l-64.4,132l-145.6,20.8c-16.4,1-21.6,20.9-10.4,33.2
+		l105,102.9l-25,144.5c-2.9,17.8,16.7,27.8,28.1,20.8l129.9-68.6l129.9,67.6c13.6,7,29.8-2.8,28.1-19.7l-25-144.6l105-102.9
+		C494.663,193.478,485.563,175.478,471.563,173.778z M342.663,288.078c-4.2,5.2-6.2,11.4-5.2,17.7l19.7,116.4l-103.9-55.1
+		c-6.7-2.8-13-2.8-18.7,0l-103.9,55.1l19.7-116.4c1-7.3-1-13.5-5.2-17.7l-84.1-82.1l116.4-16.6c6.2-1,11.4-4.2,14.6-10.4l52-105
+		l52,105c3.1,5.2,8.3,9.4,14.6,10.4l116.2,16.6L342.663,288.078z'
 			/>
 		</g>
 		<g></g>

@@ -32,8 +32,6 @@ import { lock, Section } from './ComponentsViewer'
 const cardStyle = (desktop?: boolean) => {
 	return {
 		...styles.card,
-		paddingRight: 40,
-		paddingLeft: 40,
 		alignSelf: desktop ? 'center' : undefined,
 		width: desktop ? 'fit-content' : undefined,
 	}
@@ -57,27 +55,27 @@ class Backend extends Component<PropsFromRedux> {
 							<div
 								className={
 									desktop
-										? 'wrapMarginBigTopLeft flex flex-wrap justify-start'
+										? 'wrapMarginBig flex flex-wrap justify-start'
 										: undefined
 								}
 							>
 								<div>
 									<tag>Signup</tag>
-									<sp />
+									<hsp />
 									<Register {...this.props} desktop={desktop}></Register>
 								</div>
 								{!desktop && <sp />}
 								{!desktop && <sp />}
 								<div>
 									<tag>Login</tag>
-									<sp />
+									<hsp />
 									<Login {...this.props} desktop={desktop}></Login>
 								</div>
 								{!desktop && <sp />}
 								{!desktop && <sp />}
 								<div>
 									<tag>Forgot password</tag>
-									<sp />
+									<hsp />
 									<Forgot {...this.props} desktop={desktop}></Forgot>
 								</div>
 							</div>
@@ -86,9 +84,7 @@ class Backend extends Component<PropsFromRedux> {
 							{this.props.user ? (
 								<div
 									className={
-										desktop
-											? 'wrapMarginTopLeft flex flex-wrap justify-start'
-											: ''
+										desktop ? 'wrapMargin flex flex-wrap justify-start' : ''
 									}
 								>
 									<Formik
@@ -275,7 +271,7 @@ class Backend extends Component<PropsFromRedux> {
 									Object.keys(this.props.structures).map((result: string, j) => (
 										<div key={result}>
 											<tag>{result}</tag>
-											<sp />
+											<hsp />
 											<FTable
 												height={'250px'}
 												hideHeader
@@ -318,7 +314,7 @@ class Backend extends Component<PropsFromRedux> {
 						</Section>
 						<Section title='Websockets' tags={['global.socket.emit()']}>
 							{this.props.user ? (
-								<div className='wrapMarginTopLeft flex flex-wrap justify-start items-center'>
+								<div className='wrapMargin flex flex-wrap justify-start items-center'>
 									<FButton
 										onClick={async () => {
 											const token = await global.storage.getItem('token')
@@ -969,7 +965,6 @@ class Forgot extends Component<PropsFromRedux & { desktop?: boolean }> {
 											{'Reset Password'}
 										</FButton>
 									</Animated>
-									<sp></sp>
 								</Form>
 							)
 						}}
@@ -1187,7 +1182,7 @@ class Admin extends QueryParams {
 					<div style={{ maxWidth: 700 }}>
 						<div>
 							<tag>Users</tag>
-							<sp />
+							<hsp />
 							<FInput
 								style={{
 									width: 250,

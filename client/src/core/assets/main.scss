@@ -148,11 +148,14 @@ strong {
 	line-height: inherit;
 	font-weight: 700;
 }
+m {
+	font-weight: 500;
+}
 bb {
-	font-size: 16px;
+	font-size: 110%;
 }
 small {
-	font-size: 12px;
+	font-size: 90%;
 }
 
 sp {
@@ -248,22 +251,35 @@ hl {
 
 //
 
-code {
-	font-family: monospace;
-}
 pre,
 blockquote,
 code {
-	display: block;
 	overflow-wrap: break-word;
 	padding: 13px;
-	margin-top: 7px;
-	margin-bottom: 7px;
+	margin: 7px 0px;
 	border-radius: 6px;
 	color: inherit;
 	background: rgba(127, 127, 127, 0.15);
 }
+blockquote {
+	display: grid;
+	width: fit-content;
+	opacity: 0.85;
+	font-size: 106%;
+	border-left: 7px solid rgba(127, 127, 127, 0.25);
+}
+code {
+	background: transparent;
+	font-weight: bold;
+	opacity: 0.85;
+	font-family: monospace;
+	letter-spacing: 0;
+	display: inline;
+	padding: 0px 0px;
+	margin: 0px;
+}
 pre {
+	display: block;
 	overflow-x: auto;
 }
 
@@ -485,68 +501,39 @@ kbd {
 }
 
 .wrapMarginVertical {
-	max-width: 100%;
-}
-.wrapMarginVertical > * {
-	margin-bottom: 5px;
+	row-gap: 10px;
 }
 .wrapMarginBigVertical {
-	max-width: 100%;
+	row-gap: 40px;
 }
-.wrapMarginBigVertical > * {
-	margin-bottom: 20px;
-}
-
 .wrapMarginHorizontal {
-	max-width: 100%;
-}
-.wrapMarginHorizontal > * {
-	margin-left: 5px;
-	margin-right: 5px;
+	column-gap: 10px;
 }
 .wrapMarginBigHorizontal {
-	max-width: 100%;
+	column-gap: 40px;
 }
-.wrapMarginBigHorizontal > * {
-	margin-left: 20px;
-	margin-right: 20px;
-}
-
 .wrapMargin {
-	max-width: 100%;
-}
-.wrapMargin > * {
-	margin: 5px;
+	gap: 10px;
 }
 .wrapMarginBig {
-	max-width: 100%;
+	gap: 40px;
 }
-.wrapMarginBig > * {
-	margin: 20px;
-}
+// ! ---------- DEPRECATED
 .wrapMarginTopRight {
-	max-width: 100%;
-}
-.wrapMarginTopRight > * {
-	margin: 0px 0px 10px 10px;
+	gap: 10px;
+	--deprecated: 'WARNING: Use .wrapMargin instead';
 }
 .wrapMarginTopLeft {
-	max-width: 100%;
-}
-.wrapMarginTopLeft > * {
-	margin: 0px 10px 10px 0px;
+	gap: 10px;
+	--deprecated: 'WARNING: Use .wrapMargin instead';
 }
 .wrapMarginBottomRight {
-	max-width: 100%;
-}
-.wrapMarginBottomRight > * {
-	margin: 10px 0px 0px 10px;
+	gap: 10px;
+	--deprecated: 'WARNING: Use .wrapMargin instead';
 }
 .wrapMarginBigTopLeft {
-	max-width: 100%;
-}
-.wrapMarginBigTopLeft > * {
-	margin: 0px 25px 25px 0px;
+	gap: 25px;
+	--deprecated: 'WARNING: Use .wrapMarginBig instead';
 }
 
 // Mobile Notch support

@@ -16,8 +16,8 @@ import { CopyToClipboard } from 'react-copy-to-clipboard'
 import MediaQuery from 'react-responsive'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 import {
-	vs as SyntaxStyleLight,
-	vscDarkPlus as SyntaxStyle,
+	materialDark as SyntaxStyle,
+	materialLight as SyntaxStyleLight,
 } from 'react-syntax-highlighter/dist/esm/styles/prism'
 
 const clipboard = (color: string) => (
@@ -42,25 +42,24 @@ const clipboard = (color: string) => (
 	</svg>
 )
 
-export type Lang = 'json' | 'tsx' | 'html' | 'jsx'
+export type Lang = 'json' | 'tsx' | 'html' | 'jsx' | 'scss' | 'css'
 
 export default function CodeBlock(props: {
-	visible?: boolean
 	style?: React.CSSProperties
 	containerStyle?: React.CSSProperties
 	data: string
 	lang: Lang
 	noPrettier?: boolean
+	animate?: boolean
 }) {
 	return (
 		<MediaQuery minWidth={config.mobileWidthTrigger}>
 			{(desktop) => (
 				<Animated
 					trackedName='CodeBlock'
-					controlled={props.visible !== undefined ? props.visible : true}
-					effects={desktop ? ['fade', 'height-width'] : ['fade']}
+					effects={props.animate ? (desktop ? ['fade', 'left-scale'] : ['fade']) : []}
 					style={props.containerStyle}
-					duration={!desktop ? 0.25 : 0.25}
+					duration={!desktop ? 0.1 : 0.1}
 					className='flex'
 				>
 					<SyntaxHighlighter
@@ -70,19 +69,23 @@ export default function CodeBlock(props: {
 						style={global.nightMode ? SyntaxStyle : SyntaxStyleLight}
 						customStyle={{
 							borderRadius: 6,
-							background: styles.colors.white,
-							padding: 16,
-							fontSize: 13,
+							background: styles.colors.white /* global.nightMode
+								? styles.colors.white
+								: config.replaceAlpha(styles.colors.white, 0.5) */,
+							padding: '16px 16px',
+							fontSize: 13.5,
+							lineHeight: '1.33em',
 							tabSize: 3,
-							fontWeight: 'normal',
+							margin: 0,
 							width: '100%',
-							border: 'none',
+							border: 'none' /* global.nightMode
+								? 'none'
+								: '1px solid ' + styles.colors.lineColor */,
 							...props.style,
 						}}
 						codeTagProps={{
 							style: {
 								padding: 0,
-								background: 'transparent',
 							},
 						}}
 					>
@@ -102,24 +105,19 @@ export default function CodeBlock(props: {
 							  })}
 					</SyntaxHighlighter>
 					<div style={{ width: 0 }}>
-						<div style={{ position: 'relative', right: 55, top: 25 }}>
+						<div style={{ position: 'relative', right: 35, top: 20 }}>
 							<Tooltip
 								hidden={!desktop}
 								tooltipProps={{ placement: 'left' }}
-								offsetAlt={-13}
+								offsetAlt={-10}
 								content='Copy code'
 							>
 								<CopyToClipboard
 									text={props.data}
 									onCopy={() =>
-										global.addFlag(
-											<div>Copied to clipboard</div>,
-											'',
-											'default',
-											{
-												closeAfter: 2000,
-											}
-										)
+										global.addFlag(<div>Copied to clipboard</div>, '', 'info', {
+											closeAfter: 2000,
+										})
 									}
 								>
 									<button
@@ -129,19 +127,17 @@ export default function CodeBlock(props: {
 											alignItems: 'center',
 										}}
 									>
-										<tag style={{ opacity: 1 }}>
-											<div
-												className='flex items-center justify-center'
-												style={{
-													width: 23,
-													height: 23,
-												}}
-											>
-												{clipboard(
-													config.replaceAlpha(styles.colors.black, 0.5)
-												)}
-											</div>
-										</tag>
+										<div
+											className='flex items-center justify-center'
+											style={{
+												width: 19,
+												height: 19,
+											}}
+										>
+											{clipboard(
+												config.replaceAlpha(styles.colors.black, 0.5)
+											)}
+										</div>
 									</button>
 								</CopyToClipboard>
 							</Tooltip>

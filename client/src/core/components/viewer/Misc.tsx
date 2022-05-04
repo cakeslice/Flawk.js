@@ -7,6 +7,7 @@
 
 import { Capacitor } from '@capacitor/core'
 import Anchor from 'core/components/Anchor'
+import CodeBlock from 'core/components/CodeBlock'
 import Dropdown from 'core/components/Dropdown'
 import FButton from 'core/components/FButton'
 import LanguageSelect from 'core/components/LanguageSelect'
@@ -116,7 +117,7 @@ export default class Misc extends QueryParams<{
 				{(desktop) => (
 					<div>
 						<Section title='Query parameters' top tags={['extends QueryParams']}>
-							<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+							<div className='wrapMargin flex flex-wrap justify-start'>
 								<FButton
 									onClick={() => {
 										this.setQueryParams({
@@ -154,7 +155,8 @@ export default class Misc extends QueryParams<{
 									Toggle date
 								</FButton>
 							</div>
-							<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+							<hsp />
+							<div className='wrapMargin flex flex-wrap justify-start'>
 								<FButton
 									onClick={() => {
 										this.setQueryParams({
@@ -250,7 +252,7 @@ export default class Misc extends QueryParams<{
 							<LanguageSelect />
 							<sp />
 							<div style={styles.card}>
-								<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+								<div className='wrapMargin flex flex-wrap justify-start'>
 									<div>
 										{/* Needs "import 'moment/locale/LANGUAGE'" to support other locales */}
 										<FInput label='Date' datePicker />
@@ -260,7 +262,7 @@ export default class Misc extends QueryParams<{
 									</div>
 								</div>
 								<sp />
-								<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+								<div className='wrapMargin flex flex-wrap justify-start'>
 									<div>
 										<tag>{config.text('common.searching')}</tag>
 									</div>
@@ -384,7 +386,7 @@ export default class Misc extends QueryParams<{
 							</Anchor>
 						</Section>
 						<Section title='Error Handling'>
-							<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+							<div className='wrapMargin flex flex-wrap justify-start'>
 								{this.state.chunkLoadError && <ChunkLoadErrorTest />}
 								<FButton
 									onClick={() => {
@@ -410,16 +412,53 @@ export default class Misc extends QueryParams<{
 								</FButton>
 							</div>
 						</Section>
+						{!Capacitor.isNativePlatform() && (
+							<Section title='Mobile app' tags={['Capacitor']}>
+								<FButton
+									target='_blank'
+									href={
+										'https://play.google.com/store/apps/details?id=io.flawk.mobile'
+									}
+								>
+									Google Play
+								</FButton>
+							</Section>
+						)}
 						{!Capacitor.isNativePlatform() && desktop && (
 							<Section title='Web3 wallet' tags={['functions/web3wallet']}>
-								<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
-									<FButton onClick={this.connectWallet}>Connect Wallet</FButton>
-								</div>
+								<FButton onClick={this.connectWallet}>Connect Wallet</FButton>
 							</Section>
 						)}
 						{!Capacitor.isNativePlatform() && (
-							<Section title='Unity' tags={['<Unity/>']}>
-								<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+							<Section
+								title='Unity'
+								description={
+									<div>
+										<div className='flex items-center'>
+											<tag
+												style={{
+													color: styles.colors.red,
+													opacity: 1,
+													background: config.replaceAlpha(
+														styles.colors.red,
+														0.15
+													),
+													marginRight: 10,
+												}}
+											>
+												NOTE
+											</tag>
+											<div>
+												{
+													"Unity won't work on iOS until Apple releases a fix"
+												}
+											</div>
+										</div>
+									</div>
+								}
+								tags={['<Unity/>']}
+							>
+								<div className='wrapMargin flex flex-wrap justify-start'>
 									<FButton
 										onClick={() => {
 											global.sendUnityEvent?.('Neo', 'ChangeColor')
@@ -437,25 +476,7 @@ export default class Misc extends QueryParams<{
 										Fullscreen
 									</FButton>
 								</div>
-								<div className='flex items-center' style={{ marginTop: 5 }}>
-									<tag
-										style={{
-											color: styles.colors.red,
-											opacity: 1,
-											background: config.replaceAlpha(
-												styles.colors.red,
-												0.15
-											),
-											marginRight: 10,
-										}}
-									>
-										NOTE
-									</tag>
-									<div style={{ opacity: 0.75 }}>
-										{"Unity won't work on iOS until Apple releases a fix"}
-									</div>
-								</div>
-								<sp />
+								<hsp />
 								<div
 									className='flex justify-center items-center'
 									style={{
@@ -485,7 +506,7 @@ export default class Misc extends QueryParams<{
 							</Section>
 						)}
 						<Section title='<head/>' tags={['<Helmet/>']}>
-							<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+							<div className='wrapMargin flex flex-wrap justify-start'>
 								<FButton
 									onClick={() => {
 										this.setState({ toggleTitle: !this.state.toggleTitle })
@@ -501,7 +522,7 @@ export default class Misc extends QueryParams<{
 							</div>
 						</Section>
 						<Section title='Inject script' tags={['config.injectScript()']}>
-							<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+							<div className='wrapMargin flex flex-wrap justify-start'>
 								<FButton
 									onClick={() => {
 										config.injectScript(
@@ -515,6 +536,20 @@ export default class Misc extends QueryParams<{
 									Inject
 								</FButton>
 							</div>
+						</Section>
+						<Section title='Code block' tags={['<CodeBlock/>']}>
+							<CodeBlock
+								style={{ maxWidth: 400 }}
+								lang='json'
+								data={JSON.stringify(
+									{
+										hello: 'world',
+										foo: 'bar',
+									},
+									null,
+									3
+								)}
+							/>
 						</Section>
 						{desktop && (
 							<Section title='Text editor' tags={['<TextEditor/>']}>

@@ -7,18 +7,16 @@
 
 import { Styles } from 'core/styles'
 
-const _font = 'Roboto'
-const _fontAlt = 'PT Sans'
 const _background = 'rgba(246,248,251,1)'
 const _backgroundNight = 'rgba(35, 35, 35,1)'
 
-const _main = 'rgba(51,108,251, 1)'
-const _mainLight = 'rgba(51,108,251, .85)'
-const _mainVeryLight = 'rgba(51,108,251, .15)'
+const _main = 'rgba(51, 108, 251, 1)' // Make sure it's the same as src/project/assets/main.scss
+const _mainLight = 'rgba(51, 108, 251, .85)'
+const _mainVeryLight = 'rgba(51, 108, 251, .15)'
 
 const styles: Partial<Styles> = {
-	font: _font,
-	fontAlt: _fontAlt,
+	font: 'var(--font)',
+	fontAlt: 'var(--fontAlt)',
 
 	buttonAppearances: () => [
 		{

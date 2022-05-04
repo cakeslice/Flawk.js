@@ -160,7 +160,7 @@ export default class Layout extends QueryParams<
 				content={(close, Content, Buttons, Parent) => (
 					<Parent>
 						<Content>
-							<div className='wrapMarginTopLeft flex flex-wrap justify-start items-end'>
+							<div className='wrapMargin flex flex-wrap justify-start items-end'>
 								<FInput label='Date' foreground datePicker></FInput>
 								<Dropdown
 									foreground
@@ -230,7 +230,7 @@ export default class Layout extends QueryParams<
 									<ExitPrompt dirty={dirty} noRouter />
 
 									<Content>
-										<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+										<div className='wrapMargin flex flex-wrap justify-start'>
 											<Field
 												component={FInput}
 												required
@@ -247,7 +247,7 @@ export default class Layout extends QueryParams<
 											/>
 										</div>
 										<sp />
-										<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+										<div className='wrapMargin flex flex-wrap justify-start'>
 											<FInput label='Date' foreground datePicker></FInput>
 											<Dropdown
 												label={'Dropdown'}
@@ -321,7 +321,7 @@ export default class Layout extends QueryParams<
 									</FButton>
 								</Section>
 							)}
-							<Section title='Flex wrap/grow' top={!desktop} code={codeFlexGrow}>
+							<Section title='Flex wrap/grow' top={!desktop}>
 								<div style={{ ...styles.card }}>
 									<div className='wrapMargin flex flex-wrap'>
 										<div style={fixedExample}></div>
@@ -335,7 +335,7 @@ export default class Layout extends QueryParams<
 									</div>
 								</div>
 							</Section>
-							<Section title='Grid' code={codeGrid}>
+							<Section title='Grid'>
 								<div
 									className='grid grid-cols-4'
 									style={{ ...styles.card, width: '100%' }}
@@ -350,10 +350,10 @@ export default class Layout extends QueryParams<
 									<div style={gridExample}></div>
 								</div>
 							</Section>
-							<Section title='Table' tags={['<FTable/>']} noOverflow code={codeTable}>
+							<Section title='Table' tags={['<FTable/>']}>
 								<div>
 									<div className='flex'>
-										<div className='grow wrapMarginTopLeft flex flex-wrap justify-start'>
+										<div className='grow wrapMargin flex flex-wrap justify-start'>
 											<FInput
 												name='buffered_search'
 												defaultValue={this.queryParams.search}
@@ -383,11 +383,15 @@ export default class Layout extends QueryParams<
 												onBlur={async (e) => {
 													await this.fetchData()
 												}}
-												placeholder={'Manual Search (Press Enter)'}
+												placeholder={
+													desktop
+														? 'Manual Search (Press Enter)'
+														: 'Manual Search'
+												}
 											></FInput>
 										</div>
 										{this.state.selected.length > 0 ? (
-											<div className='wrapMarginTopLeft flex flex-wrap justify-end items-end'>
+											<div className='wrapMargin flex flex-wrap justify-end items-end'>
 												<div style={{ minWidth: 80 }}>
 													<span style={{ fontWeight: 500 }}>
 														{this.state.selected.length}
@@ -717,7 +721,7 @@ export default class Layout extends QueryParams<
 								)}
 							</Section>
 							<Section title='Modal' tags={['<Modal/>']}>
-								<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+								<div className='wrapMargin flex flex-wrap justify-start'>
 									<FButton onClick={() => this.setState({ exampleModal: true })}>
 										Default
 									</FButton>
@@ -733,7 +737,7 @@ export default class Layout extends QueryParams<
 								</div>
 							</Section>
 							<Section title='Toast' tags={['global.addFlag()']}>
-								<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+								<div className='wrapMargin flex flex-wrap justify-start'>
 									<FButton
 										onClick={() =>
 											global.addFlag(
@@ -855,7 +859,7 @@ export default class Layout extends QueryParams<
 								</div>
 							</Section>
 							<Section title='Collapse' tags={['<Collapsible/>', '<Animated/>']}>
-								<div style={{ ...styles.card }}>
+								<div style={{ ...styles.card, width: desktop ? 400 : '100%' }}>
 									<div>
 										<FButton
 											onClick={() =>
@@ -878,7 +882,10 @@ export default class Layout extends QueryParams<
 										>
 											<div
 												className='flex-col'
-												style={{ ...styles.outlineCard }}
+												style={{
+													...styles.outlineCard,
+													width: desktop ? 300 : '100%',
+												}}
 											>
 												<p>Content</p>
 												<sp />
@@ -1049,90 +1056,3 @@ class StatCard extends React.Component<{
 		)
 	}
 }
-
-//
-
-const codeTable = `import FTable from 'core/components/FTable'
-
-const onPageChange = async (e: number) => {
-	this.setQueryParams({
-		page: e,
-	})
-	await this.fetchData()
-}
-
-<FTable
-	isLoading={this.state.fetching}
-	height={'500px'}
-	expandContent={(data) => (
-		<div>
-			<b>Expanded:</b> {data.title}
-		</div>
-	)}
-	keySelector={'_id'}
-	columns={[
-		{
-			name: 'Title',
-			selector: 'title',
-		},
-		/*...*/
-	]}
-	data={this.state.data && this.state.data.items}
-	pagination={{
-		onClick: onPageChange,
-		limit: this.queryParams.limit,
-		page: this.queryParams.page,
-		...(this.state.data && {
-			totalPages: this.state.data.totalPages,
-			totalItems: this.state.data.totalItems,
-		}),
-	}}
-></FTable>`
-
-const codeFlexGrow = `import styles from 'core/styles'
-
-const fixedExample = {
-	minWidth: 200,
-	minHeight: 50,
-	opacity: 0.1,
-	backgroundColor: styles.colors.black,
-}
-const growExample = {
-	flexGrow: 1,
-	...fixedExample,
-}
-
-<div style={{ ...styles.card }}>
-	<div className='wrapMargin flex flex-wrap'>
-		<div style={fixedExample}></div>
-		<div style={growExample}></div>
-		<div style={fixedExample}></div>
-		<div style={growExample}></div>
-		<div style={growExample}></div>
-		<div style={fixedExample}></div>
-		<div style={growExample}></div>
-		<div style={fixedExample}></div>
-	</div>
-</div>`
-
-const codeGrid = `import styles from 'core/styles'
-
-const gridExample = {
-	height: 50,
-	opacity: 0.1,
-	backgroundColor: styles.colors.black,
-}
-
-<div
-	className='grid grid-cols-4'
-	style={{ ...styles.card, width: '100%', gap: 10 }}
->
-	<div style={gridExample}></div>
-	<div style={gridExample}></div>
-	<div style={gridExample}></div>
-	<div style={gridExample}></div>
-	<div style={gridExample}></div>
-	<div style={gridExample}></div>
-	<div style={gridExample}></div>
-	<div style={gridExample}></div>
-</div>`

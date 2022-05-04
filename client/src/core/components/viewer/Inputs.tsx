@@ -104,8 +104,6 @@ export default class Inputs extends Component {
 			color:
 				this.state.usageBackground &&
 				config.invertColor(this.state.usageBackground, styles.colors.whiteDay),
-			paddingBottom: 10,
-			paddingRight: 10,
 			maxWidth: 950,
 		}
 
@@ -115,7 +113,7 @@ export default class Inputs extends Component {
 					<div>
 						<Section title='Input field' tags={['<input>', '<FInput/>']} top>
 							<div style={{ ...styles.card, maxWidth: 783 }}>
-								<div className='wrapMarginTopLeft flex flex-wrap justify-start items-end'>
+								<div className='wrapMargin flex flex-wrap justify-start items-end'>
 									<FInput
 										type='email'
 										label={'E-mail'}
@@ -138,7 +136,7 @@ export default class Inputs extends Component {
 									/>
 								</div>
 								<sp />
-								<div className='wrapMarginTopLeft flex flex-wrap justify-start items-start'>
+								<div className='wrapMargin flex flex-wrap justify-start items-start'>
 									<FInput
 										label='Invalid Label'
 										invalid={'*'}
@@ -161,7 +159,7 @@ export default class Inputs extends Component {
 									/>
 								</div>
 								<sp />
-								<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+								<div className='wrapMargin flex flex-wrap justify-start'>
 									<div>
 										Inline Input:{' '}
 										<span>
@@ -188,7 +186,7 @@ export default class Inputs extends Component {
 									)}
 								</div>
 								<sp />
-								<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+								<div className='wrapMargin flex flex-wrap justify-start'>
 									<FInput
 										style={{ width: '100%', minHeight: 50 }}
 										label={'Text Area'}
@@ -197,7 +195,7 @@ export default class Inputs extends Component {
 								</div>
 								<sp />
 								<sp />
-								<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+								<div className='wrapMargin flex flex-wrap justify-start'>
 									<FInput label='Date' datePicker />
 									<FInput label='Time' timeInput />
 									<FInput
@@ -292,13 +290,13 @@ export default class Inputs extends Component {
 							<sp />
 							<div
 								style={{ maxWidth: 1100 }}
-								className='wrapMarginBigTopLeft flex flex-wrap justify-start'
+								className='wrapMarginBig flex flex-wrap justify-start'
 							>
 								<div>
 									<tag>Normal</tag>
-									<sp />
+									<hsp />
 									<div style={appearanceStyle}>
-										<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+										<div className='wrapMargin flex flex-wrap justify-start'>
 											<FInput
 												label={'Label'}
 												appearance={this.state.inputAppearance}
@@ -334,9 +332,9 @@ export default class Inputs extends Component {
 								</div>
 								<div>
 									<tag>Invalid</tag>
-									<sp />
+									<hsp />
 									<div style={appearanceStyle}>
-										<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+										<div className='wrapMargin flex flex-wrap justify-start'>
 											<FInput
 												label={'Label'}
 												name='input'
@@ -367,7 +365,7 @@ export default class Inputs extends Component {
 						</Section>
 						<Section title='Dropdown' tags={['<Dropdown/>']}>
 							<div style={{ ...styles.card, maxWidth: 783 }}>
-								<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+								<div className='wrapMargin flex flex-wrap justify-start'>
 									{desktop && (
 										<Dropdown
 											uncontrolled
@@ -413,7 +411,7 @@ export default class Inputs extends Component {
 									/>
 								</div>
 								<sp />
-								<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+								<div className='wrapMargin flex flex-wrap justify-start'>
 									<Dropdown
 										uncontrolled
 										name='dropdown'
@@ -451,7 +449,7 @@ export default class Inputs extends Component {
 									/>
 								</div>
 								<sp />
-								<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+								<div className='wrapMargin flex flex-wrap justify-start'>
 									<div className='flex items-center' style={{ paddingRight: 10 }}>
 										<p style={{ paddingBottom: 4.5 }}>Custom Input:</p>{' '}
 										<Dropdown
@@ -519,13 +517,13 @@ export default class Inputs extends Component {
 							<sp />
 							<div
 								style={{ maxWidth: 1100 }}
-								className='wrapMarginBigTopLeft flex flex-wrap justify-start'
+								className='wrapMarginBig flex flex-wrap justify-start'
 							>
 								<div>
 									<tag>Normal</tag>
-									<sp />
+									<hsp />
 									<div style={appearanceStyle}>
-										<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+										<div className='wrapMargin flex flex-wrap justify-start'>
 											<Dropdown
 												uncontrolled
 												label={'Label'}
@@ -566,9 +564,9 @@ export default class Inputs extends Component {
 								</div>
 								<div>
 									<tag>Invalid</tag>
-									<sp />
+									<hsp />
 									<div style={appearanceStyle}>
-										<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+										<div className='wrapMargin flex flex-wrap justify-start'>
 											<Dropdown
 												uncontrolled
 												label={'Label'}
@@ -607,7 +605,7 @@ export default class Inputs extends Component {
 							</div>
 						</Section>
 						<Section title='Form' tags={['<Formik/>', '<Form/>', '<Field/>']}>
-							<div style={{ ...styles.card, width: 'auto', maxWidth: 600 }}>
+							<div style={{ ...styles.card, width: 'auto', maxWidth: 500 }}>
 								<Formik
 									enableReinitialize
 									initialValues={
@@ -645,7 +643,7 @@ export default class Inputs extends Component {
 										return (
 											<Form noValidate>
 												<ExitPrompt dirty={dirty} />
-												<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+												<div className='wrapMargin flex flex-wrap justify-start'>
 													<Field
 														component={FInput}
 														required
@@ -662,7 +660,8 @@ export default class Inputs extends Component {
 													/>
 												</div>
 
-												<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+												<hsp />
+												<div className='wrapMargin flex flex-wrap justify-start'>
 													<Field
 														component={FInput}
 														required
@@ -682,7 +681,8 @@ export default class Inputs extends Component {
 														)}
 													/>
 												</div>
-												<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+												<hsp />
+												<div className='wrapMargin flex flex-wrap justify-start'>
 													<Field
 														component={FInput}
 														required
@@ -721,7 +721,8 @@ export default class Inputs extends Component {
 														]}
 													/>
 												</div>
-												<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+												<hsp />
+												<div className='wrapMargin flex flex-wrap justify-start'>
 													<Field
 														component={FInput}
 														required
@@ -751,7 +752,7 @@ export default class Inputs extends Component {
 													/>
 												</div>
 
-												<div className='wrapMarginBottomRight flex flex-wrap justify-end'>
+												<div className='wrapMargin flex flex-wrap justify-end'>
 													<FButton
 														appearance={'secondary'}
 														type='submit'

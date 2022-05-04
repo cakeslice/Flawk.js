@@ -23,7 +23,13 @@ import { Link } from 'react-router-dom'
 import * as uuid from 'uuid'
 import Dropdown from '../Dropdown'
 import { Section } from './ComponentsViewer'
-import cssModule from './Style.module.scss'
+import cssModule from './ComponentsViewer.module.scss'
+
+const customElement = {
+	padding: '3px 8px',
+	fontFamily: 'monospace',
+	fontSize: 15,
+}
 
 // eslint-disable-next-line
 type Props = {}
@@ -63,8 +69,6 @@ export default class Style extends Component<Props> {
 			color:
 				this.state.usageBackground &&
 				config.invertColor(this.state.usageBackground, styles.colors.whiteDay),
-			paddingBottom: 10,
-			paddingRight: 10,
 			maxWidth: 950,
 		}
 
@@ -85,7 +89,34 @@ export default class Style extends Component<Props> {
 
 					return (
 						<div>
-							<Section title='Typography' top>
+							<Section
+								lang={'scss'}
+								code={`// src/project/assets/main.scss
+		
+// ...
+
+	--font: 'MY_FONT';
+	--fontAlt: 'PT Sans';
+}
+
+body {
+	font-size: 16px;
+
+// ...
+`}
+								description={
+									<>
+										Default fonts can be overriden in{' '}
+										<code>src/project/assets/main.scss</code> by changing the{' '}
+										<code>--font</code> and <code>--fontAlt</code> properties
+										<sp />
+										To import new fonts, add them to{' '}
+										<code>src/project/assets/fonts.css</code>
+									</>
+								}
+								title='Typography'
+								top
+							>
 								<div style={{ ...styles.card }}>
 									<h1>
 										{'Hello. '}
@@ -108,10 +139,10 @@ export default class Style extends Component<Props> {
 									<hr />
 									<sp />
 									<p>
-										Lorem ipsum dolor sit amet, <s>strikethrough</s> adipiscing
-										elit, sed do eiusmod tempor <b>bold</b> ut labore et dolore
-										magna aliqua. Ut enim ad minim veniam, quis nostrud
-										exercitation ullamco laboris nisi ut aliquip ex ea commodo{' '}
+										Lorem ipsum dolor sit amet, adipiscing elit, sed do eiusmod
+										tempor ut labore et dolore magna aliqua. Ut enim ad minim
+										veniam, quis nostrud exercitation ullamco laboris nisi ut
+										aliquip ex ea commodo{' '}
 										<Link to='/components/style#button'>anchor link</Link>.
 									</p>
 									<sp />
@@ -131,18 +162,10 @@ export default class Style extends Component<Props> {
 											<tag>h4</tag>
 										</span>
 									</h4>
-									<i>
-										Italic ipsum dolor sit amet,{' '}
-										<Tooltip
-											tooltipProps={{ placement: 'top' }}
-											content={<div>Hello World!</div>}
-										>
-											<b style={{ color: styles.colors.main }}>tooltip</b>
-										</Tooltip>{' '}
-										adipiscing elit, sed do{' '}
-										<span style={{ color: styles.colors.red }}>colorized</span>{' '}
-										tempor <hl>highlighted</hl> incididunt ut <u>underline</u>{' '}
-										et dolore magna{' '}
+									<p>
+										{
+											'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo '
+										}
 										<a
 											href='https://github.com/cakeslice'
 											target='_blank'
@@ -151,13 +174,19 @@ export default class Style extends Component<Props> {
 											new tab link
 										</a>
 										.
-									</i>
-									<sp />
-									<p>
-										{
-											'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'
-										}
 									</p>
+									<sp />
+									<i>
+										Italic ipsum <s>strikethrough</s> sit amet,{' '}
+										<Tooltip
+											tooltipProps={{ placement: 'top' }}
+											content={<div>Hello World!</div>}
+										>
+											<b style={{ color: styles.colors.main }}>tooltip</b>
+										</Tooltip>{' '}
+										adipiscing elit, sed do tempor <hl>highlighted</hl>{' '}
+										incididunt ut <u>underline</u> et dolore magna.
+									</i>
 									<sp />
 									<p>
 										<b>
@@ -169,8 +198,11 @@ export default class Style extends Component<Props> {
 									<sp />
 									<p>
 										<b>Bold</b>
-										{' ipsum dolor sit amet, consectetur adipiscing elit.'}
+										{' ipsum dolor sit amet, '}
+										<m>medium</m>
+										{' adipiscing elit.'}
 									</p>
+									<hsp />
 									<p>
 										{
 											'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat:'
@@ -220,49 +252,93 @@ export default class Style extends Component<Props> {
 									<hr />
 									<sp />
 									<blockquote>
-										Block quote porro quisquam est qui dolorem ipsum quia dolor
-										sit amet, consectetur, adipisci velit...
+										“Computers are incredibly fast, accurate, and stupid. Human
+										beings are incredibly slow, inaccurate, and brilliant.
+										<br />
+										Together they are powerful beyond imagination.”
+										<sp />
+										<i style={{ textAlign: 'right' }}>Albert Einstein</i>
 									</blockquote>
-									<code>int code = 1</code>
 									<sp />
-									<p>
-										Press <kbd>Enter</kbd> to continue...
-									</p>{' '}
+									<div className='flex'>
+										<code>int code = 1;</code>
+										<sp />
+										<p>
+											<kbd>Enter</kbd>
+										</p>
+									</div>
 									<sp />
 									<hr />
 									<sp />
 									<div
 										className={
-											'wrapMarginBigTopLeft flex flex-wrap ' +
+											'wrapMarginBig flex flex-wrap ' +
 											(desktop ? 'justify-between' : 'flex-start')
 										}
 									>
-										<div style={{ maxWidth: 150 }}>
-											<h1>Line height</h1>
+										<div>
+											<h1>
+												Line
+												<br />
+												height
+											</h1>
 										</div>
-										<div style={{ maxWidth: 110 }}>
-											<h2>Line height</h2>
+										<div>
+											<h2>
+												Line
+												<br />
+												height
+											</h2>
 										</div>
-										<div style={{ maxWidth: 85 }}>
-											<h3>Line height</h3>
+										<div>
+											<h3>
+												Line
+												<br />
+												height
+											</h3>
 										</div>
-										<div style={{ maxWidth: 60 }}>
-											<h4>Line height</h4>
+										<div>
+											<h4>
+												Line
+												<br />
+												height
+											</h4>
 										</div>
-										<div style={{ maxWidth: 30 }}>
-											<p>Line height</p>
+										<div>
+											<p>
+												Line
+												<br />
+												height
+											</p>
 										</div>
 									</div>
 								</div>
 							</Section>
 
-							<Section title='Color' tags={['styles.colors']}>
-								<div className='wrapMarginBigTopLeft flex flex-wrap justify-start'>
+							<Section
+								title='Color'
+								code={`import styles from 'core/styles'
+
+const mainColor = styles.colors.main
+
+const redColor = styles.colors.red
+`}
+								description={
+									<>
+										In <code>styles.colors</code> you can find the main app
+										colors and some basic colors to use in your project.
+										<sp />
+										You can override them in <code>src/project/_styles.ts</code>
+									</>
+								}
+								tags={['styles.colors']}
+							>
+								<div className='wrapMarginBig flex flex-wrap justify-start'>
 									<div>
 										<tag>Main</tag>
-										<sp />
+										<hsp />
 										<div
-											className='wrapMarginTopLeft flex flex-wrap justify-start'
+											className='wrapMargin flex flex-wrap justify-start'
 											style={{
 												...styles.card,
 												maxWidth: 600,
@@ -296,9 +372,9 @@ export default class Style extends Component<Props> {
 									</div>{' '}
 									<div>
 										<tag>Basic</tag>
-										<sp />
+										<hsp />
 										<div
-											className='wrapMarginTopLeft flex flex-wrap justify-start'
+											className='wrapMargin flex flex-wrap justify-start'
 											style={{
 												...styles.card,
 												maxWidth: 600,
@@ -364,6 +440,21 @@ export default class Style extends Component<Props> {
 							</Section>
 							<Section
 								title='Dark mode'
+								code={`const color = global.nightMode ? '#fff' : '#000'
+
+// Switch between dark/light modes
+await global.toggleNightMode()
+`}
+								description={
+									<>
+										All components in Flawk.js support a <m>dark</m> and{' '}
+										<m>light</m> mode. If <code>global.nightMode</code> is{' '}
+										<code>true</code> the app is in dark mode.
+										<sp />
+										To switch between them, you can use{' '}
+										<code>global.toggleNightMode()</code>.
+									</>
+								}
 								tags={['global.nightMode', 'global.toggleNightMode()']}
 							>
 								<FButton
@@ -377,7 +468,43 @@ export default class Style extends Component<Props> {
 									{global.nightMode ? 'Light' : 'Dark'} mode
 								</FButton>
 							</Section>
-							<Section title='Card' tags={['styles.card', 'styles.outlineCard']}>
+							<Section
+								title='Card'
+								description={
+									<>
+										{"There's"} no <m>Card</m> component in Flawk.js. You can
+										use <code>styles.card</code> and{' '}
+										<code>styles.outlineCard</code> as a base for your own
+										cards.
+										<sp />
+										The base card styles are however used in some Flawk.js
+										components like <code>{'<Modal/>'}</code>. You can override
+										them in <code>src/project/_styles.ts</code>
+									</>
+								}
+								code={`import { css } from 'glamor'
+import styles from 'core/styles'
+
+// Basic
+<div style={{...styles.card}}></div>
+
+// Outline
+<div style={{...styles.outlineCard}}></div>
+
+// Hover
+<div {...css({
+	...styles.card,
+	top: 0,
+	position: 'relative',
+	transition: 'top 250ms, box-shadow 250ms',
+	':hover': {
+		boxShadow: styles.strongerShadow,
+		top: -5,
+	},
+})}></div>
+`}
+								tags={['styles.card', 'styles.outlineCard']}
+							>
 								<div
 									className='flex-col'
 									{...css({
@@ -446,10 +573,11 @@ export default class Style extends Component<Props> {
 									</div>
 								</div>
 								<sp />
+								<sp />
 								<div
 									className={
 										desktop
-											? 'wrapMarginTopLeft flex flex-wrap justify-start'
+											? 'wrapMarginBig flex flex-wrap justify-start'
 											: 'flex-col wrapMarginBigVertical'
 									}
 								>
@@ -515,7 +643,7 @@ export default class Style extends Component<Props> {
 							</Section>
 
 							<Section title='Avatar' tags={['<Avatar/>']}>
-								<div style={{ ...styles.card, padding: 0 }}>
+								<div style={{ ...styles.card }}>
 									<div className='wrapMarginBig flex flex-wrap justify-start'>
 										<Avatar name='José Guerreiro' />
 										<Avatar isOnline />
@@ -525,7 +653,7 @@ export default class Style extends Component<Props> {
 								</div>
 							</Section>
 							<Section title='Loading' tags={['<Loading/>']}>
-								<div style={{ ...styles.card, padding: 0 }}>
+								<div style={{ ...styles.card }}>
 									<div className='wrapMarginBig flex flex-wrap justify-start'>
 										<Loading size={28 * 3} />
 										<Loading />
@@ -535,7 +663,7 @@ export default class Style extends Component<Props> {
 							</Section>
 
 							<Section title='Tooltip' tags={['<Tooltip/>']}>
-								<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+								<div className='wrapMargin flex flex-wrap justify-start'>
 									<Tooltip
 										tooltipProps={{ placement: 'right' }}
 										content={
@@ -582,11 +710,9 @@ export default class Style extends Component<Props> {
 									style={{
 										...styles.card,
 										maxWidth: 950,
-										paddingBottom: 10,
-										paddingRight: 10,
 									}}
 								>
-									<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+									<div className='wrapMargin flex flex-wrap justify-start'>
 										<FButton style={{ minWidth: 50 }}>Default</FButton>
 										<FButton
 											appearance='primary'
@@ -611,7 +737,7 @@ export default class Style extends Component<Props> {
 										))}
 									</div>
 									<sp />
-									<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+									<div className='wrapMargin flex flex-wrap justify-start'>
 										<FButton
 											style={{
 												minWidth: 100,
@@ -674,13 +800,13 @@ export default class Style extends Component<Props> {
 								<sp />
 								<div
 									style={{ maxWidth: 1100 }}
-									className='wrapMarginBigTopLeft flex flex-wrap justify-start'
+									className='wrapMarginBig flex flex-wrap justify-start'
 								>
 									<div>
 										<tag>Normal</tag>
-										<sp />
+										<hsp />
 										<div style={appearanceStyle}>
-											<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+											<div className='wrapMargin flex flex-wrap justify-start'>
 												<FButton
 													appearance={this.state.buttonAppearance}
 													style={{ minWidth: 50 }}
@@ -724,7 +850,8 @@ export default class Style extends Component<Props> {
 													Simple Disabled
 												</FButton>
 											</div>
-											<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+											<sp />
+											<div className='wrapMargin flex flex-wrap justify-start'>
 												<div className='flex'>
 													<FButton
 														checkbox
@@ -796,10 +923,10 @@ export default class Style extends Component<Props> {
 
 									<div>
 										<tag>Invalid</tag>
-										<sp />
+										<hsp />
 										<div style={appearanceStyle}>
-											<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
-												<div className='flex'>
+											<div className='wrapMargin flex flex-wrap justify-start'>
+												<div className='flex items-center'>
 													<FButton
 														name='checkbox'
 														invalid='*'
@@ -814,7 +941,7 @@ export default class Style extends Component<Props> {
 														appearance={this.state.buttonAppearance}
 													/>
 												</div>{' '}
-												<div className='flex'>
+												<div className='flex items-center'>
 													<FButton
 														name='checkbox'
 														invalid='*'
@@ -832,7 +959,7 @@ export default class Style extends Component<Props> {
 													/>
 												</div>
 												{/* {' '}
-												<div className='flex'>
+												<div className='flex items-center'>
 													<FButton
 														name='checkbox'
 														invalid='*'
@@ -855,9 +982,9 @@ export default class Style extends Component<Props> {
 
 									<div>
 										<tag>Loading</tag>
-										<sp />
+										<hsp />
 										<div
-											className='wrapMarginTopLeft flex flex-wrap justify-start'
+											className='wrapMarginBig flex flex-wrap justify-start'
 											style={appearanceStyle}
 										>
 											<div className='flex-col items-center'>
@@ -903,16 +1030,16 @@ export default class Style extends Component<Props> {
 								title='Animation'
 								tags={['transition', '<Animated/>', '<motion.div/>']}
 							>
-								<div style={{ opacity: 0.5, textAlign: 'center' }}>
+								<div style={{ opacity: 0.75, fontSize: 13.5, textAlign: 'center' }}>
 									Click any card to toggle
 								</div>
 								<sp />
 								<tag>CSS</tag>
-								<sp />
+								<hsp />
 								<div
 									className={
 										desktop
-											? 'wrapMarginTopLeft flex flex-wrap justify-start'
+											? 'wrapMargin flex flex-wrap justify-start'
 											: 'flex-col wrapMarginBigVertical'
 									}
 								>
@@ -948,11 +1075,11 @@ export default class Style extends Component<Props> {
 								</div>
 								<sp />
 								<tag>{'<Animated/>'}</tag>
-								<sp />
+								<hsp />
 								<div
 									className={
 										desktop
-											? 'wrapMarginTopLeft flex flex-wrap justify-start'
+											? 'wrapMargin flex flex-wrap justify-start'
 											: 'flex-col wrapMarginBigVertical'
 									}
 								>
@@ -1151,11 +1278,64 @@ export default class Style extends Component<Props> {
 							</Section>
 
 							<Section title='CSS Modules'>
-								<div className={cssModule.class} style={{ ...styles.card }}>
-									<h1>
-										{'Hello. '}
-										<tag>h1</tag>
-									</h1>
+								<div className={'wrapMarginBig flex flex-wrap'}>
+									<div className={cssModule.example} style={{ ...styles.card }}>
+										<h1>
+											{'Hello. '}
+											<tag>h1</tag>
+										</h1>
+									</div>
+									<div className={cssModule.example_2} style={{ ...styles.card }}>
+										<h1>
+											{'Hello. '}
+											<tag>h1</tag>
+										</h1>
+									</div>
+								</div>
+							</Section>
+
+							<Section title='Custom DOM elements'>
+								<div
+									className={'wrapMarginBig flex flex-wrap'}
+									style={{ ...styles.card, fontSize: 13 }}
+								>
+									<div className='flex items-center'>
+										<tag style={customElement}>{'<sp/>'}</tag>
+										<hsp />
+										<div style={{ opacity: 0.85 }}>Space</div>
+									</div>
+									<div className='flex items-center'>
+										<tag style={customElement}>{'<hsp/>'}</tag>
+										<hsp />
+										<div style={{ opacity: 0.85 }}>Half of {'<sp/>'}</div>
+									</div>
+									<div className='flex items-center'>
+										<tag style={customElement}>{'<vr/>'}</tag>
+										<hsp />
+										<div style={{ opacity: 0.85 }}>
+											Same as {'<hr/>'} but vertical
+										</div>
+									</div>
+									<div className='flex items-center'>
+										<tag style={customElement}>{'<tag/>'}</tag>
+										<hsp />
+										<div style={{ opacity: 0.85 }}>Badge like container</div>
+									</div>
+									<div className='flex items-center'>
+										<tag style={customElement}>{'<hl/>'}</tag>
+										<hsp />
+										<div style={{ opacity: 0.85 }}>Highlight</div>
+									</div>
+									<div className='flex items-center'>
+										<tag style={customElement}>{'<m/>'}</tag>
+										<hsp />
+										<div style={{ opacity: 0.85 }}>Medium</div>
+									</div>
+									<div className='flex items-center'>
+										<tag style={customElement}>{'<bb/>'}</tag>
+										<hsp />
+										<div style={{ opacity: 0.85 }}>Bigger</div>
+									</div>
 								</div>
 							</Section>
 						</div>

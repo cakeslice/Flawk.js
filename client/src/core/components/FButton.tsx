@@ -167,7 +167,7 @@ export default class FButton extends TrackedComponent<Props> {
 			formIK && (formIK.touch || formIK.submitCount > 0) ? formIK.error : this.props.invalid
 
 		const checkbox = this.props.checkbox !== undefined
-		const mainStyle: React.CSSProperties & GlamorProps & { loadingColor?: string } = {
+		const mainStyle: React.CSSProperties & GlamorProps = {
 			fontSize: styles.defaultFontSize,
 			fontFamily: styles.font,
 			fontWeight: styles.buttonFontWeight || 500,
@@ -203,7 +203,6 @@ export default class FButton extends TrackedComponent<Props> {
 
 			background: styles.inputBackground || styles.colors.white,
 
-			loadingColor: config.replaceAlpha(styles.colors.black, 0.2),
 			color: config.replaceAlpha(styles.colors.black, global.nightMode ? 0.5 : 0.75),
 			borderColor: styles.colors.borderColor,
 
@@ -231,14 +230,12 @@ export default class FButton extends TrackedComponent<Props> {
 			},
 		}
 
-		let finalStyle: React.CSSProperties &
-			GlamorProps & { loadingColor?: string; name?: string } = {
+		let finalStyle: React.CSSProperties & GlamorProps & { name?: string } = {
 			...mainStyle,
 			...(this.props.appearance === 'primary' && {
 				background: styles.colors.main,
 				borderColor: styles.colors.main,
 				color: styles.colors.whiteDay,
-				loadingColor: config.replaceAlpha(styles.colors.whiteDay, 0.6),
 				':focus-visible': {
 					...mainStyle[':focus-visible'],
 					color: styles.colors.whiteDay,

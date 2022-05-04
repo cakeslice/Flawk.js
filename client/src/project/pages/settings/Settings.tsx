@@ -115,7 +115,7 @@ export default class Settings extends Component<DashboardProps> {
 									return (
 										<Form noValidate>
 											<ExitPrompt dirty={dirty} />
-											<div className='wrapMarginTopLeft flex flex-wrap justify-around'>
+											<div className='wrapMargin flex flex-wrap justify-around'>
 												<Field
 													component={FInput}
 													required
@@ -129,7 +129,7 @@ export default class Settings extends Component<DashboardProps> {
 													name='lastName'
 												/>
 											</div>
-											<div className='wrapMarginTopLeft flex flex-wrap justify-around'>
+											<div className='wrapMargin flex flex-wrap justify-around'>
 												<Field
 													component={FInput}
 													required
@@ -148,7 +148,7 @@ export default class Settings extends Component<DashboardProps> {
 												/>
 											</div>
 											<sp />
-											<div className='wrapMarginTopLeft flex flex-wrap justify-between'>
+											<div className='wrapMargin flex flex-wrap justify-between'>
 												<div className='flex items-center'>
 													<label
 														htmlFor={

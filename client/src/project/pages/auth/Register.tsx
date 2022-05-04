@@ -222,7 +222,7 @@ class Register extends Component<PropsFromRedux> {
 											}}
 											noValidate
 										>
-											<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+											<div className='wrapMargin flex flex-wrap justify-start'>
 												<Field
 													component={FInput}
 													required
@@ -239,7 +239,7 @@ class Register extends Component<PropsFromRedux> {
 													placeholder={'Doe'}
 												/>
 											</div>
-											<div className='wrapMarginTopLeft flex flex-wrap justify-start'>
+											<div className='wrapMargin flex flex-wrap justify-start'>
 												<Field
 													component={FInput}
 													required

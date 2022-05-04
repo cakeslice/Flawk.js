@@ -23,9 +23,9 @@ const _lineColorNight = 'rgba(255, 255, 255, 0.05)'
 const _black = 'rgba(30, 30, 30, 1)'
 const _white = 'rgba(255,255,255, 1)'
 
-const _main = 'rgba(51,108,251, 1)'
-const _mainLight = 'rgba(51,108,251, .85)'
-const _mainVeryLight = 'rgba(51,108,251, .15)'
+const _main = 'rgba(51, 108, 251, 1)'
+const _mainLight = 'rgba(51, 108, 251, .85)'
+const _mainVeryLight = 'rgba(51, 108, 251, .15)'
 
 const _green = 'rgba(40,201,134, 1)'
 const _red = 'rgba(250,61,91,1)'

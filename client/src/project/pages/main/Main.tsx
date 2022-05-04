@@ -75,7 +75,7 @@ export default class Main extends Component {
 								}}
 								appearance={'primary'}
 							>
-								Components
+								Get Started
 							</FButton>
 							<FButton
 								onClick={() => {
