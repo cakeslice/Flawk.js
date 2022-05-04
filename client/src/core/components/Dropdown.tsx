@@ -214,6 +214,8 @@ export default class Dropdown extends TrackedComponent<Props> {
 			borderColor: styles.colors.borderColor,
 			minHeight: styles.inputHeight,
 			minWidth: 150,
+			paddingLeft: styles.inputPaddingLeft,
+			paddingRight: styles.inputPaddingLeft,
 			width: '100%',
 
 			//
@@ -358,10 +360,7 @@ export default class Dropdown extends TrackedComponent<Props> {
 		const indicatorStyle = {
 			cursor: 'pointer',
 			opacity: this.props.dropdownIndicator || this.props.customInput ? 1 : 0.75,
-			paddingRight: 3,
-			paddingLeft: 4,
-			paddingTop: 0,
-			paddingBottom: 0,
+			padding: 0,
 			color: color && config.replaceAlpha(color, 0.5),
 			':hover': {
 				color: color && config.replaceAlpha(color, 0.35),
@@ -403,9 +402,10 @@ export default class Dropdown extends TrackedComponent<Props> {
 			valueContainer: (s): CSSObjectWithLabel => {
 				return {
 					...s,
-					padding: 2,
+					padding: 0,
 					paddingRight: 0,
-					paddingLeft: styles.inputPaddingLeft,
+					paddingLeft: 0,
+					paddingTop: 2,
 					...(this.props.button && {
 						display: 'flex',
 						justifyContent: 'center',
@@ -432,7 +432,6 @@ export default class Dropdown extends TrackedComponent<Props> {
 				return {
 					...styles,
 					...indicatorStyle,
-					paddingLeft: 0,
 				}
 			},
 			dropdownIndicator: (s): CSSObjectWithLabel => {

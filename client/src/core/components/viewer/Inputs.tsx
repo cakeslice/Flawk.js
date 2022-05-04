@@ -451,7 +451,8 @@ export default class Inputs extends Component {
 								<sp />
 								<div className='wrapMargin flex flex-wrap justify-start'>
 									<div className='flex items-center' style={{ paddingRight: 10 }}>
-										<p style={{ paddingBottom: 4.5 }}>Custom Input:</p>{' '}
+										<tag>Custom Input</tag>
+										<hsp />
 										<Dropdown
 											customInput
 											style={{ menu: { left: 0 } }}

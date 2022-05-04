@@ -352,7 +352,7 @@ export default class Layout extends QueryParams<
 							</Section>
 							<Section title='Table' tags={['<FTable/>']}>
 								<div>
-									<div className='flex'>
+									<div className='flex wrapMargin'>
 										<div className='grow wrapMargin flex flex-wrap justify-start'>
 											<FInput
 												name='buffered_search'
