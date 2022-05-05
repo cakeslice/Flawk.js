@@ -24,10 +24,8 @@ import _sortBy from 'lodash/sortBy'
 import { useStoreSelector } from 'project/redux/_store'
 import React, { useCallback, useEffect, useState } from 'react'
 import GitInfo from 'react-git-info/macro'
-import MediaQuery, { Context as ResponsiveContext } from 'react-responsive'
 import { Router } from 'react-router-dom'
 import { Bounce, toast, ToastContainer, ToastContentProps } from 'react-toastify'
-import FButton from './FButton'
 import './RouterBase.scss'
 
 //
@@ -514,124 +512,13 @@ export default function RouterBase({ children }: { children: React.ReactNode }) 
 	}, [])
 
 	return (
-		<MobileSimulator active={!config.prod && !config.staging}>
+		<>
 			<Router history={history}>
 				<ScrollToTop>{children}</ScrollToTop>
 			</Router>
 
 			<ToastContainer />
-		</MobileSimulator>
-	)
-}
-
-function MobileSimulator({ children, active }: { children: React.ReactNode; active: boolean }) {
-	const [hover, setHover] = useState(false)
-	const [mobileViewer, setMobileViewer] = useState<string | undefined>(undefined)
-
-	useEffect(() => {
-		void (async function () {
-			const storedMobileViewer = await global.storage.getItem('mobile_viewer')
-			if (storedMobileViewer) setMobileViewer(storedMobileViewer)
-		})()
-	}, [])
-
-	const enabled = mobileViewer === 'true'
-	return (
-		<MediaQuery minWidth={config.mobileWidthTrigger}>
-			{(desktop) => (
-				<>
-					{active && desktop && (
-						<div
-							onMouseEnter={() => setHover(true)}
-							onMouseLeave={() => setHover(false)}
-							style={
-								enabled
-									? {
-											position: 'fixed',
-											bottom: 75,
-											right: 25,
-											overflow: 'hidden',
-											height: 568,
-											width: 320,
-											maxHeight: 568,
-											maxWidth: 320,
-											zIndex: 999,
-											boxShadow: hover ? styles.mediumShadow : undefined,
-											background: styles.colors.background,
-											opacity: hover ? 1 : 0.75,
-											transition: 'transform 200ms',
-											transformOrigin: '100% 100%',
-											transform: hover ? 'scale(1)' : 'scale(.5)',
-
-											borderColor: global.nightMode
-												? 'rgba(255, 255, 255, 0.1)'
-												: 'rgba(0, 0, 0, 0.1)',
-											borderWidth: 1,
-											borderStyle: 'solid',
-									  }
-									: {
-											opacity: hover ? 1 : 0.75,
-											position: 'fixed',
-											bottom: 37,
-											right: 35,
-											zIndex: 999,
-									  }
-							}
-						>
-							{enabled ? (
-								<ResponsiveContext.Provider value={{ width: 300, height: 620 }}>
-									<div
-										style={{
-											width: '100%',
-											height: '100%',
-											overflow: 'scroll',
-										}}
-									>
-										{children}
-										<div style={{ maxHeight: 0 }}>
-											<div
-												style={{
-													position: 'absolute',
-													transformOrigin: '100% 100%',
-													transform: 'scale(.5)',
-													bottom: 7.5,
-													right: 7.5,
-													opacity: 0.5,
-													zIndex: 99999,
-												}}
-											>
-												<FButton
-													appearance='primary'
-													onClick={async () => {
-														await global.storage.setItem(
-															'mobile_viewer',
-															'false'
-														)
-														setMobileViewer('false')
-													}}
-												>
-													Close
-												</FButton>
-											</div>
-										</div>
-									</div>
-								</ResponsiveContext.Provider>
-							) : (
-								<FButton
-									onClick={async () => {
-										await global.storage.setItem('mobile_viewer', 'true')
-										setMobileViewer('true')
-									}}
-								>
-									Mobile
-								</FButton>
-							)}
-						</div>
-					)}
-					{children}
-				</>
-			)}
-		</MediaQuery>
+		</>
 	)
 }
 

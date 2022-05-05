@@ -252,388 +252,414 @@ export default class FTable extends QueryParams<
 							>
 								<div
 									style={{
-										...wrapperStyle,
-										//
-										display: 'flex',
-										flexDirection: 'column',
-										width: '100%',
-										minHeight: 250,
-										overflowY:
-											global.olderBrowser && config.appleBrowser
-												? 'auto'
-												: 'hidden',
-										overflowX: 'auto',
-										...(overrideStyle && overrideStyle.wrapperStyle),
-
-										maxHeight: '100%',
 										flexGrow: 1,
+										overflow: 'hidden',
+										...wrapperStyle,
+										...(overrideStyle && overrideStyle.wrapperStyle),
 									}}
 								>
 									<div
-										className='flex-col'
 										style={{
-											width: 'fit-content',
-											minWidth: '100%',
+											display: 'flex',
+											flexDirection: 'column',
+											width: '100%',
+											overflowY:
+												global.olderBrowser && config.appleBrowser
+													? 'auto'
+													: 'hidden',
+											overflowX: 'auto',
+
 											minHeight: 250,
-											height: props.height || '100%',
+											maxHeight: '100%',
 										}}
 									>
-										{!props.hideHeader && (
-											<div
-												style={{
-													...headerWrapperStyle,
-													...(overrideStyle &&
-														overrideStyle.headerWrapperStyle),
-												}}
-											>
-												<div
-													style={{
-														display: 'flex',
-														justifyContent: 'space-between',
-														alignItems: 'center',
-														width: '100%',
-														minHeight: 36,
-														...(overrideStyle &&
-															overrideStyle.headerStyle),
-													}}
-												>
-													{props.expandContent && (
-														<div
-															style={{ minWidth: expandButtonWidth }}
-														/>
-													)}
-													{props.columns &&
-														props.columns
-															.filter((c) =>
-																c.hide === 'custom'
-																	? customQuery
-																		? true
-																		: false
-																	: desktop
-																	? c
-																	: c.hide === 'mobile'
-																	? false
-																	: true
-															)
-															.map((c, i: number) => {
-																const s: React.CSSProperties = {
-																	...headerCellStyle,
-																	width:
-																		(
-																			100 *
-																			(c.grow !== undefined
-																				? c.grow
-																				: 1)
-																		).toString() + '%',
-																	...(overrideStyle &&
-																		overrideStyle.headerCellStyle),
-																	...(c.onClick && {
-																		cursor: 'pointer',
-																		display: 'flex',
-																	}),
-																	...(c.style && c.style),
-																}
-																if (c.onClick)
-																	return (
-																		<button
-																			type='button'
-																			onClick={() => {
-																				const key =
-																					c.selector
-																				this.setQueryParams(
-																					{
-																						sort:
-																							this
-																								.queryParams
-																								.sort ===
-																							key
-																								? this
-																										.queryParams
-																										.order ===
-																								  'asc'
-																									? key
-																									: undefined
-																								: key,
-																						order:
-																							this
-																								.queryParams
-																								.sort ===
-																							key
-																								? this
-																										.queryParams
-																										.order ===
-																								  'asc'
-																									? 'desc'
-																									: undefined
-																								: 'asc',
-																					}
-																				)
-																				c.onClick &&
-																					c.onClick()
-																			}}
-																			key={i}
-																			style={s}
-																		>
-																			{c.name}
-																			<div
-																				style={{
-																					minWidth: 8,
-																				}}
-																			/>
-																			<div>
-																				{sorting(
-																					config.replaceAlpha(
-																						s.color ||
-																							styles
-																								.colors
-																								.black,
-																						0.25
-																					),
-																					config.replaceAlpha(
-																						s.color ||
-																							styles
-																								.colors
-																								.black,
-																						0.75
-																					),
-																					this.queryParams
-																						.sort ===
-																						c.selector
-																						? (this
-																								.queryParams
-																								.order as
-																								| 'asc'
-																								| 'desc'
-																								| undefined)
-																						: undefined
-																				)}
-																			</div>
-																		</button>
-																	)
-																else
-																	return (
-																		<div key={i} style={s}>
-																			{c.name}
-																		</div>
-																	)
-															})}
-												</div>
-											</div>
-										)}
-
-										{props.isLoading && (
-											<div
-												style={{
-													position: 'relative',
-													zIndex: 1,
-													top: 50,
-												}}
-											>
-												<div
-													style={{
-														position: 'absolute',
-														width: '100%',
-														display: 'flex',
-														justifyContent: 'center',
-														alignItems: 'center',
-													}}
-												>
-													<Loading />
-												</div>
-											</div>
-										)}
-
 										<div
-											id={'f-table-' + this.state.uuid}
-											ref={this.setScrollYRef}
+											className='flex-col'
 											style={{
-												opacity: props.isLoading ? 0.5 : undefined,
-												overflow: 'hidden overlay',
-												flexGrow: 1,
-												zIndex: 0,
+												width: 'fit-content',
+												minWidth: '100%',
+												minHeight: 250,
+												height: props.height || '100%',
 											}}
 										>
-											{props.data &&
-												props.data.map((d) => {
-													const k =
-														typeof props.keySelector === 'function'
-															? props.keySelector(d)
-															: (_get(d, props.keySelector) as string)
-
-													let sR: undefined | SpecialRow
-													if (d.specialRow) {
-														sR = _find(props.specialRows, {
-															key: d.specialRow,
-														})
-													}
-
-													const rSFinal =
-														d.specialRow && sR && sR.style
-															? css({
-																	...rowStyle,
-																	...(overrideStyle &&
-																		overrideStyle.rowStyle),
-																	...sR.style,
-															  })
-															: rS
-
-													const expandContent =
-														(!sR || sR.expandContent) &&
-														props.expandContent &&
-														props.expandContent(d)
-
-													return !this.state.containment ? null : (
-														<VisibilitySensor
-															intervalCheck={true}
-															intervalDelay={100}
-															// Interval check is the only one that deals with all possible cases
-															partialVisibility
-															key={k}
-															containment={this.state.containment}
-														>
-															{({ isVisible }) => {
-																if (!isVisible)
-																	return (
-																		<div
-																			style={{
-																				...rWS,
-																				opacity: 0.5,
-																			}}
-																		>
-																			<div {...rSFinal}></div>
-																		</div>
-																	)
-																const rowKey = 'r_' + k
-																return (
-																	<Row
-																		isLoadingID={
-																			this.isLoadingID || ''
-																		}
-																		triggerUpdateID={
-																			this.props
-																				.triggerUpdateID ||
-																			undefined
-																		}
-																		trackedName={rowKey}
-																		isVisible={isVisible}
-																		style={rWS}
-																		rowStyle={rSFinal}
-																		expandContent={
-																			expandContent
-																		}
-																		cellPadding={cellPadding}
-																		cellPaddingY={cellPaddingY}
-																	>
-																		{d.specialRow && sR
-																			? sR.row(d)
-																			: props.columns &&
-																			  props.columns
-																					.filter((c) =>
-																						c.hide ===
-																						'custom'
-																							? customQuery
-																								? true
-																								: false
-																							: desktop
-																							? c
-																							: c.hide ===
-																							  'mobile'
-																							? false
-																							: true
+											{!props.hideHeader && (
+												<div
+													style={{
+														...headerWrapperStyle,
+														...(overrideStyle &&
+															overrideStyle.headerWrapperStyle),
+													}}
+												>
+													<div
+														style={{
+															display: 'flex',
+															justifyContent: 'space-between',
+															alignItems: 'center',
+															width: '100%',
+															minHeight: 36,
+															...(overrideStyle &&
+																overrideStyle.headerStyle),
+														}}
+													>
+														{props.expandContent && (
+															<div
+																style={{
+																	minWidth: expandButtonWidth,
+																}}
+															/>
+														)}
+														{props.columns &&
+															props.columns
+																.filter((c) =>
+																	c.hide === 'custom'
+																		? customQuery
+																			? true
+																			: false
+																		: desktop
+																		? c
+																		: c.hide === 'mobile'
+																		? false
+																		: true
+																)
+																.map((c, i: number) => {
+																	const s: React.CSSProperties = {
+																		...(this.queryParams
+																			.sort ===
+																			c.selector && {
+																			color: styles.colors
+																				.main,
+																		}),
+																		...headerCellStyle,
+																		width:
+																			(
+																				100 *
+																				(c.grow !==
+																				undefined
+																					? c.grow
+																					: 1)
+																			).toString() + '%',
+																		...(overrideStyle &&
+																			overrideStyle.headerCellStyle),
+																		...(c.onClick && {
+																			cursor: 'pointer',
+																			display: 'flex',
+																		}),
+																		...(c.style && c.style),
+																	}
+																	if (c.onClick)
+																		return (
+																			<button
+																				type='button'
+																				onClick={() => {
+																					const key =
+																						c.selector
+																					this.setQueryParams(
+																						{
+																							sort:
+																								this
+																									.queryParams
+																									.sort ===
+																								key
+																									? this
+																											.queryParams
+																											.order ===
+																									  'asc'
+																										? key
+																										: undefined
+																									: key,
+																							order:
+																								this
+																									.queryParams
+																									.sort ===
+																								key
+																									? this
+																											.queryParams
+																											.order ===
+																									  'asc'
+																										? 'desc'
+																										: undefined
+																									: 'asc',
+																						}
 																					)
-																					.map(
-																						(
-																							c,
-																							i: number
-																						) => (
-																							<div
-																								key={
-																									k +
-																									'_' +
-																									i.toString()
-																								}
-																								style={{
-																									overflow:
-																										'hidden',
-																									minWidth: 50,
-																									width:
-																										(
-																											100 *
-																											(c.grow !==
-																											undefined
-																												? c.grow
-																												: 1)
-																										).toString() +
-																										'%',
-																									padding:
-																										cellPadding,
-																									paddingTop:
-																										cellPaddingY,
-																									paddingBottom:
-																										cellPaddingY,
-																									...(c.style &&
-																										c.style),
-																								}}
-																							>
+																					c.onClick &&
+																						c.onClick()
+																				}}
+																				key={i}
+																				style={s}
+																			>
+																				{c.name}
+																				<div
+																					style={{
+																						minWidth: 8,
+																					}}
+																				/>
+																				<div>
+																					{sorting(
+																						config.replaceAlpha(
+																							s.color ||
+																								styles
+																									.colors
+																									.black,
+																							0.25
+																						),
+																						config.replaceAlpha(
+																							s.color ||
+																								styles
+																									.colors
+																									.main,
+																							1
+																						),
+																						this
+																							.queryParams
+																							.sort ===
+																							c.selector
+																							? (this
+																									.queryParams
+																									.order as
+																									| 'asc'
+																									| 'desc'
+																									| undefined)
+																							: undefined
+																					)}
+																				</div>
+																			</button>
+																		)
+																	else
+																		return (
+																			<div key={i} style={s}>
+																				{c.name}
+																			</div>
+																		)
+																})}
+													</div>
+												</div>
+											)}
+
+											{props.isLoading && (
+												<div
+													style={{
+														position: 'relative',
+														zIndex: 1,
+														top: 50,
+													}}
+												>
+													<div
+														style={{
+															position: 'absolute',
+															width: '100%',
+															display: 'flex',
+															justifyContent: 'center',
+															alignItems: 'center',
+														}}
+													>
+														<Loading />
+													</div>
+												</div>
+											)}
+
+											<div
+												id={'f-table-' + this.state.uuid}
+												ref={this.setScrollYRef}
+												style={{
+													opacity: props.isLoading ? 0.5 : undefined,
+													overflow: 'hidden overlay',
+													flexGrow: 1,
+													zIndex: 0,
+												}}
+											>
+												{props.data &&
+													props.data.map((d) => {
+														const k =
+															typeof props.keySelector === 'function'
+																? props.keySelector(d)
+																: (_get(
+																		d,
+																		props.keySelector
+																  ) as string)
+
+														let sR: undefined | SpecialRow
+														if (d.specialRow) {
+															sR = _find(props.specialRows, {
+																key: d.specialRow,
+															})
+														}
+
+														const rSFinal =
+															d.specialRow && sR && sR.style
+																? css({
+																		...rowStyle,
+																		...(overrideStyle &&
+																			overrideStyle.rowStyle),
+																		...sR.style,
+																  })
+																: rS
+
+														const expandContent =
+															(!sR || sR.expandContent) &&
+															props.expandContent &&
+															props.expandContent(d)
+
+														return !this.state.containment ? null : (
+															<VisibilitySensor
+																intervalCheck={true}
+																intervalDelay={100}
+																// Interval check is the only one that deals with all possible cases
+																partialVisibility
+																key={k}
+																containment={this.state.containment}
+															>
+																{({ isVisible }) => {
+																	if (!isVisible)
+																		return (
+																			<div
+																				style={{
+																					...rWS,
+																					opacity: 0.5,
+																				}}
+																			>
+																				<div
+																					{...rSFinal}
+																				></div>
+																			</div>
+																		)
+																	const rowKey = 'r_' + k
+																	return (
+																		<Row
+																			isLoadingID={
+																				this.isLoadingID ||
+																				''
+																			}
+																			triggerUpdateID={
+																				this.props
+																					.triggerUpdateID ||
+																				undefined
+																			}
+																			trackedName={rowKey}
+																			isVisible={isVisible}
+																			style={rWS}
+																			rowStyle={rSFinal}
+																			expandContent={
+																				expandContent
+																			}
+																			cellPadding={
+																				cellPadding
+																			}
+																			cellPaddingY={
+																				cellPaddingY
+																			}
+																		>
+																			{d.specialRow && sR
+																				? sR.row(d)
+																				: props.columns &&
+																				  props.columns
+																						.filter(
+																							(c) =>
+																								c.hide ===
+																								'custom'
+																									? customQuery
+																										? true
+																										: false
+																									: desktop
+																									? c
+																									: c.hide ===
+																									  'mobile'
+																									? false
+																									: true
+																						)
+																						.map(
+																							(
+																								c,
+																								i: number
+																							) => (
 																								<div
+																									key={
+																										k +
+																										'_' +
+																										i.toString()
+																									}
 																									style={{
-																										width: '100%',
-																										display:
-																											'inline-grid',
-																										textAlign:
-																											'left',
-																										...(c.cell &&
-																											overrideStyle &&
-																											overrideStyle.cellStyle),
-																										...(c.cell &&
-																											c.rowStyle &&
-																											c.rowStyle),
+																										overflow:
+																											'hidden',
+																										minWidth: 50,
+																										width:
+																											(
+																												100 *
+																												(c.grow !==
+																												undefined
+																													? c.grow
+																													: 1)
+																											).toString() +
+																											'%',
+																										padding:
+																											cellPadding,
+																										paddingTop:
+																											cellPaddingY,
+																										paddingBottom:
+																											cellPaddingY,
+																										...(c.style &&
+																											c.style),
 																									}}
 																								>
-																									{(isVisible ||
-																										c.alwaysVisible) &&
-																										(c.cell ? (
-																											c.cell(
-																												_get(
-																													d,
-																													c.selector
-																												) as Value,
-																												d,
-																												isVisible
-																											)
-																										) : (
-																											<div
-																												style={{
-																													textOverflow:
-																														'ellipsis',
-																													overflow:
-																														'hidden',
-																													whiteSpace:
-																														'nowrap',
-																													...(overrideStyle &&
-																														overrideStyle.cellStyle),
-																													...(c.rowStyle &&
-																														c.rowStyle),
-																												}}
-																											>
-																												{
+																									<div
+																										style={{
+																											width: '100%',
+																											display:
+																												'inline-grid',
+																											textAlign:
+																												'left',
+																											...(c.cell &&
+																												overrideStyle &&
+																												overrideStyle.cellStyle),
+																											...(c.cell &&
+																												c.rowStyle &&
+																												c.rowStyle),
+																										}}
+																									>
+																										{(isVisible ||
+																											c.alwaysVisible) &&
+																											(c.cell ? (
+																												c.cell(
 																													_get(
 																														d,
 																														c.selector
-																													) as Value
-																												}
-																											</div>
-																										))}
+																													) as Value,
+																													d,
+																													isVisible
+																												)
+																											) : (
+																												<div
+																													style={{
+																														textOverflow:
+																															'ellipsis',
+																														overflow:
+																															'hidden',
+																														whiteSpace:
+																															'nowrap',
+																														...(overrideStyle &&
+																															overrideStyle.cellStyle),
+																														...(c.rowStyle &&
+																															c.rowStyle),
+																													}}
+																												>
+																													{
+																														_get(
+																															d,
+																															c.selector
+																														) as Value
+																													}
+																												</div>
+																											))}
+																									</div>
 																								</div>
-																							</div>
-																						)
-																					)}
-																	</Row>
-																)
-															}}
-														</VisibilitySensor>
-													)
-												})}
+																							)
+																						)}
+																		</Row>
+																	)
+																}}
+															</VisibilitySensor>
+														)
+													})}
+											</div>
 										</div>
 									</div>
 

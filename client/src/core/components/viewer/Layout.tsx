@@ -393,10 +393,7 @@ export default class Layout extends QueryParams<
 										{this.state.selected.length > 0 ? (
 											<div className='wrapMargin flex flex-wrap justify-end items-end'>
 												<div style={{ minWidth: 80 }}>
-													<span style={{ fontWeight: 500 }}>
-														{this.state.selected.length}
-													</span>{' '}
-													selected
+													<m>{this.state.selected.length}</m> selected
 												</div>
 											</div>
 										) : (

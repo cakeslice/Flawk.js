@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">flawk-frontend</string>
+    <string name="app_name">YOUR_APP</string>
     <string name="title_activity_main">flawk-frontend</string>
     <string name="package_name">io.flawk.mobile</string>
     <string name="custom_url_scheme">io.flawk.mobile</string>

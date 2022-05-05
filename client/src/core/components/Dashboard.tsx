@@ -72,6 +72,7 @@ export type DashboardRoute = {
 type DashboardProps = {
 	style?: React.CSSProperties
 	placeholder?: React.ReactNode
+	containerStyle?: React.CSSProperties
 	placeholderStyle?: React.CSSProperties
 	mobileStyle?: React.CSSProperties
 	wrapperComponent: React.ReactNode
@@ -244,6 +245,7 @@ class DashboardClass extends TrackedComponent<
 									left: 0,
 									top: 0,
 									zIndex: 30,
+									...this.props.containerStyle,
 								}
 								const mobileStyle: React.CSSProperties = {
 									transition:
@@ -258,6 +260,7 @@ class DashboardClass extends TrackedComponent<
 									top: 0,
 									zIndex: 30,
 									background: styles.colors.white,
+									...this.props.containerStyle,
 									...this.props.style,
 								}
 
