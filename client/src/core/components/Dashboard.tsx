@@ -72,6 +72,7 @@ export type DashboardRoute = {
 type DashboardProps = {
 	style?: React.CSSProperties
 	placeholder?: React.ReactNode
+	placeholderStyle?: React.CSSProperties
 	mobileStyle?: React.CSSProperties
 	wrapperComponent: React.ReactNode
 	path: string
@@ -174,7 +175,7 @@ class DashboardClass extends TrackedComponent<
 				})
 		})
 
-		const placeholderStyle = {
+		const placeholderCard = {
 			borderRadius: 5,
 			background: config.replaceAlpha(styles.colors.black, global.nightMode ? 0.075 : 0.075),
 		}
@@ -187,7 +188,7 @@ class DashboardClass extends TrackedComponent<
 			>
 				<div
 					style={{
-						...placeholderStyle,
+						...placeholderCard,
 						height: 30,
 						width: 200,
 					}}
@@ -196,7 +197,7 @@ class DashboardClass extends TrackedComponent<
 				<sp />
 				<div
 					style={{
-						...placeholderStyle,
+						...placeholderCard,
 						width: '90%',
 						height: '40vh',
 					}}
@@ -205,14 +206,18 @@ class DashboardClass extends TrackedComponent<
 				<sp />
 				<div
 					style={{
-						...placeholderStyle,
+						...placeholderCard,
 						width: '50%',
 						height: '20vh',
 					}}
 				></div>
 			</div>
 		)
-		const placeholder = this.props.placeholder || defaultPlaceholder
+		const placeholder = (
+			<div style={this.props.placeholderStyle}>
+				{this.props.placeholder || defaultPlaceholder}
+			</div>
+		)
 
 		return (
 			<MediaQuery minWidth={this.props.bigScreenWidth || 1450}>

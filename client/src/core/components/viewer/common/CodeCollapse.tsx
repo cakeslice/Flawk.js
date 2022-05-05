@@ -6,7 +6,6 @@
  */
 
 import CodeBlock, { Lang } from 'core/components/CodeBlock'
-import OutsideAlerter from 'core/components/OutsideAlerter'
 import Tooltip from 'core/components/Tooltip'
 import TrackedComponent from 'core/components/TrackedComponent'
 import config from 'core/config'
@@ -30,6 +29,7 @@ const code = (color: string) => (
 )
 
 type Props = {
+	openStyle?: React.CSSProperties
 	containerStyle?: React.CSSProperties
 	codeStyle?: React.CSSProperties
 	className?: string
@@ -43,24 +43,8 @@ export default class CodeCollapse extends TrackedComponent<Props> {
 		return this.deepEqualityCheck(nextProps, nextState)
 	}
 
-	constructor(props: Props) {
-		super(props)
-
-		this.setWrapperRef = this.setWrapperRef.bind(this)
-	}
-	timer: ReturnType<typeof setTimeout> | undefined = undefined
-
 	state = {
 		isOpen: false,
-	}
-
-	wrapperRef: HTMLElement | null = null
-	setWrapperRef(instance: HTMLElement | null) {
-		this.wrapperRef = instance
-	}
-
-	componentWillUnmount() {
-		if (this.timer) clearTimeout(this.timer)
 	}
 
 	render() {
@@ -69,97 +53,71 @@ export default class CodeCollapse extends TrackedComponent<Props> {
 				{(desktop) => (
 					<MediaQuery minWidth={880}>
 						{(tablet) => (
-							<OutsideAlerter
-								trackedName='CodeCollapse'
-								delay
-								clickedOutside={() => {
-									this.setState({ isOpen: false })
-								}}
+							<div
+								className={this.props.className}
+								style={{ ...(this.state.isOpen && this.props.openStyle) }}
 							>
-								<div ref={this.setWrapperRef} className={this.props.className}>
-									<div className={'flex-col items-end'}>
-										<div style={{ width: 0 }} className={'flex-col items-end'}>
-											<Tooltip
-												hidden={!tablet}
-												tooltipProps={{ placement: 'left' }}
-												content='Show code'
+								<div className={'flex-col items-end'}>
+									<Tooltip
+										hidden={!tablet}
+										tooltipProps={{ placement: 'top' }}
+										content='Show code'
+									>
+										<button
+											type='button'
+											onClick={() => {
+												this.setState({
+													isOpen: !this.state.isOpen,
+												})
+											}}
+											style={{
+												display: 'flex',
+												alignItems: 'center',
+											}}
+										>
+											<tag
+												style={{
+													...(this.state.isOpen && {
+														background: styles.colors.mainVeryLight,
+														opacity: 1,
+													}),
+												}}
 											>
-												<button
-													type='button'
-													onClick={() => {
-														if (!this.state.isOpen) {
-															if (this.timer) clearTimeout(this.timer)
-															this.timer = setTimeout(() => {
-																if (!desktop)
-																	window.scrollTo({
-																		top:
-																			this.wrapperRef!
-																				.offsetTop - 100,
-																		behavior: 'smooth',
-																	})
-															}, 400)
-														}
-														this.setState({
-															isOpen: !this.state.isOpen,
-														})
-													}}
+												<div
 													style={{
 														display: 'flex',
 														alignItems: 'center',
+														width: 21,
+														height: 21,
 													}}
 												>
-													<tag
-														style={{
-															...(this.state.isOpen && {
-																background:
-																	styles.colors.mainVeryLight,
-																opacity: 1,
-															}),
-														}}
-													>
-														<div
-															style={{
-																display: 'flex',
-																alignItems: 'center',
-																width: 21,
-																height: 21,
-															}}
-														>
-															{code(
-																this.state.isOpen
-																	? styles.colors.main
-																	: config.replaceAlpha(
-																			styles.colors.black,
-																			0.5
-																	  )
-															)}
-														</div>
-													</tag>
-												</button>
-											</Tooltip>
-										</div>
-										<div
-											style={{
-												alignSelf: 'center',
-												width: '100%',
-												maxWidth: !tablet ? undefined : 600,
-											}}
-										>
-											<div style={{ minHeight: 12, minWidth: 0 }} />
-											{this.state.isOpen && (
-												<CodeBlock
-													animate
-													style={this.props.codeStyle}
-													containerStyle={this.props.containerStyle}
-													noPrettier
-													lang={this.props.lang}
-													data={this.props.data}
-												/>
-											)}
-										</div>
-									</div>
+													{code(
+														this.state.isOpen
+															? styles.colors.main
+															: config.replaceAlpha(
+																	styles.colors.black,
+																	0.5
+															  )
+													)}
+												</div>
+											</tag>
+										</button>
+									</Tooltip>
 								</div>
-							</OutsideAlerter>
+								{this.state.isOpen && (
+									<>
+										<hsp />
+										<CodeBlock
+											animate
+											style={this.props.codeStyle}
+											containerStyle={this.props.containerStyle}
+											noPrettier
+											lang={this.props.lang}
+											data={this.props.data}
+										/>
+									</>
+								)}
+							</div>
 						)}
 					</MediaQuery>
 				)}

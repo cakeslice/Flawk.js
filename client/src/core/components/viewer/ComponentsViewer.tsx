@@ -117,14 +117,15 @@ export default class ComponentsViewer extends Component {
 						</>
 					),
 			},
-			{
+			/* {
 				defaultRoute: true,
 				name: 'Get Started',
 				customIcon: (active) => iconWrapper(startLogo, active, 22),
 				id: 'start',
 				page: Start,
-			},
+			}, */
 			{
+				defaultRoute: true,
 				name: 'Style',
 				customIcon: (active) => iconWrapper(styleLogo, active, 22),
 				id: 'style',
@@ -289,6 +290,9 @@ export default class ComponentsViewer extends Component {
 						horizontal={this.state.horizontalDashboard}
 						horizontalHeight={50}
 						path={'/components/'}
+						placeholderStyle={{
+							padding: '0% 5%',
+						}}
 						style={{ background: styles.colors.white }}
 						linkStyle={{
 							...(this.state.horizontalDashboard && desktop && { height: 40 }),
@@ -324,12 +328,10 @@ class Wrapper extends Component<{ children: React.ReactNode }> {
 				{(desktop) => (
 					<div
 						style={{
-							padding: desktop ? '5%' : '5%',
-							...(!desktop && { paddingTop: 40, paddingBottom: 40 }),
-							//
+							//padding: desktop ? '5%' : '5%',
 							paddingTop: desktop ? 80 : 40,
-							maxWidth: 1700,
 							paddingBottom: 160,
+							maxWidth: 1700,
 						}}
 					>
 						{this.props.children}
@@ -350,35 +352,23 @@ export const Section: React.FC<{
 }> = ({ children, title, top, tags, code, lang, description }) => {
 	const id = title.replaceAll(' ', '_').toLowerCase()
 
-	const d = description && (
-		<div
-			className={cssModule.section}
-			style={{
-				padding: '10px 15px',
-				borderRadius: 5,
-				border: '1px solid ' + styles.colors.lineColor,
-				borderLeft: '6px solid ' + config.replaceAlpha(styles.colors.black, 0.1),
-				fontSize: 13.5,
-				lineHeight: '19px',
-				//width: 'fit-content',
-				color: config.replaceAlpha(styles.colors.black, 0.85),
-				background: config.replaceAlpha(styles.colors.white, 0.5),
-			}}
-		>
-			{description}
-		</div>
-	)
 	return (
 		<MediaQuery minWidth={880}>
 			{(tablet) => (
 				<>
-					{!top && <sp />}
-					{!top && <sp />}
-					{!top && <sp />}
-					{!top && <sp />}
+					{!top && (
+						<>
+							<sp />
+							<sp />
+						</>
+					)}
 					<Anchor id={id} updateHash>
-						<div className={(tablet ? 'flex' : 'flex-col') + ' w-full'}>
-							<div className={code && 'grow'}>
+						<>
+							<div
+								style={{
+									padding: tablet ? '0% 5%' : '0% 5%',
+								}}
+							>
 								<div className='flex'>
 									<h3>{title}</h3>
 									{tags && (
@@ -423,51 +413,59 @@ export const Section: React.FC<{
 										</div>
 									)}
 								</div>
-								{code && (
-									<>
-										{!tags ? <hsp /> : <sp />}
-										{!tags && d && <hsp />}
-										{d}
-										{d && <sp />}
-										{!tags && !d && <hsp />} <hsp />
-										{children}
-									</>
+								{!tags ? <hsp /> : <sp />}
+								{!tags && description && <hsp />}
+								{(code || description) && (
+									<div
+										className={cssModule.section}
+										style={{
+											flexDirection: tablet ? 'row' : 'column',
+											padding: '10px 15px',
+											borderRadius: 5,
+											border: '1px solid ' + styles.colors.lineColor,
+											borderLeft:
+												'6px solid ' +
+												config.replaceAlpha(styles.colors.black, 0.1),
+											fontSize: 13.5,
+											lineHeight: '19px',
+											//width: 'fit-content',
+											color: config.replaceAlpha(styles.colors.black, 0.85),
+											background: config.replaceAlpha(
+												styles.colors.white,
+												0.5
+											),
+										}}
+									>
+										<div className='grow'>{description}</div>
+										{code && (
+											<>
+												<hsp />
+												<CodeCollapse
+													className={tablet ? 'flex' : ''}
+													openStyle={{
+														flexDirection: tablet
+															? 'row-reverse'
+															: undefined,
+														width: tablet ? undefined : '100%',
+													}}
+													data={code}
+													lang={lang || 'tsx'}
+												></CodeCollapse>
+											</>
+										)}
+									</div>
 								)}
+								{description && <sp />}
+								{!tags && !description && <hsp />} <hsp />
 							</div>
-							{code && (
-								<div
-									className={tablet ? 'flex justify-end' : 'w-full'}
-									style={{
-										marginTop: !tablet ? 25 : 0,
-										justifySelf: !tablet ? 'flex-end' : undefined,
-									}}
-								>
-									<CodeCollapse
-										containerStyle={{
-											width: tablet ? 450 : undefined,
-											maxHeight: '100%',
-											//height: desktop ? 600 : undefined,
-										}}
-										codeStyle={{
-											marginLeft: tablet ? 25 : undefined,
-										}}
-										data={code}
-										lang={lang || 'tsx'}
-									></CodeCollapse>
-								</div>
-							)}
-						</div>
-					</Anchor>
-					{!code && (
-						<>
-							{!tags ? <hsp /> : <sp />}
-							{!tags && d && <hsp />}
-							{d}
-							{d && <sp />}
-							{!tags && !d && <hsp />} <hsp />
-							{children}
+
+							<div style={{ padding: tablet ? '0% 5%' : '0% 5%' }}>{children}</div>
+							<sp />
+							<sp />
+							<sp />
+							<hr />
 						</>
-					)}
+					</Anchor>
 				</>
 			)}
 		</MediaQuery>

@@ -397,8 +397,6 @@ class DashboardWrapper extends Component<DashboardWrapperProps> {
 					<div
 						style={{
 							padding: desktop ? '5%' : '5%',
-							...(!desktop && { paddingTop: 40, paddingBottom: 40 }),
-							//
 							paddingTop: desktop ? 80 : 40,
 							paddingBottom: 80,
 							//maxWidth: 1200,

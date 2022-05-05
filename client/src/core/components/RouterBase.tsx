@@ -104,7 +104,7 @@ function addFlagFunction(
 											? styles.colors.orange
 											: type === 'info'
 											? styles.colors.main
-											: styles.colors.black,
+											: config.replaceAlpha(styles.colors.black, 0.85),
 								}}
 							>
 								{title}

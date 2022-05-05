@@ -57,14 +57,14 @@ export default function CodeBlock(props: {
 			{(desktop) => (
 				<Animated
 					trackedName='CodeBlock'
-					effects={props.animate ? (desktop ? ['fade', 'left-scale'] : ['fade']) : []}
+					effects={props.animate ? (desktop ? ['fade'] : ['fade']) : []}
 					style={props.containerStyle}
 					duration={!desktop ? 0.1 : 0.1}
 					className='flex'
 				>
 					<SyntaxHighlighter
-						wrapLongLines
-						wrapLines
+						wrapLongLines={!desktop}
+						wrapLines={!desktop}
 						language={props.lang}
 						style={global.nightMode ? SyntaxStyle : SyntaxStyleLight}
 						customStyle={{
@@ -72,7 +72,8 @@ export default function CodeBlock(props: {
 							background: styles.colors.white /* global.nightMode
 								? styles.colors.white
 								: config.replaceAlpha(styles.colors.white, 0.5) */,
-							padding: '16px 16px',
+							padding: '11px 16px',
+							paddingRight: '32px',
 							fontSize: 13.5,
 							lineHeight: '1.33em',
 							tabSize: 3,
@@ -105,7 +106,7 @@ export default function CodeBlock(props: {
 							  })}
 					</SyntaxHighlighter>
 					<div style={{ width: 0 }}>
-						<div style={{ position: 'relative', right: 35, top: 20 }}>
+						<div style={{ position: 'relative', right: 29, top: 12 }}>
 							<Tooltip
 								hidden={!desktop}
 								tooltipProps={{ placement: 'left' }}
@@ -115,9 +116,14 @@ export default function CodeBlock(props: {
 								<CopyToClipboard
 									text={props.data}
 									onCopy={() =>
-										global.addFlag(<div>Copied to clipboard</div>, '', 'info', {
-											closeAfter: 2000,
-										})
+										global.addFlag(
+											<div>Copied to clipboard</div>,
+											'',
+											'default',
+											{
+												closeAfter: 2000,
+											}
+										)
 									}
 								>
 									<button

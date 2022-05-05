@@ -75,7 +75,7 @@ export default class Main extends Component {
 								}}
 								appearance={'primary'}
 							>
-								Get Started
+								{'Components' /* "Get Started" */}
 							</FButton>
 							<FButton
 								onClick={() => {
