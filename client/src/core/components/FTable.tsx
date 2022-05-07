@@ -9,6 +9,7 @@ import Animated from 'core/components/Animated'
 import Loading from 'core/components/Loading'
 import Paginate from 'core/components/Paginate'
 import QueryParams from 'core/components/QueryParams'
+import Tooltip from 'core/components/Tooltip'
 import TrackedComponent from 'core/components/TrackedComponent'
 import config from 'core/config'
 import styles from 'core/styles'
@@ -21,6 +22,8 @@ import MediaQuery from 'react-responsive'
 import { SizeMe } from 'react-sizeme'
 import VisibilitySensor from 'react-visibility-sensor'
 import * as uuid from 'uuid'
+import FButton from './FButton'
+import { pageArrow } from './Paginate'
 
 type Value = string | number | boolean | undefined
 export type SpecialRow = {
@@ -39,6 +42,7 @@ export type Column = {
 	hide?: 'mobile' | 'custom'
 	alwaysVisible?: boolean
 	onClick?: () => void
+	tooltip?: boolean
 }
 type TableStyles = {
 	headerWrapperStyle?: React.CSSProperties
@@ -77,6 +81,11 @@ type TableProps = {
 		totalPages?: number
 		totalItems?: number
 	}
+	navigationButtons?: {
+		height?: number
+		shadowStyle?: React.CSSProperties
+		buttonStyle?: React.CSSProperties
+	}
 }
 
 export default class FTable extends QueryParams<
@@ -112,19 +121,58 @@ export default class FTable extends QueryParams<
 	state = {
 		uuid: uuid.v1(),
 		containment: undefined as undefined | HTMLElement | null,
+
+		navigation: 'max-left' as 'max-left' | 'middle' | 'max-right',
 	}
 	constructor(props: TableProps) {
 		super(props)
 
+		this.setTableContentRef = this.setTableContentRef.bind(this)
 		this.setScrollYRef = this.setScrollYRef.bind(this)
 	}
 
+	tableContentRef: HTMLElement | null = null
+	setTableContentRef(instance: HTMLElement | null) {
+		this.tableContentRef = instance
+	}
 	scrollYRef: HTMLElement | null = null
 	setScrollYRef(instance: HTMLElement | null) {
 		this.scrollYRef = instance
 	}
 
 	isLoadingID: string | undefined = undefined
+
+	sideScroll = (
+		element: HTMLElement,
+		direction: 'left' | 'right',
+		parent: HTMLElement,
+		seconds = 1
+	) => {
+		let scrollAmount = 0
+		const step = 1000 / 60 // 60 FPS
+		const distance = parent.scrollWidth
+		const amount = (distance * (step / 1000)) / seconds
+		const slideTimer = setInterval(() => {
+			if (direction === 'left') {
+				element.scrollLeft -= amount
+			} else {
+				element.scrollLeft += amount
+			}
+			scrollAmount += amount
+			if (scrollAmount >= distance) {
+				window.clearInterval(slideTimer)
+			}
+		}, step)
+
+		// Update state right away
+		const maxScrollLeft = element.scrollWidth - element.clientWidth
+		const threshold = 10
+		const target = element.scrollLeft + (direction === 'left' ? -distance : distance)
+
+		if (target <= 0 + threshold) this.setState({ navigation: 'max-left' })
+		else if (target >= maxScrollLeft - threshold) this.setState({ navigation: 'max-right' })
+		else this.setState({ navigation: 'middle' })
+	}
 
 	componentDidMount() {
 		this.setState({ containment: document.getElementById('f-table-' + this.state.uuid) })
@@ -238,6 +286,45 @@ export default class FTable extends QueryParams<
 			...(overrideStyle && overrideStyle.rowWrapperStyle),
 		}
 
+		const navigationButton = (direction: 'left' | 'right') => {
+			return (
+				<div
+					style={{
+						zIndex: 2,
+						position: 'relative',
+						height: 0,
+						top: this.props.navigationButtons?.height || 250,
+						right: direction === 'right' ? -16 : 16,
+					}}
+				>
+					<FButton
+						style={{
+							padding: 0,
+							minWidth: 30,
+							minHeight: 30,
+							maxWidth: 30,
+							maxHeight: 30,
+							borderRadius: '50%',
+							...(direction === 'right' && {
+								transform: 'scaleX(-1)',
+							}),
+							...this.props.navigationButtons?.buttonStyle,
+						}}
+						onClick={() => {
+							const content = this.tableContentRef as HTMLElement
+							const parent = content.parentElement as HTMLElement
+
+							this.sideScroll(content, direction, parent, 0.5)
+						}}
+					>
+						<div className='flex' style={{ opacity: 0.5 }}>
+							{pageArrow(styles.colors.black)}
+						</div>
+					</FButton>
+				</div>
+			)
+		}
+
 		return (
 			<MediaQuery minWidth={this.props.customHideWidth || 90000}>
 				{(customQuery) => (
@@ -250,6 +337,35 @@ export default class FTable extends QueryParams<
 									(this.props.className ? ' ' + this.props.className : '')
 								}
 							>
+								<div className='flex justify-between'>
+									{this.props.navigationButtons &&
+									this.state.navigation !== 'max-left' ? (
+										navigationButton('left')
+									) : (
+										<div />
+									)}
+
+									{props.isLoading && (
+										<div
+											style={{
+												position: 'relative',
+												zIndex: 2,
+												height: 0,
+												top: 150,
+											}}
+										>
+											<Loading />
+										</div>
+									)}
+
+									{this.props.navigationButtons &&
+									this.state.navigation !== 'max-right' ? (
+										navigationButton('right')
+									) : (
+										<div />
+									)}
+								</div>
+
 								<div
 									style={{
 										flexGrow: 1,
@@ -259,6 +375,7 @@ export default class FTable extends QueryParams<
 									}}
 								>
 									<div
+										ref={this.setTableContentRef}
 										style={{
 											display: 'flex',
 											flexDirection: 'column',
@@ -268,6 +385,20 @@ export default class FTable extends QueryParams<
 													? 'auto'
 													: 'hidden',
 											overflowX: 'auto',
+
+											transition: 'box-shadow 250ms',
+											...(this.props.navigationButtons && {
+												overflowX: 'hidden',
+												boxShadow:
+													'inset ' +
+													(this.state.navigation === 'max-left'
+														? -5
+														: this.state.navigation === 'middle'
+														? 0
+														: 5) +
+													'px 0px 10px 0px rgb(0 0 0 / 10%)',
+												...this.props.navigationButtons.shadowStyle,
+											}),
 
 											minHeight: 250,
 											maxHeight: '100%',
@@ -435,33 +566,11 @@ export default class FTable extends QueryParams<
 												</div>
 											)}
 
-											{props.isLoading && (
-												<div
-													style={{
-														position: 'relative',
-														zIndex: 1,
-														top: 50,
-													}}
-												>
-													<div
-														style={{
-															position: 'absolute',
-															width: '100%',
-															display: 'flex',
-															justifyContent: 'center',
-															alignItems: 'center',
-														}}
-													>
-														<Loading />
-													</div>
-												</div>
-											)}
-
 											<div
 												id={'f-table-' + this.state.uuid}
 												ref={this.setScrollYRef}
 												style={{
-													opacity: props.isLoading ? 0.5 : undefined,
+													opacity: props.isLoading ? 0.33 : undefined,
 													overflow: 'hidden overlay',
 													flexGrow: 1,
 													zIndex: 0,
@@ -570,88 +679,123 @@ export default class FTable extends QueryParams<
 																							(
 																								c,
 																								i: number
-																							) => (
-																								<div
-																									key={
-																										k +
-																										'_' +
-																										i.toString()
-																									}
-																									style={{
-																										overflow:
-																											'hidden',
-																										minWidth: 50,
-																										width:
-																											(
-																												100 *
-																												(c.grow !==
-																												undefined
-																													? c.grow
-																													: 1)
-																											).toString() +
-																											'%',
-																										padding:
-																											cellPadding,
-																										paddingTop:
-																											cellPaddingY,
-																										paddingBottom:
-																											cellPaddingY,
-																										...(c.style &&
-																											c.style),
-																									}}
-																								>
+																							) => {
+																								const cell =
+																									(isVisible ||
+																										c.alwaysVisible) &&
+																									(c.cell ? (
+																										c.cell(
+																											_get(
+																												d,
+																												c.selector
+																											) as Value,
+																											d,
+																											isVisible
+																										)
+																									) : (
+																										<div
+																											style={{
+																												width: '100%',
+																												display:
+																													'inline-grid',
+																												textAlign:
+																													'left',
+																												// @ts-ignore
+																												...(c.cell &&
+																													overrideStyle &&
+																													overrideStyle.cellStyle),
+																												// @ts-ignore
+																												...(c.cell &&
+																													c.rowStyle &&
+																													c.rowStyle),
+																											}}
+																										>
+																											<div
+																												style={{
+																													textOverflow:
+																														'ellipsis',
+																													overflow:
+																														'hidden',
+																													whiteSpace:
+																														'nowrap',
+																													...(overrideStyle &&
+																														overrideStyle.cellStyle),
+																													...(c.rowStyle &&
+																														c.rowStyle),
+																												}}
+																											>
+																												{
+																													_get(
+																														d,
+																														c.selector
+																													) as Value
+																												}
+																											</div>
+																										</div>
+																									))
+																								return (
 																									<div
+																										key={
+																											k +
+																											'_' +
+																											i.toString()
+																										}
 																										style={{
-																											width: '100%',
-																											display:
-																												'inline-grid',
-																											textAlign:
-																												'left',
-																											...(c.cell &&
-																												overrideStyle &&
-																												overrideStyle.cellStyle),
-																											...(c.cell &&
-																												c.rowStyle &&
-																												c.rowStyle),
+																											overflow:
+																												'hidden',
+																											minWidth: 50,
+																											width:
+																												(
+																													100 *
+																													(c.grow !==
+																													undefined
+																														? c.grow
+																														: 1)
+																												).toString() +
+																												'%',
+																											padding:
+																												cellPadding,
+																											paddingTop:
+																												cellPaddingY,
+																											paddingBottom:
+																												cellPaddingY,
+																											...(c.style &&
+																												c.style),
 																										}}
 																									>
 																										{(isVisible ||
 																											c.alwaysVisible) &&
-																											(c.cell ? (
-																												c.cell(
-																													_get(
-																														d,
-																														c.selector
-																													) as Value,
-																													d,
-																													isVisible
-																												)
-																											) : (
-																												<div
-																													style={{
-																														textOverflow:
-																															'ellipsis',
-																														overflow:
-																															'hidden',
-																														whiteSpace:
-																															'nowrap',
-																														...(overrideStyle &&
-																															overrideStyle.cellStyle),
-																														...(c.rowStyle &&
-																															c.rowStyle),
+																											(c.tooltip ? (
+																												<Tooltip
+																													selectable
+																													tooltipProps={{
+																														placement:
+																															'bottom-start',
 																													}}
+																													offsetAlt={
+																														-9
+																													}
+																													content={
+																														<div>
+																															{
+																																_get(
+																																	d,
+																																	c.selector
+																																) as Value
+																															}
+																														</div>
+																													}
 																												>
 																													{
-																														_get(
-																															d,
-																															c.selector
-																														) as Value
+																														cell
 																													}
-																												</div>
+																												</Tooltip>
+																											) : (
+																												cell
 																											))}
 																									</div>
-																								</div>
-																							)
+																								)
+																							}
 																						)}
 																		</Row>
 																	)

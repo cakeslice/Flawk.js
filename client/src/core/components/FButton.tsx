@@ -54,6 +54,7 @@ type Props = {
 			onChange?: undefined
 			name?: undefined
 			invalid?: undefined
+			invalidType?: undefined
 	  }
 	| ({
 			checkbox: React.ReactNode
@@ -68,11 +69,13 @@ type Props = {
 			| {
 					name: string
 					invalid?: string
+					invalidType?: 'bottom' | 'right'
 					isDisabled?: undefined
 			  }
 			| {
 					name?: string
 					invalid?: undefined
+					invalidType?: undefined
 					isDisabled?: boolean
 			  }
 	  ))
@@ -426,6 +429,8 @@ export default class FButton extends TrackedComponent<Props> {
 			},
 		})
 
+		const invalidType = this.props.invalidType || 'bottom'
+
 		return (
 			<MediaQuery minWidth={config.mobileWidthTrigger}>
 				{(desktop) => {
@@ -575,8 +580,14 @@ export default class FButton extends TrackedComponent<Props> {
 										{this.props.checkbox}
 									</label>
 								)}
+								{invalidType === 'right' && name && !this.props.noInvalidLabel && (
+									<div style={{ minHeight: 26 }}>
+										{invalid && <div style={{ minHeight: 5 }}></div>}
+										{invalid && <p style={invalidTextStyle}>{invalid}</p>}
+									</div>
+								)}
 							</div>
-							{name && !this.props.noInvalidLabel && (
+							{invalidType === 'bottom' && name && !this.props.noInvalidLabel && (
 								<div style={{ minHeight: 26 }}>
 									{invalid && <div style={{ minHeight: 5 }}></div>}
 									{invalid && <p style={invalidTextStyle}>{invalid}</p>}

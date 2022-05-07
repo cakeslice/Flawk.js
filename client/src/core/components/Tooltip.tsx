@@ -56,11 +56,11 @@ export default class Tooltip extends TrackedComponent<Props> {
 
 		const animatedEffects: Effect[] = [
 			'fade',
-			((props.tooltipProps?.placement === 'left'
+			((props.tooltipProps?.placement?.includes('left')
 				? 'left'
-				: props.tooltipProps?.placement === 'right'
+				: props.tooltipProps?.placement?.includes('right')
 				? 'right'
-				: props.tooltipProps?.placement === 'bottom'
+				: props.tooltipProps?.placement?.includes('bottom')
 				? 'down'
 				: 'up') + '-scale') as Effect,
 		]

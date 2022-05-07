@@ -111,6 +111,7 @@ const styles: Styles & { colors: Colors; gradients: Gradients } = {
 	// Helpers
 
 	textEllipsis: {
+		display: 'block',
 		textOverflow: 'ellipsis',
 		overflow: 'hidden',
 		whiteSpace: 'nowrap',
