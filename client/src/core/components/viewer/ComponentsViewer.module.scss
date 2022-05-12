@@ -1,4 +1,7 @@
 .example {
+	div {
+		font-size: 16px;
+	}
 	h1 {
 		font-size: 32px;
 		color: rgba(51, 108, 251, 1);
@@ -9,6 +12,9 @@
 	}
 }
 .example_2 {
+	div {
+		font-size: 12px;
+	}
 	h1 {
 		font-size: 22px;
 		color: rgba(40, 201, 134, 1);

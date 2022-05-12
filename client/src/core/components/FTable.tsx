@@ -35,7 +35,7 @@ export type SpecialRow = {
 export type Column = {
 	name?: React.ReactNode
 	selector: string
-	cell?: (value: Value, data: Obj, isVisible: boolean) => React.ReactNode
+	cell?: (value: Value, data: Obj, isVisible: boolean, index: number) => React.ReactNode
 	rowStyle?: React.CSSProperties
 	style?: React.CSSProperties
 	grow?: number
@@ -52,6 +52,7 @@ type TableStyles = {
 	rowStyle?: React.CSSProperties & GlamorProps
 	rowWrapperStyle?: React.CSSProperties
 	cellStyle?: React.CSSProperties
+	cellWrapperStyle?: React.CSSProperties
 	bottomWrapperStyle?: React.CSSProperties
 }
 type TableProps = {
@@ -81,6 +82,7 @@ type TableProps = {
 		totalPages?: number
 		totalItems?: number
 	}
+	noResultsMessage?: React.ReactNode
 	navigationButtons?: {
 		height?: number
 		shadowStyle?: React.CSSProperties
@@ -345,7 +347,19 @@ export default class FTable extends QueryParams<
 										<div />
 									)}
 
-									{props.isLoading && (
+									{props.isLoading ? (
+										<div
+											style={{
+												position: 'relative',
+												zIndex: 2,
+												height: 0,
+												top: 150,
+												left: 21,
+											}}
+										>
+											<Loading />
+										</div>
+									) : props.data && props.data.length === 0 ? (
 										<div
 											style={{
 												position: 'relative',
@@ -354,9 +368,17 @@ export default class FTable extends QueryParams<
 												top: 150,
 											}}
 										>
-											<Loading />
+											{this.props.noResultsMessage || (
+												<m
+													style={{
+														opacity: 0.66,
+													}}
+												>
+													Nothing found...
+												</m>
+											)}
 										</div>
-									)}
+									) : undefined}
 
 									{this.props.navigationButtons &&
 									this.state.navigation !== 'max-right' ? (
@@ -577,7 +599,7 @@ export default class FTable extends QueryParams<
 												}}
 											>
 												{props.data &&
-													props.data.map((d) => {
+													props.data.map((d, index) => {
 														const k =
 															typeof props.keySelector === 'function'
 																? props.keySelector(d)
@@ -690,7 +712,8 @@ export default class FTable extends QueryParams<
 																												c.selector
 																											) as Value,
 																											d,
-																											isVisible
+																											isVisible,
+																											index
 																										)
 																									) : (
 																										<div
@@ -759,6 +782,8 @@ export default class FTable extends QueryParams<
 																												cellPaddingY,
 																											paddingBottom:
 																												cellPaddingY,
+																											...(overrideStyle &&
+																												overrideStyle.cellWrapperStyle),
 																											...(c.style &&
 																												c.style),
 																										}}

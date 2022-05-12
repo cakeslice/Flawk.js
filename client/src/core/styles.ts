@@ -378,6 +378,8 @@ export type Styles = {
 				headerWrapperStyle?: React.CSSProperties
 				headerStyle?: React.CSSProperties
 				rowStyle?: React.CSSProperties & GlamorProps
+				cellWrapperStyle?: React.CSSProperties
+				cellStyle?: React.CSSProperties
 				wrapperStyle?: React.CSSProperties
 				rowWrapperStyle?: React.CSSProperties
 				bottomWrapperStyle?: React.CSSProperties

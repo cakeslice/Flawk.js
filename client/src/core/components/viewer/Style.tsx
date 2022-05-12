@@ -1279,17 +1279,25 @@ import styles from 'core/styles'
 
 							<Section title='CSS Modules'>
 								<div className={'wrapMarginBig flex flex-wrap'}>
-									<div className={cssModule.example} style={{ ...styles.card }}>
-										<h1>
-											{'Hello. '}
-											<tag>h1</tag>
-										</h1>
+									<div className={cssModule.example}>
+										<div style={{ ...styles.card }}>
+											<h1>
+												{'Hello. '}
+												<tag>h1</tag>
+											</h1>
+											<sp />
+											<p>Default font size of 16px</p>
+										</div>
 									</div>
-									<div className={cssModule.example_2} style={{ ...styles.card }}>
-										<h1>
-											{'Hello. '}
-											<tag>h1</tag>
-										</h1>
+									<div className={cssModule.example_2}>
+										<div style={{ ...styles.card }}>
+											<h1>
+												{'Hello. '}
+												<tag>h1</tag>
+											</h1>
+											<sp />
+											<p>Default font size of 12px</p>
+										</div>
 									</div>
 								</div>
 							</Section>

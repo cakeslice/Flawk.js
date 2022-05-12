@@ -84,14 +84,16 @@ export default {
 		schema: Model<any>,
 		id: mongoose.Types.ObjectId,
 		arrayName: string,
-		sortObject: Obj,
-		objectsArray: ArrayObject
+		sortObject: Obj | undefined,
+		objectsArray: ArrayObject | mongoose.Types.ObjectId[]
 	) {
 		const o: { $push: KeyObject } = { $push: {} }
 		o['$push'][arrayName] = {
 			$each: objectsArray,
 			$position: 0,
-			$sort: sortObject,
+			...(sortObject && {
+				$sort: sortObject,
+			}),
 		}
 		await schema.updateOne(
 			{
@@ -105,14 +107,19 @@ export default {
 		schema: Model<any>,
 		id: mongoose.Types.ObjectId,
 		arrayName: string,
-		key: string,
+		key: string | undefined,
 		keysArray: (string | mongoose.Types.ObjectId)[]
 	) {
 		const o: { $pull: KeyObject } = { $pull: {} }
-		o['$pull'][arrayName] = {}
-		o['$pull'][arrayName][key] = {
-			$in: keysArray,
-		}
+		o['$pull'][arrayName] = !key
+			? {
+					$in: keysArray,
+			  }
+			: {}
+		if (key)
+			o['$pull'][arrayName][key] = {
+				$in: keysArray,
+			}
 		await schema.updateOne(
 			{
 				_id: id,
