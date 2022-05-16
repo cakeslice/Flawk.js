@@ -48,6 +48,7 @@ declare global {
 		description: React.ReactNode | ((props: ToastContentProps) => React.ReactNode),
 		type: 'warning' | 'error' | 'success' | 'info' | 'default',
 		options: {
+			toastId?: string
 			customComponent?: React.ReactNode | ((props: ToastContentProps) => React.ReactNode)
 			playSound?: boolean
 			closeAfter?: number

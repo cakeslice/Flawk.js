@@ -55,6 +55,7 @@ function addFlagFunction(
 	description: React.ReactNode | ((props: ToastContentProps) => React.ReactNode),
 	type: 'warning' | 'error' | 'success' | 'info' | 'default',
 	options?: {
+		toastId?: string
 		customComponent?: React.ReactNode | ((props: ToastContentProps) => React.ReactNode)
 		playSound?: boolean
 		autoClose?: boolean
@@ -63,7 +64,16 @@ function addFlagFunction(
 		pauseOnFocusLoss?: boolean
 	}
 ) {
-	const { customComponent, playSound, autoClose, closeAfter, closeOnClick, pauseOnFocusLoss } = {
+	const {
+		toastId,
+		customComponent,
+		playSound,
+		autoClose,
+		closeAfter,
+		closeOnClick,
+		pauseOnFocusLoss,
+	} = {
+		toastId: undefined,
 		customComponent: undefined,
 		playSound: false,
 		autoClose: false,
@@ -141,6 +151,7 @@ function addFlagFunction(
 			onClose: () => {
 				amountToasts--
 			},
+			toastId: toastId,
 			position: 'bottom-right',
 			autoClose: autoClose || closeAfter ? closeAfter || config.toastCloseTime : false,
 			hideProgressBar: true,

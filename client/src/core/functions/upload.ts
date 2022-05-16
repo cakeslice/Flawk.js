@@ -166,7 +166,7 @@ export default {
 	): Promise<{ file: File; url: string | ArrayBuffer | null } | undefined> => {
 		const { nonImage, maxSize, minWidth, minHeight, readAsText } = {
 			nonImage: false,
-			maxSize: 10 * 1024 * 1024,
+			maxSize: 10,
 			minWidth: 100,
 			minHeight: 100,
 			readAsText: false,
@@ -186,12 +186,12 @@ export default {
 					file.type === 'image/jpg'
 
 				if (isImage || nonImage) {
-					if (file.size > maxSize) {
+					if (file.size > maxSize * 1024 * 1024) {
 						global.addFlag(
 							global.lang.text === 'pt' ? 'Ficheiro inválido' : 'Invalid file',
 							global.lang.text === 'pt'
-								? 'O tamanho máximo é de 10 MB'
-								: 'Maximum size is 10 MB',
+								? 'O tamanho máximo é de ' + maxSize + ' MB'
+								: 'Maximum size is ' + maxSize + ' MB',
 							'error',
 							{}
 						)

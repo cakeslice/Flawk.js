@@ -73,6 +73,7 @@
 
 # Follow deploy/mongo_backup.txt
 # WARNING: This method only works for a single Mongo instance! If you use sharding you need another method!
+# WARNING: If you use sharding/clusters, you need to enable SSL/TLS for security
 # ---------------------------------------
 
 # ------------- S3 STORAGE --------------

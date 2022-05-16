@@ -63,9 +63,11 @@ type TableProps = {
 	style?: TableStyles
 	className?: string
 	height?: number | string
+	width?: '100%' | 'fit-content'
 	customHideWidth?: number
 	hideHeader?: boolean
 	expandContent?: (object: Obj) => React.ReactNode
+	expandContentStyle?: React.CSSProperties
 	columns?: Column[]
 	keySelector:
 		| string
@@ -429,7 +431,7 @@ export default class FTable extends QueryParams<
 										<div
 											className='flex-col'
 											style={{
-												width: 'fit-content',
+												width: props.width || 'fit-content',
 												minWidth: '100%',
 												minHeight: 250,
 												height: props.height || '100%',
@@ -672,6 +674,10 @@ export default class FTable extends QueryParams<
 																			expandContent={
 																				expandContent
 																			}
+																			expandContentStyle={
+																				this.props
+																					.expandContentStyle
+																			}
 																			cellPadding={
 																				cellPadding
 																			}
@@ -860,6 +866,7 @@ type RowProps = {
 	isLoadingID: string
 	isVisible: boolean
 	expandContent?: React.ReactNode
+	expandContentStyle?: React.CSSProperties
 	rowStyle: StyleAttribute
 	style: React.CSSProperties
 	cellPadding: number
@@ -947,11 +954,16 @@ class Row extends TrackedComponent<RowProps> {
 					>
 						<div
 							style={{
-								padding: this.props.cellPadding,
-								paddingTop: this.props.cellPaddingY * 2,
-								paddingBottom: this.props.cellPaddingY,
+								padding:
+									this.props.cellPaddingY * 2 +
+									'px ' +
+									'0px ' +
+									this.props.cellPaddingY +
+									'px ' +
+									expandButtonWidth +
+									'px',
 
-								paddingLeft: expandButtonWidth,
+								...this.props.expandContentStyle,
 							}}
 						>
 							{this.props.expandContent}

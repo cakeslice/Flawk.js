@@ -101,7 +101,6 @@ const Input = (
 }
 const DatePicker = (
 	props: {
-		foreground?: boolean
 		utc?: boolean
 		locale?: string
 		value?: string
@@ -115,6 +114,8 @@ const DatePicker = (
 		placeholder?: string
 		required?: boolean
 		width?: number
+		foreground?: boolean
+		table?: boolean
 		inputStyle: StyleAttribute
 	} & { inputRef: LegacyRef<HTMLInputElement> }
 ) => (
@@ -141,6 +142,7 @@ const DatePicker = (
 			}}
 			//
 			closeOnSelect={true}
+			className={props.table ? 'rdtAlt' : undefined}
 			utc={props.utc}
 			locale={global.lang.moment}
 			timeFormat={false}
@@ -198,9 +200,6 @@ type Props = {
 	bufferedInput?: boolean
 	bufferInterval?: number
 	type?: React.HTMLInputTypeAttribute
-	//
-	datePicker?: boolean
-	foreground?: boolean
 	//
 	field?: FieldInputProps<Obj>
 	form?: FormikProps<Obj>
@@ -263,6 +262,23 @@ type Props = {
 				name?: string
 				invalid?: undefined
 				isDisabled?: boolean
+		  }
+	) &
+	(
+		| {
+				datePicker?: true
+				foreground?: true
+				table?: undefined
+		  }
+		| {
+				datePicker?: true
+				foreground?: undefined
+				table?: true
+		  }
+		| {
+				datePicker?: undefined
+				foreground?: undefined
+				table?: undefined
 		  }
 	)
 export default class FInput extends TrackedComponent<Props> {
@@ -742,6 +758,7 @@ export default class FInput extends TrackedComponent<Props> {
 											{...commonProps}
 											{...datePickerValueProps}
 											{...inputEventProps}
+											table={this.props.table}
 											foreground={this.props.foreground}
 											inputStyle={inputStyle}
 										/>
