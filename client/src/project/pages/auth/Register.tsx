@@ -239,6 +239,7 @@ class Register extends Component<PropsFromRedux> {
 													placeholder={'Doe'}
 												/>
 											</div>
+											<sp />
 											<div className='wrapMargin flex flex-wrap justify-start'>
 												<Field
 													component={FInput}

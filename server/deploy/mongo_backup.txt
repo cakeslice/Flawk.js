@@ -6,8 +6,8 @@ nano setup_mongo_backup.sh
 
 export AWS_ACCESS_KEY_ID=
 export AWS_SECRET_ACCESS_KEY=
-export ENDPOINT=https://
-export BUCKET=
+export ENDPOINT=https://YOUR_BUCKET_ENDPOINT
+export BUCKET=YOUR_BUCKET_NAME
 export MONGODB_HOST=localhost
 export MONGODB_PORT=1337
 export MONGODB_USER=
@@ -140,6 +140,8 @@ Lifecycle:
 
 nano lifecycle.json
 
+----
+
 {
 	"Rules": [
 		{
@@ -155,26 +157,29 @@ nano lifecycle.json
 	]
 }
 
+----
+----
+
 nano set_lifecycle.sh
 
+----
+
 #!/bin/bash
-export AWS_ACCESS_KEY_ID=XXXX
-export AWS_SECRET_ACCESS_KEY=XXXX
-aws s3api put-bucket-lifecycle-configuration --endpoint=https://XXXX --bucket your_bucket --lifecycle-configuration file://lifecycle.json
-aws s3api get-bucket-lifecycle-configuration --endpoint=https://XXXX --bucket your_bucket
+export AWS_ACCESS_KEY_ID=YOUR_ACCESS_KEY
+export AWS_SECRET_ACCESS_KEY=YOUR_SECRET_KEY
+aws s3api put-bucket-lifecycle-configuration --endpoint=https://YOUR_BUCKET_ENDPOINT --bucket YOUR_BUCKET_NAME --lifecycle-configuration file://lifecycle.json
+aws s3api get-bucket-lifecycle-configuration --endpoint=https://YOUR_BUCKET_ENDPOINT --bucket YOUR_BUCKET_NAME
+
+----
+----
 
 sudo chmod +x set_lifecycle.sh
 sudo ./set_lifecycle.sh
 
-----
-----
-
 Commands:
 
 To check crontab:
-crontab -l
-To edit crontab:
-crontab -e
+crontab -l (should have "... /backup.sh >> /mongo_backup.log 2>&1")
 
 cd /usr/bin
 sudo ./listbackups

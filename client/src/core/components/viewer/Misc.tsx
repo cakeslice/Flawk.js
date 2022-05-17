@@ -249,6 +249,7 @@ export default class Misc extends QueryParams<{
 							</div>
 						</Section>
 						<Section title='Localization' tags={['<LanguageSelect/>']}>
+							<Anchor id='anchor_example'></Anchor>
 							<LanguageSelect />
 							<sp />
 							<div style={styles.card}>
@@ -373,17 +374,13 @@ export default class Misc extends QueryParams<{
 							<FButton onClick={() => config.scrollToTop()}>Scroll</FButton>
 						</Section>
 						<Section title='Anchor' tags={['<Anchor/>']}>
-							<Anchor id='anchor_example'>
-								<FButton
-									onClick={() => {
-										global
-											.routerHistory()
-											.push('/components/misc#anchor_example')
-									}}
-								>
-									Scroll
-								</FButton>
-							</Anchor>
+							<FButton
+								onClick={() => {
+									global.routerHistory().push('/components/misc#anchor_example')
+								}}
+							>
+								Scroll to Localization
+							</FButton>
 						</Section>
 						<Section title='Error Handling'>
 							<div className='wrapMargin flex flex-wrap justify-start'>

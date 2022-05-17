@@ -4,6 +4,7 @@ nano ubuntu_setup.sh
 
 ################ Install Docker
 
+sudo killall apt apt-get
 curl -fsSL https://get.docker.com -o get-docker.sh
 sudo sh get-docker.sh
 apt -y update && apt -y full-upgrade && apt autoclean -y && apt autoremove -y
@@ -31,9 +32,6 @@ swapon --show
 apt install unattended-upgrades
 dpkg-reconfigure unattended-upgrades
 
-nano /etc/apt/apt.conf.d/50unattended-upgrades
-# Comment all except "${distro_id}:${distro_codename}-security"
-
 ################ Install Fail2Ban
 
 sudo apt install fail2ban
@@ -54,3 +52,6 @@ systemctl restart sshd
 Then:
 sudo chmod +x ubuntu_setup.sh
 sudo ./ubuntu_setup.sh
+
+nano /etc/apt/apt.conf.d/50unattended-upgrades
+# Comment all except "${distro_id}:${distro_codename}-security"

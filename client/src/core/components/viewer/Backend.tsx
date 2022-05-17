@@ -612,6 +612,7 @@ class Register extends Component<PropsFromRedux & { desktop?: boolean }> {
 												placeholder={'Doe'}
 											/>
 										</div>
+										<sp />
 										<div className='wrapMargin flex flex-wrap justify-around'>
 											<Field
 												component={FInput}
@@ -1053,6 +1054,7 @@ class Settings extends Component<PropsFromRedux & { desktop?: boolean }> {
 										placeholder={'Doe'}
 									/>
 								</div>
+								<sp />
 								<div className='wrapMargin flex flex-wrap justify-around'>
 									<Field
 										component={FInput}

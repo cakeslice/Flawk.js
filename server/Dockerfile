@@ -48,8 +48,10 @@
 # Don't force HTTPS on that panel!
 # Now access using captain.mydomain.com
 # Create a NGINX-Redirect app from one-click named www that redirects to your root domain (and force SSL)
+#		- Enable and force HTTPS
 #     - This needs to be done before Docker Registry setup
-# In CloudFlare turn on the proxy for all entries and delete the "*" entry
+# In CloudFlare turn on the proxy for all entries
+# DELETE the "*" entry
 # Reboot the server
 #
 # Extra CloudFlare settings to check:
@@ -81,18 +83,18 @@
 # - Set CORS in space settings: 
 #     https://your_domain.com, GET+PUT, Header: *, 600 seconds
 #     https://*.your_domain.com, GET+PUT, Header: *, 600 seconds
-#     *, PUT+POST, *, 600 seconds (needs to be in bottom!)
+#     *, PUT+POST, Header: *, 600 seconds (needs to be in bottom!)
 #
 # ----- Simple flow (much worse since you can't change provider later)
 # - Just enable CDN
-# - Make sure you use bucketCDNOriginal and bucketCDNTarget in the app
+# - Make sure you use bucketCDNOriginal and bucketCDNTarget in your app's backend
 # -----
 #
 # ----- CloudFlare flow
-# - Create certicate in CloudFlare for cloud.yourdomain.com
-# - Enable CDN in space using certificate
-#     - Make sure you use bucketCDNOriginal and bucketCDNTarget in the app
-# - Add CNAME with Proxy in CloudFlare (cdn)
+# - Create Origin Server certicate in CloudFlare for cloud.yourdomain.com
+# - Enable CDN in space using certificate (Bring your own)
+#     - Make sure you use bucketCDNOriginal and bucketCDNTarget in your app's backend
+# - Add DNS CNAME record: cloud -> Space_URL (with Proxy)
 # - NOTE: Can't use this for a lot of video or audio files since CloudFlare doesn't allow!
 # -----
 #
@@ -108,6 +110,7 @@
 # Make sure the captain definition path is the right one:
 #     ./server/captain-definition for backend
 #     ./client/captain-definition for frontend
+# IF there's a TOO MANY REDIRECTS issue, it's probably because the SSL setting in CloudFlare is not set to Full (strict)
 
 # ----- Simple flow
 # Add DNS A record for app URL

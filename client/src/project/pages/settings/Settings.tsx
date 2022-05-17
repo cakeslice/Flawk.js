@@ -129,6 +129,7 @@ export default class Settings extends Component<DashboardProps> {
 													name='lastName'
 												/>
 											</div>
+											<sp />
 											<div className='wrapMargin flex flex-wrap justify-around'>
 												<Field
 													component={FInput}

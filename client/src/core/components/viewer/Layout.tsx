@@ -297,8 +297,6 @@ export default class Layout extends QueryParams<
 			backgroundColor: styles.colors.black,
 		}
 
-		const carouselItems = [1, 2, 3, 4, 5]
-
 		return (
 			<MediaQuery minWidth={config.mobileWidthTrigger}>
 				{(desktop) => {
@@ -308,7 +306,71 @@ export default class Layout extends QueryParams<
 							{this.confirmModal()}
 							{this.bigModal()}
 							{desktop && (
-								<Section title='Dashboard' top tags={['<Dashboard/>']}>
+								<Section
+									description={
+										<>
+											The <code>{'<Dashboard/>'}</code> component provides a
+											simple way to add <m>pages</m> (routes) and{' '}
+											<m>navigation</m> to your app.
+											<sp />
+											Use the <code>path</code> prop to set the{' '}
+											<m>parent path</m> of all pages.
+											<br />
+											Use the <code>routes</code> prop to define each page
+											path and their respective components, titles and icons.
+											<br />
+											Use the <code>wrapperComponent</code> prop to set the{' '}
+											<m>parent component</m> of all pages.
+											<sp />
+											On <m>desktop</m>, navigation controls are on a vertical
+											bar on the left by default but can be changed to a
+											horizontal top bar using the <code>horizontal</code>{' '}
+											prop.
+											<br />
+											On <m>mobile</m>, navigation controls are on a vertical
+											bar on the left and it uses the{' '}
+											<code>{'<MobileDrawer/>'}</code> component internally.
+										</>
+									}
+									code={`import Dashboard from 'core/components/Dashboard'
+
+<Dashboard
+	path='/dashboard' // Parent path
+	routes={[
+		{		
+			name: 'Page 1',
+			id: 'page1', // Path of this page: /dashboard/page1
+			page: Page1Component,
+		},
+		{		
+			name: 'Page 2',
+			id: 'page2', // Path of this page: /dashboard/page2
+			page: Page2Component,
+		}
+	]}
+	wrapperComponent={Wrapper}
+/>
+
+class Wrapper extends Component<{ children: React.ReactNode }> {
+	render() {
+		return (
+			<div
+				style={{
+					paddingTop: 80,
+					paddingBottom: 160,
+					maxWidth: 1700,
+				}}
+			>
+				{this.props.children}
+			</div>
+		)
+	}
+}
+`}
+									title='Dashboard'
+									top
+									tags={['<Dashboard/>']}
+								>
 									<FButton
 										onClick={async () => {
 											this.props.toggleDashboardLayout()
@@ -321,7 +383,38 @@ export default class Layout extends QueryParams<
 									</FButton>
 								</Section>
 							)}
-							<Section title='Flex wrap/grow' top={!desktop}>
+							<Section
+								description={
+									<>
+										You can use the built-in CSS classes to build a <m>flex</m>{' '}
+										layout easily.
+									</>
+								}
+								code={`const fixedExample = {
+	width: 200,
+	height: 50,
+	opacity: 0.1,
+	backgroundColor: styles.colors.black,
+}
+const growExample = {
+	flexGrow: 1,
+	...fixedExample,
+}
+
+<div className='wrapMargin flex flex-wrap'>
+	<div style={fixedExample}></div>
+	<div style={growExample}></div>
+	<div style={fixedExample}></div>
+	<div style={growExample}></div>
+	<div style={growExample}></div>
+	<div style={fixedExample}></div>
+	<div style={growExample}></div>
+	<div style={fixedExample}></div>
+</div>`}
+								title='Flex wrap/grow'
+								tags={['flex', 'flex-wrap', 'wrapMargin']}
+								top={!desktop}
+							>
 								<div style={{ ...styles.card }}>
 									<div className='wrapMargin flex flex-wrap'>
 										<div style={fixedExample}></div>
@@ -335,9 +428,36 @@ export default class Layout extends QueryParams<
 									</div>
 								</div>
 							</Section>
-							<Section title='Grid'>
+							<Section
+								description={
+									<>
+										You can use the built-in CSS classes to build a <m>grid</m>{' '}
+										layout easily.
+									</>
+								}
+								code={`const gridExample = {
+	height: 50,
+	opacity: 0.1,
+	backgroundColor: styles.colors.black,
+}
+
+<div
+	className='grid grid-cols-4'
+>
+	<div style={gridExample}></div>
+	<div className='col-span-2' style={gridExample}></div>
+	<div style={gridExample}></div>
+	<div className='col-span-full' style={gridExample}></div>
+	<div style={gridExample}></div>
+	<div style={gridExample}></div>
+	<div style={gridExample}></div>
+	<div style={gridExample}></div>
+</div>`}
+								tags={['grid', 'grid-cols-N', 'col-span-N']}
+								title='Grid'
+							>
 								<div
-									className='grid grid-cols-4'
+									className='wrapMargin grid grid-cols-4'
 									style={{ ...styles.card, width: '100%' }}
 								>
 									<div style={gridExample}></div>
@@ -350,7 +470,67 @@ export default class Layout extends QueryParams<
 									<div style={gridExample}></div>
 								</div>
 							</Section>
-							<Section title='Table' tags={['<FTable/>']}>
+							<Section
+								description={
+									<>
+										To supply <m>data</m> to the table, use the{' '}
+										<code>data</code> prop to which expects an array of objects.
+										<br />
+										To define the <m>table columns</m>, use the{' '}
+										<code>columns</code> prop. Each column has a{' '}
+										<code>name</code> for the {"table's"} header and a{' '}
+										<code>selector</code> which maps a property of each data
+										object to the column.
+										<sp />
+										Use the <code>keySelector</code> prop to define a{' '}
+										<m>main key</m> found in the data array. This key needs to
+										be <m>unique</m> and usually is the id of each object or
+										some other unique identifier.
+										<sp />
+										To <m>override or modify</m> the value displayed in a{' '}
+										<m>specific column</m>, use the <code>cell</code> property
+										when defining the column.
+										<sp />
+										<sp />
+										The table component also supports <m>pagination</m>,{' '}
+										<m>sorting</m>, <m>expandable rows</m> and is optimized for{' '}
+										<m>large datasets</m>.
+									</>
+								}
+								code={`import FTable from 'core/components/FTable'
+
+const data = [
+	{
+		id: 1,
+		name: 'John',
+		percent: 0.26,
+	},
+	{
+		id: 2,
+		name: 'Jane',
+		percent: 0.28
+	}
+]
+
+<FTable
+	data={data}
+	keySelector='id'
+	columns={[
+		{		
+			name: 'Name',
+			selector: 'name'
+		},
+		{		
+			name: 'Percentage',
+			selector: 'percent',
+			cell: (value) => (<div>{value * 100}%</div>)
+		}
+	]}
+/>
+`}
+								title='Table'
+								tags={['<FTable/>']}
+							>
 								<div>
 									<div className='flex wrapMargin'>
 										<div className='grow wrapMargin flex flex-wrap justify-start'>
@@ -955,11 +1135,11 @@ export default class Layout extends QueryParams<
 										</div>
 										<sp />
 										<div style={{ ...styles.card, height: 400, width: 'auto' }}>
-											Card #1
+											Card #2
 										</div>
 										<sp />
 										<div style={{ ...styles.card, height: 400, width: 'auto' }}>
-											Card #1
+											Card #3
 										</div>
 									</div>
 								</div>

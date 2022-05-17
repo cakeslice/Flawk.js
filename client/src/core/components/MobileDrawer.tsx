@@ -175,7 +175,13 @@ class MobileDrawer extends TrackedComponent<Props> {
 										let style: React.CSSProperties = {
 											...linkStyle,
 											borderBottom: !last
-												? 'solid 1px ' + styles.colors.lineColor
+												? 'solid 1px ' +
+												  (selected
+														? styles.colors.lineColor
+														: config.multiplyAlpha(
+																styles.colors.lineColor,
+																2
+														  ))
 												: undefined,
 											...(link.style && link.style.linkStyle),
 										}

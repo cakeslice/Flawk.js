@@ -453,6 +453,12 @@ const config: Config & InternalConfig = {
 		const c = colorToRgba(color)
 		return c.replace(/[^,]+(?=\))/, amount.toString())
 	},
+	multiplyAlpha(color: string, amount: number) {
+		const rgba = colorToRgba(color)
+		const c = rgbaToObj(rgba)
+		c.a = c.a * amount
+		return 'rgba(' + c.r + ',' + c.g + ',' + c.b + ',' + c.a + ')'
+	},
 	overlayColor(background: string, color: string) {
 		const c1 = rgbaToObj(colorToRgba(background))
 		const c2 = rgbaToObj(colorToRgba(color))
@@ -612,6 +618,7 @@ type InternalConfig = {
 	calculateAge: (birthday: Date) => number
 
 	replaceAlpha: (color: string, amount: number) => string
+	multiplyAlpha: (color: string, amount: number) => string
 	overlayColor: (background: string, color: string) => string
 	invertColor: (background: string, color: string) => string
 	colorToRgba: (color: string) => string

@@ -108,10 +108,10 @@ body {
 									<>
 										Default fonts can be overriden in{' '}
 										<code>src/project/assets/main.scss</code> by changing the{' '}
-										<code>--font</code> and <code>--fontAlt</code> properties
+										<code>--font</code> and <code>--fontAlt</code> properties.
 										<sp />
 										To import new fonts, add them to{' '}
-										<code>src/project/assets/fonts.css</code>
+										<code>src/project/assets/fonts.css</code>.
 									</>
 								}
 								title='Typography'
@@ -642,17 +642,69 @@ import styles from 'core/styles'
 								</div>
 							</Section>
 
-							<Section title='Avatar' tags={['<Avatar/>']}>
+							<Section
+								description={
+									<>
+										Use <code>src</code> prop to set <m>avatar picture</m>. Name{' '}
+										<m>initials</m> can also be set with the <code>name</code>{' '}
+										prop.
+										<br />
+										If no <code>src</code> image available, it falls back to
+										name initials or placeholder image.
+										<sp />
+										The <m>size</m> of the avatar can be set using the{' '}
+										<code>style</code> prop.
+										<sp />
+										{"There's"} also the <code>isOnline</code> prop to show a{' '}
+										<m>green dot</m> to indicate that the user is online.
+									</>
+								}
+								code={`import Avatar from 'core/components/Avatar'
+
+// Basic
+<Avatar src='AVATAR_PICTURE' name='John Doe' />
+
+// Is online
+<Avatar isOnline />
+
+// Custom size
+<Avatar style={{ width: 40, height: 40 }} />
+`}
+								title='Avatar'
+								tags={['<Avatar/>']}
+							>
 								<div style={{ ...styles.card }}>
 									<div className='wrapMarginBig flex flex-wrap justify-start'>
-										<Avatar name='José Guerreiro' />
+										<Avatar name='John Doe' />
 										<Avatar isOnline />
 										<Avatar />
 										<Avatar style={{ width: 40, height: 40 }} />
 									</div>
 								</div>
 							</Section>
-							<Section title='Loading' tags={['<Loading/>']}>
+							<Section
+								description={
+									<>
+										Use <code>size</code> prop to set the <m>size</m> of the
+										loading animation.
+										<sp />
+										The component will only be visible after a small delay to{' '}
+										<m>avoid flickering</m> in case the respective content loads
+										too fast.
+										<br />
+										This behaviour can be disabled with the <code>
+											noDelay
+										</code>{' '}
+										prop.
+									</>
+								}
+								code={`import Loading from 'core/components/Loading'
+
+<Loading size={18.5} />
+`}
+								title='Loading'
+								tags={['<Loading/>']}
+							>
 								<div style={{ ...styles.card }}>
 									<div className='wrapMarginBig flex flex-wrap justify-start'>
 										<Loading size={28 * 3} />
@@ -662,7 +714,43 @@ import styles from 'core/styles'
 								</div>
 							</Section>
 
-							<Section title='Tooltip' tags={['<Tooltip/>']}>
+							<Section
+								description={
+									<>
+										Use <code>content</code> prop to set the content{' '}
+										<m>inside the tooltip</m>.
+										<br />
+										The <code>children</code> of the tooltip component is what{' '}
+										<m>activates the tooltip</m> on hover.
+										<sp />
+										The default tooltip style can be overriden in{' '}
+										<code>src/project/_styles.ts</code> using the{' '}
+										<code>tooltip</code> property.
+										<sp />
+										In some cases the tooltip can be hidden behind a modal for
+										example and the <code>foreground</code> prop can be used to
+										make it visible.
+										<br />
+										If interaction with the tooltip content is needed like
+										buttons or links, the <code>selectable</code> prop can be
+										used to make the tooltip content <m>clickable</m>.
+									</>
+								}
+								code={`import Tooltip from 'core/components/Tooltip'
+
+<Tooltip
+	content={
+		<div>
+			Tooltip content
+		</div>
+	}
+>
+	<div>Tooltip trigger</div>
+</Tooltip>
+`}
+								title='Tooltip'
+								tags={['<Tooltip/>']}
+							>
 								<div className='wrapMargin flex flex-wrap justify-start'>
 									<Tooltip
 										tooltipProps={{ placement: 'right' }}
@@ -705,7 +793,52 @@ import styles from 'core/styles'
 								</div>
 							</Section>
 
-							<Section title='Button' tags={['<button/>', '<FButton/>']}>
+							<Section
+								description={
+									<>
+										Use the <code>appearance</code> prop to set the{' '}
+										<m>button style</m>. You can override or add new button
+										styles in <code>src/project/_styles.ts</code> using the{' '}
+										<code>buttonAppearances</code> property.
+										<br />
+										You can also use <code>glamor</code> overrides like{' '}
+										<code>{':hover'}</code> to customize the style in{' '}
+										<m>different states</m>.
+										<sp />
+										If the button is supposed to be just a <m>link</m>, you can
+										use <code>href</code> and <code>target</code> props instead
+										of the <code>onClick</code> prop.
+										<sp />
+										The button component can also be used as a <m>
+											checkbox
+										</m>{' '}
+										with the <code>checkbox</code> prop which is a string for
+										the checkbox label.
+									</>
+								}
+								code={`import FButton from 'core/components/FButton'
+
+// Default
+<FButton onClick={() => alert('Hello!')}>Click Me</FButton>
+
+// Primary
+<FButton appearance='primary'>Click Me</FButton>
+
+// Secondary
+<FButton appearance='secondary'>Click Me</FButton>
+
+// Checkbox
+<FButton checkbox={'I Agree'}></FButton>
+
+// Link
+<FButton href='https://google.com' target='_blank'>Link</FButton>
+
+// Loading
+<FButton isLoading={true}>Click Me</FButton>
+`}
+								title='Button'
+								tags={['<FButton/>', '<button/>']}
+							>
 								<div
 									style={{
 										...styles.card,
@@ -737,7 +870,7 @@ import styles from 'core/styles'
 										))}
 									</div>
 									<sp />
-									<div className='wrapMargin flex flex-wrap justify-start'>
+									<div className='wrapMargin flex flex-wrap justify-start items-center'>
 										<FButton
 											style={{
 												minWidth: 100,
@@ -753,6 +886,7 @@ import styles from 'core/styles'
 										<FButton isLoading style={{ minWidth: 50 }}>
 											Loading
 										</FButton>
+										<FButton checkbox={'Checkbox'}></FButton>
 										<FButton
 											target='_blank'
 											href='https://github.com/cakeslice'
@@ -1027,51 +1161,60 @@ import styles from 'core/styles'
 								</div>
 							</Section>
 							<Section
+								description={
+									<>
+										Use the <code>effects</code> prop to set the effects to be
+										applied when the component is <m>visible</m>.
+										<br />
+										Multiple effects can be applied at the <m>same time</m>.
+										<sp />
+										The <code>duration</code>, <code>delay</code>, and{' '}
+										<code>distance</code> props can be used to configure the
+										effects <m>behaviour</m>.
+										<sp />
+										To control when the animation is <m>triggered</m>, use the{' '}
+										<code>controlled</code> prop. If set to <m>false</m>, it
+										will <m>revert</m> the animation including visibility for
+										some effects like <code>fade</code>.
+										<sp />
+										To animate children sequentially, use the{' '}
+										<code>staggered</code> prop. For nested children, use the{' '}
+										<code>staggeredChildren</code> prop.
+									</>
+								}
+								code={`import Animated from 'core/components/Animated'
+
+// Fade-in when visible
+<Animated
+	effects={['fade']}
+>
+	<div>Content</div>
+</Animated>
+
+// Fade-in when 'isVisible' is set to true and
+// fade-out when 'isVisible' is set to false
+<Animated
+	controlled={isVisible}
+	effects={['fade']}
+>
+	<div>Content</div>
+</Animated>
+
+// Fade-in sequentially
+<Animated
+	staggered
+	effects={['fade']}
+>
+	<div>First</div>
+	<div>Second</div>
+	<div>Third</div>
+</Animated>
+`}
 								title='Animation'
-								tags={['transition', '<Animated/>', '<motion.div/>']}
+								tags={['<Animated/>', '<motion.div/>', 'transition']}
 							>
 								<div style={{ opacity: 0.75, fontSize: 13.5, textAlign: 'center' }}>
 									Click any card to toggle
-								</div>
-								<sp />
-								<tag>CSS</tag>
-								<hsp />
-								<div
-									className={
-										desktop
-											? 'wrapMargin flex flex-wrap justify-start'
-											: 'flex-col wrapMarginBigVertical'
-									}
-								>
-									<div
-										onClick={this.toggleAnimation}
-										style={{
-											...animationCard,
-											height: this.state.animationTrigger ? 100 : 0,
-											transition: 'height 750ms ease-in-out',
-										}}
-									>
-										<tag>transition</tag>
-									</div>
-									<div
-										onClick={this.toggleAnimation}
-										style={{
-											...animationCard,
-											opacity: 0.25,
-											animation: 'heartbeat 1s infinite alternate',
-										}}
-									>
-										<tag>animation</tag>
-									</div>
-									<div
-										onClick={this.toggleAnimation}
-										style={{
-											...animationCard,
-											animation: 'shadowPulse 1s infinite',
-										}}
-									>
-										<tag>animation</tag>
-									</div>
 								</div>
 								<sp />
 								<tag>{'<Animated/>'}</tag>
@@ -1275,9 +1418,57 @@ import styles from 'core/styles'
 										<tag>Offscreen</tag>
 									</Animated>
 								</div>
+								<sp />
+								<tag>CSS</tag>
+								<hsp />
+								<div
+									className={
+										desktop
+											? 'wrapMargin flex flex-wrap justify-start'
+											: 'flex-col wrapMarginBigVertical'
+									}
+								>
+									<div
+										onClick={this.toggleAnimation}
+										style={{
+											...animationCard,
+											height: this.state.animationTrigger ? 100 : 0,
+											transition: 'height 750ms ease-in-out',
+										}}
+									>
+										<tag>transition</tag>
+									</div>
+									<div
+										onClick={this.toggleAnimation}
+										style={{
+											...animationCard,
+											opacity: 0.25,
+											animation: 'heartbeat 1s infinite alternate',
+										}}
+									>
+										<tag>animation</tag>
+									</div>
+									<div
+										onClick={this.toggleAnimation}
+										style={{
+											...animationCard,
+											animation: 'shadowPulse 1s infinite',
+										}}
+									>
+										<tag>animation</tag>
+									</div>
+								</div>
 							</Section>
 
-							<Section title='CSS Modules'>
+							<Section
+								description={
+									<>
+										<m>CSS modules</m> are supported and can be used to{' '}
+										<m>override</m> default CSS styles in specific components.
+									</>
+								}
+								title='CSS Modules'
+							>
 								<div className={'wrapMarginBig flex flex-wrap'}>
 									<div className={cssModule.example}>
 										<div style={{ ...styles.card }}>
@@ -1302,7 +1493,15 @@ import styles from 'core/styles'
 								</div>
 							</Section>
 
-							<Section title='Custom DOM elements'>
+							<Section
+								description={
+									<>
+										Flawk.js comes with some custom <m>DOM elements</m> that can
+										be useful and {"don't"} need to be imported.
+									</>
+								}
+								title='Custom DOM elements'
+							>
 								<div
 									className={'wrapMarginBig flex flex-wrap'}
 									style={{ ...styles.card, fontSize: 13 }}
@@ -1310,7 +1509,7 @@ import styles from 'core/styles'
 									<div className='flex items-center'>
 										<tag style={customElement}>{'<sp/>'}</tag>
 										<hsp />
-										<div style={{ opacity: 0.85 }}>Space</div>
+										<div style={{ opacity: 0.85 }}>Spacer</div>
 									</div>
 									<div className='flex items-center'>
 										<tag style={customElement}>{'<hsp/>'}</tag>
@@ -1321,7 +1520,7 @@ import styles from 'core/styles'
 										<tag style={customElement}>{'<vr/>'}</tag>
 										<hsp />
 										<div style={{ opacity: 0.85 }}>
-											Same as {'<hr/>'} but vertical
+											Same as native {'<hr/>'} but vertical
 										</div>
 									</div>
 									<div className='flex items-center'>
@@ -1332,17 +1531,17 @@ import styles from 'core/styles'
 									<div className='flex items-center'>
 										<tag style={customElement}>{'<hl/>'}</tag>
 										<hsp />
-										<div style={{ opacity: 0.85 }}>Highlight</div>
+										<div style={{ opacity: 0.85 }}>Text highlight</div>
 									</div>
 									<div className='flex items-center'>
 										<tag style={customElement}>{'<m/>'}</tag>
 										<hsp />
-										<div style={{ opacity: 0.85 }}>Medium</div>
+										<div style={{ opacity: 0.85 }}>Medium font weight</div>
 									</div>
 									<div className='flex items-center'>
 										<tag style={customElement}>{'<bb/>'}</tag>
 										<hsp />
-										<div style={{ opacity: 0.85 }}>Bigger</div>
+										<div style={{ opacity: 0.85 }}>Bigger font size</div>
 									</div>
 								</div>
 							</Section>
