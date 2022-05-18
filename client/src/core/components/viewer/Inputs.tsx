@@ -435,6 +435,11 @@ export default class Inputs extends Component {
 									The <code>options</code> prop is an array of objects with a{' '}
 									<m>label</m> and a <m>value</m>.
 									<br />
+									To load options asynchronously, use <code>
+										loadOptions
+									</code>{' '}
+									prop.
+									<br />
 									Use <code>isSearchable</code> prop to make the dropdown{' '}
 									<m>options</m> searchable.
 									<sp />
@@ -662,6 +667,16 @@ export default class Inputs extends Component {
 												placeholder='Disabled'
 												options={simpleOptions}
 												isSearchable
+											/>
+											<Dropdown
+												uncontrolled
+												label='Label'
+												isDisabled
+												appearance={this.state.inputAppearance}
+												placeholder='Simple Disabled'
+												options={simpleOptions}
+												isSearchable
+												simpleDisabled
 											/>
 										</div>
 									</div>

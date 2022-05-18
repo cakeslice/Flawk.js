@@ -58,12 +58,14 @@ type TableStyles = {
 type TableProps = {
 	data?: (Obj & { specialRow?: string })[]
 	isLoading?: boolean
+	/** If set, table will only update when this prop changes. Can be useful to optimize performance in specific cases */
 	triggerUpdateID?: string
 	children?: React.ReactNode
 	style?: TableStyles
 	className?: string
 	height?: number | string
 	width?: '100%' | 'fit-content'
+	/** Minimum screen width to make columns with 'hide' prop set to 'custom' visible */
 	customHideWidth?: number
 	hideHeader?: boolean
 	expandContent?: (object: Obj) => React.ReactNode
@@ -76,6 +78,7 @@ type TableProps = {
 					specialRow?: string | undefined
 				}
 		  ) => string)
+	/** Table data can have some objects with a key in the 'specialRow' property. Define how those special rows should be rendered using this prop  */
 	specialRows?: SpecialRow[]
 	pagination?: {
 		onClick: (page: number) => void

@@ -87,9 +87,10 @@ type Props = {
 	button?: boolean
 	emptyLabel?: boolean
 	dropdownIndicator?: React.ReactNode
+	/** Set to true to hide the dropdown input box and show only 'dropdownIndicator' */
 	customInput?: boolean
+	/** Set to true to bring the input to the foreground in case it's hidden behind a modal for example */
 	foreground?: boolean
-	uncontrolled?: boolean
 	//
 	placeholder?: string
 	value?: string | number
@@ -105,6 +106,7 @@ type Props = {
 	noPortal?: boolean
 	erasable?: boolean
 	isSearchable?: boolean
+	/** Show menu only if there's any input value */
 	showOnlyIfSearch?: boolean
 	menuPlacement?: 'top' | 'bottom' | 'auto'
 	//
@@ -113,17 +115,24 @@ type Props = {
 	onChange?: (value: string | undefined) => void
 	onBlur?: (event: React.FocusEvent<HTMLInputElement, Element>) => void
 	//
+	/** For development purposes only */
+	uncontrolled?: boolean
+	/** For development purposes only */
 	eventOverride?: 'focus' | 'hover'
 } & (
 	| {
 			name: string
 			invalid?: string
 			isDisabled?: undefined
+			/** If true and isDisabled is true, skips 'disabled' styling */
+			simpleDisabled?: undefined
 	  }
 	| {
 			name?: string
 			invalid?: undefined
 			isDisabled?: boolean
+			/** If true and isDisabled is true, skips 'disabled' styling */
+			simpleDisabled?: boolean
 	  }
 )
 export default class Dropdown extends TrackedComponent<Props> {
@@ -318,22 +327,29 @@ export default class Dropdown extends TrackedComponent<Props> {
 		}
 		finalStyle = {
 			...finalStyle,
-			...(this.props.isDisabled && /* !this.props.simpleDisabled && */ {
-				background: config.overlayColor(
-					styles.inputBackground || styles.colors.white,
-					config.replaceAlpha(styles.colors.black, global.nightMode ? 0.1 : 0.1)
-				),
-				color: config.replaceAlpha(styles.colors.black, global.nightMode ? 0.5 : 0.5),
-				'::placeholder': {
-					...finalStyle['::placeholder'],
+			...(this.props.isDisabled &&
+				!this.props.simpleDisabled && {
+					background: config.overlayColor(
+						styles.inputBackground || styles.colors.white,
+						config.replaceAlpha(styles.colors.black, global.nightMode ? 0.1 : 0.1)
+					),
 					color: config.replaceAlpha(styles.colors.black, global.nightMode ? 0.5 : 0.5),
-				},
-				borderColor: config.replaceAlpha(styles.colors.black, global.nightMode ? 0.1 : 0.1),
-				...(styles.inputBorder === 'bottom' && {
-					borderRadius: styles.defaultBorderRadius,
+					'::placeholder': {
+						...finalStyle['::placeholder'],
+						color: config.replaceAlpha(
+							styles.colors.black,
+							global.nightMode ? 0.5 : 0.5
+						),
+					},
+					borderColor: config.replaceAlpha(
+						styles.colors.black,
+						global.nightMode ? 0.1 : 0.1
+					),
+					...(styles.inputBorder === 'bottom' && {
+						borderRadius: styles.defaultBorderRadius,
+					}),
+					opacity: 0.75,
 				}),
-				opacity: 0.75,
-			}),
 			...(this.props.isDisabled && {
 				cursor: 'default',
 				':hover': {},

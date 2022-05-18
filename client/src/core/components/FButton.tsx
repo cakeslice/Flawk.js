@@ -41,6 +41,7 @@ type Props = {
 	appearance?: Appearance
 	noInvalidLabel?: boolean
 	//
+	/** For development purposes only */
 	eventOverride?: 'focus' | 'hover' | 'active' | 'focus-visible'
 } & (
 	| {
@@ -93,18 +94,27 @@ type Props = {
 	(
 		| {
 				isDisabled?: boolean
+				/** If true and isDisabled is true, skips 'disabled' styling */
 				simpleDisabled?: boolean
 				isLoading?: undefined
 		  }
 		| {
 				isDisabled?: undefined
+				/** If true and isDisabled is true, skips 'disabled' styling */
 				simpleDisabled?: undefined
 				isLoading?: boolean
 		  }
 	) &
 	(
-		| { target?: string; href?: string; onClick?: undefined; onBlur?: undefined }
 		| {
+				target?: string
+				/** Use button as a link instead of 'onClick' */
+				href?: string
+				onClick?: undefined
+				onBlur?: undefined
+		  }
+		| {
+				/** Use button as a link instead of 'onClick' */
 				href?: undefined
 				target?: undefined
 				onClick?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void

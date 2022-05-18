@@ -188,7 +188,9 @@ type Props = {
 	 * @deprecated Use leftChild/rightChild instead
 	 */
 	icon?: React.ReactNode
+	/** Insert a JSX element on the left side of the input */
 	leftChild?: React.ReactNode
+	/** Insert a JSX element on the right side of the input */
 	rightChild?: React.ReactNode
 	//
 	defaultValue?: number | string
@@ -196,35 +198,51 @@ type Props = {
 	autoComplete?: string
 	placeholder?: string
 	required?: boolean | string
+	/** If true and isDisabled is true, skips 'disabled' styling */
 	simpleDisabled?: boolean
-	bufferedInput?: boolean
-	bufferInterval?: number
+	/** If true 'onChange' will only be trigerred if the input value doesn't change for a certain amount of time. Use 'bufferInterval' to override the default time interval */
 	type?: React.HTMLInputTypeAttribute
 	//
 	field?: FieldInputProps<Obj>
 	form?: FormikProps<Obj>
 	onClick?: (event: React.MouseEvent<HTMLInputElement | HTMLTextAreaElement, MouseEvent>) => void
 	onChange?: (value: string | number | undefined) => void
-	onChangeNoBuffer?: (value: string | number | undefined) => void
 	onBlur?: (event: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>) => void
 	onFocus?: (event: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>) => void
 	onKeyPress?: (event: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => void
 	//
+	/** For development purposes only */
 	eventOverride?: 'focus' | 'hover'
 } & (
 	| {
-			textArea?: boolean
-			textAreaFixed?: undefined
-			minRows?: undefined
-			maxRows?: undefined
+			bufferedInput?: true
+			bufferInterval?: number
+			/** If 'bufferedInput' is true, this function will be called everytime the input value changes without waiting for 'bufferInterval' */
+			onChangeNoBuffer?: (value: string | number | undefined) => void
 	  }
 	| {
-			textArea: true
-			textAreaFixed?: boolean
-			minRows?: number
-			maxRows?: number
+			bufferedInput?: undefined
+			bufferInterval?: undefined
+			/** If 'bufferedInput' is true, this function will be called everytime the input value changes without waiting for 'bufferInterval' */
+			onChangeNoBuffer?: undefined
 	  }
 ) &
+	(
+		| {
+				textArea?: boolean
+				/** Set to true to disable the text area auto resize when typing */
+				textAreaFixed?: undefined
+				minRows?: undefined
+				maxRows?: undefined
+		  }
+		| {
+				textArea: true
+				/** Set to true to disable the text area auto resize when typing */
+				textAreaFixed?: boolean
+				minRows?: number
+				maxRows?: number
+		  }
+	) &
 	(
 		| {
 				mask: string | (string | RegExp)[]
@@ -267,17 +285,23 @@ type Props = {
 	(
 		| {
 				datePicker?: true
+				/** Set to true to bring the input to the foreground in case it's hidden behind a modal for example */
 				foreground?: true
+				/** Set to true to make the input visible if it's inside a table */
 				table?: undefined
 		  }
 		| {
 				datePicker?: true
+				/** Set to true to bring the input to the foreground in case it's hidden behind a modal for example */
 				foreground?: undefined
+				/** Set to true to make the input visible if it's inside a table */
 				table?: true
 		  }
 		| {
 				datePicker?: undefined
+				/** Set to true to bring the input to the foreground in case it's hidden behind a modal for example */
 				foreground?: undefined
+				/** Set to true to make the input visible if it's inside a table */
 				table?: undefined
 		  }
 	)
