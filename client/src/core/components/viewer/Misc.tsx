@@ -748,14 +748,18 @@ import { SizeMe } from 'react-sizeme'
 								title='Mobile app'
 								tags={['Capacitor']}
 							>
-								<FButton
+								<a
+									// eslint-disable-next-line
+									href='https://play.google.com/store/apps/details?id=io.flawk.mobile&utm_source=flawk&utm_campaign=components_viewer&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'
 									target='_blank'
-									href={
-										'https://play.google.com/store/apps/details?id=io.flawk.mobile'
-									}
+									rel='noreferrer'
 								>
-									Google Play
-								</FButton>
+									<img
+										style={{ width: 119, margin: -7.5 }}
+										alt='Get it on Google Play'
+										src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png'
+									/>
+								</a>
 							</Section>
 						)}
 						{!Capacitor.isNativePlatform() && desktop && (
