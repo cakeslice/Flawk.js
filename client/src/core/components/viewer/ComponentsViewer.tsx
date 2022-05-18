@@ -48,7 +48,7 @@ export default class ComponentsViewer extends Component {
 	}
 
 	componentDidMount() {
-		if (global.localStorage.getItem('horizontalDashboard') === 'true')
+		if (global.storage.getItem('horizontalDashboard') === 'true')
 			this.setState({ horizontalDashboard: true })
 	}
 
@@ -305,7 +305,7 @@ export default class ComponentsViewer extends Component {
 						pageProps={{
 							horizontalDashboard: this.state.horizontalDashboard,
 							toggleDashboardLayout: () => {
-								global.localStorage.setItem(
+								global.storage.setItem(
 									'horizontalDashboard',
 									!this.state.horizontalDashboard ? 'true' : 'false'
 								)
@@ -355,14 +355,14 @@ export const Section: React.FC<{
 	return (
 		<MediaQuery minWidth={880}>
 			{(tablet) => (
-				<>
-					{!top && (
-						<>
-							<sp />
-							<sp />
-						</>
-					)}
-					<Anchor id={id} updateHash>
+				<Anchor id={id} updateHash>
+					<>
+						{!top && (
+							<>
+								<sp />
+								<sp />
+							</>
+						)}
 						<>
 							<div
 								style={{
@@ -465,8 +465,8 @@ export const Section: React.FC<{
 							<sp />
 							<hr />
 						</>
-					</Anchor>
-				</>
+					</>
+				</Anchor>
 			)}
 		</MediaQuery>
 	)

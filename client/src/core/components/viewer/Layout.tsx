@@ -117,39 +117,6 @@ export default class Layout extends QueryParams<
 		this.fetchData()
 	}
 
-	confirmModal() {
-		return (
-			<Modal
-				closeOnOutsideClick
-				name='confirmModal'
-				parent={this}
-				title={
-					<div>
-						Delete <b>Chris</b>
-					</div>
-				}
-				content={(close, Content, Buttons, Parent) => (
-					<Parent>
-						<Content>
-							<p>
-								Are you sure you want to delete user <b>Chris</b>?
-							</p>
-							<sp />
-							<b style={{ color: styles.colors.red }}>
-								This action cannot be reverted
-							</b>
-						</Content>
-						<Buttons>
-							<FButton onClick={close}>Cancel</FButton>
-							<FButton appearance='delete_primary' onClick={close}>
-								Delete
-							</FButton>
-						</Buttons>
-					</Parent>
-				)}
-			/>
-		)
-	}
 	exampleModal() {
 		return (
 			<Modal
@@ -303,8 +270,36 @@ export default class Layout extends QueryParams<
 					return (
 						<div>
 							{this.exampleModal()}
-							{this.confirmModal()}
 							{this.bigModal()}
+							<Modal
+								closeOnOutsideClick
+								name='confirmModal'
+								parent={this}
+								title={
+									<div>
+										Delete <b>Chris</b>
+									</div>
+								}
+								content={(close, Content, Buttons, Parent) => (
+									<Parent>
+										<Content>
+											<p>
+												Are you sure you want to delete user <b>Chris</b>?
+											</p>
+											<sp />
+											<b style={{ color: styles.colors.red }}>
+												This action cannot be reverted
+											</b>
+										</Content>
+										<Buttons>
+											<FButton onClick={close}>Cancel</FButton>
+											<FButton appearance='delete_primary' onClick={close}>
+												Delete
+											</FButton>
+										</Buttons>
+									</Parent>
+								)}
+							/>
 							{desktop && (
 								<Section
 									description={
@@ -313,13 +308,13 @@ export default class Layout extends QueryParams<
 											simple way to add <m>pages</m> (routes) and{' '}
 											<m>navigation</m> to your app.
 											<sp />
-											Use the <code>path</code> prop to set the{' '}
-											<m>parent path</m> of all pages.
+											Use <code>path</code> prop to set the <m>parent path</m>{' '}
+											of all pages.
 											<br />
-											Use the <code>routes</code> prop to define each page
-											path and their respective components, titles and icons.
+											Use <code>routes</code> prop to define each page path
+											and their respective components, titles and icons.
 											<br />
-											Use the <code>wrapperComponent</code> prop to set the{' '}
+											Use <code>wrapperComponent</code> prop to set the{' '}
 											<m>parent component</m> of all pages.
 											<sp />
 											On <m>desktop</m>, navigation controls are on a vertical
@@ -473,16 +468,15 @@ const growExample = {
 							<Section
 								description={
 									<>
-										To supply <m>data</m> to the table, use the{' '}
-										<code>data</code> prop to which expects an array of objects.
+										To supply <m>data</m> to the table, use <code>data</code>{' '}
+										prop to which expects an array of objects.
 										<br />
-										To define the <m>table columns</m>, use the{' '}
-										<code>columns</code> prop. Each column has a{' '}
-										<code>name</code> for the {"table's"} header and a{' '}
-										<code>selector</code> which maps a property of each data
-										object to the column.
+										To define the <m>table columns</m>, use <code>columns</code>{' '}
+										prop. Each column has a <code>name</code> for the{' '}
+										{"table's"} header and a <code>selector</code> which maps a
+										property of each data object to the column.
 										<sp />
-										Use the <code>keySelector</code> prop to define a{' '}
+										Use <code>keySelector</code> prop to define a{' '}
 										<m>main key</m> found in the data array. This key needs to
 										be <m>unique</m> and usually is the id of each object or
 										some other unique identifier.
@@ -492,9 +486,10 @@ const growExample = {
 										when defining the column.
 										<sp />
 										<sp />
-										The table component also supports <m>pagination</m>,{' '}
-										<m>sorting</m>, <m>expandable rows</m> and is optimized for{' '}
-										<m>large datasets</m>.
+										The table component also has built-in <m>
+											pagination
+										</m>, <m>sorting</m>, <m>expandable rows</m> and is
+										optimized for <m>large datasets</m>.
 									</>
 								}
 								code={`import FTable from 'core/components/FTable'
@@ -883,21 +878,111 @@ const data = [
 									></FTable>
 								</div>
 							</Section>
-							<Section title='Pagination' tags={['<Paginate/>']}>
-								{this.state.data && (
-									<Paginate
-										onClick={async (e) => {
-											this.setQueryParams({
-												page: e,
-											})
-											await this.fetchData()
-										}}
-										totalPages={this.state.data && this.state.data.totalPages}
-										currentPage={this.queryParams.page}
-									></Paginate>
-								)}
+							<Section
+								description={
+									<>
+										Use <code>currentPage</code> prop to set the <m>current</m>{' '}
+										displayed page
+										<br />
+										Use <code>totalPages</code> prop to set the <m>total</m>{' '}
+										number of pages
+										<sp />
+										The <code>onClick</code> prop is called when the page
+										changes
+									</>
+								}
+								code={`import Paginate from 'core/components/Paginate'
+
+<Paginate
+	onClick={async (e) => {
+		this.setState({
+			page: e,
+		})
+	}}
+	totalPages={10}
+	currentPage={this.state.page}
+></Paginate>
+`}
+								title='Pagination'
+								tags={['<Paginate/>']}
+							>
+								<Paginate
+									onClick={async (e) => {
+										this.setQueryParams({
+											page: e,
+										})
+										await this.fetchData()
+									}}
+									totalPages={this.state.data ? this.state.data.totalPages : 1}
+									currentPage={this.queryParams.page}
+								></Paginate>
 							</Section>
-							<Section title='Modal' tags={['<Modal/>']}>
+							<Section
+								description={
+									<>
+										The <code>{'<Modal/>'}</code> component is not{' '}
+										<m>mounted</m> until {"it's"} displayed and where you place
+										it in the component tree is <m>irrelevant</m>.
+										<br />
+										With the <code>content</code> prop you can set the content
+										of the modal.
+										<sp />
+										Use <code>name</code> prop to define a <m>key</m> for the
+										modal. This key will be expected to be in{' '}
+										<code>this.state</code> and will be used to set if the modal
+										is <m>closed</m> or <m>open</m>.
+										<br />
+										The <code>parent</code> prop is also <m>required</m> for the
+										modal to access <code>this.state</code>.
+										<sp />
+										Use <code>title</code> prop to set the modal title.
+										<br />
+										Use <code>onClose</code> prop to define a function to be
+										called when the modal is closed.
+									</>
+								}
+								code={`import Modal from 'core/components/Modal'
+
+state = {
+	myModal: false
+}
+
+<>
+	<Modal
+		name='myModal' // Name needs to match the key in this.state
+		parent={this}
+		title='Hello'
+		content={(close, Content, Buttons, Parent) => (
+			<Parent>
+				<Content>
+					<p>
+						Are you sure?
+					</p>
+				</Content>
+				
+				<Buttons>
+					<FButton onClick={close}>Cancel</FButton>
+					<FButton appearance='primary' onClick={() => {
+						alert('Hello!')
+						close()
+					}}>
+						Proceed
+					</FButton>
+				</Buttons>
+			</Parent>
+		)}
+	/>
+	
+	<button type='button' onClick={() => {
+		this.setState({ myModal: true })
+	}}>
+		Open
+	</button>
+</>
+`}
+								title='Modal'
+								tags={['<Modal/>']}
+							>
 								<div className='wrapMargin flex flex-wrap justify-start'>
 									<FButton onClick={() => this.setState({ exampleModal: true })}>
 										Default
@@ -913,8 +998,56 @@ const data = [
 									</FButton>
 								</div>
 							</Section>
-							<Section title='Toast' tags={['global.addFlag()']}>
+							<Section
+								description={
+									<>
+										A toast can be triggered from anywhere using the{' '}
+										<code>global.addFlag</code> function.
+										<sp />
+										It can be closed by the <m>user</m> or <m>automatically</m>{' '}
+										after a certain amount of time.
+										<br />
+										{"There's"} also different title colors depending on the
+										type of the toast like <m>success</m>, <m>error</m> or{' '}
+										<m>warning</m>.
+										<sp />
+										Toasts use <code>react-toastify</code> internally.
+									</>
+								}
+								code={`<button
+	type='button'
+	onClick={() =>
+		global.addFlag(
+			'This is a notification',
+			undefined,
+			'default',
+			{
+				closeAfter: 2000, // In milliseconds
+			}
+		)
+	}
+>
+	Show Toast
+</button>
+`}
+								title='Toast'
+								tags={['global.addFlag()']}
+							>
 								<div className='wrapMargin flex flex-wrap justify-start'>
+									<FButton
+										onClick={() =>
+											global.addFlag(
+												'Uploading file...',
+												undefined,
+												'default',
+												{
+													closeAfter: 2000,
+												}
+											)
+										}
+									>
+										Default
+									</FButton>
 									<FButton
 										onClick={() =>
 											global.addFlag(
@@ -983,7 +1116,58 @@ const data = [
 									</FButton>
 								</div>
 							</Section>
-							<Section title='Chart' tags={['<Chart/>']}>
+							<Section
+								description={
+									<>
+										The the following <m>chart types</m> are available:
+										<ul>
+											<li>
+												<code>{'BarChart'}</code>
+											</li>
+											<li>
+												<code>{'LineChart'}</code>
+											</li>
+											<li>
+												<code>{'DoughnutChart'}</code>
+											</li>
+											<li>
+												<code>{'PieChart'}</code>
+											</li>
+											<li>
+												<code>{'TreemapChart'}</code>
+											</li>
+										</ul>
+										<sp />
+										Use <code>data</code> prop to supply the chart with the{' '}
+										<m>datasets</m>, <m>labels</m> and <m>options</m>.
+										<sp />
+										This component uses <code>react-chartjs-2</code> internally.
+									</>
+								}
+								code={`import {
+	DoughnutChart,
+} from 'core/components/Chart'
+			
+const colors = ['#28c986', '#5841D8', '#FF8B8B', '#FEB58D']
+const labels = ['Tech', 'Finance', 'Marketing', 'Sales']
+const data = [33, 40, 12, 15]
+
+<DoughnutChart
+	data={{
+		labels: labels,
+		datasets: [
+			{
+				label: 'Dataset 1',
+				data: data,
+				backgroundColor: colors,
+			},
+		],
+	}}
+></DoughnutChart>
+`}
+								title='Chart'
+								tags={['Chart.tsx', 'chart.js']}
+							>
 								<div
 									className={
 										desktop
@@ -1035,7 +1219,32 @@ const data = [
 									)}
 								</div>
 							</Section>
-							<Section title='Collapse' tags={['<Collapsible/>', '<Animated/>']}>
+							<Section
+								description={
+									<>
+										Use <code>trigger</code> prop to display the element that
+										will <m>expand/collapse</m> the <m>content</m>.
+										<sp />
+										Use <code>content</code> prop to display the content when
+										the component is <m>expanded</m>.
+									</>
+								}
+								code={`import Collapsible from 'core/components/Collapsible'
+
+<Collapsible
+	trigger={() => (
+		<div>Open</div>
+	)}
+	content={(set) => (
+		<div>
+			Hidden Conent
+		</div>
+	)}
+></Collapsible>
+`}
+								title='Collapse'
+								tags={['<Collapsible/>', '<Animated/>']}
+							>
 								<div style={{ ...styles.card, width: desktop ? 400 : '100%' }}>
 									<div>
 										<FButton
@@ -1104,7 +1313,54 @@ const data = [
 									></Collapsible>
 								</div>
 							</Section>
-							<Section title='Sticky' tags={['react-sticky-el']}>
+							<Section
+								description={
+									<>
+										To make an element <m>sticky</m> across a <m>section</m> in
+										your page, add a <m>unique</m> CSS class like{' '}
+										<code>sticky_boundary</code> in the section <m>parent</m>{' '}
+										and then use the <code>{'<Sticky/>'}</code> component as{' '}
+										<m>one</m> of the children.
+										<br />
+										For the <code>boundaryElement</code> prop, supply it with
+										the <m>same</m> unique CSS class you used in the parent.
+										<sp />
+										The children of <code>{'<Sticky/>'}</code> will{' '}
+										<m>stay in place</m> as you <m>scroll</m> vertically in that
+										section.
+									</>
+								}
+								code={`import Sticky from 'react-sticky-el'
+
+<div className='grid grid-cols-2 sticky_boundary'>
+	<Sticky
+		topOffset={-80}
+		bottomOffset={80}
+		stickyStyle={{ marginTop: 80 }}
+		boundaryElement='.sticky_boundary'
+	>
+		<div
+			style={{
+				height: 200,
+				width: 'auto',
+			}}
+		>
+			This element is sticky in this section
+		</div>
+	</Sticky>
+
+	<div>
+		<div style={{ height: 400, width: 'auto' }}>Card #1</div>
+		<sp />
+		<div style={{ height: 400, width: 'auto' }}>Card #2</div>
+		<sp />
+		<div style={{ height: 400, width: 'auto' }}>Card #3</div>
+	</div>
+</div>
+`}
+								title='Sticky'
+								tags={['react-sticky-el']}
+							>
 								<div
 									className={
 										desktop

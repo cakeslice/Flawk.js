@@ -54,6 +54,14 @@ export default {
 			pt: "This app uses necessary cookies to deliver its services. We'd like to set additional cookies to analyse traffic.{{break}}View our 🍪 {{cookiePolicy}}",
 			en: "This app uses necessary cookies to deliver its services. We'd like to set additional cookies to analyse traffic.{{break}}View our 🍪 {{cookiePolicy}}",
 		},
+		reactError: {
+			en: "We're sorry but something went wrong 😞",
+			pt: "We're sorry but something went wrong 😞",
+		},
+		reactErrorTry: {
+			en: 'Try Again',
+			pt: 'Try Again',
+		},
 	},
 
 	auth: {

@@ -63,10 +63,10 @@ export type Wallet = {
 }
 
 export const clearWallet = () => {
-	global.localStorage.setItem('wallet_connected', 'false')
+	global.storage.setItem('wallet_connected', 'false')
 }
 export const setupWallet = async (options: Options) => {
-	if (global.localStorage.getItem('wallet_connected') === 'true') {
+	if (global.storage.getItem('wallet_connected') === 'true') {
 		return await connectWallet(options)
 	}
 	return undefined
@@ -123,7 +123,7 @@ export const connectWallet = async (options: Options) => {
 			options.callbacks.disconnected?.(error)
 		})
 
-		global.localStorage.setItem('wallet_connected', 'true')
+		global.storage.setItem('wallet_connected', 'true')
 		return {
 			address: truncateEthAddress(address),
 			balance: Number(ethers.utils.formatEther(balance)).toFixed(2),

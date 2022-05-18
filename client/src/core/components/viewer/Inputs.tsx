@@ -41,7 +41,12 @@ const simpleOptions = [
 ]
 
 export default class Inputs extends Component {
-	state: { checked?: boolean; inputAppearance: string; usageBackground?: string } = {
+	state: {
+		debounced?: string
+		checked?: boolean
+		inputAppearance: string
+		usageBackground?: string
+	} = {
 		inputAppearance: 'default',
 	}
 
@@ -111,51 +116,96 @@ export default class Inputs extends Component {
 			<MediaQuery minWidth={config.mobileWidthTrigger}>
 				{(desktop) => (
 					<div>
-						<Section title='Input field' tags={['<FInput/>', '<input>']} top>
+						<Section
+							description={
+								<>
+									Use <code>appearance</code> prop to set the <m>input style</m>.
+									You can override or add new input styles in{' '}
+									<code>src/project/_styles.ts</code> using the{' '}
+									<code>inputAppearances</code> property.
+									<br />
+									You can also use <code>glamor</code> overrides like{' '}
+									<code>{':hover'}</code> to customize the style in{' '}
+									<m>different states</m>.
+									<sp />
+									To make it a <m>controlled</m> input, use{' '}
+									<code>isControlled</code> prop and supply a value to{' '}
+									<code>value</code> prop.
+									<sp />
+									Use with <code>{'<Field/>'}</code> if inside a{' '}
+									<a href='#form'>form</a>.
+								</>
+							}
+							code={`import FInput from 'core/components/FInput'
+
+// E-mail
+<FInput
+	type='email'
+	label='E-mail'
+	autoComplete='new-email'
+	placeholder='you@gmail.com'
+	onChange={(e) => {
+		this.setState({email: e})
+	}}
+/>
+
+// Text area
+<FInput
+	style={{ width: '100%', minHeight: 50 }}
+	label='Text Area'
+	textArea
+></FInput>
+
+// Date
+<FInput
+	label='Date'
+	datePicker
+/>
+`}
+							title='Input field'
+							tags={['<FInput/>', '<input>']}
+							top
+						>
 							<div style={{ ...styles.card, maxWidth: 783 }}>
 								<div className='wrapMargin flex flex-wrap justify-start items-end'>
 									<FInput
 										type='email'
-										label={'E-mail'}
+										label='E-mail'
 										autoComplete='new-email'
-										defaultValue={'someone@gmail.com'}
-										placeholder={'you@gmail.com'}
+										defaultValue='someone@gmail.com'
+										placeholder='you@gmail.com'
 									/>
 									<FInput
 										type='password'
 										autoComplete='new-password'
-										label={'Password'}
-										placeholder={'******'}
+										label='Password'
+										placeholder='******'
 									/>
-									<FInput type='number' label={'Number'} placeholder={'1337'} />
+									<FInput type='number' label='Number' placeholder='1337' />
 
-									<FInput
-										label={'Centered'}
-										placeholder={'Hello'}
-										center={true}
-									/>
+									<FInput label='Centered' placeholder='Hello' center={true} />
 								</div>
 								<sp />
 								<div className='wrapMargin flex flex-wrap justify-start items-start'>
 									<FInput
 										label='Invalid Label'
-										invalid={'*'}
-										placeholder={'Long placeholder really long...'}
+										invalid='*'
+										placeholder='Long placeholder really long...'
 										name='input'
 									/>
 									<FInput
 										name='input'
 										emptyLabel
 										invalidType='bottom'
-										invalid={'Wrong format'}
-										placeholder={'Invalid Bottom'}
+										invalid='Wrong format'
+										placeholder='Invalid Bottom'
 									/>
 									<FInput
 										emptyLabel
-										invalid={'*'}
+										invalid='*'
 										name='input'
-										invalidType={'right'}
-										placeholder={'Invalid Right'}
+										invalidType='right'
+										placeholder='Invalid Right'
 									/>
 								</div>
 								<sp />
@@ -189,7 +239,7 @@ export default class Inputs extends Component {
 								<div className='wrapMargin flex flex-wrap justify-start'>
 									<FInput
 										style={{ width: '100%', minHeight: 50 }}
-										label={'Text Area'}
+										label='Text Area'
 										textArea
 									></FInput>
 								</div>
@@ -281,6 +331,13 @@ export default class Inputs extends Component {
 											</div>
 										}
 									/>
+									<FInput
+										label='Debounced'
+										style={{ width: 100 }}
+										bufferedInput
+										onChange={(e) => this.setState({ debounced: e })}
+									/>
+									<div style={{ alignSelf: 'end' }}>{this.state.debounced}</div>
 								</div>
 							</div>
 							<sp />
@@ -298,34 +355,34 @@ export default class Inputs extends Component {
 									<div style={appearanceStyle}>
 										<div className='wrapMargin flex flex-wrap justify-start'>
 											<FInput
-												label={'Label'}
+												label='Label'
 												appearance={this.state.inputAppearance}
-												placeholder={'Default'}
+												placeholder='Default'
 											/>
 											<FInput
-												label={'Label'}
+												label='Label'
 												appearance={this.state.inputAppearance}
 												eventOverride='hover'
-												placeholder={'Hover'}
+												placeholder='Hover'
 											/>
 											<FInput
-												label={'Label'}
+												label='Label'
 												appearance={this.state.inputAppearance}
 												eventOverride='focus'
-												placeholder={'Focus'}
+												placeholder='Focus'
 											/>
 											<FInput
-												label={'Label'}
+												label='Label'
 												isDisabled
 												appearance={this.state.inputAppearance}
-												placeholder={'Disabled'}
+												placeholder='Disabled'
 											/>
 											<FInput
-												label={'Label'}
+												label='Label'
 												isDisabled
 												simpleDisabled
 												appearance={this.state.inputAppearance}
-												placeholder={'Simple Disabled'}
+												placeholder='Simple Disabled'
 											/>
 										</div>
 									</div>
@@ -336,34 +393,80 @@ export default class Inputs extends Component {
 									<div style={appearanceStyle}>
 										<div className='wrapMargin flex flex-wrap justify-start'>
 											<FInput
-												label={'Label'}
+												label='Label'
 												name='input'
 												invalid='*'
 												appearance={this.state.inputAppearance}
-												placeholder={'Default'}
+												placeholder='Default'
 											/>
 											<FInput
-												label={'Label'}
+												label='Label'
 												name='input'
 												invalid='*'
 												appearance={this.state.inputAppearance}
 												eventOverride='hover'
-												placeholder={'Hover'}
+												placeholder='Hover'
 											/>
 											<FInput
-												label={'Label'}
+												label='Label'
 												name='input'
 												invalid='*'
 												appearance={this.state.inputAppearance}
 												eventOverride='focus'
-												placeholder={'Focus'}
+												placeholder='Focus'
 											/>
 										</div>
 									</div>
 								</div>
 							</div>
 						</Section>
-						<Section title='Dropdown' tags={['<Dropdown/>']}>
+						<Section
+							description={
+								<>
+									Use <code>appearance</code> prop to set the <m>input style</m>.
+									You can override or add new input styles in{' '}
+									<code>src/project/_styles.ts</code> using the{' '}
+									<code>inputAppearances</code> property.
+									<br />
+									You can also use <code>glamor</code> overrides like{' '}
+									<code>{':hover'}</code> to customize the style in{' '}
+									<m>different states</m>.
+									<sp />
+									The <code>options</code> prop is an array of objects with a{' '}
+									<m>label</m> and a <m>value</m>.
+									<br />
+									Use <code>isSearchable</code> prop to make the dropdown{' '}
+									<m>options</m> searchable.
+									<sp />
+									Use with <code>{'<Field/>'}</code> if inside a{' '}
+									<a href='#form'>form</a>.
+									<sp />
+									This component uses <code>react-select</code> internally.
+								</>
+							}
+							code={`import Dropdown from 'core/components/Dropdown'
+
+<Dropdown
+	isSearchable
+	label='Dropdown'
+	onChange={(e) => {
+		this.setState({option: e}) // The 'value' of chosen option
+	}}
+	options={[
+		{
+			label: 'Option 1',
+			value: 'option_1'
+		},
+		{
+			label: 'Option 2',
+			value: 'option_2'
+		}
+	]}
+/>
+`}
+							title='Dropdown'
+							tags={['<Dropdown/>']}
+						>
 							<div style={{ ...styles.card, maxWidth: 783 }}>
 								<div className='wrapMargin flex flex-wrap justify-start'>
 									{desktop && (
@@ -371,8 +474,8 @@ export default class Inputs extends Component {
 											uncontrolled
 											style={{ flexGrow: 1 }}
 											isSearchable
-											label={'Full width'}
-											defaultValue={'accept'}
+											label='Full width'
+											defaultValue='accept'
 											options={dropdownOptions}
 										/>
 									)}
@@ -415,10 +518,10 @@ export default class Inputs extends Component {
 									<Dropdown
 										uncontrolled
 										name='dropdown'
-										label={'Invalid Label'}
+										label='Invalid Label'
 										erasable
-										placeholder={'Long placeholder really long'}
-										invalid={'*'}
+										placeholder='Long placeholder really long'
+										invalid='*'
 										options={dropdownOptions}
 										isSearchable
 									/>
@@ -426,11 +529,11 @@ export default class Inputs extends Component {
 										uncontrolled
 										emptyLabel
 										name='dropdown'
-										defaultValue={'accept'}
-										placeholder={'Invalid Bottom'}
+										defaultValue='accept'
+										placeholder='Invalid Bottom'
 										erasable
 										invalidType='bottom'
-										invalid={'Not allowed'}
+										invalid='Not allowed'
 										options={dropdownOptions}
 										isSearchable
 									/>
@@ -440,10 +543,10 @@ export default class Inputs extends Component {
 										emptyLabel
 										name='dropdown'
 										menuPlacement='top'
-										placeholder={'Invalid Right'}
+										placeholder='Invalid Right'
 										erasable
-										invalid={'*'}
-										invalidType={'right'}
+										invalid='*'
+										invalidType='right'
 										options={dropdownOptions}
 										isSearchable
 									/>
@@ -494,8 +597,8 @@ export default class Inputs extends Component {
 									</div>
 									<Dropdown
 										button
-										placeholder={'Button'}
-										defaultValue={'accept'}
+										placeholder='Button'
+										defaultValue='accept'
 										options={dropdownOptions}
 									/>
 									<Dropdown
@@ -505,8 +608,8 @@ export default class Inputs extends Component {
 												<img style={{ height: 20 }} src={logo}></img>
 											</div>
 										}
-										placeholder={'Custom indicator'}
-										defaultValue={'accept'}
+										placeholder='Custom indicator'
+										defaultValue='accept'
 										options={dropdownOptions}
 									/>
 								</div>
@@ -527,36 +630,36 @@ export default class Inputs extends Component {
 										<div className='wrapMargin flex flex-wrap justify-start'>
 											<Dropdown
 												uncontrolled
-												label={'Label'}
+												label='Label'
 												appearance={this.state.inputAppearance}
-												placeholder={'Default'}
+												placeholder='Default'
 												options={simpleOptions}
 												isSearchable
 											/>
 											<Dropdown
 												uncontrolled
-												label={'Label'}
+												label='Label'
 												appearance={this.state.inputAppearance}
 												eventOverride='hover'
-												placeholder={'Hover'}
+												placeholder='Hover'
 												options={simpleOptions}
 												isSearchable
 											/>
 											<Dropdown
 												uncontrolled
-												label={'Label'}
+												label='Label'
 												appearance={this.state.inputAppearance}
 												eventOverride='focus'
-												placeholder={'Focus'}
+												placeholder='Focus'
 												options={simpleOptions}
 												isSearchable
 											/>
 											<Dropdown
 												uncontrolled
-												label={'Label'}
+												label='Label'
 												isDisabled
 												appearance={this.state.inputAppearance}
-												placeholder={'Disabled'}
+												placeholder='Disabled'
 												options={simpleOptions}
 												isSearchable
 											/>
@@ -570,33 +673,33 @@ export default class Inputs extends Component {
 										<div className='wrapMargin flex flex-wrap justify-start'>
 											<Dropdown
 												uncontrolled
-												label={'Label'}
+												label='Label'
 												appearance={this.state.inputAppearance}
 												name='input'
 												invalid='*'
-												placeholder={'Default'}
+												placeholder='Default'
 												options={simpleOptions}
 												isSearchable
 											/>
 											<Dropdown
 												uncontrolled
-												label={'Label'}
+												label='Label'
 												appearance={this.state.inputAppearance}
 												name='input'
 												invalid='*'
 												eventOverride='hover'
-												placeholder={'Hover'}
+												placeholder='Hover'
 												options={simpleOptions}
 												isSearchable
 											/>
 											<Dropdown
 												uncontrolled
-												label={'Label'}
+												label='Label'
 												appearance={this.state.inputAppearance}
 												name='input'
 												invalid='*'
 												eventOverride='focus'
-												placeholder={'Focus'}
+												placeholder='Focus'
 												options={simpleOptions}
 												isSearchable
 											/>
@@ -605,7 +708,111 @@ export default class Inputs extends Component {
 								</div>
 							</div>
 						</Section>
-						<Section title='Form' tags={['<Formik/>', '<Form/>', '<Field/>']}>
+						<Section
+							description={
+								<>
+									To build a <m>form</m> in Flawk.js, use the <code>formik</code>{' '}
+									library and the <code>{'<Field/>'}</code> component.
+									<sp />
+									Use <code>component</code> prop in <code>{'<Field/>'}</code> to
+									choose the component that you want to use.
+									<br />
+									<code>{'<Field/>'}</code> supports the following Flawk.js
+									components:
+									<ul>
+										<li>
+											<code>{'<FInput/>'}</code>
+										</li>
+										<li>
+											<code>{'<FButton/>'}</code>
+										</li>
+										<li>
+											<code>{'<Dropdown/>'}</code>
+										</li>
+									</ul>
+									<sp />
+									Refer to the <code>formik</code>{' '}
+									<a
+										href='https://formik.org/docs/overview'
+										target='_blank'
+										rel='noreferrer'
+									>
+										documentation
+									</a>{' '}
+									for more information.
+								</>
+							}
+							code={`import { Form, Formik } from 'formik'
+import Field from 'core/components/Field'
+//
+import FInput from 'core/components/FInput'
+import Dropdown from 'core/components/Dropdown'
+
+<Formik
+	enableReinitialize
+	initialValues={
+		{} as {
+			email?: string
+			permission?: string
+		}
+	}
+	onSubmit={async (values, { setSubmitting }) => {
+		setSubmitting(true)
+
+		alert(JSON.stringify(values))
+
+		setSubmitting(false)
+	}}
+>
+	{({ handleReset, isSubmitting, dirty, errors }) => {
+		return (
+			<Form noValidate>
+				<div className='wrapMargin flex flex-wrap'>
+					<Field
+						component={FInput}
+						required
+						type='text'
+						name='email'
+						label='E-mail'
+					/>
+					<Field
+						component={Dropdown}
+						required
+						name='permission'
+						label='Permission'
+						options={[
+							{
+								value: 'admin',
+								label: 'Admin',
+							},
+							{
+								value: 'billing',
+								label: 'Billing',
+							},
+						]}
+					/>
+				</div>
+
+				<sp />
+
+				<div className='wrapMargin flex flex-wrap justify-end'>
+					<FButton
+						appearance='secondary'
+						type='submit'
+						formErrors={errors}
+						isLoading={isSubmitting}
+					>
+						Submit
+					</FButton>
+				</div>
+			</Form>
+		)
+	}}
+</Formik>
+`}
+							title='Form'
+							tags={['<Formik/>', '<Form/>', '<Field/>']}
+						>
 							<div style={{ ...styles.card, width: 'auto', maxWidth: 500 }}>
 								<Formik
 									enableReinitialize
@@ -644,38 +851,38 @@ export default class Inputs extends Component {
 										return (
 											<Form noValidate>
 												<ExitPrompt dirty={dirty} />
-												<div className='wrapMargin flex flex-wrap justify-start'>
+												<div className='wrapMargin flex flex-wrap'>
 													<Field
 														component={FInput}
 														required
-														type={'text'}
+														type='text'
 														name='firstName'
 														label={config.text('auth.firstName')}
 													/>
 													<Field
 														component={FInput}
 														required
-														type={'text'}
+														type='text'
 														name='lastName'
 														label={config.text('auth.lastName')}
 													/>
 												</div>
 
 												<hsp />
-												<div className='wrapMargin flex flex-wrap justify-start'>
+												<div className='wrapMargin flex flex-wrap'>
 													<Field
 														component={FInput}
 														required
-														invalidMessage={'Invalid e-mail'}
-														type={'email'}
+														invalidMessage='Invalid e-mail'
+														type='email'
 														name='email'
 														autoComplete='new-email'
-														label={'E-mail'}
+														label='E-mail'
 													/>
 													<Field
 														component={FInput}
 														required
-														type={'number'}
+														type='number'
 														name='phone'
 														label={config.text(
 															'settings.drawer.account.phone'
@@ -683,7 +890,7 @@ export default class Inputs extends Component {
 													/>
 												</div>
 												<hsp />
-												<div className='wrapMargin flex flex-wrap justify-start'>
+												<div className='wrapMargin flex flex-wrap'>
 													<Field
 														component={FInput}
 														required
@@ -693,9 +900,9 @@ export default class Inputs extends Component {
 															(value as string).length >= 12
 														}
 														name='password'
-														type={'password'}
+														type='password'
 														autoComplete='new-password'
-														label={'Password'}
+														label='Password'
 													/>
 													<Field
 														component={Dropdown}
@@ -723,35 +930,36 @@ export default class Inputs extends Component {
 													/>
 												</div>
 												<hsp />
-												<div className='wrapMargin flex flex-wrap justify-start'>
+												<div className='wrapMargin flex flex-wrap'>
 													<Field
 														component={FInput}
 														required
 														datePicker
 														name='birthday'
-														label={'Birthday'}
+														label='Birthday'
 													/>
 													<Field
 														component={FInput}
 														required
 														timeInput
 														name='preferred_time'
-														label={'Preferred time'}
+														label='Preferred time'
 													/>
 												</div>
 
 												<sp />
+												<hsp />
 
 												<div className='flex justify-center items-center'>
 													<Field
 														component={FButton}
 														required='Please accept the terms'
 														name='checkbox'
-														checkbox={
-															'I accept the Terms and Conditions'
-														}
+														checkbox='I accept the Terms and Conditions'
 													/>
 												</div>
+
+												<sp />
 
 												<div className='wrapMargin flex flex-wrap justify-end'>
 													<FButton
@@ -775,31 +983,88 @@ export default class Inputs extends Component {
 								</Formik>
 							</div>
 						</Section>
-						<Section title='Slider' tags={['<Slider/>']}>
-							<div
-								style={{
-									...styles.card,
-									...(!desktop && {
-										width: '100%',
-									}),
-									display: 'flex',
-									justifyContent: desktop ? 'flex-start' : 'center',
-								}}
-							>
-								<Slider
-									defaultValue={[0, 900]}
+						<Section
+							code={`import Slider from 'core/components/Slider'
+
+// Slider
+<Slider
+	defaultValue={445}
+	style={{ width: 300 }}
+	min={0}
+	max={900}
+/>
+
+// Range
+<Slider
+   range							
+	defaultValue={[0, 445]}
+	style={{ width: 300 }}
+	min={0}
+	max={900}
+/>
+`}
+							description={
+								<>
+									Use <code>range</code> prop to choose between a{' '}
+									<m>single value</m> slider or a <m>range slider</m> between two
+									values.
+									<sp />
+									This component uses <code>rc-slider</code> internally.
+								</>
+							}
+							title='Slider'
+							tags={['<Slider/>']}
+						>
+							<div className='flex flex-wrap wrapMarginBig'>
+								<div
 									style={{
-										...(!desktop
-											? {
-													width: '100%',
-											  }
-											: {
-													width: 300,
-											  }),
+										...styles.card,
+										height: 'fit-content',
+										...(!desktop && {
+											width: '100%',
+										}),
 									}}
-									min={0}
-									max={900}
-								/>
+								>
+									<Slider
+										defaultValue={445}
+										style={{
+											...(!desktop
+												? {
+														width: '100%',
+												  }
+												: {
+														width: 300,
+												  }),
+										}}
+										min={0}
+										max={900}
+									/>
+								</div>
+								<div
+									style={{
+										...styles.card,
+										height: 'fit-content',
+										...(!desktop && {
+											width: '100%',
+										}),
+									}}
+								>
+									<Slider
+										range
+										defaultValue={[0, 445]}
+										style={{
+											...(!desktop
+												? {
+														width: '100%',
+												  }
+												: {
+														width: 300,
+												  }),
+										}}
+										min={0}
+										max={900}
+									/>
+								</div>
 							</div>
 						</Section>
 					</div>

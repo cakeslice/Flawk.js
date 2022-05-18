@@ -645,9 +645,9 @@ import styles from 'core/styles'
 							<Section
 								description={
 									<>
-										Use <code>src</code> prop to set <m>avatar picture</m>. Name{' '}
-										<m>initials</m> can also be set with the <code>name</code>{' '}
-										prop.
+										Use <code>src</code> prop to set the <m>avatar picture</m>.
+										Name <m>initials</m> can also be set with the{' '}
+										<code>name</code> prop.
 										<br />
 										If no <code>src</code> image available, it falls back to
 										name initials or placeholder image.
@@ -727,13 +727,16 @@ import styles from 'core/styles'
 										<code>src/project/_styles.ts</code> using the{' '}
 										<code>tooltip</code> property.
 										<sp />
-										In some cases the tooltip can be hidden behind a modal for
-										example and the <code>foreground</code> prop can be used to
-										make it visible.
+										In some cases the tooltip can be <m>hidden</m> behind a
+										modal for example and the <code>foreground</code> prop can
+										be used to make it visible.
 										<br />
-										If interaction with the tooltip content is needed like
-										buttons or links, the <code>selectable</code> prop can be
-										used to make the tooltip content <m>clickable</m>.
+										If <m>interaction</m> with the tooltip content is needed
+										like buttons or links, the <code>selectable</code> prop can
+										be used to make the tooltip content <m>clickable</m>.
+										<sp />
+										This component uses <code>react-popper-tooltip</code>{' '}
+										internally.
 									</>
 								}
 								code={`import Tooltip from 'core/components/Tooltip'
@@ -796,7 +799,7 @@ import styles from 'core/styles'
 							<Section
 								description={
 									<>
-										Use the <code>appearance</code> prop to set the{' '}
+										Use <code>appearance</code> prop to set the{' '}
 										<m>button style</m>. You can override or add new button
 										styles in <code>src/project/_styles.ts</code> using the{' '}
 										<code>buttonAppearances</code> property.
@@ -828,7 +831,7 @@ import styles from 'core/styles'
 <FButton appearance='secondary'>Click Me</FButton>
 
 // Checkbox
-<FButton checkbox={'I Agree'}></FButton>
+<FButton checkbox='I Agree'></FButton>
 
 // Link
 <FButton href='https://google.com' target='_blank'>Link</FButton>
@@ -886,7 +889,7 @@ import styles from 'core/styles'
 										<FButton isLoading style={{ minWidth: 50 }}>
 											Loading
 										</FButton>
-										<FButton checkbox={'Checkbox'}></FButton>
+										<FButton checkbox='Checkbox'></FButton>
 										<FButton
 											target='_blank'
 											href='https://github.com/cakeslice'
@@ -992,7 +995,7 @@ import styles from 'core/styles'
 														appearance={this.state.buttonAppearance}
 													/>
 													<FButton
-														checkbox={'Default'}
+														checkbox='Default'
 														defaultChecked={true}
 														appearance={this.state.buttonAppearance}
 													/>
@@ -1004,7 +1007,7 @@ import styles from 'core/styles'
 														appearance={this.state.buttonAppearance}
 													/>
 													<FButton
-														checkbox={'Hover'}
+														checkbox='Hover'
 														defaultChecked={true}
 														eventOverride='hover'
 														appearance={this.state.buttonAppearance}
@@ -1031,7 +1034,7 @@ import styles from 'core/styles'
 													/>
 													<FButton
 														isDisabled
-														checkbox={'Disabled'}
+														checkbox='Disabled'
 														defaultChecked={true}
 														appearance={this.state.buttonAppearance}
 													/>
@@ -1046,7 +1049,7 @@ import styles from 'core/styles'
 													<FButton
 														isDisabled
 														simpleDisabled
-														checkbox={'Simple Disabled'}
+														checkbox='Simple Disabled'
 														defaultChecked={true}
 														appearance={this.state.buttonAppearance}
 													/>
@@ -1070,7 +1073,7 @@ import styles from 'core/styles'
 													<FButton
 														name='checkbox'
 														invalid='*'
-														checkbox={'Default'}
+														checkbox='Default'
 														defaultChecked={true}
 														appearance={this.state.buttonAppearance}
 													/>
@@ -1086,7 +1089,7 @@ import styles from 'core/styles'
 													<FButton
 														name='checkbox'
 														invalid='*'
-														checkbox={'Hover'}
+														checkbox='Hover'
 														defaultChecked={true}
 														eventOverride='hover'
 														appearance={this.state.buttonAppearance}
@@ -1104,7 +1107,7 @@ import styles from 'core/styles'
 													<FButton
 														name='checkbox'
 														invalid='*'
-														checkbox={'Focus'}
+														checkbox='Focus'
 														defaultChecked={true}
 														eventOverride='focus'
 														appearance={this.state.buttonAppearance}
@@ -1163,7 +1166,7 @@ import styles from 'core/styles'
 							<Section
 								description={
 									<>
-										Use the <code>effects</code> prop to set the effects to be
+										Use <code>effects</code> prop to set the effects to be
 										applied when the component is <m>visible</m>.
 										<br />
 										Multiple effects can be applied at the <m>same time</m>.
@@ -1172,14 +1175,16 @@ import styles from 'core/styles'
 										<code>distance</code> props can be used to configure the
 										effects <m>behaviour</m>.
 										<sp />
-										To control when the animation is <m>triggered</m>, use the{' '}
+										To control when the animation is <m>triggered</m>, use{' '}
 										<code>controlled</code> prop. If set to <m>false</m>, it
 										will <m>revert</m> the animation including visibility for
 										some effects like <code>fade</code>.
 										<sp />
-										To animate children sequentially, use the{' '}
-										<code>staggered</code> prop. For nested children, use the{' '}
+										To animate children <m>sequentially</m>, use{' '}
+										<code>staggered</code> prop. For nested children, use{' '}
 										<code>staggeredChildren</code> prop.
+										<sp />
+										This component uses <code>framer-motion</code> internally.
 									</>
 								}
 								code={`import Animated from 'core/components/Animated'
@@ -1514,13 +1519,15 @@ import styles from 'core/styles'
 									<div className='flex items-center'>
 										<tag style={customElement}>{'<hsp/>'}</tag>
 										<hsp />
-										<div style={{ opacity: 0.85 }}>Half of {'<sp/>'}</div>
+										<div style={{ opacity: 0.85 }}>
+											Half of <code>{'<sp/>'}</code>
+										</div>
 									</div>
 									<div className='flex items-center'>
 										<tag style={customElement}>{'<vr/>'}</tag>
 										<hsp />
 										<div style={{ opacity: 0.85 }}>
-											Same as native {'<hr/>'} but vertical
+											Same as native <code>{'<hr/>'}</code> but vertical
 										</div>
 									</div>
 									<div className='flex items-center'>

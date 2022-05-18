@@ -7,7 +7,7 @@
 
 import config from 'core/config'
 import styles from 'core/styles'
-import { Range } from 'rc-slider'
+import RSlider, { Range } from 'rc-slider'
 import React from 'react'
 import './Slider.scss'
 import TrackedComponent from './TrackedComponent'
@@ -18,10 +18,20 @@ type Props = {
 	min: number
 	max: number
 	step?: number
-	defaultValue: [number, number]
 	width?: number
-	onChange?: (value: [number, number]) => void
-}
+	unit?: string
+} & (
+	| {
+			range?: true
+			defaultValue: [number, number]
+			onChange?: (value: [number, number]) => void
+	  }
+	| {
+			range?: false | undefined
+			defaultValue: number
+			onChange?: (value: number) => void
+	  }
+)
 export default class Slider extends TrackedComponent<Props> {
 	trackedName = 'Slider'
 	shouldComponentUpdate(nextProps: Props, nextState: typeof this.state) {
@@ -34,6 +44,13 @@ export default class Slider extends TrackedComponent<Props> {
 	}
 
 	render() {
+		const unit = this.props.unit !== undefined ? this.props.unit : ' m'
+
+		const railStyle = {
+			height: 3,
+			backgroundColor: config.replaceAlpha(styles.colors.black, 0.15),
+		}
+
 		return (
 			<div
 				data-nosnippet
@@ -44,39 +61,65 @@ export default class Slider extends TrackedComponent<Props> {
 					...this.props.style,
 				}}
 			>
-				<p style={{ fontSize: styles.defaultFontSize }}>
-					{this.props.renderValue
-						? this.props.renderValue(this.state.value[0])
-						: this.state.value[0].toString() + ' m'}
-				</p>
+				{this.props.range && (
+					<p style={{ fontSize: styles.defaultFontSize }}>
+						{this.props.renderValue
+							? // @ts-ignore
+							  // eslint-disable-next-line
+							  this.props.renderValue(this.state.value[0])
+							: // @ts-ignore
+							  this.state.value[0].toString() + unit}
+					</p>
+				)}
 				<div style={{ minHeight: 5 }}></div>
 				<div style={{ marginLeft: 5 }}>
-					<Range
-						handle={handleComponent}
-						trackStyle={[
-							{ backgroundColor: styles.colors.mainLight, height: 3 },
-							{ backgroundColor: styles.colors.mainLight, height: 3 },
-						]}
-						railStyle={{
-							height: 3,
-							backgroundColor: config.replaceAlpha(styles.colors.black, 0.15),
-						}}
-						onChange={(e) => {
-							this.setState({ value: e })
-							if (this.props.onChange) this.props.onChange(e as [number, number])
-						}}
-						defaultValue={this.props.defaultValue}
-						allowCross={false}
-						min={this.props.min}
-						max={this.props.max}
-						step={this.props.step || 5}
-					/>
+					{this.props.range ? (
+						<Range
+							handle={handleComponent}
+							trackStyle={[
+								{ backgroundColor: styles.colors.mainLight, height: 3 },
+								{ backgroundColor: styles.colors.mainLight, height: 3 },
+							]}
+							railStyle={railStyle}
+							onChange={(e) => {
+								this.setState({ value: e })
+								// @ts-ignore
+								if (this.props.onChange) this.props.onChange(e as [number, number])
+							}}
+							defaultValue={this.props.defaultValue as [number, number]}
+							allowCross={false}
+							min={this.props.min}
+							max={this.props.max}
+							step={this.props.step || 5}
+						/>
+					) : (
+						<RSlider
+							handle={handleComponent}
+							trackStyle={{ backgroundColor: styles.colors.mainLight, height: 3 }}
+							railStyle={railStyle}
+							onChange={(e) => {
+								this.setState({ value: e })
+								// @ts-ignore
+								if (this.props.onChange) this.props.onChange(e)
+							}}
+							defaultValue={this.props.defaultValue as number}
+							min={this.props.min}
+							max={this.props.max}
+							step={this.props.step || 5}
+						/>
+					)}
 				</div>
 				<div style={{ minHeight: 5 }}></div>
 				<p style={{ fontSize: styles.defaultFontSize, alignSelf: 'flex-end' }}>
 					{this.props.renderValue
-						? this.props.renderValue(this.state.value[1])
-						: this.state.value[1].toString() + ' m'}
+						? this.props.renderValue(
+								// @ts-ignore
+								// eslint-disable-next-line
+								this.props.range ? this.state.value[1] : this.state.value
+						  )
+						: // @ts-ignore
+						  (this.props.range ? this.state.value[1] : this.state.value).toString() +
+						  unit}
 				</p>
 			</div>
 		)

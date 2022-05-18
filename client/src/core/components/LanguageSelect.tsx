@@ -9,6 +9,24 @@ import config from 'core/config'
 import React from 'react'
 import Dropdown from './Dropdown'
 
+export async function changeLanguage(lang: string) {
+	let supported = false
+	config.supportedLanguages.forEach((l) => {
+		if (l === lang) {
+			supported = true
+		}
+	})
+	if (!supported) {
+		console.error(`Language ${lang} is not supported`)
+		return
+	}
+
+	if (lang !== global.lang.text) {
+		config.setLang(lang)
+		await global.storage.setItem('lang', JSON.stringify(global.lang))
+		window.location.reload()
+	}
+}
 export default function LanguageSelect() {
 	const lang = global.lang.text
 
@@ -16,11 +34,7 @@ export default function LanguageSelect() {
 		<Dropdown
 			style={{ menu: { minWidth: 65, width: 65 } }}
 			onChange={async (e) => {
-				if (e !== lang) {
-					config.setLang(e as string)
-					await global.storage.setItem('lang', JSON.stringify(global.lang))
-					window.location.reload()
-				}
+				await changeLanguage(e as string)
 			}}
 			value={lang}
 			options={config.supportedLanguages.map((l) => {

@@ -96,13 +96,15 @@ function ErrorFallback({ error }: FallbackProps) {
 				className='flex-col items-center'
 				style={{ padding: 15, paddingTop: 45, textAlign: 'center' }}
 			>
-				<h3 style={{ marginBottom: 45 }}>{"We're sorry but something went wrong 😞"}</h3>
+				<h3 style={{ marginBottom: 45 }}>{config.text('common.reactError')}</h3>
 				<button
 					style={{ marginBottom: 40 }}
 					type='button'
 					onClick={() => window.location.reload()}
 				>
-					<a style={{ fontWeight: 'bold', fontSize: 18 }}>Try Again</a>
+					<a style={{ fontWeight: 'bold', fontSize: 18 }}>
+						{config.text('common.reactErrorTry')}
+					</a>
 				</button>
 				{error && error.message && (
 					<div style={{ opacity: 0.5, fontSize: 13 }}>Error: {error.message}</div>

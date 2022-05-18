@@ -110,7 +110,7 @@
 # Make sure the captain definition path is the right one:
 #     ./server/captain-definition for backend
 #     ./client/captain-definition for frontend
-# IF there's a TOO MANY REDIRECTS issue, it's probably because the SSL setting in CloudFlare is not set to Full (strict)
+# IF there's a "TOO MANY REDIRECTS" issue, it's probably because the SSL setting in CloudFlare is not set to Full (strict)
 
 # ----- Simple flow
 # Add DNS A record for app URL

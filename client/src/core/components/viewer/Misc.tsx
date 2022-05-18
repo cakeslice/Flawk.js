@@ -91,10 +91,6 @@ export default class Misc extends QueryParams<{
 			},
 		},
 	}
-	/* async componentDidMount() {
-		const wallet = await setupWallet(this.walletOptions)
-		this.setState({ wallet })
-	} */
 
 	async componentDidMount() {
 		const wallet = await setupWallet(this.walletOptions)
@@ -102,10 +98,10 @@ export default class Misc extends QueryParams<{
 
 		//
 
-		let e = global.localStorage.getItem('locallyStored')
+		let e = global.storage.getItem('locallyStored')
 		if (!e) {
 			e = 'Something'
-			global.localStorage.setItem('locallyStored', e)
+			global.storage.setItem('locallyStored', e)
 		}
 		this.setState({ locallyStored: e, newLocallyStored: e })
 	}
@@ -116,7 +112,38 @@ export default class Misc extends QueryParams<{
 			<MediaQuery minWidth={config.mobileWidthTrigger}>
 				{(desktop) => (
 					<div>
-						<Section title='Query parameters' top tags={['extends QueryParams']}>
+						<Section
+							code={`import QueryParams from 'core/components/QueryParams'
+
+export default class ComponentWithParams extends QueryParams<{	
+	param1?: string
+	param2?: number
+}> {
+	defaultQueryParams = { param2: 5 }
+
+	example = () => {
+		this.setQueryParams({
+			param1: 'Hello!'
+		})
+
+		alert(this.queryParams.param1)
+	}
+}
+`}
+							description={
+								<>
+									<m>Extend</m> your component with <code>QueryParams</code> to{' '}
+									<m>set/get</m> query params easily.
+									<sp />
+									To set query params use <code>this.setQueryParams</code>.
+									<br />
+									To get query params use <code>this.queryParams</code>.
+								</>
+							}
+							title='Query parameters'
+							top
+							tags={['extends QueryParams']}
+						>
 							<div className='wrapMargin flex flex-wrap justify-start'>
 								<FButton
 									onClick={() => {
@@ -210,7 +237,31 @@ export default class Misc extends QueryParams<{
 								)
 							})}
 						</Section>
-						<Section title='Local storage' tags={['global.localStorage']}>
+						<Section
+							code={`global.storage.setItem(
+	'example',
+	'Hello!'
+)
+
+alert(global.storage.getItem('example')) // Hello!
+`}
+							description={
+								<>
+									Use <code>global.storage</code> to <m>get/set</m> data stored{' '}
+									<m>locally</m>.
+									<sp />
+									Unlike <code>window.localStorage</code>,{' '}
+									<code>global.storage</code> uses{' '}
+									<code>local-storage-fallback</code> internally and it has{' '}
+									<m>multiple fallbacks</m> in case local storage is not
+									available.
+									<br />
+									It also has mobile app support with <m>Capacitor</m>.
+								</>
+							}
+							title='Local storage'
+							tags={['global.storage']}
+						>
 							<div className='flex items-end'>
 								<FInput
 									name='local_storage'
@@ -227,7 +278,7 @@ export default class Misc extends QueryParams<{
 								/>
 								<FButton
 									onClick={() => {
-										global.localStorage.setItem(
+										global.storage.setItem(
 											'locallyStored',
 											this.state.newLocallyStored
 										)
@@ -248,8 +299,66 @@ export default class Misc extends QueryParams<{
 								</FButton>
 							</div>
 						</Section>
-						<Section title='Localization' tags={['<LanguageSelect/>']}>
-							<Anchor id='anchor_example'></Anchor>
+						<Anchor id='anchor_example'></Anchor>
+						<Section
+							code={`import config from 'core/config'
+import LanguageSelect, { changeLanguage } from 'core/components/LanguageSelect'
+
+// Localized text
+
+config.localize({ en: 'Example', fr: 'Exemple', es: 'Ejemplo', ch: '例子' })
+
+/* ** src/project/text.ts **
+example: { en: 'Example', fr: 'Exemple', es: 'Ejemplo', ch: '例子' }					
+*/
+config.text('example')
+
+
+// Localized date
+
+new Date().toLocaleDateString(global.lang.date)
+
+
+// Localized number
+
+config.formatNumber(15000)
+config.formatDecimal(15000)
+
+
+// Change language
+
+changeLanguage('en')
+
+<LanguageSelect/>
+`}
+							description={
+								<>
+									Use the <code>global.lang</code> object to check which{' '}
+									<m>language</m> is currently <m>active</m>.
+									<sp />
+									To change the language, use the{' '}
+									<code>{'<LanguageSelect/>'}</code> component or the{' '}
+									<code>{'changeLanguage()'}</code> function.
+									<sp />
+									Use <code>config.localize()</code> to get a localized string
+									from an object.
+									<br />
+									Use <code>config.text()</code> to get a localized string defined
+									in <code>src/project/text.ts</code>.
+									<sp />
+									In <code>src/project/_config.ts</code> you can define the
+									supported languages in the <code>supportedLanguages</code>{' '}
+									property.
+								</>
+							}
+							title='Localization'
+							tags={[
+								'global.lang',
+								'config.text()',
+								'config.localize()',
+								'LanguageSelect.ts',
+							]}
+						>
 							<LanguageSelect />
 							<sp />
 							<div style={styles.card}>
@@ -300,9 +409,61 @@ export default class Misc extends QueryParams<{
 								</div>
 							</div>
 						</Section>
-						<Section title='Countries' tags={['countries-list', 'react-flagkit']}>
+						<Section
+							code={`import Dropdown from 'core/components/Dropdown'
+import Flag from 'react-flagkit'
+import { 
+	countriesSearch, 
+	sortedCountries 
+} from 'core/functions/countries'
+import { countries } from 'countries-list'
+
+<Dropdown
+	isSearchable={true}
+	searchFunction={countriesSearch}
+	placeholder='Search countries'
+	showOnlyIfSearch
+	options={Object.keys(sortedCountries).map((c) => {
+		return {
+			value: c,
+			label: (
+				<div className='flex items-center'>
+					<Flag country={c} />
+					<div
+						style={{
+							marginLeft: 10,
+						}}
+					>
+						{
+							// @ts-ignore
+							countries[c].name
+						}
+					</div>
+				</div>
+			),
+		}
+	})}
+/>
+`}
+							description={
+								<>
+									In <code>countries.ts</code> you can find{' '}
+									<code>sortedCountries</code> to get a sorted list of all{' '}
+									<m>countries</m> and also <code>{'countriesSearch()'}</code>{' '}
+									function to be able to search countries in a{' '}
+									<code>{'<Dropdown/>'}</code> component.
+									<sp />
+									To display country <m>flags</m>, use the{' '}
+									<code>{'<Flag/>'}</code> component from{' '}
+									<code>react-flagkit</code>
+								</>
+							}
+							title='Countries'
+							tags={['countries.ts', 'countries-list', 'react-flagkit']}
+						>
 							<Dropdown
 								uncontrolled
+								style={{ minWidth: 200 }}
 								isSearchable={true}
 								searchFunction={countriesSearch}
 								placeholder='Search countries'
@@ -311,24 +472,21 @@ export default class Misc extends QueryParams<{
 									return {
 										value: c,
 										label: (
-											<div
-												style={{
-													display: 'flex',
-													alignItems: 'center',
-												}}
-											>
+											<div className='flex items-center'>
 												<Flag country={c} />
 												<div
 													style={{
-														minWidth: 10,
+														marginLeft: 10,
 													}}
-												/>
-												<div>
-													{c +
-														' (+' +
+												>
+													{
 														// @ts-ignore
-														countries[c].phone +
-														')'}
+														countries[c].name +
+															' (+' +
+															// @ts-ignore
+															countries[c].phone +
+															')'
+													}
 												</div>
 											</div>
 										),
@@ -336,7 +494,47 @@ export default class Misc extends QueryParams<{
 								})}
 							/>
 						</Section>
-						<Section title='Media query' tags={['<MediaQuery/>', '<SizeMe/>']}>
+						<Section
+							code={`import config from 'core/config'
+import MediaQuery from 'react-responsive'
+import { SizeMe } from 'react-sizeme'
+
+<MediaQuery minWidth={config.mobileWidthTrigger}>
+	{(desktop) => (
+		<div>
+			{desktop
+				? 'This is a big screen'
+				: 'This is a small screen'}
+		</div>
+	)}
+</MediaQuery>
+
+<SizeMe>
+	{({ size }) => (
+		<div>
+			{'This container is ' + size.width + ' pixels wide'}
+		</div>
+	)}
+</SizeMe>
+`}
+							description={
+								<>
+									Components in Flawk.js use <code>{'<MediaQuery/>'}</code> from{' '}
+									<code>react-responsive</code> to swith between mobile and
+									desktop versions of components.
+									<sp />
+									In <code>src/project/_config.ts</code> you can use the{' '}
+									<code>mobileWidthTrigger</code> property to set the screen size
+									that triggers the mobile version of components.
+									<sp />
+									To get the size of a container, use the{' '}
+									<code>{'<SizeMe/>'}</code> component from{' '}
+									<code>react-sizeme</code>.
+								</>
+							}
+							title='Media query'
+							tags={['react-responsive', 'react-sizeme']}
+						>
 							<MediaQuery minWidth={config.mobileWidthTrigger}>
 								{(desktop) => (
 									<div>
@@ -359,30 +557,94 @@ export default class Misc extends QueryParams<{
 								</SizeMe>
 							</div>
 						</Section>
+						<Section
+							code={
+								// eslint-disable-next-line
+								`import Anchor from 'core/components/Anchor'
 
-						<Section title='Copy to clipboard' tags={['<CopyToClipboard/>']}>
-							<CopyToClipboard
-								text={'https://github.com/cakeslice'}
-								onCopy={() =>
-									global.addFlag('Copied!', '', 'default', { autoClose: true })
-								}
-							>
-								<FButton>Copy Link</FButton>
-							</CopyToClipboard>
+<Anchor id='anchor_example'></Anchor>
+
+<a href='#anchor_example'>Scroll to Anchor</a>
+`
+							}
+							description={
+								<>
+									Use the <code>{'<Anchor/>'}</code> component to be able to
+									reference a section of your page using <m>hash links</m>.
+									<sp />
+									You can also update the hash of the current page{' '}
+									<m>automatically</m> when the children of the anchor are in{' '}
+									<m>view</m> using the <code>updateHash</code> prop.
+								</>
+							}
+							title='Anchor'
+							tags={['<Anchor/>']}
+						>
+							<FButton href='#anchor_example'>Scroll to Localization</FButton>
 						</Section>
-						<Section title='Scroll to top' tags={['config.scrollToTop()']}>
-							<FButton onClick={() => config.scrollToTop()}>Scroll</FButton>
+						<Section
+							code={`import Helmet from 'react-helmet'
+
+<Helmet>
+	<title>Hello World!</title>
+</Helmet>
+`}
+							description={
+								<>
+									With the <code>{'<Helmet/>'}</code> component from{' '}
+									<code>react-helmet</code>, you can add or modify tags in the
+									document <code>{'<head/>'}</code>.
+									<sp />
+									Internally, Flawk.js uses this component to set the{' '}
+									<m>title and description</m> using the strings defined in{' '}
+									<code>src/project/_config</code>.
+									<br />
+									You can modify them by changing the <code>title</code>,{' '}
+									<code>phrase</code>, <code>separator</code> and{' '}
+									<code>description</code> properties.
+								</>
+							}
+							title='<head/>'
+							tags={['react-helmet']}
+						>
+							<div className='wrapMargin flex flex-wrap justify-start'>
+								<FButton
+									onClick={() => {
+										this.setState({ toggleTitle: !this.state.toggleTitle })
+									}}
+								>
+									Change Page Title
+								</FButton>
+								{this.state.toggleTitle && (
+									<Helmet>
+										<title>Hello World!</title>
+									</Helmet>
+								)}
+							</div>
 						</Section>
-						<Section title='Anchor' tags={['<Anchor/>']}>
-							<FButton
-								onClick={() => {
-									global.routerHistory().push('/components/misc#anchor_example')
-								}}
-							>
-								Scroll to Localization
-							</FButton>
-						</Section>
-						<Section title='Error Handling'>
+						<Section
+							description={
+								<>
+									Flawk.js uses{' '}
+									<a target='_blank' href='https://sentry.io' rel='noreferrer'>
+										Sentry
+									</a>{' '}
+									for error tracking.
+									<br />
+									Use the env var <code>REACT_APP_SENTRY_KEY</code> to set your{' '}
+									<m>Sentry</m> API key.
+									<sp />
+									If {"there's"} a critical <m>application error</m>, Flawk.js
+									displays an error page with a message and a button to refresh
+									the page.
+									<br />
+									The error message can be changed in{' '}
+									<code>src/project/text.ts</code> by modifying the properties{' '}
+									<code>reactError</code> and <code>reactErrorTry</code>.
+								</>
+							}
+							title='Error Handling'
+						>
 							<div className='wrapMargin flex flex-wrap justify-start'>
 								{this.state.chunkLoadError && <ChunkLoadErrorTest />}
 								<FButton
@@ -391,7 +653,7 @@ export default class Misc extends QueryParams<{
 										global.something.that.does.not.exist.and.will.throw.an.error()
 									}}
 								>
-									Function Error
+									Javascript Error
 								</FButton>
 								<FButton
 									onClick={() => {
@@ -402,15 +664,90 @@ export default class Misc extends QueryParams<{
 								</FButton>
 								<FButton
 									onClick={() => {
-										console.error('Testing error logs')
+										console.error('Error log test')
 									}}
 								>
 									Log Error
 								</FButton>
 							</div>
 						</Section>
+						<Section
+							code={`import config from 'core/config'
+
+<button type='button' onClick={() => config.scrollToTop()}>Scroll</button>
+`}
+							description={
+								<>
+									Use the <code>{'<CopyToClipboard/>'}</code> component from{' '}
+									<code>react-copy-to-clipboard</code> to copy text to the{' '}
+									<m>clipboard</m>.
+								</>
+							}
+							title='Scroll to top'
+							tags={['config.scrollToTop()']}
+						>
+							<FButton onClick={() => config.scrollToTop()}>Scroll</FButton>
+						</Section>{' '}
+						<Section
+							code={`import { CopyToClipboard } from 'react-copy-to-clipboard'
+
+<CopyToClipboard
+	text={'https://awesome-website.com'}
+	onCopy={() =>
+		global.addFlag('Copied!', '', 'default', { autoClose: true })
+	}
+>
+	<button type='button'>Copy Link</button>
+</CopyToClipboard>
+`}
+							description={
+								<>
+									Use the <code>{'<CopyToClipboard/>'}</code> component from{' '}
+									<code>react-copy-to-clipboard</code> to copy text to the{' '}
+									<m>clipboard</m>.
+								</>
+							}
+							title='Copy to clipboard'
+							tags={['react-copy-to-clipboard']}
+						>
+							<CopyToClipboard
+								text={'https://github.com/cakeslice'}
+								onCopy={() =>
+									global.addFlag('Copied!', '', 'default', { autoClose: true })
+								}
+							>
+								<FButton>Copy Link</FButton>
+							</CopyToClipboard>
+						</Section>
 						{!Capacitor.isNativePlatform() && (
-							<Section title='Mobile app' tags={['Capacitor']}>
+							<Section
+								description={
+									<>
+										To release your web app as an Android or iOS app, you can
+										use{' '}
+										<a
+											href='https://capacitorjs.com/'
+											target='_blank'
+											rel='noreferrer'
+										>
+											Capacitor
+										</a>
+										.
+										<sp />
+										To change the <m>Capacitor</m> configuration, modify{' '}
+										<code>capacitor.config.json</code>.
+										<br />
+										To generate mobile <m>app icons</m>, use the npm script{' '}
+										<code>generate_mobile_icons</code>.
+										<sp />
+										To generate the <m>executable</m>, use the npm script{' '}
+										<code>build_android</code> for Android, and{' '}
+										<code>build_ios</code> for iOS.
+									</>
+								}
+								title='Mobile app'
+								tags={['Capacitor']}
+							>
 								<FButton
 									target='_blank'
 									href={
@@ -422,15 +759,89 @@ export default class Misc extends QueryParams<{
 							</Section>
 						)}
 						{!Capacitor.isNativePlatform() && desktop && (
-							<Section title='Web3 wallet' tags={['functions/web3wallet']}>
+							<Section
+								code={`import { connectWallet, Options, setupWallet, Wallet } from 'core/functions/web3wallet'
+
+state = {
+	wallet: undefined as Wallet | undefined,
+}
+
+connectWallet = async () => {
+	const wallet = await connectWallet(this.walletOptions)
+	this.setState({ wallet })
+}
+walletOptions: Options = {
+	targetChain: 3,
+	callbacks: {
+		accountsChanged: this.connectWallet,
+		chainChanged: this.connectWallet,
+		disconnected: async () => {
+			this.setState({ wallet: undefined })
+		},
+	},
+}
+
+async componentDidMount() {
+	const wallet = await setupWallet(this.walletOptions)
+	this.setState({ wallet })
+}
+
+//
+
+<button type='button' onClick={this.connectWallet}>Connect Wallet</button>
+`}
+								description={
+									<>
+										This component uses <code>ethers</code> and{' '}
+										<code>web3modal</code> internally.
+									</>
+								}
+								title='Web3 wallet'
+								tags={['web3wallet.ts']}
+							>
 								<FButton onClick={this.connectWallet}>Connect Wallet</FButton>
 							</Section>
 						)}
 						{!Capacitor.isNativePlatform() && (
 							<Section
-								title='Unity'
+								code={`import Unity from 'core/components/Unity'
+
+state = {
+	unityFullscreen: false,
+}
+unityEvents = [
+	{
+		name: 'GameOver',
+		callback: () => {
+			alert('GameOver')
+		},
+	},
+]
+
+//
+
+<div>
+	<button type='button'
+		onClick={() => {
+			global.sendUnityEvent?.('YourGameObject', 'Method')
+		}}
+	>
+		Change Color
+	</button>
+	<sp/>
+	<Unity
+		fullscreen={this.state.unityFullscreen}
+		extension={'.unityweb'}
+		events={this.unityEvents}
+		buildPath={process.env.PUBLIC_URL + '/unity/Build'}
+	/>
+</div>
+`}
 								description={
-									<div>
+									<>
+										This component uses <code>react-unity-webgl</code>{' '}
+										internally.
+										<sp />
 										<div className='flex items-center'>
 											<tag
 												style={{
@@ -451,8 +862,9 @@ export default class Misc extends QueryParams<{
 												}
 											</div>
 										</div>
-									</div>
+									</>
 								}
+								title='Unity'
 								tags={['<Unity/>']}
 							>
 								<div className='wrapMargin flex flex-wrap justify-start'>
@@ -502,23 +914,30 @@ export default class Misc extends QueryParams<{
 								</div>
 							</Section>
 						)}
-						<Section title='<head/>' tags={['<Helmet/>']}>
-							<div className='wrapMargin flex flex-wrap justify-start'>
-								<FButton
-									onClick={() => {
-										this.setState({ toggleTitle: !this.state.toggleTitle })
-									}}
-								>
-									Change Page Title
-								</FButton>
-								{this.state.toggleTitle && (
-									<Helmet>
-										<title>Hello World!</title>
-									</Helmet>
-								)}
-							</div>
-						</Section>
-						<Section title='Inject script' tags={['config.injectScript()']}>
+						<Section
+							code={`import config from 'core/config'
+
+config.injectScript(
+	\`const hello = function (){alert('Hello!')};hello();\`,
+	'text',
+	false,
+	true
+)
+`}
+							description={
+								<>
+									Component used for code syntax highlighting.
+									<sp />
+									By default <code>prettier</code> is used to format the code but
+									can be disabled with the <code>noPrettier</code> prop.
+									<sp />
+									This component uses <code>react-syntax-highlighter</code>{' '}
+									internally.
+								</>
+							}
+							title='Inject script'
+							tags={['config.injectScript()']}
+						>
 							<div className='wrapMargin flex flex-wrap justify-start'>
 								<FButton
 									onClick={() => {
@@ -534,7 +953,31 @@ export default class Misc extends QueryParams<{
 								</FButton>
 							</div>
 						</Section>
-						<Section title='Code block' tags={['<CodeBlock/>']}>
+						<Section
+							code={`import CodeBlock from 'core/components/CodeBlock'
+
+<CodeBlock
+	lang='json'
+	data={JSON.stringify({
+		hello: 'world',
+		foo: 'bar',
+	})}
+/>
+`}
+							description={
+								<>
+									Component used for code syntax highlighting.
+									<sp />
+									By default <code>prettier</code> is used to format the code but
+									can be disabled with the <code>noPrettier</code> prop.
+									<sp />
+									This component uses <code>react-syntax-highlighter</code>{' '}
+									internally.
+								</>
+							}
+							title='Code block'
+							tags={['<CodeBlock/>']}
+						>
 							<CodeBlock
 								style={{ maxWidth: 400 }}
 								lang='json'
@@ -549,7 +992,55 @@ export default class Misc extends QueryParams<{
 							/>
 						</Section>
 						{desktop && (
-							<Section title='Text editor' tags={['<TextEditor/>']}>
+							<Section
+								code={`import TextEditor from 'core/components/TextEditor'
+
+<TextEditor
+	onBlur={() => {
+		this.setState({ text: this.state.textEditor })
+	}}
+	onChange={(e) => {
+		this.state.text = e
+		// For <Formik/> use setFieldValue
+	}}
+/>
+`}
+								description={
+									<>
+										This component uses <code>react-quill</code> internally.
+										<sp />
+										<div className='flex items-center'>
+											<tag
+												style={{
+													color: styles.colors.red,
+													opacity: 1,
+													background: config.replaceAlpha(
+														styles.colors.red,
+														0.15
+													),
+													marginRight: 10,
+												}}
+											>
+												NOTE
+											</tag>
+											<div>
+												{
+													"This component doesn't work properly on Android due to "
+												}
+												<a
+													target='_blank'
+													href='https://github.com/quilljs/quill/issues/3240'
+													rel='noreferrer'
+												>
+													this issue
+												</a>
+											</div>
+										</div>
+									</>
+								}
+								title='Text editor'
+								tags={['<TextEditor/>']}
+							>
 								<div style={{ maxWidth: 710 }}>
 									<TextEditor
 										style={{
@@ -561,7 +1052,7 @@ export default class Misc extends QueryParams<{
 										}}
 										onChange={(e) => {
 											this.state.textEditor = e
-											// For Formik use setFieldValue
+											// For <Formik/> use setFieldValue
 										}}
 									/>
 									<sp />
