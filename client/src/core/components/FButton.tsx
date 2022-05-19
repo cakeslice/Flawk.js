@@ -14,6 +14,7 @@ import { FieldInputProps, FormikErrors, FormikProps } from 'formik'
 import { css } from 'glamor'
 import React from 'react'
 import MediaQuery from 'react-responsive'
+import { Link } from 'react-router-dom'
 
 const invalidTextStyle = {
 	letterSpacing: 0,
@@ -458,19 +459,35 @@ export default class FButton extends TrackedComponent<Props> {
 								}}
 							>
 								{this.props.href ? (
-									<a
-										className='f-button'
-										href={this.props.href}
-										target={this.props.target}
-										rel={
-											this.props.target === '_blank'
-												? 'noreferrer'
-												: undefined
-										}
-										{...cssStyle}
-									>
-										{this.props.children}
-									</a>
+									this.props.href.includes('http') ? (
+										<a
+											className='f-button'
+											href={this.props.href}
+											target={this.props.target}
+											rel={
+												this.props.target === '_blank'
+													? 'noreferrer'
+													: undefined
+											}
+											{...cssStyle}
+										>
+											{this.props.children}
+										</a>
+									) : (
+										<Link
+											className='f-button'
+											to={this.props.href}
+											target={this.props.target}
+											rel={
+												this.props.target === '_blank'
+													? 'noreferrer'
+													: undefined
+											}
+											{...cssStyle}
+										>
+											{this.props.children}
+										</Link>
+									)
 								) : (
 									<button
 										ref={this.setButtonRef}
