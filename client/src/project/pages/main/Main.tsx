@@ -7,90 +7,83 @@
 
 import FButton from 'core/components/FButton'
 import config from 'core/config'
+import styles from 'core/styles'
+import { github } from 'project/components/Icons'
 import React, { Component } from 'react'
 import MediaQuery from 'react-responsive'
+import mod from './Main.module.scss'
 
 export default class Main extends Component {
 	render() {
 		return (
 			<MediaQuery minWidth={config.mobileWidthTrigger}>
 				{(desktop) => (
-					<div>
-						<div
-							className='flex-col items-center justify-center text-center'
+					<div className={mod.local}>
+						<Section
+							className='flex-col justify-center text-center'
 							style={{
-								marginTop: desktop ? 150 : 75,
+								marginTop: desktop ? 50 : 0,
 							}}
 						>
-							{desktop ? (
-								<h1
-									style={{
-										maxWidth: 800,
-										paddingLeft: 20,
-										paddingRight: 20,
-										lineHeight: 1.1,
-										fontSize: 62,
-									}}
+							<h1>Hello World!</h1>
+
+							<sp />
+							<sp />
+							<sp />
+							<sp />
+							<sp />
+
+							<div className='wrapMargin flex flex-wrap justify-center'>
+								<FButton href='/components' appearance={'primary'}>
+									{'View components' /* "Get Started" */}
+								</FButton>
+								<FButton
+									href='https://github.com/cakeslice/flawk.js'
+									target='_blank'
 								>
-									{'Flawk.js'}
-								</h1>
-							) : (
-								<h1
-									style={{
-										maxWidth: 800,
-										paddingLeft: 20,
-										paddingRight: 20,
-										lineHeight: 1.1,
-										fontSize: 52,
-									}}
-								>
-									{'Flawk.js'}
-								</h1>
-							)}
-							<p
-								style={{
-									marginBottom: 80,
-									marginTop: 20,
-									maxWidth: 500,
-									fontSize: desktop ? 16 : 15,
-									padding: 20,
-								}}
-							>
-								Open-source web app boilerplate
-							</p>
-						</div>
+									{github(styles.colors.black, 16)}
+									<div style={{ marginLeft: 10 }}>Source code</div>
+								</FButton>
+							</div>
+						</Section>
 
-						<br />
-
-						<div className='flex-col items-center justify-center'>
-							<tag>WORK IN PROGRESS</tag>
-						</div>
-
-						<br />
-
-						<div className='wrapMargin flex flex-wrap justify-center'>
-							<FButton
-								onClick={() => {
-									global.routerHistory().push('/components')
-								}}
-								appearance={'primary'}
-							>
-								{'Components' /* "Get Started" */}
-							</FButton>
-							<FButton
-								onClick={() => {
-									window.open('https://github.com/cakeslice/flawk.js', '_blank')
-								}}
-								appearance={'secondary'}
-							>
-								GitHub
-							</FButton>
-						</div>
-
-						<div style={{ minHeight: 300 }} />
+						<Section
+							className='flex justify-center text-center'
+							style={{ background: styles.colors.background }}
+						>
+							<h3>
+								<code>{'</>'}</code>
+							</h3>
+						</Section>
 					</div>
 				)}
 			</MediaQuery>
+		)
+	}
+}
+
+class Section extends React.Component<{
+	className?: string
+	children?: React.ReactNode
+	style?: React.CSSProperties
+}> {
+	render() {
+		const padding = '100px 5vw'
+
+		return (
+			<div
+				className={this.props.className || 'flex-col items-center'}
+				style={{ overflow: 'hidden', padding: padding, ...this.props.style }}
+			>
+				<div
+					className='w-full'
+					style={{
+						maxWidth: config.publicMaxWidth,
+					}}
+				>
+					{this.props.children}
+				</div>
+			</div>
 		)
 	}
 }

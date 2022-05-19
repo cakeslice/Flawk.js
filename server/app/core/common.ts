@@ -100,9 +100,9 @@ function initLogging() {
 		console.debug = (...args) => winston.debug.call(winston, ...args)
 		/* eslint-enable */
 
-		console.log(colorizeLog('\n######### Flawk.js #########\n', 'magenta')) // Very first app
+		console.log(colorizeLog('\n######### Flawk #########\n', 'magenta')) // Very first app
 	} else {
-		console.log(colorizeLog('\n######### Flawk.js #########\n', 'magenta')) // Very first app
+		console.log(colorizeLog('\n######### Flawk #########\n', 'magenta')) // Very first app
 		console.log(colorizeLog('Logtail is disabled', 'grey'))
 	}
 

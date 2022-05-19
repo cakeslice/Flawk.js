@@ -6,32 +6,17 @@
  */
 
 import Animated from 'core/components/Animated'
-import { DashboardRoute } from 'core/components/Dashboard'
+import Tooltip from 'core/components/Tooltip'
+import lightOn from 'core/components/viewer/assets/lightbulb.svg'
+import lightOff from 'core/components/viewer/assets/lightbulb_off.svg'
 import config from 'core/config'
 import styles from 'core/styles'
+import { css } from 'glamor'
 import logo from 'project/assets/images/logo.svg'
+import { github } from 'project/components/Icons'
 import React, { Component } from 'react'
 import MediaQuery from 'react-responsive'
-import { Link } from 'react-router-dom'
-
-const leftLinks: DashboardRoute[] = [
-	/* { name: 'About', id: '/#about' } */
-]
-const rightLinks: DashboardRoute[] = [
-	/* { name: 'Contact', id: '/#contact' } */
-]
-const mobileLinks: DashboardRoute[] = [
-	/* ...leftLinks,
-	...rightLinks,
-	{
-		id: 'space',
-		notRoute: true,
-		tab: (props) => <div style={{ minHeight: 30 }}></div>,
-		mobileTab: true,
-	},*/
-	{ name: 'Components', id: '/components' },
-	/* { name: 'Login', id: '/login' }, */
-]
+import mod from '../main/Main.module.scss'
 
 const mobileHeight = 60
 const mobileHeightTop = 70
@@ -68,7 +53,7 @@ export default class Header extends Component<HeaderProps> {
 	}
 
 	render() {
-		const maxWidth = 850
+		const maxWidth = 1300
 
 		const landingPage = window.location.pathname.toString() === '/'
 		const shrink = !landingPage ? true : this.state.shrink
@@ -78,7 +63,7 @@ export default class Header extends Component<HeaderProps> {
 				{(desktop) => (
 					<div
 						data-nosnippet
-						className='flex-col w-full'
+						className={'flex-col w-full ' + mod.local}
 						style={{
 							minHeight: this.props.fillSpace
 								? desktop
@@ -95,15 +80,14 @@ export default class Header extends Component<HeaderProps> {
 								transition:
 									'border-color .5s, box-shadow .5s, background-color .5s',
 								backgroundColor: shrink
-									? config.replaceAlpha(styles.colors.background, 0.75)
-									: 'rgba(255,255,255,0)',
+									? config.replaceAlpha(styles.colors.white, 0.75)
+									: config.replaceAlpha(styles.colors.white, 0),
 								boxShadow: shrink ? styles.mediumShadow : undefined,
 								borderBottomStyle: 'solid',
 								borderWidth: 1,
 								borderColor: shrink
-									? 'rgba(255, 255, 255, 0.05)'
-									: 'rgba(255,255,255,0)',
-
+									? styles.colors.lineColor
+									: config.replaceAlpha(styles.colors.lineColor, 0),
 								position: 'fixed',
 								top: 0,
 								zIndex: 30,
@@ -115,11 +99,7 @@ export default class Header extends Component<HeaderProps> {
 								duration={0.5}
 								distance={desktop ? -desktopHeight : -mobileHeightTop}
 								//
-								className={
-									desktop
-										? 'flex justify-between w-full'
-										: 'flex justify-center w-full'
-								}
+								className={'flex justify-between w-full'}
 								style={{
 									maxWidth: maxWidth,
 									minHeight: desktop
@@ -137,94 +117,103 @@ export default class Header extends Component<HeaderProps> {
 										? mobileHeight
 										: mobileHeightTop,
 									transition: 'max-height .5s, min-height .5s',
-									paddingLeft: desktop ? 15 : 35,
-									paddingRight: desktop ? 15 : 35,
+									paddingLeft: '5vw',
+									paddingRight: '5vw',
 									boxSizing: 'border-box',
 								}}
 							>
-								{/* !desktop && (
-									<MobileDrawer
-										className='flex items-center'
-										menuStyle={{
-											minWidth: desktop ? 48 : 30,
-											paddingBottom: shrink ? 10 : 15,
-											paddingTop: shrink ? 10 : 15,
-											transition: 'padding-top .5s, padding-bottom .5s',
-										}}
-										links={mobileLinks}
-										title={'Flawk.js'}
-										headerHeight={
-											shrink ? mobileHeight : mobileHeightTop
-										}
-									></MobileDrawer>
-								) */}
-
-								{desktop &&
-									leftLinks.map((l) => {
-										const style: React.CSSProperties = {
-											fontSize: 26,
-											minWidth: 150,
-											textAlign: 'center',
-											fontFamily: styles.fontAlt,
-											color: styles.colors.main,
-										}
-
-										return (
-											<Link
-												to={l.id}
-												style={{
-													alignSelf: 'center',
-													...style,
-												}}
-												key={l.id}
-											>
-												{l.name}
-											</Link>
-										)
-									})}
-
-								{desktop && <div></div>}
-
-								<a className='flex items-center' href='/'>
+								<div className='flex items-center'>
 									<img
 										style={{
-											minWidth: desktop ? 48 : 38,
-											maxWidth: desktop ? 48 : 38,
+											maxWidth: !shrink
+												? desktop
+													? 38
+													: 28
+												: desktop
+												? 34
+												: 28,
 											objectFit: 'contain',
-											paddingBottom: shrink ? 10 : 15,
-											paddingTop: shrink ? 10 : 15,
-											transition: 'padding-top .5s, padding-bottom .5s',
-											//filter: !global.nightMode ? 'invert(85%)' : '',
+											transition: 'max-width .5s',
 										}}
 										src={logo}
 									></img>
-								</a>
 
-								{desktop && <div></div>}
+									<h2
+										style={{
+											paddingLeft: 15,
+											transition: 'font-size .5s',
+											fontSize: shrink || !desktop ? '175%' : '200%',
+										}}
+									>
+										<span style={{ fontFamily: 'Amaranth' }}>{'Flawk'}</span>
+										<tag style={{ verticalAlign: 'middle', marginLeft: 20 }}>
+											{!desktop ? 'WIP' : 'WORK IN PROGRESS'}
+										</tag>
+									</h2>
+								</div>
 
-								{desktop &&
-									rightLinks.map((l) => {
-										const style: React.CSSProperties = {
-											fontSize: 26,
-											minWidth: 150,
-											textAlign: 'center',
-											fontFamily: styles.fontAlt,
-											color: styles.colors.main,
-										}
+								<div className='flex items-center'>
+									<Tooltip
+										hidden={!desktop}
+										content={'Source code'}
+										tooltipProps={{
+											placement: 'bottom',
+										}}
+									>
+										<a
+											{...css({
+												height: 36,
+												transition: 'opacity .25s',
+												opacity: 0.75,
+												':hover': {
+													opacity: 1,
+												},
+											})}
+											className='flex items-center'
+											target='_blank'
+											href='https://github.com/cakeslice/flawk.js'
+											rel='noreferrer'
+										>
+											{github(styles.colors.black, 26)}
+										</a>
+									</Tooltip>
 
-										return (
-											<Link
-												to={l.id}
+									{desktop ? <sp /> : <hsp />}
+
+									<Tooltip
+										hidden={!desktop}
+										content={!global.nightMode ? 'Dark mode' : 'Light mode'}
+										offsetAlt={9}
+										tooltipProps={{
+											placement: 'bottom',
+										}}
+									>
+										<button
+											type='button'
+											onClick={() => global.toggleNightMode()}
+											{...css({
+												width: 35,
+												padding: 0,
+												transition: 'opacity .25s',
+												opacity: 0.66,
+												':hover': {
+													opacity: 1,
+												},
+											})}
+										>
+											<img
 												style={{
-													alignSelf: 'center',
-													...style,
+													position: 'relative',
+													bottom: 1,
+													left: 9,
+													height: '100%',
+													maxHeight: 30,
 												}}
-												key={l.id}
-											>
-												{l.name}
-											</Link>
-										)
-									})}
+												src={global.nightMode ? lightOff : lightOn}
+											></img>
+										</button>
+									</Tooltip>
+								</div>
 							</Animated>
 						</div>
 					</div>

@@ -33,7 +33,7 @@ const config: Partial<Config> = {
 	publicMaxWidth: 1281.5,
 
 	title: () => {
-		return 'Flawk.js'
+		return 'Flawk'
 	},
 	separator: ' | ',
 	phrase: () => {

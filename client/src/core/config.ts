@@ -328,7 +328,7 @@ const publicConfig: Config = {
 
 	//
 
-	title: () => 'Flawk.js',
+	title: () => 'Flawk',
 	separator: ' | ',
 	phrase: () => '',
 	description: () => '',

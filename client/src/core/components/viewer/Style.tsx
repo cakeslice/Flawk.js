@@ -447,7 +447,7 @@ await global.toggleNightMode()
 `}
 								description={
 									<>
-										All components in Flawk.js support a <m>dark</m> and{' '}
+										All components in Flawk support a <m>dark</m> and{' '}
 										<m>light</m> mode. If <code>global.nightMode</code> is{' '}
 										<code>true</code> the app is in dark mode.
 										<sp />
@@ -472,12 +472,11 @@ await global.toggleNightMode()
 								title='Card'
 								description={
 									<>
-										{"There's"} no <m>Card</m> component in Flawk.js. You can
-										use <code>styles.card</code> and{' '}
-										<code>styles.outlineCard</code> as a base for your own
-										cards.
+										{"There's"} no <m>Card</m> component in Flawk. You can use{' '}
+										<code>styles.card</code> and <code>styles.outlineCard</code>{' '}
+										as a base for your own cards.
 										<sp />
-										The base card styles are however used in some Flawk.js
+										The base card styles are however used in some Flawk
 										components like <code>{'<Modal/>'}</code>. You can override
 										them in <code>src/project/_styles.ts</code>
 									</>
@@ -1501,8 +1500,8 @@ import styles from 'core/styles'
 							<Section
 								description={
 									<>
-										Flawk.js comes with some custom <m>DOM elements</m> that can
-										be useful and {"don't"} need to be imported.
+										Flawk comes with some custom <m>DOM elements</m> that can be
+										useful and {"don't"} need to be imported.
 									</>
 								}
 								title='Custom DOM elements'

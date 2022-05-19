@@ -15,6 +15,7 @@ import lightOff from 'core/components/viewer/assets/lightbulb_off.svg'
 import config from 'core/config'
 import styles from 'core/styles'
 import { css } from 'glamor'
+import { github } from 'project/components/Icons'
 import React, { Component } from 'react'
 import MediaQuery from 'react-responsive'
 import CodeCollapse from './common/CodeCollapse'
@@ -202,34 +203,7 @@ export default class ComponentsViewer extends Component {
 				tab: (props) => <div className='grow' style={{ height: 40 }} />,
 			},
 			{
-				name: (!global.nightMode ? 'Dark' : 'Light') + ' mode',
-				notRoute: true,
-				justIcon: true,
-				style: { linkStyle: { opacity: 0.75 } },
-				onClick: () => global.toggleNightMode(),
-				customIcon: (active) => (
-					<div
-						{...css({
-							width: 20,
-							overflow: 'visible',
-							padding: 0,
-						})}
-					>
-						<img
-							style={{
-								maxHeight: 30,
-								width: 25,
-								position: 'relative',
-								left: -2,
-							}}
-							src={global.nightMode ? lightOff : lightOn}
-						></img>
-					</div>
-				),
-				id: 'dark_mode',
-			},
-			{
-				name: 'Flawk.js',
+				name: 'Flawk',
 				notRoute: true,
 				mobileTab: true,
 				style: { linkStyle: { opacity: 0.75 } },
@@ -256,6 +230,53 @@ export default class ComponentsViewer extends Component {
 					</div>
 				),
 				id: 'flawk_link',
+			},
+			{
+				name: 'Source code',
+				notRoute: true,
+				justIcon: true,
+				style: { linkStyle: { opacity: 0.75 } },
+				onClick: () => window.open('https://github.com/cakeslice/flawk.js', '_blank'),
+				customIcon: (active) => (
+					<div
+						{...css({
+							width: 20,
+							display: 'flex',
+							overflow: 'visible',
+							padding: 0,
+						})}
+					>
+						{github(styles.colors.black, 22)}
+					</div>
+				),
+				id: 'github_link',
+			},
+			{
+				name: (!global.nightMode ? 'Dark' : 'Light') + ' mode',
+				notRoute: true,
+				justIcon: true,
+				style: { linkStyle: { opacity: 0.75 } },
+				onClick: () => global.toggleNightMode(),
+				customIcon: (active) => (
+					<div
+						{...css({
+							width: 20,
+							overflow: 'visible',
+							padding: 0,
+						})}
+					>
+						<img
+							style={{
+								maxHeight: 30,
+								width: 25,
+								position: 'relative',
+								left: -2,
+							}}
+							src={global.nightMode ? lightOff : lightOn}
+						></img>
+					</div>
+				),
+				id: 'dark_mode',
 			},
 		]
 

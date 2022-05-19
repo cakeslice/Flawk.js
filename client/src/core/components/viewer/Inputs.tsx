@@ -726,13 +726,13 @@ export default class Inputs extends Component {
 						<Section
 							description={
 								<>
-									To build a <m>form</m> in Flawk.js, use the <code>formik</code>{' '}
+									To build a <m>form</m> in Flawk, use the <code>formik</code>{' '}
 									library and the <code>{'<Field/>'}</code> component.
 									<sp />
 									Use <code>component</code> prop in <code>{'<Field/>'}</code> to
 									choose the component that you want to use.
 									<br />
-									<code>{'<Field/>'}</code> supports the following Flawk.js
+									<code>{'<Field/>'}</code> supports the following Flawk
 									components:
 									<ul>
 										<li>

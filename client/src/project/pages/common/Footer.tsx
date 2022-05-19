@@ -29,12 +29,39 @@ export default class Footer extends Component {
 						}}
 					>
 						<Animated
-							className='text-center'
+							className='w-full flex-col items-center text-center'
 							effects={['fade', 'up']}
 							distance={10}
 							duration={0.75}
 							delay={0.25}
 						>
+							<div style={{ height: 30 }} className='flex items-center'>
+								<a
+									target='_blank'
+									style={{
+										minWidth: 55,
+										fontSize: 14.5,
+										color: styles.colors.whiteDay,
+									}}
+									href='https://services.cakeslice.dev/privacy'
+									rel='noreferrer'
+								>
+									Privacy
+								</a>
+								<vr style={{ border: '.25px solid white' }} />
+								<a
+									style={{
+										minWidth: 55,
+										fontSize: 14.5,
+										color: styles.colors.whiteDay,
+									}}
+									href={'mailto:hello@cakeslice.dev'}
+								>
+									Contact
+								</a>
+							</div>
+							<sp />
+							<sp />
 							<p
 								style={{
 									fontSize: 13,
@@ -42,7 +69,7 @@ export default class Footer extends Component {
 									color: styles.colors.whiteDay,
 								}}
 							>
-								© 2022 José Guerreiro
+								© 2020 José Guerreiro
 							</p>
 							<a
 								target='_blank'
@@ -56,13 +83,14 @@ export default class Footer extends Component {
 							>
 								www.cakeslice.dev
 							</a>
-							<div style={{ minHeight: 30 }}></div>
-
+							<sp />
+							<sp />
+							<sp />
 							<div className='flex items-center justify-center'>
 								<p
 									style={{
-										fontWeight: 'bold',
-										fontSize: 14.5,
+										fontFamily: 'Amaranth',
+										fontSize: 16,
 										//opacity: 0.47,
 										color: styles.colors.whiteDay,
 									}}

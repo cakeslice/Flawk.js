@@ -519,7 +519,7 @@ import { SizeMe } from 'react-sizeme'
 `}
 							description={
 								<>
-									Components in Flawk.js use <code>{'<MediaQuery/>'}</code> from{' '}
+									Components in Flawk use <code>{'<MediaQuery/>'}</code> from{' '}
 									<code>react-responsive</code> to swith between mobile and
 									desktop versions of components.
 									<sp />
@@ -595,7 +595,7 @@ import { SizeMe } from 'react-sizeme'
 									<code>react-helmet</code>, you can add or modify tags in the
 									document <code>{'<head/>'}</code>.
 									<sp />
-									Internally, Flawk.js uses this component to set the{' '}
+									Internally, Flawk uses this component to set the{' '}
 									<m>title and description</m> using the strings defined in{' '}
 									<code>src/project/_config</code>.
 									<br />
@@ -625,7 +625,7 @@ import { SizeMe } from 'react-sizeme'
 						<Section
 							description={
 								<>
-									Flawk.js uses{' '}
+									Flawk uses{' '}
 									<a target='_blank' href='https://sentry.io' rel='noreferrer'>
 										Sentry
 									</a>{' '}
@@ -634,7 +634,7 @@ import { SizeMe } from 'react-sizeme'
 									Use the env var <code>REACT_APP_SENTRY_KEY</code> to set your{' '}
 									<m>Sentry</m> API key.
 									<sp />
-									If {"there's"} a critical <m>application error</m>, Flawk.js
+									If {"there's"} a critical <m>application error</m>, Flawk
 									displays an error page with a message and a button to refresh
 									the page.
 									<br />

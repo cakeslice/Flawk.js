@@ -131,7 +131,7 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 	// Should be on top of your function after state is declared
 	useConstructor(() => {
 		console.log(
-			'\n%cPowered by Flawk.js: https://flawk.cakeslice.dev\n',
+			'\n%cPowered by Flawk: https://flawk.cakeslice.dev\n',
 			'color: #6495ED; font-weight: 700; font-size: 14px'
 		)
 
