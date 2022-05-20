@@ -22,7 +22,7 @@ import MediaQuery from 'react-responsive'
 import { Link } from 'react-router-dom'
 import * as uuid from 'uuid'
 import Dropdown from '../Dropdown'
-import { Section } from './ComponentsViewer'
+import { Next, Section } from './ComponentsViewer'
 import cssModule from './ComponentsViewer.module.scss'
 
 const customElement = {
@@ -106,7 +106,7 @@ body {
 `}
 								description={
 									<>
-										Default fonts can be overriden in{' '}
+										Default fonts can be overridden in{' '}
 										<code>src/project/assets/main.scss</code> by changing the{' '}
 										<code>--font</code> and <code>--fontAlt</code> properties.
 										<sp />
@@ -722,7 +722,7 @@ import styles from 'core/styles'
 										The <code>children</code> of the tooltip component is what{' '}
 										<m>activates the tooltip</m> on hover.
 										<sp />
-										The default tooltip style can be overriden in{' '}
+										The default tooltip style can be overridden in{' '}
 										<code>src/project/_styles.ts</code> using the{' '}
 										<code>tooltip</code> property.
 										<sp />
@@ -1551,6 +1551,13 @@ import styles from 'core/styles'
 									</div>
 								</div>
 							</Section>
+
+							<Next
+								backName='Get Started'
+								backLink='start'
+								name='Layout'
+								link='layout'
+							/>
 						</div>
 					)
 				}}

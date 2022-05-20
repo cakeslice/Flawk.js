@@ -94,7 +94,13 @@ function ErrorFallback({ error }: FallbackProps) {
 		return (
 			<div
 				className='flex-col items-center'
-				style={{ padding: 15, paddingTop: 45, textAlign: 'center' }}
+				style={{
+					width: '100vw',
+					height: '100vh',
+					padding: 15,
+					paddingTop: 45,
+					textAlign: 'center',
+				}}
 			>
 				<h3 style={{ marginBottom: 45 }}>{config.text('common.reactError')}</h3>
 				<button

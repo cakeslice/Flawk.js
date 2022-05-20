@@ -419,9 +419,9 @@ export default class FButton extends TrackedComponent<Props> {
 				':focus': finalStyle[':focus-visible'],
 			}
 
-		let overridenStyle: React.CSSProperties = {}
+		let overriddenStyle: React.CSSProperties = {}
 		if (this.props.eventOverride) {
-			overridenStyle = { ...finalStyle }
+			overriddenStyle = { ...finalStyle }
 			if (this.props.eventOverride === 'active')
 				// @ts-ignore
 				finalStyle = { ...finalStyle, ...finalStyle[':hover'] }
@@ -561,7 +561,7 @@ export default class FButton extends TrackedComponent<Props> {
 											>
 												{checkedIcon(
 													(this.props.eventOverride
-														? overridenStyle.color
+														? overriddenStyle.color
 														: finalStyle.color) as string
 												)}
 											</div>
@@ -575,7 +575,7 @@ export default class FButton extends TrackedComponent<Props> {
 													<Loading
 														color={
 															this.props.eventOverride
-																? overridenStyle.color
+																? overriddenStyle.color
 																: finalStyle.color
 														}
 														noDelay

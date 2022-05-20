@@ -299,11 +299,11 @@ export default function Router(): React.ReactNode {
 							</>
 						</Route>
 
-						{!config.prod && !config.staging && (
-							<Route /* exact */ path='/components'>
-								<ComponentsViewer />
-							</Route>
-						)}
+						{/* {!config.prod && !config.staging && ( */}
+						<Route /* exact */ path='/components'>
+							<ComponentsViewer />
+						</Route>
+						{/* )} */}
 
 						<Route>
 							<div style={{ background: styles.colors.white }}>
@@ -354,8 +354,8 @@ export default function Router(): React.ReactNode {
 class PublicWrapper extends Component<{ auth?: boolean; desktop: boolean }> {
 	render() {
 		return (
-			<>
-				<Header fillSpace />
+			<div style={{ overflow: 'hidden' }}>
+				<Header fillSpace={this.props.auth} />
 				<div
 					style={{
 						paddingTop: this.props.auth ? 30 : undefined,
@@ -384,8 +384,8 @@ class PublicWrapper extends Component<{ auth?: boolean; desktop: boolean }> {
 						{this.props.auth && <sp />}
 					</div>
 				</div>
-				<Footer />
-			</>
+				<Footer fillSpace={this.props.auth} />
+			</div>
 		)
 	}
 }
@@ -398,8 +398,8 @@ class DashboardWrapper extends Component<DashboardWrapperProps> {
 						style={{
 							padding: desktop ? '5%' : '5%',
 							paddingTop: desktop ? 80 : 40,
-							paddingBottom: 80,
-							//maxWidth: 1200,
+							paddingBottom: 160,
+							maxWidth: config.publicMaxWidth,
 						}}
 					>
 						{!this.props.overrideHeader && (

@@ -83,7 +83,7 @@ router.getAsync(Data.call, async (req, res) => {
 				expiresIn: config.tokenDays.toString() + ' days',
 			})
 			const tokens = userToken.access.activeTokens.filter((e) => e !== req.token)
-			user.access.activeTokens.splice(0, user.access.activeTokens.length)
+			userToken.access.activeTokens.splice(0, userToken.access.activeTokens.length)
 			tokens.forEach((t) => {
 				userToken.access.activeTokens.push(t)
 			})

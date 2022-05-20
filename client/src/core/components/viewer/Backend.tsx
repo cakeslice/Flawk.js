@@ -27,7 +27,7 @@ import React, { Component } from 'react'
 import ReCaptcha from 'react-google-recaptcha'
 import { connect, ConnectedProps } from 'react-redux'
 import MediaQuery from 'react-responsive'
-import { lock, Section } from './ComponentsViewer'
+import { lock, Next, Section } from './ComponentsViewer'
 
 const cardStyle = (desktop?: boolean) => {
 	return {
@@ -342,6 +342,8 @@ class Backend extends Component<PropsFromRedux> {
 								</div>
 							)}
 						</Section>
+
+						<Next backName='Misc' backLink='misc' name='API' link='backend/api' />
 					</div>
 				)}
 			</MediaQuery>

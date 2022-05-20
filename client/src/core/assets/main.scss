@@ -58,8 +58,8 @@ body {
 	letter-spacing: 0.2px;
 }
 h1 {
-	font-size: 42px;
-	line-height: 50px;
+	font-size: 47px;
+	line-height: 55px;
 	font-weight: bold;
 	font-family: var(--fontAlt);
 }
@@ -76,8 +76,8 @@ h3 {
 	font-family: var(--fontAlt);
 }
 h4 {
-	font-size: 22px;
-	line-height: 28px;
+	font-size: 20px;
+	line-height: 26px;
 	font-weight: bold;
 	font-family: var(--fontAlt);
 }
@@ -93,16 +93,16 @@ h5 {
 		line-height: 20px;
 	}
 	h1 {
-		font-size: 32px;
-		line-height: 40px;
+		font-size: 38px;
+		line-height: 44px;
 	}
 	h2 {
 		font-size: 24px;
 		line-height: 30px;
 	}
 	h3 {
-		font-size: 22px;
-		line-height: 28px;
+		font-size: 20px;
+		line-height: 26px;
 	}
 }
 
@@ -622,6 +622,39 @@ kbd {
 		opacity: 1;
 		transform-origin: 100% 0%;
 		transform: scaleX(1);
+	}
+}
+@keyframes rotate {
+	0% {
+		transform: rotate(0deg);
+	}
+
+	100% {
+		transform: rotate(360deg);
+	}
+}
+@keyframes float-small {
+	0% {
+		transform: translatey(5px);
+	}
+	100% {
+		transform: translatey(-5px);
+	}
+}
+@keyframes float {
+	0% {
+		transform: translatey(10px);
+	}
+	100% {
+		transform: translatey(-10px);
+	}
+}
+@keyframes float-opposite {
+	0% {
+		transform: translatey(-10px);
+	}
+	100% {
+		transform: translatey(10px);
 	}
 }
 

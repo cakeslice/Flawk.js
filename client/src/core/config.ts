@@ -51,7 +51,6 @@ const _prod =
 	process.env.REACT_APP_STAGING !== 'true' &&
 	process.env.REACT_APP_DEV !== 'true'
 const _staging = !_prod && process.env.REACT_APP_STAGING === 'true'
-const _domain = process.env.REACT_APP_DOMAIN
 const _microsoftClarityKey = process.env.REACT_APP_CLARITY_KEY
 const _googleAnalyticsID = process.env.REACT_APP_GA_KEY
 const _googleAdsID = process.env.REACT_APP_G_ADS_KEY
@@ -322,7 +321,7 @@ const publicConfig: Config = {
 	toastCloseTime: 4000,
 
 	mobileWidthTrigger: 700,
-	publicMaxWidth: 1281.5,
+	publicMaxWidth: 1700,
 
 	formatNumberThreshold: 9999,
 
@@ -345,7 +344,6 @@ const config: Config & InternalConfig = {
 	...publicConfig,
 	prod: _prod,
 	staging: _staging,
-	domain: _domain,
 
 	sentryID: _sentryID,
 	microsoftClarityKey: _microsoftClarityKey,
@@ -570,7 +568,6 @@ export default config
 type InternalConfig = {
 	prod: boolean
 	staging: boolean
-	domain: string | undefined
 
 	sentryID: string | undefined
 	microsoftClarityKey: string | undefined

@@ -23,7 +23,7 @@ import _find from 'lodash/find'
 import _uniqBy from 'lodash/uniqBy'
 import React, { Component } from 'react'
 import MediaQuery from 'react-responsive'
-import { Section } from './ComponentsViewer'
+import { Next, Section } from './ComponentsViewer'
 
 const simpleOptions = [
 	{
@@ -1082,6 +1082,8 @@ import Dropdown from 'core/components/Dropdown'
 								</div>
 							</div>
 						</Section>
+
+						<Next backName='Layout' backLink='layout' name='Misc' link='misc' />
 					</div>
 				)}
 			</MediaQuery>

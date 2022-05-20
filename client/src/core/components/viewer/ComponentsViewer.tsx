@@ -18,6 +18,8 @@ import { css } from 'glamor'
 import { github } from 'project/components/Icons'
 import React, { Component } from 'react'
 import MediaQuery from 'react-responsive'
+import * as uuid from 'uuid'
+import FButton from '../FButton'
 import CodeCollapse from './common/CodeCollapse'
 import cssModule from './ComponentsViewer.module.scss'
 
@@ -118,13 +120,13 @@ export default class ComponentsViewer extends Component {
 						</>
 					),
 			},
-			/* {
+			{
 				defaultRoute: true,
 				name: 'Get Started',
 				customIcon: (active) => iconWrapper(startLogo, active, 22),
 				id: 'start',
 				page: Start,
-			}, */
+			},
 			{
 				defaultRoute: true,
 				name: 'Style',
@@ -157,8 +159,8 @@ export default class ComponentsViewer extends Component {
 				notExact: true, // Support for routes inside the component
 				subRoutes: [
 					{
-						name: 'Auth',
-						id: 'auth',
+						name: 'Features',
+						id: 'features',
 						page: Backend,
 						defaultRoute: true,
 					},
@@ -352,7 +354,7 @@ class Wrapper extends Component<{ children: React.ReactNode }> {
 							//padding: desktop ? '5%' : '5%',
 							paddingTop: desktop ? 80 : 40,
 							paddingBottom: 160,
-							maxWidth: 1700,
+							maxWidth: config.publicMaxWidth,
 						}}
 					>
 						{this.props.children}
@@ -363,20 +365,109 @@ class Wrapper extends Component<{ children: React.ReactNode }> {
 	}
 }
 
+export const Next: React.FC<{
+	name?: string
+	link?: string
+	backName?: string
+	backLink?: string
+}> = ({ name, link, backName, backLink }) => {
+	return (
+		<MediaQuery minWidth={config.mobileWidthTrigger}>
+			{(desktop) => (
+				<div
+					style={{ padding: '0px 5%', paddingTop: 20 }}
+					className={
+						'w-full ' + (desktop ? 'flex justify-between' : 'flex-col items-center')
+					}
+				>
+					{backLink ? (
+						<div
+							style={{
+								width: 300,
+								margin: 10,
+							}}
+						>
+							<FButton
+								href={'/components/' + backLink}
+								style={{
+									width: '100%',
+									minHeight: 70,
+									fontSize: 16,
+								}}
+							>
+								<div
+									style={{ width: '90%' }}
+									className='flex items-center justify-between'
+								>
+									<div
+										style={{
+											opacity: 0.5,
+											transform: 'rotate(-90deg) scale(.75)',
+										}}
+									>
+										{arrow(styles.colors.main)}
+									</div>
+									<h4 style={{ color: styles.colors.main }}>{backName}</h4>
+								</div>
+							</FButton>
+						</div>
+					) : (
+						<div />
+					)}
+					{link ? (
+						<div
+							style={{
+								width: 300,
+								margin: 10,
+							}}
+						>
+							<FButton
+								href={'/components/' + link}
+								style={{
+									width: '100%',
+									minHeight: 70,
+									fontSize: 16,
+								}}
+							>
+								<div
+									style={{ width: '90%' }}
+									className='flex items-center justify-between'
+								>
+									<h4 style={{ color: styles.colors.main }}>{name}</h4>
+									<div
+										style={{
+											opacity: 0.5,
+											transform: 'rotate(90deg) scale(.75)',
+										}}
+									>
+										{arrow(styles.colors.main)}
+									</div>
+								</div>
+							</FButton>
+						</div>
+					) : (
+						<div />
+					)}
+				</div>
+			)}
+		</MediaQuery>
+	)
+}
+
 export const Section: React.FC<{
-	title: string
+	title?: string
 	top?: boolean
 	tags?: string[]
 	code?: string
 	lang?: Lang
 	description?: React.ReactNode
 }> = ({ children, title, top, tags, code, lang, description }) => {
-	const id = title.replaceAll(' ', '_').toLowerCase()
+	const id = title ? title.replaceAll(' ', '_').toLowerCase() : uuid.v1()
 
 	return (
 		<MediaQuery minWidth={880}>
 			{(tablet) => (
-				<Anchor id={id} updateHash>
+				<Anchor id={id} updateHash={title ? true : false}>
 					<>
 						{!top && (
 							<>
@@ -385,100 +476,105 @@ export const Section: React.FC<{
 							</>
 						)}
 						<>
-							<div
-								style={{
-									padding: tablet ? '0% 5%' : '0% 5%',
-								}}
-							>
-								<div className='flex'>
-									<h3>{title}</h3>
-									{tags && (
-										<div
-											className={!tablet ? 'grow' : ''}
-											style={{ minWidth: 15 }}
-										/>
-									)}
-									{tags && (
-										<div
-											className={
-												'wrapMargin flex flex-wrap ' +
-												(tablet ? 'justify-start' : 'justify-end')
-											}
-										>
-											{tags.map((tag) => (
-												<div
-													key={id + '_' + tag}
-													style={{
-														display: 'flex',
-														position: 'relative',
-														top: 3,
-													}}
-												>
-													<tag
+							{title && (
+								<div
+									style={{
+										padding: tablet ? '0% 5%' : '0% 5%',
+									}}
+								>
+									<div className='flex'>
+										<h3>{title}</h3>
+										{tags && (
+											<div
+												className={!tablet ? 'grow' : ''}
+												style={{ minWidth: 15 }}
+											/>
+										)}
+										{tags && (
+											<div
+												className={
+													'wrapMargin flex flex-wrap ' +
+													(tablet ? 'justify-start' : 'justify-end')
+												}
+											>
+												{tags.map((tag) => (
+													<div
+														key={id + '_' + tag}
 														style={{
-															fontFamily: 'monospace',
-															color: styles.colors.main,
-															letterSpacing: 0,
-															opacity: 1,
-															padding: '1px 5px',
-															background: config.replaceAlpha(
-																styles.colors.main,
-																0.15
-															),
+															display: 'flex',
+															position: 'relative',
+															top: 3,
 														}}
 													>
-														{tag}
-													</tag>
-												</div>
-											))}
-										</div>
-									)}
-								</div>
-								{!tags ? <hsp /> : <sp />}
-								{!tags && description && <hsp />}
-								{(code || description) && (
-									<div
-										className={cssModule.section}
-										style={{
-											flexDirection: tablet ? 'row' : 'column',
-											padding: '10px 15px',
-											borderRadius: 5,
-											border: '1px solid ' + styles.colors.lineColor,
-											borderLeft:
-												'6px solid ' +
-												config.replaceAlpha(styles.colors.black, 0.1),
-											fontSize: 13.5,
-											lineHeight: '19px',
-											//width: 'fit-content',
-											color: config.replaceAlpha(styles.colors.black, 0.85),
-											background: config.replaceAlpha(
-												styles.colors.white,
-												0.5
-											),
-										}}
-									>
-										<div className='grow'>{description}</div>
-										{code && (
-											<>
-												<hsp />
-												<CodeCollapse
-													className={tablet ? 'flex' : ''}
-													openStyle={{
-														flexDirection: tablet
-															? 'row-reverse'
-															: undefined,
-														width: tablet ? undefined : '100%',
-													}}
-													data={code}
-													lang={lang || 'tsx'}
-												></CodeCollapse>
-											</>
+														<tag
+															style={{
+																fontFamily: 'monospace',
+																color: styles.colors.main,
+																letterSpacing: 0,
+																opacity: 1,
+																padding: '1px 5px',
+																background: config.replaceAlpha(
+																	styles.colors.main,
+																	0.15
+																),
+															}}
+														>
+															{tag}
+														</tag>
+													</div>
+												))}
+											</div>
 										)}
 									</div>
-								)}
-								{description && <sp />}
-								{!tags && !description && <hsp />} <hsp />
-							</div>
+									{!tags ? <hsp /> : <sp />}
+									{!tags && description && <hsp />}
+									{(code || description) && (
+										<div
+											className={cssModule.section}
+											style={{
+												flexDirection: tablet ? 'row' : 'column',
+												padding: '10px 15px',
+												borderRadius: 5,
+												border: '1px solid ' + styles.colors.lineColor,
+												borderLeft:
+													'6px solid ' +
+													config.replaceAlpha(styles.colors.black, 0.1),
+												fontSize: 13.5,
+												lineHeight: '19px',
+												//width: 'fit-content',
+												color: config.replaceAlpha(
+													styles.colors.black,
+													0.85
+												),
+												background: config.replaceAlpha(
+													styles.colors.white,
+													0.5
+												),
+											}}
+										>
+											<div className='grow'>{description}</div>
+											{code && (
+												<>
+													<hsp />
+													<CodeCollapse
+														className={tablet ? 'flex' : ''}
+														openStyle={{
+															flexDirection: tablet
+																? 'row-reverse'
+																: undefined,
+															width: tablet ? undefined : '100%',
+														}}
+														data={code}
+														lang={lang || 'tsx'}
+													></CodeCollapse>
+												</>
+											)}
+										</div>
+									)}
+									{description && <sp />}
+									{!tags && !description && <hsp />} <hsp />
+								</div>
+							)}
 
 							<div style={{ padding: tablet ? '0% 5%' : '0% 5%' }}>{children}</div>
 							<sp />

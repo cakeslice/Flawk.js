@@ -10,23 +10,58 @@ import config from 'core/config'
 import styles from 'core/styles'
 import React, { Component } from 'react'
 import MediaQuery from 'react-responsive'
+import mod from '../main/Main.module.scss'
 
-export default class Footer extends Component {
+type Props = {
+	fillSpace?: boolean
+}
+export default class Footer extends Component<Props> {
+	state = { scroll: 0 }
+
+	constructor(props: Props) {
+		super(props)
+
+		this.handleScroll = this.handleScroll.bind(this)
+	}
+
+	handleScroll() {
+		const scrollTop = document.body.scrollTop || document.documentElement.scrollTop
+
+		this.setState({
+			scroll: Math.min(2000, scrollTop - document.body.clientHeight),
+		})
+	}
+	componentDidMount() {
+		this.handleScroll()
+		window.addEventListener('scroll', this.handleScroll)
+	}
+	componentWillUnmount() {
+		window.removeEventListener('scroll', this.handleScroll)
+	}
+
 	render() {
 		return (
 			<MediaQuery minWidth={config.mobileWidthTrigger}>
 				{(desktop) => (
 					<div
 						data-nosnippet
-						className='flex-col items-center justify-center w-full'
-						style={{
-							minHeight: 279,
-							boxSizing: 'border-box',
-							padding: 20,
-							paddingBottom: 60,
-							paddingTop: 60,
-							background: styles.colors.main,
-						}}
+						className={'flex-col items-center justify-center w-full ' + mod.local}
+						style={
+							this.props.fillSpace
+								? {
+										boxSizing: 'border-box',
+										padding: 20,
+										paddingBottom: 60,
+										paddingTop: 60,
+										//background: styles.colors.main,
+								  }
+								: {
+										height: 0,
+										position: 'relative',
+										top: -190 / 2,
+										padding: '0px 20px',
+								  }
+						}
 					>
 						<Animated
 							className='w-full flex-col items-center text-center'
@@ -34,6 +69,7 @@ export default class Footer extends Component {
 							distance={10}
 							duration={0.75}
 							delay={0.25}
+							style={{ zIndex: 1, paddingBottom: 250 }}
 						>
 							<div style={{ height: 30 }} className='flex items-center'>
 								<a
@@ -41,32 +77,32 @@ export default class Footer extends Component {
 									style={{
 										minWidth: 55,
 										fontSize: 14.5,
-										color: styles.colors.whiteDay,
+										color: styles.colors.black,
 									}}
 									href='https://services.cakeslice.dev/privacy'
 									rel='noreferrer'
 								>
 									Privacy
 								</a>
-								<vr style={{ border: '.25px solid white' }} />
+								<vr style={{ border: '.25px solid ' + styles.colors.black }} />
 								<a
 									style={{
 										minWidth: 55,
 										fontSize: 14.5,
-										color: styles.colors.whiteDay,
+										color: styles.colors.black,
 									}}
 									href={'mailto:hello@cakeslice.dev'}
 								>
 									Contact
 								</a>
 							</div>
+
 							<sp />
 							<sp />
 							<p
 								style={{
 									fontSize: 13,
 									opacity: 0.75,
-									color: styles.colors.whiteDay,
 								}}
 							>
 								© 2020 José Guerreiro
@@ -75,8 +111,7 @@ export default class Footer extends Component {
 								target='_blank'
 								style={{
 									fontSize: 13,
-									opacity: 0.75,
-									color: styles.colors.whiteDay,
+									color: styles.colors.black,
 								}}
 								href='https://cakeslice.dev'
 								rel='noreferrer'
@@ -91,8 +126,6 @@ export default class Footer extends Component {
 									style={{
 										fontFamily: 'Amaranth',
 										fontSize: 16,
-										//opacity: 0.47,
-										color: styles.colors.whiteDay,
 									}}
 								>
 									Made with ❤️

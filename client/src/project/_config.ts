@@ -30,7 +30,7 @@ const config: Partial<Config> = {
 	cookiePolicyURL: 'https://services.cakeslice.dev/cookies',
 
 	mobileWidthTrigger: 700,
-	publicMaxWidth: 1281.5,
+	publicMaxWidth: 1700,
 
 	title: () => {
 		return 'Flawk'
@@ -38,13 +38,13 @@ const config: Partial<Config> = {
 	separator: ' | ',
 	phrase: () => {
 		return global.lang && global.lang.text === 'pt'
-			? 'Open-source web app boilerplate'
-			: 'Open-source web app boilerplate'
+			? 'Full-stack ready for liftoff'
+			: 'Full-stack ready for liftoff'
 	},
 	description: () => {
 		return global.lang && global.lang.text === 'pt'
-			? 'Open-source web app boilerplate'
-			: 'Open-source web app boilerplate'
+			? 'Strongly opinionated full-stack boilerplate powered by React and Express/Mongoose'
+			: 'Strongly opinionated full-stack boilerplate powered by React and Express/Mongoose'
 	},
 
 	//

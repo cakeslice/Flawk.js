@@ -25,6 +25,13 @@
 	}
 }
 
+.markdown {
+	pre {
+		padding: 0;
+		background: transparent;
+	}
+}
+
 .section {
 	display: flex;
 	code {

@@ -38,7 +38,7 @@ import MediaQuery from 'react-responsive'
 import Sticky from 'react-sticky-el'
 import Collapsible from '../Collapsible'
 import Dropdown from '../Dropdown'
-import { Section } from './ComponentsViewer'
+import { Next, Section } from './ComponentsViewer'
 
 export default class Layout extends QueryParams<
 	{
@@ -1400,6 +1400,8 @@ const data = [33, 40, 12, 15]
 									</div>
 								</div>
 							</Section>
+
+							<Next backName='Style' backLink='style' name='Inputs' link='inputs' />
 						</div>
 					)
 				}}

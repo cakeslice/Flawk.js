@@ -42,7 +42,7 @@ const clipboard = (color: string) => (
 	</svg>
 )
 
-export type Lang = 'json' | 'tsx' | 'html' | 'jsx' | 'scss' | 'css'
+export type Lang = 'json' | 'tsx' | 'html' | 'jsx' | 'scss' | 'css' | 'bash'
 
 export default function CodeBlock(props: {
 	style?: React.CSSProperties

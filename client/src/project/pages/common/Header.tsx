@@ -23,15 +23,15 @@ const mobileHeightTop = 70
 const desktopHeight = 70
 const desktopHeightTop = 125
 
-type HeaderProps = {
+type Props = {
 	fillSpace?: boolean
 }
-export default class Header extends Component<HeaderProps> {
+export default class Header extends Component<Props> {
 	state = {
 		shrink: false,
 	}
 
-	constructor(props: HeaderProps) {
+	constructor(props: Props) {
 		super(props)
 
 		this.handleScroll = this.handleScroll.bind(this)
@@ -53,7 +53,7 @@ export default class Header extends Component<HeaderProps> {
 	}
 
 	render() {
-		const maxWidth = 1300
+		const maxWidth = config.publicMaxWidth
 
 		const landingPage = window.location.pathname.toString() === '/'
 		const shrink = !landingPage ? true : this.state.shrink
@@ -78,9 +78,9 @@ export default class Header extends Component<HeaderProps> {
 							}
 							style={{
 								transition:
-									'border-color .5s, box-shadow .5s, background-color .5s',
+									'border-color .5s, box-shadow .5s, background-color .25s',
 								backgroundColor: shrink
-									? config.replaceAlpha(styles.colors.white, 0.75)
+									? config.replaceAlpha(styles.colors.white, 0.85)
 									: config.replaceAlpha(styles.colors.white, 0),
 								boxShadow: shrink ? styles.mediumShadow : undefined,
 								borderBottomStyle: 'solid',
@@ -91,6 +91,8 @@ export default class Header extends Component<HeaderProps> {
 								position: 'fixed',
 								top: 0,
 								zIndex: 30,
+								paddingLeft: '5vw',
+								paddingRight: '5vw',
 							}}
 						>
 							<Animated
@@ -117,8 +119,6 @@ export default class Header extends Component<HeaderProps> {
 										? mobileHeight
 										: mobileHeightTop,
 									transition: 'max-height .5s, min-height .5s',
-									paddingLeft: '5vw',
-									paddingRight: '5vw',
 									boxSizing: 'border-box',
 								}}
 							>
@@ -140,13 +140,27 @@ export default class Header extends Component<HeaderProps> {
 
 									<h2
 										style={{
-											paddingLeft: 15,
+											paddingLeft: desktop ? 15 : 10,
 											transition: 'font-size .5s',
 											fontSize: shrink || !desktop ? '175%' : '200%',
 										}}
 									>
 										<span style={{ fontFamily: 'Amaranth' }}>{'Flawk'}</span>
-										<tag style={{ verticalAlign: 'middle', marginLeft: 20 }}>
+										<tag
+											style={{
+												position: 'relative',
+												top: -1,
+												padding: '7.5px 10px',
+												verticalAlign: 'middle',
+												marginLeft: desktop ? 20 : 15,
+												color: styles.colors.purple,
+												opacity: 1,
+												background: config.replaceAlpha(
+													styles.colors.purple,
+													0.1
+												),
+											}}
+										>
 											{!desktop ? 'WIP' : 'WORK IN PROGRESS'}
 										</tag>
 									</h2>
@@ -154,6 +168,7 @@ export default class Header extends Component<HeaderProps> {
 
 								<div className='flex items-center'>
 									<Tooltip
+										foreground
 										hidden={!desktop}
 										content={'Source code'}
 										tooltipProps={{
@@ -181,6 +196,7 @@ export default class Header extends Component<HeaderProps> {
 									{desktop ? <sp /> : <hsp />}
 
 									<Tooltip
+										foreground
 										hidden={!desktop}
 										content={!global.nightMode ? 'Dark mode' : 'Light mode'}
 										offsetAlt={9}

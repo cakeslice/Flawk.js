@@ -22,9 +22,11 @@ const styles: Partial<Styles> = {
 		{
 			name: 'action',
 			usageBackground: 'rgba(30,30,30,1)',
+			minHeight: 40,
+			fontSize: 16,
 
 			color: 'white',
-			fontWeight: 'bold',
+			fontWeight: 500,
 			minWidth: 128,
 			borderColor: 'transparent',
 

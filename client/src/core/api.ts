@@ -74,7 +74,8 @@ async function request(method: string, path: string, options: Options, body?: Ke
 	return handleResponse(response)
 }
 async function sendRequest(method: string, path: string, options: Options, body?: KeyUnknown) {
-	const apiRoot = config.backendURL
+	const apiRoot =
+		config.backendURL || (!config.prod && !config.staging ? '' : 'http://localhost:8000')
 	const endpoint = !options.internal
 		? path
 		: path.indexOf('/') === 0

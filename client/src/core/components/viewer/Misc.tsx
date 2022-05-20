@@ -30,7 +30,7 @@ import Helmet from 'react-helmet'
 import MediaQuery from 'react-responsive'
 import { SizeMe } from 'react-sizeme'
 import FInput from '../FInput'
-import { Section } from './ComponentsViewer'
+import { Next, Section } from './ComponentsViewer'
 
 // @ts-ignore
 const ChunkLoadErrorTest = React.lazy(() => {
@@ -1066,6 +1066,12 @@ config.injectScript(
 								</div>
 							</Section>
 						)}
+						<Next
+							backName='Inputs'
+							backLink='inputs'
+							name='Backend'
+							link='backend/features'
+						/>
 					</div>
 				)}
 			</MediaQuery>
