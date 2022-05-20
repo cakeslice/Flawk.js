@@ -27,15 +27,7 @@ The Frontend and Backend can be used in isolation but to get the most out of thi
 
 &nbsp;
 
----
-
-&nbsp;
-
 ## ✨ Documentation and Examples: [**flawk.cakeslice.dev**](https://flawk.cakeslice.dev)
-
-&nbsp;
-
----
 
 &nbsp;
 
@@ -108,10 +100,6 @@ The Frontend and Backend can be used in isolation but to get the most out of thi
 
 &nbsp;
 
----
-
-&nbsp;
-
 ## 💾 Running the project
 
 - Clone the repo
@@ -138,17 +126,9 @@ The Frontend and Backend can be used in isolation but to get the most out of thi
 
 &nbsp;
 
----
-
-&nbsp;
-
 ## 📔 Getting started
 
 - Work in progress
-
-&nbsp;
-
----
 
 &nbsp;
 
