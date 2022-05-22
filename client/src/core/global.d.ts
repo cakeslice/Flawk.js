@@ -10,8 +10,6 @@ import { ToastContentProps } from 'react-toastify'
 import { UnityContext } from 'react-unity-webgl'
 import { Socket } from 'socket.io-client'
 
-type StorageFallback = Pick<Storage, 'clear' | 'getItem' | 'setItem' | 'removeItem'>
-
 interface History {
 	location: {
 		pathname: string
@@ -75,14 +73,12 @@ declare global {
 		  }
 		| undefined
 	var gotConsent: () => Promise<void>
-	var storage:
-		| StorageFallback
-		| {
-				getItem: (key: string) => Promise<string | null>
-				setItem: (key: string, value: string) => Promise<void>
-				removeItem: (key: string) => Promise<void>
-				clear: () => Promise<void>
-		  }
+	var storage: {
+		getItem: (key: string) => Promise<string | null>
+		setItem: (key: string, value: string) => Promise<void>
+		removeItem: (key: string) => Promise<void>
+		clear: () => Promise<void>
+	}
 	var socket: Socket
 	var socketClientID: string | undefined
 	var serviceWorker: ServiceWorkerRegistration | undefined

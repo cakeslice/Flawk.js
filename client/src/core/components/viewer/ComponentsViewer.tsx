@@ -50,8 +50,8 @@ export default class ComponentsViewer extends Component {
 		horizontalDashboard: false,
 	}
 
-	componentDidMount() {
-		if (global.storage.getItem('horizontalDashboard') === 'true')
+	async componentDidMount() {
+		if ((await global.storage.getItem('horizontalDashboard')) === 'true')
 			this.setState({ horizontalDashboard: true })
 	}
 
@@ -327,8 +327,8 @@ export default class ComponentsViewer extends Component {
 						routes={routes}
 						pageProps={{
 							horizontalDashboard: this.state.horizontalDashboard,
-							toggleDashboardLayout: () => {
-								global.storage.setItem(
+							toggleDashboardLayout: async () => {
+								await global.storage.setItem(
 									'horizontalDashboard',
 									!this.state.horizontalDashboard ? 'true' : 'false'
 								)

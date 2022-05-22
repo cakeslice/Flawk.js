@@ -17,7 +17,7 @@ import navigation from 'core/functions/navigation'
 import styles from 'core/styles'
 import { Lang } from 'flawk-types'
 import { CookieStorage, isSupported, MemoryStorage } from 'local-storage-fallback'
-import React, { Suspense, useCallback, useState } from 'react'
+import React, { Component, Suspense, useCallback, useState } from 'react'
 import { ErrorBoundary, FallbackProps } from 'react-error-boundary'
 import GitInfo from 'react-git-info/macro'
 import { Helmet } from 'react-helmet'
@@ -58,65 +58,92 @@ if (Capacitor.isNativePlatform()) {
 	storage = capacitorStorage
 } else if (isSupported('localStorage')) {
 	// use localStorage
+	// @ts-ignore
 	storage = window.localStorage
 } else if (isSupported('cookieStorage')) {
 	// use cookies
+	// @ts-ignore
 	storage = new CookieStorage()
 } else if (isSupported('sessionStorage')) {
 	// use sessionStorage
+	// @ts-ignore
 	storage = window.sessionStorage
 } else {
 	// use memory
+	// @ts-ignore
 	storage = new MemoryStorage()
 }
 global.storage = storage
 
 setTimeout(() => {
-	// After 10 seconds we can assume the app is loading correctly so we set alreadyTriedReload to false again
-	global.storage.setItem('alreadyTriedReload', 'false')
+	void (async function () {
+		// After 10 seconds we can assume the app is loading correctly so we set alreadyTriedReload to false again
+		await global.storage.setItem('alreadyTriedReload', 'false')
+	})()
 }, 10000)
-function ErrorFallback({ error }: FallbackProps) {
-	const alreadyTriedReload = global.storage.getItem('alreadyTriedReload')
-	const chunkFailedMessage = /Loading chunk [\d]+ failed/
 
-	if (
-		!Capacitor.isNativePlatform() &&
-		alreadyTriedReload !== 'true' &&
-		error?.message &&
-		chunkFailedMessage.test(error.message)
-	) {
-		global.storage.setItem('alreadyTriedReload', 'true')
-		window.location.reload()
+const chunkFailedMessage = /Loading chunk [\d]+ failed/
+class ErrorFallback extends Component<FallbackProps> {
+	state = {
+		alreadyTriedReload: 'false',
+	}
 
-		return <></>
-	} else {
-		global.storage.setItem('alreadyTriedReload', 'false')
-		return (
-			<div
-				className='flex-col items-center'
-				style={{
-					width: '100vw',
-					height: '100vh',
-					padding: 15,
-					paddingTop: 45,
-					textAlign: 'center',
-				}}
-			>
-				<h3 style={{ marginBottom: 45 }}>{config.text('common.reactError')}</h3>
-				<button
-					style={{ marginBottom: 40 }}
-					type='button'
-					onClick={() => window.location.reload()}
+	async componentDidMount() {
+		const alreadyTriedReload = await global.storage.getItem('alreadyTriedReload')
+
+		if (
+			!Capacitor.isNativePlatform() &&
+			alreadyTriedReload !== 'true' &&
+			this.props.error?.message &&
+			chunkFailedMessage.test(this.props.error.message)
+		) {
+			await global.storage.setItem('alreadyTriedReload', 'true')
+			window.location.reload()
+		} else {
+			await global.storage.setItem('alreadyTriedReload', 'false')
+		}
+
+		this.setState({ alreadyTriedReload: alreadyTriedReload })
+	}
+
+	render() {
+		if (
+			!Capacitor.isNativePlatform() &&
+			this.state.alreadyTriedReload !== 'true' &&
+			this.props.error?.message &&
+			chunkFailedMessage.test(this.props.error.message)
+		) {
+			return <></>
+		} else {
+			return (
+				<div
+					className='flex-col items-center'
+					style={{
+						width: '100vw',
+						height: '100vh',
+						padding: 15,
+						paddingTop: 45,
+						textAlign: 'center',
+					}}
 				>
-					<a style={{ fontWeight: 'bold', fontSize: 18 }}>
-						{config.text('common.reactErrorTry')}
-					</a>
-				</button>
-				{error && error.message && (
-					<div style={{ opacity: 0.5, fontSize: 13 }}>Error: {error.message}</div>
-				)}
-			</div>
-		)
+					<h3 style={{ marginBottom: 45 }}>{config.text('common.reactError')}</h3>
+					<button
+						style={{ marginBottom: 40 }}
+						type='button'
+						onClick={() => window.location.reload()}
+					>
+						<a style={{ fontWeight: 'bold', fontSize: 18 }}>
+							{config.text('common.reactErrorTry')}
+						</a>
+					</button>
+					{this.props.error && this.props.error.message && (
+						<div style={{ opacity: 0.5, fontSize: 13 }}>
+							Error: {this.props.error.message}
+						</div>
+					)}
+				</div>
+			)
+		}
 	}
 }
 
@@ -147,7 +174,7 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 				let storedNightMode
 				if (Capacitor.isNativePlatform())
 					storedNightMode = await global.storage.getItem('nightMode')
-				else storedNightMode = global.storage.getItem('nightMode')
+				else storedNightMode = await global.storage.getItem('nightMode')
 				const isDark =
 					window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)')
 				if (storedNightMode !== null) applyNightMode(storedNightMode === 'true', true)

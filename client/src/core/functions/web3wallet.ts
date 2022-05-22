@@ -62,11 +62,11 @@ export type Wallet = {
 	provider: ethers.providers.Web3Provider
 }
 
-export const clearWallet = () => {
-	global.storage.setItem('wallet_connected', 'false')
+export const clearWallet = async () => {
+	await global.storage.setItem('wallet_connected', 'false')
 }
 export const setupWallet = async (options: Options) => {
-	if (global.storage.getItem('wallet_connected') === 'true') {
+	if ((await global.storage.getItem('wallet_connected')) === 'true') {
 		return await connectWallet(options)
 	}
 	return undefined
@@ -123,7 +123,7 @@ export const connectWallet = async (options: Options) => {
 			options.callbacks.disconnected?.(error)
 		})
 
-		global.storage.setItem('wallet_connected', 'true')
+		await global.storage.setItem('wallet_connected', 'true')
 		return {
 			address: truncateEthAddress(address),
 			balance: Number(ethers.utils.formatEther(balance)).toFixed(2),

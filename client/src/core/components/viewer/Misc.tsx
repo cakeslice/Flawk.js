@@ -33,7 +33,7 @@ import FInput from '../FInput'
 import { Next, Section } from './ComponentsViewer'
 
 // @ts-ignore
-const ChunkLoadErrorTest = React.lazy(() => {
+const ReactErrorTest = React.lazy(() => {
 	const test = async () => {
 		return <></>
 	}
@@ -56,7 +56,7 @@ export default class Misc extends QueryParams<{
 
 		locallyStored: '',
 		newLocallyStored: '',
-		chunkLoadError: false,
+		reactErrorTest: false,
 		toggleTitle: false,
 
 		//
@@ -98,10 +98,10 @@ export default class Misc extends QueryParams<{
 
 		//
 
-		let e = global.storage.getItem('locallyStored')
+		let e = await global.storage.getItem('locallyStored')
 		if (!e) {
 			e = 'Something'
-			global.storage.setItem('locallyStored', e)
+			await global.storage.setItem('locallyStored', e)
 		}
 		this.setState({ locallyStored: e, newLocallyStored: e })
 	}
@@ -238,12 +238,13 @@ export default class ComponentWithParams extends QueryParams<{
 							})}
 						</Section>
 						<Section
-							code={`global.storage.setItem(
+							code={`await global.storage.setItem(
 	'example',
 	'Hello!'
 )
 
-alert(global.storage.getItem('example')) // Hello!
+const stored = await global.storage.getItem('example')
+alert(stored) // Hello!
 `}
 							description={
 								<>
@@ -277,8 +278,8 @@ alert(global.storage.getItem('example')) // Hello!
 									}}
 								/>
 								<FButton
-									onClick={() => {
-										global.storage.setItem(
+									onClick={async () => {
+										await global.storage.setItem(
 											'locallyStored',
 											this.state.newLocallyStored
 										)
@@ -646,7 +647,7 @@ import { SizeMe } from 'react-sizeme'
 							title='Error Handling'
 						>
 							<div className='wrapMargin flex flex-wrap justify-start'>
-								{this.state.chunkLoadError && <ChunkLoadErrorTest />}
+								{this.state.reactErrorTest && <ReactErrorTest />}
 								<FButton
 									onClick={() => {
 										// @ts-ignore

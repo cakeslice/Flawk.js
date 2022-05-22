@@ -469,12 +469,12 @@ const growExample = {
 								description={
 									<>
 										To supply <m>data</m> to the table, use <code>data</code>{' '}
-										prop to which expects an array of objects.
+										prop which expects an array of objects.
 										<br />
 										To define the <m>table columns</m>, use <code>columns</code>{' '}
-										prop. Each column has a <code>name</code> for the{' '}
-										{"table's"} header and a <code>selector</code> which maps a
-										property of each data object to the column.
+										prop. Each column has a <code>name</code> for the table
+										header and a <code>selector</code> which maps a property of
+										each data object to the column.
 										<sp />
 										Use <code>keySelector</code> prop to define a{' '}
 										<m>main key</m> found in the data array. This key needs to
