@@ -459,7 +459,8 @@ export default class FButton extends TrackedComponent<Props> {
 								}}
 							>
 								{this.props.href ? (
-									this.props.href.includes('http') ? (
+									this.props.href.includes('http') ||
+									this.props.href.includes('mailto') ? (
 										<a
 											className='f-button'
 											href={this.props.href}

@@ -657,6 +657,14 @@ kbd {
 		transform: translatey(10px);
 	}
 }
+@keyframes float-small-opposite {
+	0% {
+		transform: translatey(5px);
+	}
+	100% {
+		transform: translatey(-5px);
+	}
+}
 
 // Extra
 
