@@ -470,6 +470,9 @@ export default class FButton extends TrackedComponent<Props> {
 													? 'noreferrer'
 													: undefined
 											}
+											style={{
+												textDecoration: 'none',
+											}}
 											{...cssStyle}
 										>
 											{this.props.children}
@@ -484,6 +487,9 @@ export default class FButton extends TrackedComponent<Props> {
 													? 'noreferrer'
 													: undefined
 											}
+											style={{
+												textDecoration: 'none',
+											}}
 											{...cssStyle}
 										>
 											{this.props.children}
