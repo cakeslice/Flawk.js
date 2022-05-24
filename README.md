@@ -23,10 +23,6 @@
 
 &nbsp;
 
-The Frontend and Backend can be used in isolation but to get the most out of this project you should use it for **full-stack** development
-
-&nbsp;
-
 ## ✨ Documentation and Examples: [**flawk.cakeslice.dev**](https://flawk.cakeslice.dev)
 
 &nbsp;
@@ -73,7 +69,6 @@ The Frontend and Backend can be used in isolation but to get the most out of thi
     - [Stripe](https://stripe.com) checkout
   - TypeScript interface generation for Mongoose schemas
   - Automatic OpenAPI generation and validation using types:
-
     ```ts
     const Login = {
       call: "/client/login",
@@ -82,13 +77,6 @@ The Frontend and Backend can be used in isolation but to get the most out of thi
       body: {} as {
         email: string;
         password: string;
-      },
-      responses: {
-        _200: {
-          body: {} as {
-            token: string;
-          },
-        },
       },
     };
     router.postAsync(Login.call, async (req, res) => {

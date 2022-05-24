@@ -9,10 +9,6 @@
 
 &nbsp;
 
-The Frontend and Backend can be used in isolation but to get the most out of this project you should use it for **full-stack** development
-
-&nbsp;
-
 ---
 
 &nbsp;
