@@ -254,7 +254,7 @@ const styles: Styles & { colors: Colors; gradients: Gradients } = {
 	card: {
 		width: 'fit-content',
 		boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.05), 0 6px 20px 0 rgba(0, 0, 0, 0.05)',
-		//borderStyle: 'solid',
+		borderStyle: 'solid',
 		borderWidth: 1,
 		padding: 20,
 		borderRadius: 10,

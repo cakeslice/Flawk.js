@@ -13,7 +13,70 @@
 
 &nbsp;
 
-## 💾 Running the project
+## 🚀 Features
+
+- Free and open-source with **MIT license**
+- **TypeScript** based
+- Already configured with **best pratices**:
+  - Linting/formatting with ESLint and Prettier
+  - Testing with Jest and Cypress
+  - Continuous Integration with CircleCI
+  - Building and deployment with Docker
+  - Error monitoring with [Sentry](https://sentry.io)
+- Optimized **npm scripts** for development, building, testing and deploying
+- Deploy easily to **[CapRover](https://caprover.com/)** with 1-click
+
+&nbsp;
+
+- ### 🖥️ Frontend: _/client_
+
+  - Built with **create-react-app**
+  - Style and customize **25+** built-in components with consistency
+  - Seamless backend integration
+  - Build for iOS and Android with [Capacitor](https://capacitorjs.com)
+  - Light/Dark mode support across the board
+  - Easily setup third-party services:
+    - Google Analytics
+    - Google Ads
+    - Google Recaptcha
+    - [Stripe](https://stripe.com) checkout
+
+- ### 🗄️ Backend: _/server_
+
+  - Built with **express** and **mongoose**
+  - Built-in security, encryption, validation and compression
+  - Easy authentication and permissions
+  - Websocket support
+  - E-mail, SMS and push notifications
+  - Easily setup third-party services:
+    - S3 storage
+    - SMTP E-mail
+    - [Logtail](https://logtail.com)
+    - Google Recaptcha
+    - [Vonage](https://www.vonage.com) SMS
+    - [Stripe](https://stripe.com) checkout
+  - TypeScript interface generation for Mongoose schemas
+  - Automatic OpenAPI generation and validation using types:
+    ```ts
+    const Login = {
+      call: "/client/login",
+      method: "post",
+      description: "Login a user",
+      body: {} as {
+        email: string;
+        password: string;
+      },
+    };
+    router.postAsync(Login.call, async (req, res) => {
+      const body: typeof Login.body = req.body;
+
+      //...
+    });
+    ```
+
+&nbsp;
+
+## 💾 Setup
 
 - Clone the [repo](https://github.com/cakeslice/Flawk.js)
 

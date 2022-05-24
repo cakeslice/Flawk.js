@@ -27,7 +27,7 @@
 
 &nbsp;
 
-## 🚀 Project Features
+## 🚀 Features
 
 - Free and open-source with **MIT license**
 - **TypeScript** based
@@ -88,7 +88,7 @@
 
 &nbsp;
 
-## 💾 Running the project
+## 💾 Setup
 
 - Clone the repo
 

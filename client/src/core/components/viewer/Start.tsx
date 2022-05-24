@@ -14,8 +14,8 @@ import MediaQuery from 'react-responsive'
 import remarkGfm from 'remark-gfm'
 import { Next, Section } from './ComponentsViewer'
 import mod from './ComponentsViewer.module.scss'
-// @ts-ignore
-import mdPath from './Start.md'
+/*// @ts-ignore
+import mdPath from './Start.md'*/
 
 // eslint-disable-next-line
 type Props = {}
@@ -33,7 +33,11 @@ export default class Start extends Component<Props> {
 
 		const rawFile = new XMLHttpRequest()
 		// eslint-disable-next-line
-		rawFile.open('GET', mdPath, false)
+		rawFile.open(
+			'GET',
+			'https://raw.githubusercontent.com/cakeslice/Flawk.js/main/client/src/core/components/viewer/Start.md',
+			false
+		)
 		rawFile.onreadystatechange = () => {
 			if (rawFile.readyState === 4) {
 				if (rawFile.status === 200 || rawFile.status === 0) {

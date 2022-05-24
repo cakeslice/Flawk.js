@@ -329,6 +329,7 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 				)
 				styles.colors.lineColor = styles.colors.lineColorNight
 				styles.card.background = styles.colors.whiteNight
+				styles.card.borderColor = styles.colors.borderColor
 				styles.outlineCard.borderColor = styles.colors.borderColor
 			} else {
 				changeBackground(styles.colors.backgroundDay)
@@ -343,7 +344,7 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 				)
 				styles.colors.lineColor = styles.colors.lineColorDay
 				styles.card.background = styles.colors.whiteDay
-				styles.card.borderColor = styles.colors.borderColor
+				styles.card.borderColor = 'transparent'
 				styles.outlineCard.borderColor = styles.colors.borderColor
 			}
 		}
