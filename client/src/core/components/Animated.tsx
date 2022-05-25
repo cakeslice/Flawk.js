@@ -56,6 +56,7 @@ type Props = {
 	| {
 			controlled?: undefined
 			staggered?: boolean
+			staggeredStyle?: React.CSSProperties
 			staggerChildren?: (variants: Variants | Variants[]) => React.ReactNode
 	  }
 )
@@ -321,7 +322,11 @@ export default class Animated extends TrackedComponent<Props> {
 								)) ||
 						  (props.staggered && childrenArray && childrenArray.map
 								? childrenArray.map((e, i) => (
-										<motion.div variants={staggeredItem} key={i}>
+										<motion.div
+											style={props.staggeredStyle}
+											variants={staggeredItem}
+											key={i}
+										>
 											{e}
 										</motion.div>
 								  ))
@@ -385,7 +390,10 @@ export default class Animated extends TrackedComponent<Props> {
 								  (props.staggered && childrenArray && childrenArray.map
 										? childrenArray.map((e, i) => (
 												<motion.div
-													style={{ height: 'auto' }}
+													style={{
+														height: 'auto',
+														...props.staggeredStyle,
+													}}
 													variants={staggeredItem}
 													key={i}
 												>

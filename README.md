@@ -108,9 +108,6 @@
 - Note: **VSCode** is highly recommended and the following extensions should be installed:
   - [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
   - [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
-  - [npm](https://marketplace.visualstudio.com/items?itemName=eg2.vscode-npm-script)
-  - [Jest](https://marketplace.visualstudio.com/items?itemName=Orta.vscode-jest)
-  - [DotENV](https://marketplace.visualstudio.com/items?itemName=mikestead.dotenv)
 
 &nbsp;
 
