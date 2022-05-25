@@ -426,9 +426,9 @@ export default class FButton extends TrackedComponent<Props> {
 			if (this.props.eventOverride === 'active')
 				// @ts-ignore
 				finalStyle = { ...finalStyle, ...finalStyle[':hover'] }
-			// @ts-ignore
 			finalStyle = {
 				...finalStyle,
+				// @ts-ignore
 				...finalStyle[':' + this.props.eventOverride],
 			}
 		}
