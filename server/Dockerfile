@@ -19,8 +19,7 @@
 #         - Set app env var DD_TRACE_DEBUG=true to check for issues
 #     - Use the following dashboards: Docker / System Metrics
 #     - Add desired alerts
-# [Digital Ocean] 
-#     - Add default monitoring if not enabled: sudo apt-get purge do-agent
+# [Digital Ocean]
 #     - Add alerts for CPU/Memory/Disk usage
 
 # Access CapRover: SERVER_IP:3000 -> Password captain42
@@ -35,7 +34,7 @@
 # ----- Simple flow
 # Set DNS A records
 #     - *.yourapp.mydomain.com
-#     - yourapp.domain.com (optional, for the main web app)
+#     - yourapp.mydomain.com (optional, for the main web app)
 
 # ----- CloudFlare flow
 # Make sure CloudFlare SSL is in Full (strict) mode
@@ -46,8 +45,7 @@
 #     - www (no proxy)
 # In CapRover panel set new root (mydomain.com) and enable HTTPS
 # Don't force HTTPS on that panel!
-# Now access using captain.mydomain.com
-# Create a NGINX-Redirect app from one-click named www that redirects to your root domain (and force SSL)
+# Create a NGINX-Redirect app from one-click named www that redirects to your root domain
 #		- Enable and force HTTPS
 #     - This needs to be done before Docker Registry setup
 # In CloudFlare turn on the proxy for all entries

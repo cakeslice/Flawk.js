@@ -54,4 +54,4 @@ sudo chmod +x ubuntu_setup.sh
 sudo ./ubuntu_setup.sh
 
 nano /etc/apt/apt.conf.d/50unattended-upgrades
-# Comment all except "${distro_id}:${distro_codename}-security"
+# Comment all except "${distro_id}:${distro_codename}" and "${distro_id}:${distro_codename}-security"
