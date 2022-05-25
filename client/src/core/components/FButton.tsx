@@ -38,6 +38,7 @@ const scrollToErrors = (errors: FormikErrors<unknown>, thisElement: HTMLElement 
 export type Appearance = 'primary' | 'secondary' | string // We need to support string for custom appearances declared in styles.buttonAppearances
 type Props = {
 	style?: React.CSSProperties & GlamorProps & { ':checkbox'?: React.CSSProperties & GlamorProps }
+	className?: string
 	children?: React.ReactNode
 	appearance?: Appearance
 	noInvalidLabel?: boolean
@@ -426,7 +427,10 @@ export default class FButton extends TrackedComponent<Props> {
 				// @ts-ignore
 				finalStyle = { ...finalStyle, ...finalStyle[':hover'] }
 			// @ts-ignore
-			finalStyle = { ...finalStyle, ...finalStyle[':' + this.props.eventOverride] }
+			finalStyle = {
+				...finalStyle,
+				...finalStyle[':' + this.props.eventOverride],
+			}
 		}
 
 		const cssDesktop = css({
@@ -447,6 +451,10 @@ export default class FButton extends TrackedComponent<Props> {
 				{(desktop) => {
 					const cssStyle = desktop ? cssDesktop : cssMobile
 
+					const className = this.props.className
+						? 'f-button ' + this.props.className
+						: 'f-button'
+
 					return (
 						<div
 							data-nosnippet
@@ -462,7 +470,7 @@ export default class FButton extends TrackedComponent<Props> {
 									this.props.href.includes('http') ||
 									this.props.href.includes('mailto') ? (
 										<a
-											className='f-button'
+											className={className}
 											href={this.props.href}
 											target={this.props.target}
 											rel={
@@ -479,7 +487,7 @@ export default class FButton extends TrackedComponent<Props> {
 										</a>
 									) : (
 										<Link
-											className='f-button'
+											className={className}
 											to={this.props.href}
 											target={this.props.target}
 											rel={
@@ -498,7 +506,7 @@ export default class FButton extends TrackedComponent<Props> {
 								) : (
 									<button
 										ref={this.setButtonRef}
-										className='f-button'
+										className={className}
 										{...cssStyle}
 										onClick={(e) => {
 											if (this.props.isLoading || this.props.isDisabled)
@@ -616,14 +624,14 @@ export default class FButton extends TrackedComponent<Props> {
 								)}
 								{invalidType === 'right' && name && !this.props.noInvalidLabel && (
 									<div style={{ minHeight: 26 }}>
-										{invalid && <div style={{ minHeight: 5 }}></div>}
+										{invalid && <div style={{ minHeight: 5 }} />}
 										{invalid && <p style={invalidTextStyle}>{invalid}</p>}
 									</div>
 								)}
 							</div>
 							{invalidType === 'bottom' && name && !this.props.noInvalidLabel && (
 								<div style={{ minHeight: 26 }}>
-									{invalid && <div style={{ minHeight: 5 }}></div>}
+									{invalid && <div style={{ minHeight: 5 }} />}
 									{invalid && <p style={invalidTextStyle}>{invalid}</p>}
 								</div>
 							)}
