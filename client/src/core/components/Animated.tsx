@@ -14,6 +14,7 @@ import TrackedComponent from './TrackedComponent'
 
 export type Effect =
 	| 'fade'
+	| 'flip'
 	| 'up'
 	| 'left'
 	| 'right'
@@ -116,6 +117,12 @@ export default class Animated extends TrackedComponent<Props> {
 					inAndOut = true
 					inAnim.opacity = 1
 					outAnim.opacity = 0
+					break
+				case 'flip':
+					keepMounted = false
+					inAndOut = true
+					inAnim.rotateY = 0
+					outAnim.rotateY = 90
 					break
 				case 'up':
 					inAndOut = true
