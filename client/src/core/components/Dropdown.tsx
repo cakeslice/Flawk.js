@@ -19,6 +19,7 @@ import Select, {
 	DropdownIndicatorProps,
 	StylesConfig,
 } from 'react-select'
+import CreatableSelect from 'react-select/creatable'
 
 const invalidTextStyle = {
 	letterSpacing: 0,
@@ -134,7 +135,17 @@ type Props = {
 			/** If true and isDisabled is true, skips 'disabled' styling */
 			simpleDisabled?: boolean
 	  }
-)
+) &
+	(
+		| {
+				creatable: true
+				onCreateOption: (value: string | undefined) => Promise<void>
+		  }
+		| {
+				creatable?: undefined
+				onCreateOption?: undefined
+		  }
+	)
 export default class Dropdown extends TrackedComponent<Props> {
 	trackedName = 'Dropdown'
 	shouldComponentUpdate(nextProps: Props, nextState: typeof this.state) {
@@ -654,6 +665,8 @@ export default class Dropdown extends TrackedComponent<Props> {
 			}),
 		}
 
+		const Sel = this.props.creatable ? CreatableSelect : Select
+
 		return (
 			<MediaQuery minWidth={config.mobileWidthTrigger}>
 				{(desktop) => {
@@ -741,7 +754,7 @@ export default class Dropdown extends TrackedComponent<Props> {
 							)}
 							{label && <div style={{ minHeight: 5 }}></div>}
 							<div style={{ display: 'flex' }}>
-								<Select
+								<Sel
 									// Custom props (access with props.selectProps)
 									// @ts-ignore
 									dropdownIndicator={
@@ -763,6 +776,7 @@ export default class Dropdown extends TrackedComponent<Props> {
 											  )
 											: undefined
 									}
+									onCreateOption={this.props.onCreateOption}
 									isClearable={this.props.erasable}
 									isDisabled={this.props.isDisabled}
 									menuPlacement={this.props.menuPlacement}
@@ -867,7 +881,7 @@ export default class Dropdown extends TrackedComponent<Props> {
 											: undefined
 									}
 									options={this.state.loadedOptions || this.props.options}
-								></Select>
+								></Sel>
 								{invalidType === 'right' && name && (
 									<div style={{ minWidth: 16, display: 'flex' }}>
 										{!this.props.isDisabled &&
