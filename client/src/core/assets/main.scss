@@ -439,6 +439,10 @@ kbd {
 	display: grid;
 	gap: 15px;
 }
+.grid-wrap {
+	grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+	justify-items: center;
+}
 .grid-cols-1 {
 	grid-template-columns: repeat(1, minmax(0, 1fr));
 }
