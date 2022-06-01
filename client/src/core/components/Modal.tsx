@@ -176,6 +176,7 @@ export default class Modal extends TrackedComponent<Props> {
 					display: 'flex',
 					flexDirection: 'column',
 					justifyContent: 'flex-start',
+					flexGrow: 1,
 					...(styles.modalContentStyle && styles.modalContentStyle),
 					...(this.props.contentStyle && this.props.contentStyle),
 				}}
@@ -329,6 +330,14 @@ export default class Modal extends TrackedComponent<Props> {
 													<div
 														style={{
 															...styles.card,
+															...(big && {
+																borderLeft: 'none',
+																borderBottom: 'none',
+																borderTop: 'none',
+																...(!desktop && {
+																	borderRight: 'none',
+																}),
+															}),
 															...{
 																borderRadius: big ? 0 : 5,
 																width: styles.modalWidth || 500,
@@ -389,7 +398,7 @@ class ModalHeader extends Component<{
 }> {
 	render() {
 		return (
-			<>
+			<div>
 				<div
 					className='flex justify-between items-center'
 					style={{
@@ -461,7 +470,7 @@ class ModalHeader extends Component<{
 						}}
 					></div>
 				)}
-			</>
+			</div>
 		)
 	}
 }

@@ -36,11 +36,7 @@ export default class TextFileReader extends TrackedComponent<Props> {
 				if (rawFile.status === 200 || rawFile.status === 0) {
 					const allText = rawFile.responseText
 					this.setState({
-						text: allText
-							.split('\n')
-							.map((item) =>
-								item.replace(/\t/g, '\u00a0\u00a0\u00a0').replace(/\s/g, '\u00a0')
-							),
+						text: allText,
 					})
 				}
 			}
@@ -55,17 +51,18 @@ export default class TextFileReader extends TrackedComponent<Props> {
 
 	render() {
 		return (
-			<div>
-				<span style={this.props.style} className={this.props.className}>
-					{this.state.text.map((item, key) => {
-						return (
-							<span key={key}>
-								{item}
-								<br />
-							</span>
-						)
-					})}
-				</span>
+			<div style={this.props.style} className={this.props.className}>
+				<pre
+					style={{
+						tabSize: 3,
+						margin: 0,
+						padding: 0,
+						color: 'inherit',
+						background: 'transparent',
+					}}
+				>
+					{this.state.text}
+				</pre>
 			</div>
 		)
 	}
