@@ -164,8 +164,6 @@ export default class Modal extends TrackedComponent<Props> {
 		const modalPadding = styles.modalPadding || 20
 		const modalWrapper: React.CSSProperties = {
 			padding: modalPadding,
-			paddingTop: modalPadding,
-			paddingBottom: modalPadding,
 			overflow: 'auto',
 		}
 
@@ -217,9 +215,15 @@ export default class Modal extends TrackedComponent<Props> {
 				<div
 					className={styles.modalButtonWrap ? 'wrapMargin' : undefined}
 					style={{
-						padding: this.props.big ? modalPadding : modalPadding / 2,
-						paddingBottom: this.props.big ? modalPadding : modalPadding / 2,
-						paddingTop: this.props.big ? modalPadding : modalPadding / 2,
+						padding:
+							(this.props.big ? modalPadding : modalPadding / 2) +
+							'px ' +
+							(this.props.big ? modalPadding : modalPadding / 2) +
+							'px ' +
+							(this.props.big ? modalPadding : modalPadding / 2) +
+							'px ' +
+							(this.props.big ? modalPadding : modalPadding / 2) +
+							'px',
 						display: 'flex',
 						flexWrap: 'wrap',
 						justifyContent: 'flex-end',
@@ -250,48 +254,50 @@ export default class Modal extends TrackedComponent<Props> {
 
 		return (
 			<Portal node={document.getElementById('portals')}>
-				<div
-					style={{
-						position: 'fixed',
-						left: 0,
-						top: 0,
-						right: 0,
-						bottom: 0,
-						zIndex: 35,
-						transition: 'background 150ms',
-						...(isOpen === true
-							? {
-									backdropFilter: 'blur(2px)',
-									background:
-										styles.modalBackground ||
-										config.replaceAlpha(
-											global.nightMode
-												? 'rgba(40,40,40,1)'
-												: 'rgba(180,180,180,1)',
-											global.nightMode ? 0.5 : 0.25
-										),
-							  }
-							: {
-									pointerEvents: 'none',
-							  }),
-					}}
-				>
-					<Animated
-						trackedName='Modal'
-						className='scrollTarget'
-						controlled={isOpen}
-						animateOffscreen
-						style={{
-							width: '100%',
-							height: '100%',
-						}}
-						distance={25}
-						effects={['fade', big ? 'left' : 'up']}
-						duration={0.25}
-					>
-						<MediaQuery minWidth={config.mobileWidthTrigger}>
-							{(desktop) => {
-								return (
+				<MediaQuery minWidth={config.mobileWidthTrigger}>
+					{(desktop) => {
+						return (
+							<div
+								style={{
+									position: 'fixed',
+									left: 0,
+									top: 0,
+									right: 0,
+									bottom: 0,
+									zIndex: 35,
+									transition: 'background 150ms',
+									...(isOpen === true
+										? {
+												...((!big || desktop) && {
+													backdropFilter: 'blur(2px)',
+												}),
+												background:
+													styles.modalBackground ||
+													config.replaceAlpha(
+														global.nightMode
+															? 'rgba(40,40,40,1)'
+															: 'rgba(180,180,180,1)',
+														global.nightMode ? 0.5 : 0.25
+													),
+										  }
+										: {
+												pointerEvents: 'none',
+										  }),
+								}}
+							>
+								<Animated
+									trackedName='Modal'
+									className='scrollTarget'
+									controlled={isOpen}
+									animateOffscreen
+									style={{
+										width: '100%',
+										height: '100%',
+									}}
+									distance={25}
+									effects={['fade', big ? 'left' : 'up']}
+									duration={0.25}
+								>
 									<FocusLock>
 										<div
 											style={{
@@ -380,11 +386,11 @@ export default class Modal extends TrackedComponent<Props> {
 											</div>
 										</div>
 									</FocusLock>
-								)
-							}}
-						</MediaQuery>
-					</Animated>
-				</div>
+								</Animated>
+							</div>
+						)
+					}}
+				</MediaQuery>
 			</Portal>
 		)
 	}
@@ -402,13 +408,21 @@ class ModalHeader extends Component<{
 				<div
 					className='flex justify-between items-center'
 					style={{
-						padding: this.props.big
-							? this.props.modalPadding
-							: this.props.modalPadding / 2,
-						paddingRight: this.props.big
-							? this.props.modalPadding
-							: this.props.modalPadding / 2,
-						paddingLeft: this.props.modalPadding,
+						padding:
+							(this.props.big
+								? this.props.modalPadding
+								: this.props.modalPadding / 2) +
+							'px ' +
+							(this.props.big
+								? this.props.modalPadding
+								: this.props.modalPadding / 2) +
+							'px ' +
+							(this.props.big
+								? this.props.modalPadding
+								: this.props.modalPadding / 2) +
+							'px ' +
+							this.props.modalPadding +
+							'px',
 						...styles.modalHeaderStyle,
 						...this.props.headerStyle,
 					}}
@@ -417,6 +431,7 @@ class ModalHeader extends Component<{
 						style={{
 							...{
 								letterSpacing: 0.4,
+								width: '90%',
 								maxWidth: '90%',
 								...(styles.modalHeaderStyle && styles.modalHeaderStyle.textStyle),
 								...(this.props.headerStyle && this.props.headerStyle.textStyle),
