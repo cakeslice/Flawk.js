@@ -50,7 +50,3 @@ declare module 'flawk-types' {
 		changed: boolean
 	}
 }
-
-declare module '@toolz/use-constructor' {
-	export function useConstructor(f: () => void): void
-}

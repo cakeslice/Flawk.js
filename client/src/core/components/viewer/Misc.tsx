@@ -632,7 +632,7 @@ import { SizeMe } from 'react-sizeme'
 									</a>{' '}
 									for error tracking.
 									<br />
-									Use the env var <code>REACT_APP_SENTRY_KEY</code> to set your{' '}
+									Use the env var <code>VITE_SENTRY_KEY</code> to set your{' '}
 									<m>Sentry</m> API key.
 									<sp />
 									If {"there's"} a critical <m>application error</m>, Flawk
@@ -838,7 +838,7 @@ unityEvents = [
 		fullscreen={this.state.unityFullscreen}
 		extension={'.unityweb'}
 		events={this.unityEvents}
-		buildPath={process.env.PUBLIC_URL + '/unity/Build'}
+		buildPath={'/unity/Build'}
 	/>
 </div>
 `}
@@ -914,7 +914,7 @@ unityEvents = [
 										onLoadingProgress={(progress) => {
 											this.setState({ unityProgress: progress })
 										}}
-										buildPath={process.env.PUBLIC_URL + '/unity/Build'}
+										buildPath={'/unity/Build'}
 									/>
 								</div>
 							</Section>

@@ -94,6 +94,7 @@ export default class Slider extends TrackedComponent<Props> {
 						/>
 					) : (
 						<RSlider
+							// @ts-ignore
 							handle={handleComponent}
 							trackStyle={{ backgroundColor: styles.colors.mainLight, height: 3 }}
 							railStyle={railStyle}

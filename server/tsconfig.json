@@ -19,6 +19,7 @@
 		"noImplicitThis": true,
 		"noImplicitOverride": true,
 		//
+		"types": ["jest"],
 		"outDir": "dist/",
 		"sourceMap": true
 	},

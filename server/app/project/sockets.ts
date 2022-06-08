@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { clientSocketNotification, socketNotification } from 'core/functions/sockets'
+import { clientSocketNotification, socketMessage, socketNotification } from 'core/functions/sockets'
 import { Socket } from 'socket.io'
 
 global.clientSockets.on('connection', (socket: Socket) => {
@@ -15,6 +15,10 @@ global.clientSockets.on('connection', (socket: Socket) => {
 			const identifier = socket._client.email || socket._client.id
 			clientSocketNotification(socket._client.id, 'Hello ' + identifier + '!')
 		} else socketNotification(socket.id, 'Hello there!')
+
+		socketMessage(socket.id, 'data_update', {
+			test: 'Hello World!',
+		})
 	})
 })
 

@@ -27,7 +27,7 @@
 		"- EXTRA SCRIPTS -": "-----------------------------",
 		"precommit": "npm-run-all --aggregate-output --parallel checkStaged",
 		"postinstall": "cd .. && git config core.hooksPath ./git-hooks && cd server",
-		"test": "cross-env JEST=true jest --coverage --runInBand",
+		"test": "del-cli ./coverage/* && cross-env JEST=true jest --coverage --runInBand",
 		"testCI": "cross-env JEST=true jest --bail --runInBand",
 		"prettierFix": "prettier --write ./app",
 		"prettierCI": "prettier --check ./",
@@ -162,7 +162,8 @@
 			"/dist/"
 		],
 		"collectCoverageFrom": [
-			"**/*.{js,jsx}",
+			"**/*.{js,jsx,ts,tsx}",
+			"!**/*.d.ts",
 			"!**/node_modules/**"
 		],
 		"testMatch": [
@@ -175,7 +176,7 @@
 			"<rootDir>/app/"
 		],
 		"setupFilesAfterEnv": [
-			"./app/core/setupTests.ts"
+			"<rootDir>/jest.setup.ts"
 		]
 	}
 }

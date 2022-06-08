@@ -9,10 +9,9 @@
 
 	<meta name="viewport" content="width=device-width, initial-scale=1" data-react-helmet="true" />
 
-	<link rel="sitemap" href="%PUBLIC_URL%/sitemap.xml" />
-
-	<link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-	<link rel="icon" href="%PUBLIC_URL%/favicon.svg" />
+	<link rel="sitemap" href="/sitemap.xml" />
+	<link rel="icon" href="/favicon.ico" />
+	<link rel="icon" href="/favicon.svg" />
 </head>
 
 <!-- Powered by Flawk: https://flawk.cakeslice.dev -->
@@ -65,6 +64,10 @@
 		}
 	</script>
 
+	<script>
+		window.global = {};
+	</script>
+	<script type="module" src="/src/index.tsx"></script>
 	<div id="root"></div>
 
 	<div id="portals-background"></div>

@@ -9,3 +9,5 @@ ios/*
 src/core/utils/serviceWorkerRegistration.js
 public/unity/*
 *.md
+vite.config.ts
+jest.setup.ts

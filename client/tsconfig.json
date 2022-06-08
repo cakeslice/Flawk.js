@@ -1,6 +1,6 @@
 {
 	"compilerOptions": {
-		"target": "es5",
+		"target": "esnext",
 		"allowJs": true,
 		"skipLibCheck": true,
 		"esModuleInterop": true,
@@ -19,6 +19,7 @@
 		"noImplicitThis": true,
 		//"noImplicitOverride": true // Disabled to avoid override in all React classes
 		//
+		"types": ["vite/client", "jest", "@types/testing-library__jest-dom", "@types/react"],
 		"allowSyntheticDefaultImports": true,
 		"lib": ["dom", "dom.iterable", "esnext"],
 		"noEmit": true,

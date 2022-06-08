@@ -9,13 +9,16 @@ import { post } from 'core/api'
 import config from 'core/config'
 import { Obj } from 'flawk-types'
 import { ChangeEvent } from 'react'
-try {
-	// eslint-disable-next-line
-	const toBlob = require('canvas-to-blob')
-	toBlob.init()
-} catch (err) {
-	config.logCatch(err as Error, true)
-}
+
+void (async function () {
+	try {
+		// @ts-ignore
+		const toBlob = await import('canvas-to-blob')
+		toBlob.init()
+	} catch (err) {
+		config.logCatch(err as Error, true)
+	}
+})()
 
 //
 

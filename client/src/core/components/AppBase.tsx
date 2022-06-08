@@ -8,6 +8,7 @@
 import { App } from '@capacitor/app'
 import { Capacitor } from '@capacitor/core'
 import { Storage } from '@capacitor/storage'
+// @ts-ignore
 import { useConstructor } from '@toolz/use-constructor'
 import 'abortcontroller-polyfill'
 import { get } from 'core/api'
@@ -161,7 +162,7 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 	const [build, setBuildNumber] = useState<string | undefined>(undefined)
 	const [cookie, setCookieNotice] = useState<string | undefined>(undefined)
 
-	// Should be on top of your function after state is declared
+	// ! Should be on top of your function after state is declared
 	useConstructor(() => {
 		console.log(
 			'\n%cPowered by Flawk: https://flawk.cakeslice.dev\n',

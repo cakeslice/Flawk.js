@@ -6,7 +6,6 @@
  */
 
 import { Capacitor } from '@capacitor/core'
-import { useConstructor } from '@toolz/use-constructor'
 import { post } from 'core/api'
 import flawk from 'core/assets/images/logo.svg'
 import Animated from 'core/components/Animated'
@@ -45,6 +44,19 @@ const Register = React.lazy(() => import('./pages/auth/Register'))
 //
 const Main = React.lazy(() => import('./pages/main/Main'))
 
+global.playNotificationSound = async () => {
+	/*
+	try {
+		// eslint-disable-next-line
+		const audio = new Audio(notificationSound)
+		await audio.play()
+	} catch (e) {
+		// In case audio is not allowed because user didn't interact yet
+		console.warn(e)
+	}
+	*/
+}
+
 export default function Router(): React.ReactNode {
 	const { structures, fetchingStructures, user, fetchingUser, authError } = useStoreSelector(
 		(state) => ({
@@ -57,29 +69,18 @@ export default function Router(): React.ReactNode {
 	)
 	const dispatch = useStoreDispatch()
 
-	useConstructor(() => {
-		if (config.websocketSupport && global.socket) global.socket.on('data_update', onUpdateData)
-
-		global.playNotificationSound = async () => {
-			/* try {
-				// eslint-disable-next-line
-				const audio = new Audio(notificationSound)
-				await audio.play()
-			} catch (e) {
-				// In case audio is not allowed because user didn't interact yet
-				console.warn(e)
-			} */
-		}
-	})
-
+	// This should only run once since 'dispatch' stays the same
 	useEffect(() => {
+		if (!config.prod && !config.staging) console.warn('Router.tsx useEffect: dispatch')
+
 		fetchStructures(dispatch)
 		fetchUser(dispatch)
-	}, [dispatch])
 
-	function onUpdateData() {
-		fetchUser(dispatch)
-	}
+		global.socket.on('data_update', (data: { test: string }) => {
+			console.warn('Socket data_update: ' + data.test)
+			fetchUser(dispatch)
+		})
+	}, [dispatch])
 
 	let permission = 1000
 	if (user) {

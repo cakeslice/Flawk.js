@@ -9,6 +9,7 @@
 import { SplashScreen } from '@capacitor/splash-screen'
 import { init as sentryInit, reactRouterV5Instrumentation } from '@sentry/react'
 import { BrowserTracing } from '@sentry/tracing/dist/browser'
+// @ts-ignore
 import { useConstructor } from '@toolz/use-constructor'
 import { get } from 'core/api'
 import config from 'core/config'
@@ -46,7 +47,7 @@ if (config.twitterPixelID) {
 
 //
 
-if (process.env.REACT_APP_STRIPE_KEY) import('@stripe/stripe-js')
+if (import.meta.env.VITE_STRIPE_KEY) import('@stripe/stripe-js')
 
 const gitHash = GitInfo().commit.shortHash
 
@@ -185,38 +186,7 @@ export default function RouterBase({ children }: { children: React.ReactNode }) 
 	global.addFlag = addFlag
 	global.routerHistory = routerHistory
 
-	useEffect(() => {
-		// @ts-ignore
-		const unblock = history.block((location, action) => {
-			if (global.unityContext && location.pathname !== history.location.pathname) {
-				/* const sure = window.confirm('Are you sure?')
-				if (sure) { */
-				void (async function () {
-					global.sendUnityEvent = undefined
-					const unityContext = global.unityContext
-					global.unityContext = undefined
-					try {
-						unityContext?.removeAllEventListeners()
-						await unityContext?.quitUnityInstance()
-					} catch (e) {
-						console.warn("Unity didn't exit cleanly: " + e)
-					}
-					// @ts-ignore
-					history.push(location)
-				})()
-				/* }
-				return sure */
-				return false
-			}
-			return true
-		})
-
-		return () => {
-			unblock()
-		}
-	}, [history])
-
-	// Should be on top of your function after state is declared
+	// ! Should be on top of your function after state is declared
 	useConstructor(() => {
 		void (async function () {
 			const buildEnv = config.prod ? 'production' : config.staging ? 'staging' : 'development'
@@ -504,6 +474,37 @@ export default function RouterBase({ children }: { children: React.ReactNode }) 
 			}, 1000)
 		}
 	})
+
+	useEffect(() => {
+		// @ts-ignore
+		const unblock = history.block((location, action) => {
+			if (global.unityContext && location.pathname !== history.location.pathname) {
+				/* const sure = window.confirm('Are you sure?')
+				if (sure) { */
+				void (async function () {
+					global.sendUnityEvent = undefined
+					const unityContext = global.unityContext
+					global.unityContext = undefined
+					try {
+						unityContext?.removeAllEventListeners()
+						await unityContext?.quitUnityInstance()
+					} catch (e) {
+						console.warn("Unity didn't exit cleanly: " + e)
+					}
+					// @ts-ignore
+					history.push(location)
+				})()
+				/* }
+				return sure */
+				return false
+			}
+			return true
+		})
+
+		return () => {
+			unblock()
+		}
+	}, [history])
 
 	useEffect(() => {
 		const unlisten = history.listen((location) => {

@@ -8,6 +8,21 @@
 import App from 'project/App'
 import React from 'react'
 import ReactDOM from 'react-dom'
+//import { createRoot } from 'react-dom/client'
+
+/*
+React 18 upgrade pending due to Typescript errors and React Router issues:
+	- https://stackoverflow.com/questions/62382324/react-typescript-this-jsx-tags-children-prop-expects-a-single-child-of-type
+	- https://stackoverflow.com/questions/72073276/
+
+Another issue is with @toolz/use-constructor which gets called multiple times. We need some workaround that ensures the "useConstructor" code runs once and before everything else.
+"useEffect" seems to work but has issues like dark mode being applied too late.
+
+const container = document.getElementById('root')
+const root = createRoot(container!)
+root.render(<App />)
+*/
+ReactDOM.render(<App></App>, document.getElementById('root'))
 
 // -------- Service worker code --------
 
@@ -30,18 +45,13 @@ const registerServiceWorker = async function () {
 	return worker
 }
 
-//
-
 const initServiceWorker = async () => {
 	const worker = await registerServiceWorker()
 
 	global.serviceWorker = worker
 }
-
-// ------------------------------------
-
 // Service worker for web push notifications, etc...
-// The service worker is in /public/worker.js
+// The service worker is located in /public/worker.js
 initServiceWorker()
 
-ReactDOM.render(<App></App>, document.getElementById('root'))
+// ------------------------------------

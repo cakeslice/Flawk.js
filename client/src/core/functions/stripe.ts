@@ -9,8 +9,8 @@ import { loadStripe, Stripe } from '@stripe/stripe-js'
 
 let stripe: Stripe | null
 const initStripe = async () => {
-	if (process.env.REACT_APP_STRIPE_KEY) {
-		if (!stripe) stripe = await loadStripe(process.env.REACT_APP_STRIPE_KEY)
+	if (import.meta.env.VITE_STRIPE_KEY) {
+		if (!stripe) stripe = await loadStripe(import.meta.env.VITE_STRIPE_KEY as string)
 	} else console.error('Stripe error: No Stripe key provided!')
 }
 export const redirectToCheckout = async (sessionId: string) => {

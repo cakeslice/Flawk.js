@@ -7,7 +7,7 @@
 
 import { Config } from 'core/config'
 
-const _backendURL = process.env.REACT_APP_BACKEND || ''
+const _backendURL = import.meta.env.VITE_BACKEND || ''
 const _noTokenRedirect = '/login'
 const _loginRedirect = '/dashboard'
 const _restrictedRoutes = ['/dashboard'] // Make sure to update robots.txt if changed

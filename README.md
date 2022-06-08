@@ -42,7 +42,7 @@
 
 - ### 🖥️ Frontend: _/client_
 
-  - Built with **create-react-app**
+  - Built with **React**, **[Vite](https://vitejs.dev)** and **React Router**
   - Style and customize **25+** built-in components with consistency
   - Seamless backend integration
   - Build for iOS and Android with [Capacitor](https://capacitorjs.com)

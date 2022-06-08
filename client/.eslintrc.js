@@ -6,18 +6,23 @@ module.exports = {
 		node: true,
 		jest: true,
 	},
-	parser: 'babel-eslint',
+	parser: '@babel/eslint-parser',
 	parserOptions: {
 		ecmaFeatures: {
 			jsx: true,
 		},
 		ecmaVersion: 2020,
 		sourceType: 'module',
+		requireConfigFile: false,
+		babelOptions: {
+			presets: ['@babel/preset-react'],
+		},
 	},
 	extends: [
 		'react-app',
 		'react-app/jest',
-		// Already includes: (no need to install)
+		// ** eslint-config-react-app already includes
+		// ** the following (no need to install):
 		// eslint-plugin-react
 		// eslint-plugin-react-hooks
 		// eslint-plugin-jsx-a11y

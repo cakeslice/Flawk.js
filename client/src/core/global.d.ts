@@ -29,6 +29,7 @@ declare global {
 
 	declare namespace JSX {
 		interface IntrinsicElements {
+			// If updated, change also "console.error =" in config.ts
 			m: any
 			hsp: any
 			sp: any

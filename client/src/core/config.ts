@@ -48,17 +48,17 @@ window.addEventListener('keydown', handleFirstTab)
 
 const _prod =
 	process.env.NODE_ENV === 'production' &&
-	process.env.REACT_APP_STAGING !== 'true' &&
-	process.env.REACT_APP_DEV !== 'true'
-const _staging = !_prod && process.env.REACT_APP_STAGING === 'true'
-const _microsoftClarityKey = process.env.REACT_APP_CLARITY_KEY
-const _googleAnalyticsID = process.env.REACT_APP_GA_KEY
-const _googleAdsID = process.env.REACT_APP_G_ADS_KEY
-const _redditPixelID = process.env.REACT_APP_REDDIT_KEY
-const _twitterPixelID = process.env.REACT_APP_TWITTER_KEY
-const _recaptchaSiteKey = process.env.REACT_APP_RECAPTCHA_KEY
-const _recaptchaBypass = process.env.REACT_APP_RECAPTCHA_BYPASS
-const _sentryID = process.env.REACT_APP_SENTRY_KEY
+	import.meta.env.VITE_STAGING !== 'true' &&
+	import.meta.env.VITE_DEV !== 'true'
+const _staging = !_prod && import.meta.env.VITE_STAGING === 'true'
+const _microsoftClarityKey = import.meta.env.VITE_CLARITY_KEY
+const _googleAnalyticsID = import.meta.env.VITE_GA_KEY
+const _googleAdsID = import.meta.env.VITE_G_ADS_KEY
+const _redditPixelID = import.meta.env.VITE_REDDIT_KEY
+const _twitterPixelID = import.meta.env.VITE_TWITTER_KEY
+const _recaptchaSiteKey = import.meta.env.VITE_RECAPTCHA_KEY
+const _recaptchaBypass = import.meta.env.VITE_RECAPTCHA_BYPASS
+const _sentryID = import.meta.env.VITE_SENTRY_KEY
 
 numeral.register('locale', 'us', {
 	delimiters: {
@@ -250,7 +250,7 @@ function _setStateAsync(that: React.Component, statePart: Obj) {
 }
 
 const realError = console.error
-const allowedTags = ['tag', 'sp', 'bb', 'hl']
+const allowedTags = ['m', 'hsp', 'sp', 'bb', 'vr', 'tag', 'hl']
 console.error = (...x) => {
 	let supress = false
 	allowedTags.forEach((tag) => {
@@ -356,7 +356,7 @@ const config: Config & InternalConfig = {
 
 	appleBrowser: _appleBrowser,
 
-	lockFetch: async (ref: React.Component, method: () => Promise<void>, key?: string) => {
+	lockFetch: async (ref, method, key) => {
 		await _setStateAsync(ref, { [key || 'fetching']: true })
 		await method()
 		await _setStateAsync(ref, { [key || 'fetching']: false })
@@ -365,7 +365,7 @@ const config: Config & InternalConfig = {
 
 	capitalize: _capitalize,
 	capitalizeAll: _capitalizeAll,
-	numeral: (number: number, format: string) => {
+	numeral: (number, format) => {
 		const n = numeral(number).format(format)
 		return n
 	},
@@ -374,20 +374,16 @@ const config: Config & InternalConfig = {
 	formatDecimalTwo: _formatDecimalTwo,
 
 	logCatch: _logCatch,
-	sleep: function sleep(ms: number) {
+	sleep: function sleep(ms) {
 		return new Promise((resolve) => setTimeout(resolve, ms))
 	},
-	lazyWithPreload: (
-		factory: () => Promise<{
-			default: React.ComponentType<unknown>
-		}>
-	) => {
+	lazyWithPreload: (factory) => {
 		const Component = React.lazy(factory)
 		// @ts-ignore
 		Component.preload = factory
 		return Component
 	},
-	injectScript: (src: string, type: 'text' | 'src', top?: boolean, async?: boolean) => {
+	injectScript: (src, type, top, async) => {
 		const script = document.createElement('script'),
 			head = document.head || document.getElementsByTagName('head')[0]
 		if (type === 'text') script.text = src
@@ -397,7 +393,7 @@ const config: Config & InternalConfig = {
 		else head.appendChild(script)
 	},
 
-	downloadTextFile: (type: 'plain' | 'json', obj: string, fileName?: string) => {
+	downloadTextFile: (type, obj, fileName) => {
 		const element = document.createElement('a')
 		const file = new Blob([obj], {
 			type: 'text/' + type,
@@ -420,7 +416,7 @@ const config: Config & InternalConfig = {
 	setLang: _setLang,
 	changeLang: _changeLang,
 	text: _text,
-	localize: (obj: string | Obj, lang?: string) => {
+	localize: (obj, lang) => {
 		let output
 
 		if (typeof obj === 'string') output = obj
@@ -433,7 +429,7 @@ const config: Config & InternalConfig = {
 		return Parser(output)
 	},
 
-	getRemoteConfig: (structures: KeyObject, key: string, code = 'default'): Obj | undefined => {
+	getRemoteConfig: (structures, key, code = 'default'): Obj | undefined => {
 		if (structures && structures['remoteconfigs']) {
 			const s = _find(structures['remoteconfigs'], { code: code }) as KeyObject
 			return s ? s[key] : undefined
@@ -441,30 +437,30 @@ const config: Config & InternalConfig = {
 		return undefined
 	},
 
-	calculateAge: function (birthday: Date) {
+	calculateAge: function (birthday) {
 		const ageDifMs = Date.now() - birthday.getTime()
 		const ageDate = new Date(ageDifMs) // miliseconds from epoch
 		return Math.abs(ageDate.getUTCFullYear() - 1970)
 	},
 
-	replaceAlpha(color: string, amount: number) {
+	replaceAlpha(color, amount) {
 		const c = colorToRgba(color)
 		return c.replace(/[^,]+(?=\))/, amount.toString())
 	},
-	multiplyAlpha(color: string, amount: number) {
+	multiplyAlpha(color, amount) {
 		const rgba = colorToRgba(color)
 		const c = rgbaToObj(rgba)
 		c.a = c.a * amount
 		return 'rgba(' + c.r + ',' + c.g + ',' + c.b + ',' + c.a + ')'
 	},
-	overlayColor(background: string, color: string) {
+	overlayColor(background, color) {
 		const c1 = rgbaToObj(colorToRgba(background))
 		const c2 = rgbaToObj(colorToRgba(color))
 
 		const c = normal(c1, c2)
 		return 'rgba(' + c.r + ',' + c.g + ',' + c.b + ',' + c.a + ')'
 	},
-	invertColor(background: string, color: string) {
+	invertColor(background, color) {
 		const c1 = rgbaToObj(colorToRgba(background))
 		const c2 = rgbaToObj(colorToRgba(color))
 
@@ -504,7 +500,7 @@ const config: Config & InternalConfig = {
 				return outputArray
 			}
 
-			const key = process.env.REACT_APP_VAPID_KEY
+			const key = import.meta.env.VITE_VAPID_KEY
 			if (key && worker.pushManager && worker.pushManager.getSubscription) {
 				try {
 					const oldSubscription = await worker.pushManager.getSubscription()
@@ -521,7 +517,7 @@ const config: Config & InternalConfig = {
 					}
 					const subscription = await worker.pushManager.subscribe({
 						userVisibleOnly: true,
-						applicationServerKey: urlBase64ToUint8Array(key),
+						applicationServerKey: urlBase64ToUint8Array(key as string),
 					})
 					const res = await post(
 						'client/webpush_subscribe',
@@ -599,7 +595,7 @@ type InternalConfig = {
 	) => React.ExoticComponent
 	injectScript: (src: string, type: 'text' | 'src', top?: boolean, async?: boolean) => void
 
-	downloadTextFile: (type: 'plain' | 'json', obj: string) => void
+	downloadTextFile: (type: 'plain' | 'json', obj: string, fileName?: string) => void
 
 	scrollToTop: () => void
 	disableScroll: () => void
