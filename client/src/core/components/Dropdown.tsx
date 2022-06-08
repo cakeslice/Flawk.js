@@ -430,9 +430,6 @@ export default class Dropdown extends TrackedComponent<Props> {
 				return {
 					...s,
 					padding: 0,
-					paddingRight: 0,
-					paddingLeft: 0,
-					paddingTop: 2,
 					...(this.props.button && {
 						display: 'flex',
 						justifyContent: 'center',

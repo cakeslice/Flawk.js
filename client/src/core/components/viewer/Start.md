@@ -24,13 +24,13 @@
   - Building and deployment with Docker
   - Error monitoring with [Sentry](https://sentry.io)
 - Optimized **npm scripts** for development, building, testing and deploying
-- Deploy easily to **[CapRover](https://caprover.com/)** with 1-click
+- Deploy easily to [**CapRover**](https://caprover.com/) with 1-click
 
 &nbsp;
 
 - ### 🖥️ Frontend: _/client_
 
-  - Built with **React**, **[Vite](https://vitejs.dev)** and **React Router**
+  - Built with **React**, [**Vite**](https://vitejs.dev) and **React Router**
   - Style and customize **25+** built-in components with consistency
   - Seamless backend integration
   - Build for iOS and Android with [Capacitor](https://capacitorjs.com)

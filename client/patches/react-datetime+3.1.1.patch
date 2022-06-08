@@ -1,0 +1,12 @@
+diff --git a/node_modules/react-datetime/package.json b/node_modules/react-datetime/package.json
+index a984cd1..216c47d 100644
+--- a/node_modules/react-datetime/package.json
++++ b/node_modules/react-datetime/package.json
+@@ -8,6 +8,7 @@
+     "url": "https://github.com/arqex/react-datetime"
+   },
+   "main": "./dist/react-datetime.cjs.js",
++  "browser": "./dist/react-datetime.umd.js",
+   "typings": "./typings/DateTime.d.ts",
+   "files": [
+     "css",

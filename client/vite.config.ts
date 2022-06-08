@@ -8,6 +8,7 @@ import tsconfigPaths from 'vite-tsconfig-paths'
 export default ({ mode }) => {
 	const m = mode as string
 	return defineConfig({
+		assetsInclude: ['**/*.md'],
 		build: {
 			outDir: 'build',
 		},
@@ -21,9 +22,6 @@ export default ({ mode }) => {
 			checker({
 				typescript: {
 					buildMode: false,
-				},
-				eslint: {
-					lintCommand: 'eslint --cache --quiet ./',
 				},
 			}),
 		],

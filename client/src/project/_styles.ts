@@ -8,7 +8,7 @@
 import { Styles } from 'core/styles'
 
 const _background = 'rgba(246,248,251,1)'
-const _backgroundNight = 'rgba(35, 35, 35,1)'
+const _backgroundNight = 'rgba(40, 40, 40,1)'
 
 const _main = 'rgba(51, 108, 251, 1)' // Make sure it's the same as src/project/assets/main.scss
 const _mainLight = 'rgba(51, 108, 251, .85)'

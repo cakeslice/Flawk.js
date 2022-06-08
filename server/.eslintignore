@@ -4,3 +4,4 @@ dist/*
 *.d.ts
 local-storage/*
 *.md
+jest.setup.ts

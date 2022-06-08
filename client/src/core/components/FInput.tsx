@@ -157,6 +157,7 @@ const DatePicker = (
 				return (
 					<input
 						ref={props.inputRef}
+						style={{ display: 'flex' }}
 						{...props.inputStyle}
 						{...p}
 						value={props.value || !props.isControlled ? p.value : ''}
