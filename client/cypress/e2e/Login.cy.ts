@@ -15,7 +15,7 @@ describe('Login', function () {
 		cy.get('button[type="submit"]').as('submitButton')
 		// Modify inputs
 		cy.get('@email').type('dev_user@email.flawk')
-		cy.get('@password').type(' ')
+		cy.get('@password').type('wrong_password')
 		cy.get('@submitButton').click()
 		// Check
 		cy.url().should('include', 'login')

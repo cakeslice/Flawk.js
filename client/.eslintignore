@@ -9,5 +9,8 @@ ios/*
 src/core/utils/serviceWorkerRegistration.js
 public/unity/*
 *.md
+
+cypress/*
 vite.config.ts
 jest.setup.ts
+cypress.config.ts
