@@ -240,6 +240,7 @@ export class BarChart extends TrackedComponent<BarProps> {
 						color: config.replaceAlpha(styles.colors.black, 0.1),
 						borderColor: 'transparent', //config.replaceAlpha(styles.colors.black, 0.5),
 					},
+					// @ts-ignore
 					ticks: {
 						padding: 10,
 						color: styles.colors.black,
@@ -414,6 +415,7 @@ export class LineChart extends TrackedComponent<LineProps> {
 						color: config.replaceAlpha(styles.colors.black, 0.1),
 						borderColor: 'transparent', //config.replaceAlpha(styles.colors.black, 0.5),
 					},
+					// @ts-ignore
 					ticks: {
 						padding: 10,
 						color: styles.colors.black,

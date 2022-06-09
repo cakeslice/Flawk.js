@@ -205,7 +205,7 @@
 		"*.{js,jsx,css,less,scss,md,ts,tsx}": [
 			"eslint --cache --quiet",
 			"prettier --check",
-			"cross-env jest --bail --runInBand --findRelatedTests"
+			"cross-env jest --passWithNoTests --bail --runInBand --findRelatedTests"
 		]
 	},
 	"jest": {
