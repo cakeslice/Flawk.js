@@ -68,15 +68,17 @@
     - [Vonage](https://www.vonage.com) SMS
     - [Stripe](https://stripe.com) checkout
   - TypeScript interface generation for Mongoose schemas
-  - Automatic OpenAPI generation and validation using types:
+  - Automatic OpenAPI generation and validation:
     ```ts
+	 // All objects with this structure are injected in the OpenAPI spec
     const Login = {
       call: "/client/login",
       method: "post",
       description: "Login a user",
       body: {} as {
-        email: string;
-        password: string;
+        email: string; // Required
+        password: string; // Required
+		  rememberMe?: boolean; // Optional
       },
     };
     router.postAsync(Login.call, async (req, res) => {

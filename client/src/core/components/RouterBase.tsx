@@ -54,11 +54,11 @@ const gitHash = GitInfo().commit.shortHash
 let amountToasts = 0
 function addFlagFunction(
 	title: React.ReactNode,
-	description: React.ReactNode | ((props: ToastContentProps) => React.ReactNode),
+	description: React.ReactNode | ((props: ToastContentProps<unknown>) => React.ReactNode),
 	type: 'warning' | 'error' | 'success' | 'info' | 'default',
 	options?: {
 		toastId?: string
-		customComponent?: React.ReactNode | ((props: ToastContentProps) => React.ReactNode)
+		customComponent?: React.ReactNode | ((props: ToastContentProps<unknown>) => React.ReactNode)
 		playSound?: boolean
 		autoClose?: boolean
 		closeOnClick?: boolean

@@ -1,6 +1,6 @@
 @import 'react-toastify/dist/ReactToastify.css';
 
-.Toastify__toast--dark {
+.Toastify__toast-theme--dark {
 	padding: 4px 8px;
 	background: #1e1e1e;
 	border-radius: 6px;
@@ -11,7 +11,7 @@
 		0 6px 20px 0 rgba(0, 0, 0, 0.025);
 	color: unset;
 }
-.Toastify__toast--default {
+.Toastify__toast-theme--light {
 	padding: 4px 8px;
 	background: #fff;
 	border-radius: 6px;
