@@ -12,11 +12,7 @@ const _background = 'rgba(246,248,251,1)'
 const _backgroundNight = 'rgba(40, 40, 40,1)'
 
 const _main = 'rgba(51, 108, 251, 1)'
-const _mainLight = 'rgba(51, 108, 251, .85)'
-const _mainVeryLight = 'rgba(51, 108, 251, .15)'
 const _mainNight = 'rgba(75, 172, 255, 1)'
-const _mainLightNight = 'rgba(75, 172, 255, .85)'
-const _mainVeryLightNight = 'rgba(75, 172, 255, .15)'
 
 const styles: Partial<Styles> = {
 	font: 'Roboto',
@@ -33,7 +29,7 @@ const styles: Partial<Styles> = {
 				borderColor: _main,
 				background: config.overlayColor(
 					global.nightMode ? 'rgba(30,30,30,1)' : 'white',
-					_mainLight
+					config.replaceAlpha(_main, 0.85)
 				),
 			},
 			':active': {
@@ -83,14 +79,8 @@ const styles: Partial<Styles> = {
 		backgroundNight: _backgroundNight,
 
 		main: _main,
-		mainLight: _mainLight,
-		mainVeryLight: _mainVeryLight,
 		mainDay: _main,
-		mainLightDay: _mainLight,
-		mainVeryLightDay: _mainVeryLight,
 		mainNight: _mainNight,
-		mainLightNight: _mainLightNight,
-		mainVeryLightNight: _mainVeryLightNight,
 	},
 }
 export default styles

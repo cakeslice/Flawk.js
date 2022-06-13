@@ -314,6 +314,12 @@ const styles: Styles & { colors: Colors } = {
 		...projectOverrides.colors,
 	},
 }
+styles.colors.mainLight = config.replaceAlpha(styles.colors.main, 0.85)
+styles.colors.mainVeryLight = config.replaceAlpha(styles.colors.main, 0.15)
+styles.colors.mainLightDay = config.replaceAlpha(styles.colors.mainDay, 0.85)
+styles.colors.mainVeryLightDay = config.replaceAlpha(styles.colors.mainDay, 0.15)
+styles.colors.mainLightNight = config.replaceAlpha(styles.colors.mainNight, 0.85)
+styles.colors.mainVeryLightNight = config.replaceAlpha(styles.colors.mainNight, 0.15)
 export default styles
 
 export type Styles = {
