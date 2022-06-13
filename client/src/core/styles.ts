@@ -12,7 +12,7 @@ import config, { projectStyles as pS, projectStylesOverrides as projectOverrides
 export const projectStyles = pS
 
 const _font = 'Roboto'
-const _fontAlt = 'PT Sans'
+const _fontAlt = 'Roboto'
 const _background = 'rgba(255,255,255, 1)'
 const _backgroundNight = 'rgba(30, 30, 30, 1)'
 const _borderColor = 'rgba(0, 0, 0, 0.1)'
@@ -26,6 +26,9 @@ const _white = 'rgba(255,255,255, 1)'
 const _main = 'rgba(51, 108, 251, 1)'
 const _mainLight = 'rgba(51, 108, 251, .85)'
 const _mainVeryLight = 'rgba(51, 108, 251, .15)'
+const _mainNight = 'rgba(51, 108, 251, 1)'
+const _mainLightNight = 'rgba(51, 108, 251, .85)'
+const _mainVeryLightNight = 'rgba(51, 108, 251, .15)'
 
 const _green = 'rgba(40,201,134, 1)'
 const _red = 'rgba(250,61,91,1)'
@@ -35,7 +38,7 @@ const _orange = 'rgba(255,152,0,1)'
 const _yellow = 'rgba(255,235,59,1)'
 const _blue = 'rgba(66, 124, 255,1)'
 
-const styles: Styles & { colors: Colors; gradients: Gradients } = {
+const styles: Styles & { colors: Colors } = {
 	// Config
 
 	font: _font,
@@ -286,6 +289,12 @@ const styles: Styles & { colors: Colors; gradients: Gradients } = {
 		main: _main,
 		mainLight: _mainLight,
 		mainVeryLight: _mainVeryLight,
+		mainDay: _main,
+		mainLightDay: _mainLight,
+		mainVeryLightDay: _mainVeryLight,
+		mainNight: _mainNight,
+		mainLightNight: _mainLightNight,
+		mainVeryLightNight: _mainVeryLightNight,
 		background: _background,
 		backgroundDay: _background,
 		backgroundNight: _backgroundNight,
@@ -303,11 +312,6 @@ const styles: Styles & { colors: Colors; gradients: Gradients } = {
 		orange: _orange,
 		yellow: _yellow,
 		...projectOverrides.colors,
-	},
-	gradients: {
-		fade: 'linear-gradient(90deg, rgba(2, 4, 51, 1), rgba(2, 4, 51, 1), rgba(2, 4, 51, 0))',
-		main: _main,
-		...projectOverrides.gradients,
 	},
 }
 export default styles
@@ -426,7 +430,6 @@ export type Styles = {
 	// Colors
 
 	colors: Partial<Colors>
-	gradients: Partial<Gradients>
 }
 type Colors = {
 	black: string
@@ -438,6 +441,12 @@ type Colors = {
 	main: string
 	mainLight: string
 	mainVeryLight: string
+	mainDay: string
+	mainLightDay: string
+	mainVeryLightDay: string
+	mainNight: string
+	mainLightNight: string
+	mainVeryLightNight: string
 	//
 	background: string
 	backgroundDay: string
@@ -458,8 +467,4 @@ type Colors = {
 	purple: string
 	orange: string
 	yellow: string
-}
-type Gradients = {
-	fade: string
-	main: string
 }

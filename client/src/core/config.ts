@@ -60,42 +60,46 @@ const _recaptchaSiteKey = import.meta.env.VITE_RECAPTCHA_KEY
 const _recaptchaBypass = import.meta.env.VITE_RECAPTCHA_BYPASS
 const _sentryID = import.meta.env.VITE_SENTRY_KEY
 
-numeral.register('locale', 'us', {
-	delimiters: {
-		thousands: ',',
-		decimal: '.',
-	},
-	abbreviations: {
-		thousand: 'K',
-		million: 'M',
-		billion: 'B',
-		trillion: 'T',
-	},
-	ordinal: function (number) {
-		return number === 1 ? 'er' : 'ème'
-	},
-	currency: {
-		symbol: '$',
-	},
-})
-numeral.register('locale', 'pt', {
-	delimiters: {
-		thousands: '.',
-		decimal: ',',
-	},
-	abbreviations: {
-		thousand: 'K',
-		million: 'M',
-		billion: 'B',
-		trillion: 'T',
-	},
-	ordinal: function (number) {
-		return number === 1 ? 'er' : 'ème'
-	},
-	currency: {
-		symbol: '€',
-	},
-})
+try {
+	numeral.register('locale', 'us', {
+		delimiters: {
+			thousands: ',',
+			decimal: '.',
+		},
+		abbreviations: {
+			thousand: 'K',
+			million: 'M',
+			billion: 'B',
+			trillion: 'T',
+		},
+		ordinal: function (number) {
+			return number === 1 ? 'er' : 'ème'
+		},
+		currency: {
+			symbol: '$',
+		},
+	})
+	numeral.register('locale', 'pt', {
+		delimiters: {
+			thousands: '.',
+			decimal: ',',
+		},
+		abbreviations: {
+			thousand: 'K',
+			million: 'M',
+			billion: 'B',
+			trillion: 'T',
+		},
+		ordinal: function (number) {
+			return number === 1 ? 'er' : 'ème'
+		},
+		currency: {
+			symbol: '€',
+		},
+	})
+} catch (e) {
+	console.warn(e)
+}
 
 const _logCatch = function (err: Error, useSentry: boolean, identifier = '') {
 	console.log(identifier + JSON.stringify(err.message) + ' ' + JSON.stringify(err.stack || err))

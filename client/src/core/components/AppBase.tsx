@@ -321,6 +321,9 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 				changeBackground(styles.colors.backgroundNight)
 				document.body.style.color = styles.colors.blackNight
 				document.body.style.caretColor = 'rgba(255, 255, 255, 0.5)'
+				styles.colors.main = styles.colors.mainNight
+				styles.colors.mainLight = styles.colors.mainLightNight
+				styles.colors.mainVeryLight = styles.colors.mainVeryLightNight
 				styles.colors.background = styles.colors.backgroundNight
 				styles.colors.white = styles.colors.whiteNight
 				styles.colors.black = styles.colors.blackNight
@@ -331,11 +334,13 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 				styles.colors.lineColor = styles.colors.lineColorNight
 				styles.card.background = styles.colors.whiteNight
 				styles.card.borderColor = styles.colors.borderColor
-				styles.outlineCard.borderColor = styles.colors.borderColor
 			} else {
 				changeBackground(styles.colors.backgroundDay)
 				document.body.style.color = styles.colors.blackDay
 				document.body.style.caretColor = 'rgba(0, 0, 0, 0.5)'
+				styles.colors.main = styles.colors.mainDay
+				styles.colors.mainLight = styles.colors.mainLightDay
+				styles.colors.mainVeryLight = styles.colors.mainVeryLightDay
 				styles.colors.background = styles.colors.backgroundDay
 				styles.colors.white = styles.colors.whiteDay
 				styles.colors.black = styles.colors.whiteNight
@@ -346,8 +351,14 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 				styles.colors.lineColor = styles.colors.lineColorDay
 				styles.card.background = styles.colors.whiteDay
 				styles.card.borderColor = 'transparent'
-				styles.outlineCard.borderColor = styles.colors.borderColor
 			}
+
+			document.documentElement.style.setProperty('--font', styles.font)
+			document.documentElement.style.setProperty('--fontAlt', styles.fontAlt)
+			document.documentElement.style.setProperty('--main', styles.colors.main)
+			styles.outlineCard.borderColor = styles.colors.borderColor
+			styles.dropZone.borderColor = styles.colors.borderColor
+			styles.dropZoneActive.background = config.replaceAlpha(styles.colors.main, 0.1)
 		}
 	}
 

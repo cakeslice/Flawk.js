@@ -5,20 +5,42 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import config from 'core/config'
 import { Styles } from 'core/styles'
 
 const _background = 'rgba(246,248,251,1)'
 const _backgroundNight = 'rgba(40, 40, 40,1)'
 
-const _main = 'rgba(51, 108, 251, 1)' // Make sure it's the same as src/project/assets/main.scss
+const _main = 'rgba(51, 108, 251, 1)'
 const _mainLight = 'rgba(51, 108, 251, .85)'
 const _mainVeryLight = 'rgba(51, 108, 251, .15)'
+const _mainNight = 'rgba(75, 172, 255, 1)'
+const _mainLightNight = 'rgba(75, 172, 255, .85)'
+const _mainVeryLightNight = 'rgba(75, 172, 255, .15)'
 
 const styles: Partial<Styles> = {
-	font: 'var(--font)',
-	fontAlt: 'var(--fontAlt)',
+	font: 'Roboto',
+	fontAlt: 'Roboto',
 
 	buttonAppearances: () => [
+		{
+			name: 'primary',
+
+			borderColor: _main,
+			background: _main,
+
+			':hover': {
+				borderColor: _main,
+				background: config.overlayColor(
+					global.nightMode ? 'rgba(30,30,30,1)' : 'white',
+					_mainLight
+				),
+			},
+			':active': {
+				borderColor: _main,
+				background: _main,
+			},
+		},
 		{
 			name: 'action',
 			usageBackground: 'rgba(30,30,30,1)',
@@ -63,6 +85,12 @@ const styles: Partial<Styles> = {
 		main: _main,
 		mainLight: _mainLight,
 		mainVeryLight: _mainVeryLight,
+		mainDay: _main,
+		mainLightDay: _mainLight,
+		mainVeryLightDay: _mainVeryLight,
+		mainNight: _mainNight,
+		mainLightNight: _mainLightNight,
+		mainVeryLightNight: _mainVeryLightNight,
 	},
 }
 export default styles

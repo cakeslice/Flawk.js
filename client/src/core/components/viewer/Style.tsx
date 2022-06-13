@@ -90,25 +90,18 @@ export default class Style extends Component<Props> {
 					return (
 						<div>
 							<Section
-								lang={'scss'}
-								code={`// src/project/assets/main.scss
-		
-// ...
+								code={`import styles from 'core/styles'
 
-	--font: 'MY_FONT';
-	--fontAlt: 'PT Sans';
+const style = {
+	fontSize: 16,
+	fontFamily: styles.font
 }
-
-body {
-	font-size: 16px;
-
-// ...
 `}
 								description={
 									<>
 										Default fonts can be overridden in{' '}
-										<code>src/project/assets/main.scss</code> by changing the{' '}
-										<code>--font</code> and <code>--fontAlt</code> properties.
+										<code>src/project/_styles.ts</code> by changing the{' '}
+										<code>font</code> and <code>fontAlt</code> properties.
 										<sp />
 										To import new fonts, add them to{' '}
 										<code>src/project/assets/fonts.css</code>.

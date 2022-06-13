@@ -20,6 +20,14 @@ body:not(.user-is-tabbing) textarea:focus {
 }
 
 :root {
+	/* 
+
+	--main         : Main project color
+	--font         : Main font family
+	--fontAlt      : Alternative font family
+	
+	*/
+
 	--safe-area-inset-top: 0px;
 	--safe-area-inset-right: 0px;
 	--safe-area-inset-bottom: 0px;
