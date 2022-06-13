@@ -16,7 +16,7 @@ export default class TrackedComponent<Props = {}, State = {}> extends Component<
 	trackedState: string[] | undefined = undefined
 
 	UNSAFE_componentWillMount() {
-		if (!config.prod && this.trackedName === 'Unnamed') {
+		if (!config.prod && !config.staging && this.trackedName === 'Unnamed') {
 			console.error('TrackedComponent: trackedName not set')
 		}
 	}

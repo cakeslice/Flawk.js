@@ -79,10 +79,39 @@ export default class Modal extends TrackedComponent<Props> {
 		this.renderHeader = this.renderHeader.bind(this)
 	}
 
+	// https://stackoverflow.com/a/72597260/19326842
 	onVisible() {
 		if (!config.appleBrowser) config.disableScroll()
+
+		window.history.pushState(null, '', window.location.href)
+		window.onpopstate = () => {
+			this.onClose(true, true)
+		}
+	}
+	onHidden() {
+		clearAllBodyScrollLocks()
+
+		window.onpopstate = () => {
+			// Do nothing
+		}
 	}
 
+	onClose(fromComponent = false, fromNavigation = false) {
+		this.props.onClose && this.props.onClose(fromComponent)
+
+		if (this.props.parent && this.props.name) {
+			const s: Obj = {}
+			s[this.props.name] = false
+			this.props.parent.setState(s)
+		}
+
+		if (!fromNavigation) window.history.back()
+		this.onHidden()
+	}
+
+	componentWillUnmount() {
+		this.onHidden()
+	}
 	componentDidMount() {
 		if (!this.props.parent || !this.props.name) {
 			if (this.props.visible) this.onVisible()
@@ -110,31 +139,16 @@ export default class Modal extends TrackedComponent<Props> {
 			if (this.state.parentState) {
 				this.onVisible()
 			} else {
-				clearAllBodyScrollLocks()
+				this.onHidden()
 			}
 		}
 		if (this.props.visible !== prevProps.visible && this.props.visible) {
 			if (this.props.visible) {
 				this.onVisible()
 			} else {
-				clearAllBodyScrollLocks()
+				this.onHidden()
 			}
 		}
-	}
-	componentWillUnmount() {
-		clearAllBodyScrollLocks()
-	}
-
-	onClose(fromHeader = false) {
-		this.props.onClose && this.props.onClose(fromHeader)
-
-		if (this.props.parent && this.props.name) {
-			const s: Obj = {}
-			s[this.props.name] = false
-			this.props.parent.setState(s)
-		}
-
-		clearAllBodyScrollLocks()
 	}
 
 	renderHeader: React.FC = ({ children }) => {
@@ -329,7 +343,7 @@ export default class Modal extends TrackedComponent<Props> {
 													trackedName='MobileDrawer'
 													clickedOutside={() => {
 														if (this.props.closeOnOutsideClick)
-															this.onClose()
+															this.onClose(true)
 													}}
 													style={{ display: 'contents' }}
 												>
@@ -399,7 +413,7 @@ class ModalHeader extends Component<{
 	title?: React.ReactNode
 	headerStyle?: HeaderStyle
 	modalPadding: number
-	onClose?: (fromHeader: boolean) => void
+	onClose: (fromComponent: boolean) => void
 	big?: boolean
 }> {
 	render() {
@@ -451,7 +465,7 @@ class ModalHeader extends Component<{
 								height: 24,
 								background: 'transparent',
 							}}
-							onClick={() => this.props.onClose && this.props.onClose(true)}
+							onClick={() => this.props.onClose(true)}
 						>
 							<div
 								style={{

@@ -147,36 +147,52 @@ export default class ComponentWithParams extends QueryParams<{
 							<div className='wrapMargin flex flex-wrap justify-start'>
 								<FButton
 									onClick={() => {
-										this.setQueryParams({
-											bool: this.queryParams.bool ? undefined : false,
-										})
+										this.setQueryParams(
+											{
+												bool: this.queryParams.bool ? undefined : false,
+											},
+											true
+										)
 									}}
 								>
 									Toggle bool
 								</FButton>
 								<FButton
 									onClick={() => {
-										this.setQueryParams({
-											number: this.queryParams.number ? undefined : 1337,
-										})
+										this.setQueryParams(
+											{
+												number: this.queryParams.number ? undefined : 1337,
+											},
+											true
+										)
 									}}
 								>
 									Toggle number
 								</FButton>
 								<FButton
 									onClick={() => {
-										this.setQueryParams({
-											string: this.queryParams.string ? undefined : 'false',
-										})
+										this.setQueryParams(
+											{
+												string: this.queryParams.string
+													? undefined
+													: 'false',
+											},
+											true
+										)
 									}}
 								>
 									Toggle string
 								</FButton>
 								<FButton
 									onClick={() => {
-										this.setQueryParams({
-											date: this.queryParams.date ? undefined : new Date(),
-										})
+										this.setQueryParams(
+											{
+												date: this.queryParams.date
+													? undefined
+													: new Date(),
+											},
+											true
+										)
 									}}
 								>
 									Toggle date
@@ -186,37 +202,53 @@ export default class ComponentWithParams extends QueryParams<{
 							<div className='wrapMargin flex flex-wrap justify-start'>
 								<FButton
 									onClick={() => {
-										this.setQueryParams({
-											none: this.queryParams.none ? undefined : '',
-										})
+										this.setQueryParams(
+											{
+												none: this.queryParams.none ? undefined : '',
+											},
+											true
+										)
 									}}
 								>
 									Toggle empty
 								</FButton>
 								<FButton
 									onClick={() => {
-										this.setQueryParams({
-											none: this.queryParams.none ? undefined : 'undefined',
-										})
+										this.setQueryParams(
+											{
+												none: this.queryParams.none
+													? undefined
+													: 'undefined',
+											},
+											true
+										)
 									}}
 								>
 									Toggle undefined
 								</FButton>
 								<FButton
 									onClick={() => {
-										this.setQueryParams({
-											none: this.queryParams.none ? undefined : 'null',
-										})
+										this.setQueryParams(
+											{
+												none: this.queryParams.none ? undefined : 'null',
+											},
+											true
+										)
 									}}
 								>
 									Toggle null
 								</FButton>
 								<FButton
 									onClick={() => {
-										this.setQueryParams({
-											default:
-												this.queryParams.default !== '1' ? undefined : 2,
-										})
+										this.setQueryParams(
+											{
+												default:
+													this.queryParams.default !== '1'
+														? undefined
+														: 2,
+											},
+											true
+										)
 									}}
 								>
 									Toggle default (hidden)

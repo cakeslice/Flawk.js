@@ -6,19 +6,11 @@
  */
 
 import { Lang } from 'flawk-types'
+import { RouteComponentProps } from 'react-router-dom'
 import { ToastContentProps } from 'react-toastify'
 import { UnityContext } from 'react-unity-webgl'
 import { Socket } from 'socket.io-client'
 
-interface History {
-	location: {
-		pathname: string
-		hash: string
-	}
-	push: (path: string) => void
-	replace: (path: string) => void
-	listen: (callback: function) => void
-}
 declare global {
 	interface Window {
 		AbortController: {
@@ -57,7 +49,7 @@ declare global {
 			pauseOnFocusLoss?: boolean
 		}
 	) => void
-	var routerHistory: () => History
+	var routerHistory: () => RouteComponentProps['history']
 	//
 	var lang: Lang
 	var analytics:
