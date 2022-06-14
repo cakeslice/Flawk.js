@@ -62,15 +62,17 @@ export default class QueryParams<
 	constructor(props: P) {
 		super(props)
 	}
+	UNSAFE_componentWillMount() {
+		// eslint-disable-next-line
+		// ! NOTE: This really only works in UNSAFE_componentWillMount
+		// If you try to do a fetch with a 'limit' query param with a default value of '10', it will be 'undefined' if this code is in the constructor or componentDidMount
+
+		this._parsedDefaultParams = this._getAndParseSearch(this.defaultQueryParams as Obj)
+	}
 
 	defaultQueryParams: T = {} as T
 	// @ts-ignore
 	private _parsedDefaultParams: Record<keyof T, string> = {}
-
-	componentDidMount() {
-		this._parsedDefaultParams = this._getAndParseSearch(this.defaultQueryParams as Obj)
-		this.forceUpdate()
-	}
 
 	private _queryParamsCache: Record<keyof T, string> | undefined = undefined
 	componentDidUpdate() {
