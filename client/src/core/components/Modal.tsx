@@ -33,11 +33,14 @@ type Props = {
 		Parent: React.FC,
 		Header: React.FC
 	) => React.ReactNode
-	// Props to set modal state on the parent component on close automatically
+	/** ID to set the parent's modal state on close automatically */
 	name?: string
 	//
 	big?: boolean
+	/** Close the modal if there's a click outside of it */
 	closeOnOutsideClick?: boolean
+	/** Don't use history (back button to close modal) */
+	noHistory?: boolean
 	style?: React.CSSProperties
 	headerStyle?: HeaderStyle
 	contentStyle?: React.CSSProperties
@@ -83,16 +86,20 @@ export default class Modal extends TrackedComponent<Props> {
 	onVisible() {
 		if (!config.appleBrowser) config.disableScroll()
 
-		window.history.pushState(null, '', window.location.href)
-		window.onpopstate = () => {
-			this.onClose(true, true)
+		if (!this.props.noHistory) {
+			window.history.pushState(null, '', window.location.href)
+			window.onpopstate = () => {
+				this.onClose(true, true)
+			}
 		}
 	}
 	onHidden() {
 		clearAllBodyScrollLocks()
 
-		window.onpopstate = () => {
-			// Do nothing
+		if (!this.props.noHistory) {
+			window.onpopstate = () => {
+				// Do nothing
+			}
 		}
 	}
 
@@ -105,7 +112,7 @@ export default class Modal extends TrackedComponent<Props> {
 			this.props.parent.setState(s)
 		}
 
-		if (!fromNavigation) window.history.back()
+		if (!fromNavigation && !this.props.noHistory) window.history.back()
 		this.onHidden()
 	}
 

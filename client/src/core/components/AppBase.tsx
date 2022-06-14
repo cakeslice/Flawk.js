@@ -170,7 +170,7 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 		)
 
 		void (async function () {
-			if (config.darkModeForce) applyNightMode(true, true)
+			if (config.darkModeForce) applyNightMode(true)
 			else if (config.darkModeAvailable) {
 				let storedNightMode
 				if (Capacitor.isNativePlatform())
@@ -178,9 +178,9 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 				else storedNightMode = await global.storage.getItem('nightMode')
 				const isDark =
 					window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)')
-				if (storedNightMode !== null) applyNightMode(storedNightMode === 'true', true)
-				else applyNightMode(isDark && isDark.matches && !config.darkModeOptIn, true)
-			} else applyNightMode(false, true)
+				if (storedNightMode !== null) applyNightMode(storedNightMode === 'true')
+				else applyNightMode(isDark && isDark.matches && !config.darkModeOptIn)
+			} else applyNightMode(false)
 
 			if (!config.prod) {
 				const res = await get('build_number', { noErrorFlag: 'all' })
@@ -309,57 +309,55 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 		if (n === undefined) n = !nightMode
 
 		await global.storage.setItem('nightMode', n.toString())
-		applyNightMode(n)
+		window.location.reload()
 	}
 
-	function applyNightModeFunction(night: boolean, skipPageRefresh = false) {
+	function applyNightModeFunction(night: boolean) {
 		setNightMode(night)
 		global.nightMode = night
-		if (!skipPageRefresh) window.location.reload()
-		else {
-			if (night) {
-				changeBackground(styles.colors.backgroundNight)
-				document.body.style.color = styles.colors.blackNight
-				document.body.style.caretColor = 'rgba(255, 255, 255, 0.5)'
-				styles.colors.main = styles.colors.mainNight
-				styles.colors.mainLight = styles.colors.mainLightNight
-				styles.colors.mainVeryLight = styles.colors.mainVeryLightNight
-				styles.colors.background = styles.colors.backgroundNight
-				styles.colors.white = styles.colors.whiteNight
-				styles.colors.black = styles.colors.blackNight
-				styles.colors.borderColor = config.replaceAlpha(
-					styles.colors.borderColorNight,
-					global.nightMode ? styles.inputBorderFactorNight : styles.inputBorderFactorDay
-				)
-				styles.colors.lineColor = styles.colors.lineColorNight
-				styles.card.background = styles.colors.whiteNight
-				styles.card.borderColor = styles.colors.borderColor
-			} else {
-				changeBackground(styles.colors.backgroundDay)
-				document.body.style.color = styles.colors.blackDay
-				document.body.style.caretColor = 'rgba(0, 0, 0, 0.5)'
-				styles.colors.main = styles.colors.mainDay
-				styles.colors.mainLight = styles.colors.mainLightDay
-				styles.colors.mainVeryLight = styles.colors.mainVeryLightDay
-				styles.colors.background = styles.colors.backgroundDay
-				styles.colors.white = styles.colors.whiteDay
-				styles.colors.black = styles.colors.whiteNight
-				styles.colors.borderColor = config.replaceAlpha(
-					styles.colors.borderColorDay,
-					global.nightMode ? styles.inputBorderFactorNight : styles.inputBorderFactorDay
-				)
-				styles.colors.lineColor = styles.colors.lineColorDay
-				styles.card.background = styles.colors.whiteDay
-				styles.card.borderColor = 'transparent'
-			}
 
-			document.documentElement.style.setProperty('--font', styles.font)
-			document.documentElement.style.setProperty('--fontAlt', styles.fontAlt)
-			document.documentElement.style.setProperty('--main', styles.colors.main)
-			styles.outlineCard.borderColor = styles.colors.borderColor
-			styles.dropZone.borderColor = styles.colors.borderColor
-			styles.dropZoneActive.background = config.replaceAlpha(styles.colors.main, 0.1)
+		if (night) {
+			changeBackground(styles.colors.backgroundNight)
+			document.body.style.color = styles.colors.blackNight
+			document.body.style.caretColor = 'rgba(255, 255, 255, 0.5)'
+			styles.colors.main = styles.colors.mainNight
+			styles.colors.mainLight = styles.colors.mainLightNight
+			styles.colors.mainVeryLight = styles.colors.mainVeryLightNight
+			styles.colors.background = styles.colors.backgroundNight
+			styles.colors.white = styles.colors.whiteNight
+			styles.colors.black = styles.colors.blackNight
+			styles.colors.borderColor = config.replaceAlpha(
+				styles.colors.borderColorNight,
+				global.nightMode ? styles.inputBorderFactorNight : styles.inputBorderFactorDay
+			)
+			styles.colors.lineColor = styles.colors.lineColorNight
+			styles.card.background = styles.colors.whiteNight
+			styles.card.borderColor = styles.colors.borderColor
+		} else {
+			changeBackground(styles.colors.backgroundDay)
+			document.body.style.color = styles.colors.blackDay
+			document.body.style.caretColor = 'rgba(0, 0, 0, 0.5)'
+			styles.colors.main = styles.colors.mainDay
+			styles.colors.mainLight = styles.colors.mainLightDay
+			styles.colors.mainVeryLight = styles.colors.mainVeryLightDay
+			styles.colors.background = styles.colors.backgroundDay
+			styles.colors.white = styles.colors.whiteDay
+			styles.colors.black = styles.colors.whiteNight
+			styles.colors.borderColor = config.replaceAlpha(
+				styles.colors.borderColorDay,
+				global.nightMode ? styles.inputBorderFactorNight : styles.inputBorderFactorDay
+			)
+			styles.colors.lineColor = styles.colors.lineColorDay
+			styles.card.background = styles.colors.whiteDay
+			styles.card.borderColor = 'transparent'
 		}
+
+		document.documentElement.style.setProperty('--font', styles.font)
+		document.documentElement.style.setProperty('--fontAlt', styles.fontAlt)
+		document.documentElement.style.setProperty('--main', styles.colors.main)
+		styles.outlineCard.borderColor = styles.colors.borderColor
+		styles.dropZone.borderColor = styles.colors.borderColor
+		styles.dropZoneActive.background = config.replaceAlpha(styles.colors.main, 0.1)
 	}
 
 	function changeBackground(color: string) {
