@@ -58,6 +58,7 @@ module.exports = {
 		'react/no-arrow-function-lifecycle': 'error',
 		'react/no-children-prop': 'error',
 		'react/button-has-type': 'error',
+		'react/react-in-jsx-scope': 'off',
 		//
 		'jsx-a11y/accessible-emoji': 'warn',
 		'jsx-a11y/alt-text': 'warn',

@@ -24,6 +24,7 @@ type Props = {
 	width?: string
 	burgerStyle?: React.CSSProperties
 	menuStyle?: React.CSSProperties
+	headerStyle?: React.CSSProperties
 	linkStyle?: LinkStyle
 	title?: React.ReactNode
 	headerHeight: number
@@ -148,6 +149,7 @@ class MobileDrawer extends TrackedComponent<Props> {
 											opacity: 1,
 											fontWeight: 'bold',
 											minHeight: this.props.headerHeight,
+											...this.props.headerStyle,
 										}}
 									>
 										{this.props.title}
