@@ -329,7 +329,7 @@ export default function Router(): React.ReactNode {
 										{Capacitor.isNativePlatform() ? (
 											<Redirect to={'/components'} />
 										) : (
-											<PublicWrapper desktop={desktop}>
+											<PublicWrapper landingPage desktop={desktop}>
 												<Animated
 													animateOffscreen
 													effects={['fade']}
@@ -352,14 +352,15 @@ export default function Router(): React.ReactNode {
 	)
 }
 
-class PublicWrapper extends Component<{ auth?: boolean; desktop: boolean }> {
+class PublicWrapper extends Component<{ auth?: boolean; desktop: boolean; landingPage?: boolean }> {
 	render() {
 		return (
 			<div style={{ overflow: 'hidden' }}>
-				<Header fillSpace={this.props.auth} />
+				<Header expand={this.props.landingPage} fillSpace={this.props.auth} />
 				<div
 					style={{
 						paddingTop: this.props.auth ? 30 : undefined,
+						minHeight: 'calc(100vh + 210px)',
 					}}
 				>
 					<div
@@ -385,7 +386,7 @@ class PublicWrapper extends Component<{ auth?: boolean; desktop: boolean }> {
 						{this.props.auth && <sp />}
 					</div>
 				</div>
-				<Footer fillSpace={this.props.auth} />
+				<Footer fillSpace={false} />
 			</div>
 		)
 	}

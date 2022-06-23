@@ -14,8 +14,9 @@ import styles from 'core/styles'
 import { css } from 'glamor'
 import logo from 'project/assets/images/logo.svg'
 import { github } from 'project/components/Icons'
-import React, { Component } from 'react'
+import { Component } from 'react'
 import MediaQuery from 'react-responsive'
+import { Link } from 'react-router-dom'
 import mod from '../main/Main.module.scss'
 
 const mobileHeight = 60
@@ -24,6 +25,7 @@ const desktopHeight = 70
 const desktopHeightTop = 125
 
 type Props = {
+	expand?: boolean
 	fillSpace?: boolean
 }
 export default class Header extends Component<Props> {
@@ -41,7 +43,7 @@ export default class Header extends Component<Props> {
 		const scrollTop = document.body.scrollTop || document.documentElement.scrollTop
 
 		this.setState({
-			shrink: scrollTop > 0,
+			shrink: this.props.expand ? scrollTop > 0 : true,
 		})
 	}
 	componentDidMount() {
@@ -52,11 +54,13 @@ export default class Header extends Component<Props> {
 		window.removeEventListener('scroll', this.handleScroll)
 	}
 
+	componentDidUpdate(prevProps: Props) {
+		if (prevProps.expand !== this.props.expand) this.handleScroll()
+	}
+
 	render() {
 		const maxWidth = config.publicMaxWidth
-
-		const landingPage = window.location.pathname.toString() === '/'
-		const shrink = !landingPage ? true : this.state.shrink
+		const shrink = this.state.shrink
 
 		return (
 			<MediaQuery minWidth={config.mobileWidthTrigger}>
@@ -101,7 +105,7 @@ export default class Header extends Component<Props> {
 								duration={0.5}
 								distance={desktop ? -desktopHeight : -mobileHeightTop}
 								//
-								className={'flex justify-between w-full'}
+								className={'flex justify-between w-full items-center'}
 								style={{
 									maxWidth: maxWidth,
 									minHeight: desktop
@@ -122,7 +126,15 @@ export default class Header extends Component<Props> {
 									boxSizing: 'border-box',
 								}}
 							>
-								<div className='flex items-center'>
+								<Link
+									to={'/'}
+									style={{
+										height: 'fit-content',
+										color: styles.colors.black,
+										textDecoration: 'none',
+									}}
+									className='flex items-center'
+								>
 									<img
 										style={{
 											maxWidth: !shrink
@@ -164,7 +176,7 @@ export default class Header extends Component<Props> {
 											{!desktop ? 'WIP' : 'WORK IN PROGRESS'}
 										</tag>
 									</h2>
-								</div>
+								</Link>
 
 								<div className='flex items-center'>
 									<Tooltip
@@ -203,6 +215,10 @@ export default class Header extends Component<Props> {
 										tooltipProps={{
 											placement: 'bottom',
 										}}
+										containerStyle={{
+											position: 'relative',
+											left: 9,
+										}}
 									>
 										<button
 											type='button'
@@ -219,9 +235,6 @@ export default class Header extends Component<Props> {
 										>
 											<img
 												style={{
-													position: 'relative',
-													bottom: 1,
-													left: 9,
 													height: '100%',
 													maxHeight: 30,
 												}}
