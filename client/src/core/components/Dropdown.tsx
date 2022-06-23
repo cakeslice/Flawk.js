@@ -211,7 +211,7 @@ export default class Dropdown extends TrackedComponent<Props> {
 
 		//
 
-		const defaultStyle = {
+		let defaultStyle: CSSObjectWithLabel = {
 			fontSize: styles.defaultFontSize,
 			fontFamily: styles.font,
 
@@ -271,10 +271,17 @@ export default class Dropdown extends TrackedComponent<Props> {
 			width: '100%',
 			userSelect: 'none',
 		}
+		let defaultInputStyle: CSSObjectWithLabel = {
+			...defaultStyle,
+			padding: 0,
+		}
 
 		styles.inputAppearances &&
 			styles.inputAppearances().forEach((b) => {
-				if (this.props.appearance === b.name) {
+				if (
+					this.props.appearance === b.name ||
+					(this.props.appearance === undefined && b.name === 'default')
+				) {
 					// @ts-ignore
 					defaultContainerStyle = {
 						...defaultContainerStyle,
@@ -291,6 +298,19 @@ export default class Dropdown extends TrackedComponent<Props> {
 					defaultPlaceholderStyle = {
 						...defaultPlaceholderStyle,
 						...b['::placeholder'],
+					}
+
+					defaultStyle = {
+						...defaultStyle,
+						...b[':dropdown-menu'],
+					}
+					defaultInputStyle = {
+						...defaultInputStyle,
+						...(b &&
+							b.fontSize && {
+								fontSize: b.fontSize,
+							}),
+						...b[':input'],
 					}
 				}
 			})
@@ -399,10 +419,6 @@ export default class Dropdown extends TrackedComponent<Props> {
 				color: color && config.replaceAlpha(color, 0.5),
 			},
 		}
-		const defaultInputStyle = {
-			...defaultStyle,
-			padding: 0,
-		}
 		const conditionalInputStyle = {
 			...(!this.props.isDisabled &&
 				invalid && {
@@ -429,6 +445,8 @@ export default class Dropdown extends TrackedComponent<Props> {
 			valueContainer: (s): CSSObjectWithLabel => {
 				return {
 					...s,
+					position: 'relative',
+					top: 1,
 					padding: 0,
 					...(this.props.button && {
 						display: 'flex',
@@ -536,11 +554,10 @@ export default class Dropdown extends TrackedComponent<Props> {
 					...defaultInputStyle,
 					...(this.props.button && {
 						color: styles.colors.black,
-						fontWeight: styles.buttonFontWeight,
+						fontWeight: styles.buttonFontWeight || 500,
 						marginLeft: 15,
 						width: 'auto',
 					}),
-					fontWeight: styles.dropdownFontWeight,
 					...(this.props.style && this.props.style.input),
 					...conditionalInputStyle,
 					...(d && d.style),

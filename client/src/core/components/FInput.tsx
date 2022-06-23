@@ -178,7 +178,7 @@ const DatePicker = (
 )
 
 type Props = {
-	style?: React.CSSProperties & GlamorProps
+	style?: React.CSSProperties & GlamorProps & { input?: React.CSSProperties }
 	appearance?: string
 	center?: boolean
 	invalidType?: 'bottom' | 'label' | 'right'
@@ -459,9 +459,18 @@ export default class FInput extends TrackedComponent<Props> {
 				'background 200ms, border-color 200ms, box-shadow 200ms, border-radius 200ms',
 		}
 
+		let defaultInputStyle: React.CSSProperties = {
+			fontSize: styles.defaultFontSize,
+			width: '100%',
+			textAlign: 'inherit',
+		}
+
 		styles.inputAppearances &&
 			styles.inputAppearances().forEach((b) => {
-				if (this.props.appearance === b.name)
+				if (
+					this.props.appearance === b.name ||
+					(this.props.appearance === undefined && b.name === 'default')
+				) {
 					mainStyle = {
 						...mainStyle,
 						...b,
@@ -478,6 +487,16 @@ export default class FInput extends TrackedComponent<Props> {
 							...b[':focus'],
 						},
 					}
+
+					defaultInputStyle = {
+						...defaultInputStyle,
+						...(b &&
+							b.fontSize && {
+								fontSize: b.fontSize,
+							}),
+						...b[':input'],
+					}
+				}
 			})
 
 		let finalStyle: React.CSSProperties & GlamorProps = mainStyle
@@ -665,9 +684,9 @@ export default class FInput extends TrackedComponent<Props> {
 				resize: 'vertical',
 			}),
 		})
-		const inputStyleDesktop = css({
+		const inputStyle = css({
 			'::placeholder': finalStyle['::placeholder'],
-			width: '100%',
+			...defaultInputStyle,
 			...(this.props.textArea
 				? {
 						minHeight: finalStyle.minHeight,
@@ -677,28 +696,13 @@ export default class FInput extends TrackedComponent<Props> {
 				: {
 						height: '100%',
 				  }),
-			textAlign: 'inherit',
-		})
-		const inputStyleMobile = css({
-			'::placeholder': finalStyle['::placeholder'],
-			width: '100%',
-			...(this.props.textArea
-				? {
-						minHeight: finalStyle.minHeight,
-						height: finalStyle.height,
-						resize: 'vertical',
-				  }
-				: {
-						height: '100%',
-				  }),
-			textAlign: 'inherit',
+			...(this.props.style && this.props.style.input),
 		})
 
 		return (
 			<MediaQuery minWidth={config.mobileWidthTrigger}>
 				{(desktop) => {
 					const cssStyle = desktop ? cssDesktop : cssMobile
-					const inputStyle = desktop ? inputStyleDesktop : inputStyleMobile
 					return (
 						<div
 							data-nosnippet

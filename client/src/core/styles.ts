@@ -101,7 +101,6 @@ const styles: Styles & { colors: Colors } = {
 	dropdown: {
 		indicator: { background: 'none' },
 	},
-	dropdownFontWeight: undefined,
 
 	// Table Config
 
@@ -228,8 +227,10 @@ const styles: Styles & { colors: Colors } = {
 			name: string
 			usageBackground?: string
 		} & GlamorProps &
-			React.CSSProperties)[] =
-			(projectOverrides.inputAppearances && projectOverrides.inputAppearances()) || []
+			React.CSSProperties & {
+				':input'?: React.CSSProperties
+				':dropdown-menu'?: React.CSSProperties
+			})[] = (projectOverrides.inputAppearances && projectOverrides.inputAppearances()) || []
 		return base.concat([
 			{
 				name: 'dark',
@@ -380,7 +381,6 @@ export type Styles = {
 	// Dropdown Config
 
 	dropdown: { indicator?: { background: string }; menu?: React.CSSProperties } | undefined
-	dropdownFontWeight: React.CSSProperties['fontWeight']
 
 	// Table Config
 	table:
@@ -426,7 +426,11 @@ export type Styles = {
 		name: string
 		usageBackground?: string
 	} & GlamorProps &
-		React.CSSProperties)[]
+		React.CSSProperties &
+		React.CSSProperties & {
+			':input'?: React.CSSProperties
+			':dropdown-menu'?: React.CSSProperties
+		})[]
 
 	// Cards
 
