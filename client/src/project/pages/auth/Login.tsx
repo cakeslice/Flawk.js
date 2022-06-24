@@ -16,7 +16,7 @@ import styles from 'core/styles'
 import { Form, Formik } from 'formik'
 import { fetchUser } from 'project/redux/AppReducer'
 import { StoreState } from 'project/redux/_store'
-import React, { Component } from 'react'
+import { Component } from 'react'
 import { Helmet } from 'react-helmet'
 import { connect, ConnectedProps } from 'react-redux'
 import MediaQuery from 'react-responsive'
@@ -82,14 +82,7 @@ class Login extends Component<PropsFromRedux> {
 						>
 							{({ isSubmitting, errors }) => {
 								return (
-									<Form
-										style={{
-											...styles.card,
-											paddingRight: 40,
-											paddingLeft: 40,
-										}}
-										noValidate
-									>
+									<Form noValidate>
 										<div className='flex-col items-center justify-center'>
 											<Field
 												component={FInput}

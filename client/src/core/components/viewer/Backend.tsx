@@ -23,7 +23,7 @@ import { Form, Formik } from 'formik'
 import { css } from 'glamor'
 import { fetchUser } from 'project/redux/AppReducer'
 import { StoreState } from 'project/redux/_store'
-import React, { Component } from 'react'
+import { Component } from 'react'
 import ReCaptcha from 'react-google-recaptcha'
 import { connect, ConnectedProps } from 'react-redux'
 import MediaQuery from 'react-responsive'
@@ -491,7 +491,7 @@ class Register extends Component<PropsFromRedux & { desktop?: boolean }> {
 											label={'Verification code'}
 											type={'number'}
 											name='verificationCode'
-											placeholder={'Check your e-mail'}
+											placeholder={'Check your inbox'}
 										/>
 									</div>
 									<sp />
@@ -781,7 +781,7 @@ class Forgot extends Component<PropsFromRedux & { desktop?: boolean }> {
 											label={'Verification code'}
 											type={'number'}
 											name='verificationCode'
-											placeholder={'Check your e-mail'}
+											placeholder={'Check your inbox'}
 										/>
 									</div>
 									<sp />

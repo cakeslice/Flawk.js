@@ -17,7 +17,7 @@ import styles from 'core/styles'
 import { Form, Formik } from 'formik'
 import { fetchUser } from 'project/redux/AppReducer'
 import { StoreState } from 'project/redux/_store'
-import React, { Component } from 'react'
+import { Component } from 'react'
 import ReCaptcha from 'react-google-recaptcha'
 import { Helmet } from 'react-helmet'
 import { connect, ConnectedProps } from 'react-redux'
@@ -66,9 +66,9 @@ class Register extends Component<PropsFromRedux> {
 									)
 
 									if (res.ok && res.body) {
-										this.setState({
+										/* this.setState({
 											emailToVerify: undefined,
-										})
+										}) */
 										if (global.analytics)
 											global.analytics.event({
 												category: 'User',
@@ -90,14 +90,7 @@ class Register extends Component<PropsFromRedux> {
 							>
 								{({ isSubmitting, dirty, errors }) => {
 									return (
-										<Form
-											style={{
-												...styles.card,
-												paddingRight: 40,
-												paddingLeft: 40,
-											}}
-											noValidate
-										>
+										<Form noValidate>
 											<ExitPrompt dirty={dirty} />
 											<div className='flex-col items-center justify-center'>
 												<Field
@@ -107,7 +100,7 @@ class Register extends Component<PropsFromRedux> {
 													label={'Verification code'}
 													type={'number'}
 													name='verificationCode'
-													placeholder={'Check your e-mail'}
+													placeholder={'Check your inbox'}
 												/>
 											</div>
 											<sp />
@@ -180,9 +173,13 @@ class Register extends Component<PropsFromRedux> {
 									this.setState({ wrongLogin: '' })
 									setSubmitting(true)
 
+									const captcha = !config.recaptchaSiteKey
+										? ''
+										: 'recaptchaToken=' + // eslint-disable-line
+										  (config.recaptchaBypass || values.captcha)
+
 									const res = await post(
-										'client/register?recaptchaToken=' +
-											(config.recaptchaBypass || values.captcha),
+										'client/register?' + captcha,
 										{
 											...values,
 											captcha: undefined,
@@ -214,14 +211,7 @@ class Register extends Component<PropsFromRedux> {
 									errors,
 								}) => {
 									return (
-										<Form
-											style={{
-												...styles.card,
-												paddingRight: 40,
-												paddingLeft: 40,
-											}}
-											noValidate
-										>
+										<Form noValidate>
 											<div className='wrapMargin flex flex-wrap justify-start'>
 												<Field
 													component={FInput}

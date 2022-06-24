@@ -309,8 +309,8 @@ const publicConfig: Config = {
 	backendURL: undefined,
 	websocketURL: undefined,
 	preconnectURLs: ['https://fonts.googleapis.com'],
-	noTokenRedirect: 'dashboard',
-	loginRedirect: '/login',
+	noTokenRedirect: '/login',
+	loginRedirect: '/dashboard',
 	restrictedRoutes: ['/dashboard'],
 
 	websocketSupport: false,

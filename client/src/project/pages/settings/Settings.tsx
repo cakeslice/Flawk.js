@@ -17,7 +17,7 @@ import styles from 'core/styles'
 import { Form, Formik } from 'formik'
 import { css } from 'glamor'
 import { DashboardProps } from 'project-types'
-import React, { Component } from 'react'
+import { Component } from 'react'
 import MediaQuery from 'react-responsive'
 
 export default class Settings extends Component<DashboardProps> {
@@ -148,79 +148,71 @@ export default class Settings extends Component<DashboardProps> {
 													placeholder={'******'}
 												/>
 											</div>
+
 											<sp />
-											<div className='wrapMargin flex flex-wrap justify-between'>
-												<div className='flex items-center'>
-													<label
-														htmlFor={
+											<sp />
+											<div className='flex items-center'>
+												<label
+													htmlFor={
+														desktop
+															? 'file_upload'
+															: 'file_upload_mobile'
+													}
+													style={{
+														alignSelf: 'center',
+														display: 'flex',
+														cursor: 'pointer',
+													}}
+												>
+													<input
+														disabled={isSubmitting}
+														type='file'
+														id={
 															desktop
 																? 'file_upload'
 																: 'file_upload_mobile'
 														}
-														style={{
-															alignSelf: 'center',
-															display: 'flex',
-															cursor: 'pointer',
-														}}
-													>
-														<input
-															disabled={isSubmitting}
-															type='file'
-															id={
-																desktop
-																	? 'file_upload'
-																	: 'file_upload_mobile'
+														accept='image/*;capture=camera'
+														onChange={async (e) => {
+															const img =
+																await upload.handleFileChange(e)
+															if (img) {
+																setFieldValue('photoURL', img.url)
+																setFieldValue('photoFile', img.file)
 															}
-															accept='image/*;capture=camera'
-															onChange={async (e) => {
-																const img =
-																	await upload.handleFileChange(e)
-																if (img) {
-																	setFieldValue(
-																		'photoURL',
-																		img.url
-																	)
-																	setFieldValue(
-																		'photoFile',
-																		img.file
-																	)
-																}
-															}}
-														/>
-														<div
-															/* tabIndex={0} */ {...css(
-																styles.fakeButton
-															)}
-														>
-															<Avatar
-																style={{ width: 45, height: 45 }}
-																src={values.photoURL}
-															></Avatar>
-														</div>
-													</label>
-													<div style={{ marginLeft: 10 }}>
-														{config.text(
-															'settings.drawer.account.profileImage'
+														}}
+													/>
+													<div
+														/* tabIndex={0} */ {...css(
+															styles.fakeButton
 														)}
+													>
+														<Avatar
+															style={{ width: 45, height: 45 }}
+															src={values.photoURL}
+														></Avatar>
 													</div>
+												</label>
+												<div style={{ marginLeft: 10 }}>
+													{config.text(
+														'settings.drawer.account.profileImage'
+													)}
 												</div>
-												<div
+											</div>
+
+											<sp />
+											<sp />
+											<div>
+												<FButton
+													onClick={async () => {
+														await global.toggleNightMode()
+													}}
 													style={{
-														width: '50%',
-														paddingLeft: desktop ? 10 : undefined,
+														minWidth: 50,
 													}}
 												>
-													<FButton
-														onClick={async () => {
-															await global.toggleNightMode()
-														}}
-														style={{
-															minWidth: 50,
-														}}
-													>
-														{global.nightMode ? 'Light' : 'Dark'} mode
-													</FButton>
-												</div>
+													{global.nightMode ? 'Light' : 'Dark'} mode
+												</FButton>
 											</div>
 
 											<sp />

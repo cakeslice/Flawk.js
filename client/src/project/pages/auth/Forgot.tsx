@@ -15,7 +15,7 @@ import navigation from 'core/functions/navigation'
 import styles from 'core/styles'
 import { Form, Formik } from 'formik'
 import { StoreState } from 'project/redux/_store'
-import React, { Component } from 'react'
+import { Component } from 'react'
 import ReCaptcha from 'react-google-recaptcha'
 import { Helmet } from 'react-helmet'
 import { connect, ConnectedProps } from 'react-redux'
@@ -68,7 +68,7 @@ class Forgot extends Component<PropsFromRedux> {
 									)
 
 									if (res.ok && res.body) {
-										this.setState({ emailToRecover: undefined })
+										/* this.setState({ emailToRecover: undefined }) */
 										if (global.analytics)
 											global.analytics.event({
 												category: 'User',
@@ -90,27 +90,18 @@ class Forgot extends Component<PropsFromRedux> {
 							>
 								{({ isSubmitting, errors }) => {
 									return (
-										<Form
-											style={{
-												...styles.card,
-												paddingRight: 40,
-												paddingLeft: 40,
-											}}
-											noValidate
-										>
+										<Form noValidate>
 											<div className='flex-col items-center justify-center'>
-												<div>
-													<Field
-														component={FInput}
-														required
-														autoFocus
-														label={'New password'}
-														name='newPassword'
-														autoComplete='new-password'
-														type={'password'}
-														placeholder={'Min. 6 characters'}
-													/>
-												</div>
+												<Field
+													component={FInput}
+													required
+													autoFocus
+													label={'New password'}
+													name='newPassword'
+													autoComplete='new-password'
+													type={'password'}
+													placeholder={'Min. 6 characters'}
+												/>
 												<div style={{ minHeight: 10 }} />
 												<Field
 													component={FInput}
@@ -118,7 +109,7 @@ class Forgot extends Component<PropsFromRedux> {
 													label={'Verification code'}
 													type={'number'}
 													name='verificationCode'
-													placeholder={'Check your e-mail'}
+													placeholder={'Check your inbox'}
 												/>
 											</div>
 											<sp />
@@ -190,9 +181,13 @@ class Forgot extends Component<PropsFromRedux> {
 									this.setState({ wrongLogin: '' })
 									setSubmitting(true)
 
+									const captcha = !config.recaptchaSiteKey
+										? ''
+										: 'recaptchaToken=' + // eslint-disable-line
+										  (config.recaptchaBypass || values.captcha)
+
 									const res = await post(
-										'client/forgot_password?recaptchaToken=' + // eslint-disable-line
-											(config.recaptchaBypass || values.captcha),
+										'client/forgot_password?' + captcha,
 										{
 											...values,
 											captcha: undefined,
@@ -226,14 +221,7 @@ class Forgot extends Component<PropsFromRedux> {
 									touched,
 								}) => {
 									return (
-										<Form
-											style={{
-												...styles.card,
-												paddingRight: 40,
-												paddingLeft: 40,
-											}}
-											noValidate
-										>
+										<Form noValidate>
 											<div className='wrapMargin flex flex-wrap justify-around'>
 												<Field
 													component={FInput}
@@ -326,7 +314,6 @@ class Forgot extends Component<PropsFromRedux> {
 												>
 													{'Recover'}
 												</FButton>
-												<sp></sp>
 											</Animated>
 										</Form>
 									)
