@@ -35,7 +35,7 @@
 		"startLocal": "vite --host --port 4020",
 		"startAndroid": "npm run buildLocal && npx cap sync && cd android && gradlew assembleDebug && gradlew installDebug && cd ..",
 		"startiOS": "npm run buildLocal && npx cap sync && npx cap open ios",
-		"buildCI": "tsc --noEmit && npx browserslist@latest --update-db updates caniuse-lite && vite --sourcemap build",
+		"buildCI": "tsc --noEmit && npx --yes browserslist@latest --update-db updates caniuse-lite && vite --sourcemap build",
 		"buildLocal": "npm run generateFavicon && npm run auditCI && npm run testCI && npm run buildCI && npm run analyzeBundle",
 		"buildPushDocker": "npm run buildLocal && cross-env-shell docker image build -t $DOCKER_IMAGE . -f Dockerfile.local && cross-env-shell docker push $DOCKER_IMAGE && cross-env-shell docker run caprover/cli-caprover:v2.1.1 caprover deploy --caproverUrl $CAPROVER_URL --caproverPassword $CAPROVER_PASSWORD --caproverApp $CAPROVER_APP --imageName $DOCKER_IMAGE && cross-env-shell docker image rm $DOCKER_IMAGE",
 		"buildAndroid": "npm run buildLocal && npm run packageAndroid",
