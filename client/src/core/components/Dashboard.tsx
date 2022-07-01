@@ -75,6 +75,7 @@ type DashboardProps = {
 	containerStyle?: React.CSSProperties
 	placeholderStyle?: React.CSSProperties
 	mobileStyle?: React.CSSProperties
+	//** Component that wraps all pages. Will receive DashboardWrapperProps */
 	wrapperComponent: React.ReactNode
 	path: string
 	logo: string
@@ -433,16 +434,9 @@ class DashboardClass extends TrackedComponent<
 
 															{this.props.mobileHeader ||
 																(selectedMobileName ? (
-																	<div
-																		style={{
-																			fontWeight: 'bold',
-																			fontSize: 20,
-																			opacity: 0.6,
-																		}}
-																		className='flex items-center'
-																	>
+																	<h3 className='flex items-center'>
 																		{selectedMobileName}
-																	</div>
+																	</h3>
 																) : (
 																	<button
 																		className='flex items-center'
@@ -535,8 +529,12 @@ class DashboardClass extends TrackedComponent<
 																				// @ts-ignore
 																				<WrapperComponent
 																					parentTitle={
-																						route.name ||
-																						''
+																						this.props
+																							.mobileHeader ||
+																						desktop
+																							? route.name ||
+																							  ''
+																							: ''
 																					}
 																					overrideHeader={
 																						sub.overrideHeader
@@ -620,7 +618,13 @@ class DashboardClass extends TrackedComponent<
 																		overrideHeader={
 																			route.overrideHeader
 																		}
-																		title={route.name}
+																		title={
+																			this.props
+																				.mobileHeader ||
+																			desktop
+																				? route.name
+																				: ''
+																		}
 																	>
 																		<Suspense
 																			fallback={placeholder}

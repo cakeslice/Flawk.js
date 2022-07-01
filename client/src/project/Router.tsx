@@ -404,7 +404,7 @@ class DashboardWrapper extends Component<DashboardWrapperProps> {
 							maxWidth: config.publicMaxWidth,
 						}}
 					>
-						{!this.props.overrideHeader && (
+						{!this.props.overrideHeader && this.props.title && (
 							<div style={projectStyles.dashboardHeader}>
 								<h3>
 									{this.props.parentTitle ? this.props.parentTitle + ': ' : ''}
