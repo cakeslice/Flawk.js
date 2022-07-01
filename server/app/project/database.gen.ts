@@ -73,6 +73,7 @@ export type Client = {
 	state?: 'pending' | 'active' | 'canceled'
 	flags: ('suspended' | 'verified')[]
 	contexts: 'manager'[]
+	referralCode?: string
 	personal: {
 		
 		firstName?: string
@@ -207,6 +208,7 @@ export type ClientDocument = mongoose.Document<mongoose.Types.ObjectId, ClientQu
 		state?: 'pending' | 'active' | 'canceled'
 		flags: mongoose.Types.Array<'suspended' | 'verified'>
 		contexts: mongoose.Types.Array<'manager'>
+		referralCode?: string
 		personal: {
 			
 			firstName?: string

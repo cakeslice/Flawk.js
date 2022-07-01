@@ -14,6 +14,7 @@ import { getNextRef } from 'core/functions/db'
 import { sendEmail } from 'core/functions/email'
 import crypto from 'crypto-extra'
 import jwt from 'jsonwebtoken'
+import { nanoid } from 'nanoid'
 import { Client } from 'project/database'
 
 const router = Router()
@@ -116,6 +117,8 @@ router.postAsync(Register.call, async (req, res) => {
 		max: 99999,
 	})
 
+	const referralCode = nanoid(11) // How long should it be: https://zelark.github.io/nano-id-cc/
+
 	const ref = await getNextRef(Client)
 	let newUser
 	if (!user) {
@@ -136,6 +139,7 @@ router.postAsync(Register.call, async (req, res) => {
 						photoURL: 'https://i.pravatar.cc/500?u=' + body.email,
 					}),
 			},
+			referralCode: referralCode,
 		})
 	} else {
 		user.personal = {

@@ -58,6 +58,8 @@ const ClientSchema = db.attachPlugins(
 		flags: [{ type: String, enum: ['suspended', 'verified'] }],
 		contexts: [{ type: String, enum: ['manager'] }],
 
+		referralCode: String,
+
 		personal: {
 			select: false,
 
