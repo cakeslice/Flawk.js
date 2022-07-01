@@ -21,7 +21,7 @@ import { Form, Formik } from 'formik'
 import { css } from 'glamor'
 import _find from 'lodash/find'
 import _uniqBy from 'lodash/uniqBy'
-import React, { Component } from 'react'
+import { Component } from 'react'
 import MediaQuery from 'react-responsive'
 import { Next, Section } from './ComponentsViewer'
 
@@ -181,7 +181,7 @@ export default class Inputs extends Component {
 										label='Password'
 										placeholder='******'
 									/>
-									<FInput type='number' label='Number' placeholder='1337' />
+									<FInput type='number' label='Number' placeholder='20.000' />
 
 									<FInput label='Centered' placeholder='Hello' center={true} />
 								</div>
@@ -897,7 +897,7 @@ import Dropdown from 'core/components/Dropdown'
 													<Field
 														component={FInput}
 														required
-														type='number'
+														type='string'
 														name='phone'
 														label={config.text(
 															'settings.drawer.account.phone'

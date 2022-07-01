@@ -12,7 +12,9 @@ import { format } from 'date-fns'
 import { FormIKStruct, GlamorProps, Obj } from 'flawk-types'
 import { FieldInputProps, FormikProps } from 'formik'
 import { css, StyleAttribute } from 'glamor'
+import numeral from 'numeral'
 import React, { LegacyRef, Suspense } from 'react'
+import NumberFormat from 'react-number-format'
 import MediaQuery from 'react-responsive'
 import TextareaAutosize, { TextareaAutosizeProps } from 'react-textarea-autosize'
 import './FInput.scss'
@@ -91,13 +93,33 @@ const TextArea = (
 	return <textarea ref={inputRef} {...other}></textarea>
 }
 const Input = (
-	props: { inputRef: LegacyRef<HTMLInputElement> } & React.DetailedHTMLProps<
-		React.InputHTMLAttributes<HTMLInputElement>,
-		HTMLInputElement
-	>
+	props: {
+		formatNumber?: FormatNumberProps
+		inputRef: LegacyRef<HTMLInputElement>
+	} & React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>
 ) => {
-	const { inputRef, ...other } = props
-	return <input ref={inputRef} {...other}></input>
+	// eslint-disable-next-line
+	const { inputRef, type, formatNumber, onChange, ...other } = props
+
+	const locale = numeral.localeData()
+
+	// eslint-disable-next-line
+	if (props.type === 'number' && (!props.formatNumber || !props.formatNumber.disable))
+		return (
+			<NumberFormat
+				displayType={'input'}
+				decimalScale={0}
+				decimalSeparator={locale.delimiters.decimal}
+				thousandSeparator={locale.delimiters.thousands}
+				//ref={inputRef}
+				// @ts-ignore
+				// eslint-disable-next-line
+				onValueChange={props.onChange}
+				{...other}
+				{...formatNumber}
+			></NumberFormat>
+		)
+	else return <input ref={inputRef} onChange={onChange} type={type} {...other}></input>
 }
 const DatePicker = (
 	props: {
@@ -177,6 +199,23 @@ const DatePicker = (
 	</Suspense>
 )
 
+type FormatNumberProps = {
+	/** Set to true to disable formatting (plain number input) */
+	disable?: true
+	/** Example: '$' */
+	prefix?: string
+	/** Example: 'm²' */
+	suffix?: string
+	/** Set to false to disable */
+	thousandSeparator?: false
+	/** Default is 0 */
+	decimalScale?: number
+	/** Default is false */
+	allowLeadingZeros?: boolean
+	/** Default is false */
+	allowEmptyFormatting?: boolean
+}
+
 type Props = {
 	style?: React.CSSProperties & GlamorProps & { input?: React.CSSProperties }
 	appearance?: string
@@ -201,8 +240,6 @@ type Props = {
 	required?: boolean | string
 	/** If true and isDisabled is true, skips 'disabled' styling */
 	simpleDisabled?: boolean
-	/** If true 'onChange' will only be trigerred if the input value doesn't change for a certain amount of time. Use 'bufferInterval' to override the default time interval */
-	type?: React.HTMLInputTypeAttribute
 	//
 	field?: FieldInputProps<Obj>
 	form?: FormikProps<Obj>
@@ -216,18 +253,32 @@ type Props = {
 	eventOverride?: 'focus' | 'hover'
 } & (
 	| {
-			bufferedInput?: true
-			bufferInterval?: number
-			/** If 'bufferedInput' is true, this function will be called everytime the input value changes without waiting for 'bufferInterval' */
-			onChangeNoBuffer?: (value: string | number | undefined) => void
+			type: 'number'
+			/** If type is 'number' use this prop to format the input */
+			formatNumber?: FormatNumberProps
 	  }
 	| {
-			bufferedInput?: undefined
-			bufferInterval?: undefined
-			/** If 'bufferedInput' is true, this function will be called everytime the input value changes without waiting for 'bufferInterval' */
-			onChangeNoBuffer?: undefined
+			type?: Exclude<React.HTMLInputTypeAttribute, 'number'>
+			/** If type is 'number' use this prop to format the input */
+			formatNumber?: undefined
 	  }
 ) &
+	(
+		| {
+				/** If true 'onChange' will only be trigerred if the input value doesn't change for a certain amount of time. Use 'bufferInterval' to override the default time interval */
+				bufferedInput?: true
+				bufferInterval?: number
+				/** If 'bufferedInput' is true, this function will be called everytime the input value changes without waiting for 'bufferInterval' */
+				onChangeNoBuffer?: (value: string | number | undefined) => void
+		  }
+		| {
+				/** If true 'onChange' will only be trigerred if the input value doesn't change for a certain amount of time. Use 'bufferInterval' to override the default time interval */
+				bufferedInput?: undefined
+				bufferInterval?: undefined
+				/** If 'bufferedInput' is true, this function will be called everytime the input value changes without waiting for 'bufferInterval' */
+				onChangeNoBuffer?: undefined
+		  }
+	) &
 	(
 		| {
 				textArea?: boolean
@@ -331,7 +382,10 @@ export default class FInput extends TrackedComponent<Props> {
 	handleChangeBuffered = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
 		this.bufferedValue =
 			this.props.type === 'number'
-				? e.target.value === ''
+				? !this.props.formatNumber || !this.props.formatNumber.disable
+					? // @ts-ignore
+					  e.floatValue
+					: e.target.value === ''
 					? undefined
 					: Number(e.target.value)
 				: e.target.value === ''
@@ -628,9 +682,12 @@ export default class FInput extends TrackedComponent<Props> {
 		const valueProps = {
 			value: controlled ? (value === undefined ? '' : value) : undefined,
 			onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-				const v =
+				const v: string | number | undefined =
 					this.props.type === 'number'
-						? e.target.value === ''
+						? !this.props.formatNumber || !this.props.formatNumber.disable
+							? // @ts-ignore
+							  e.floatValue
+							: e.target.value === ''
 							? undefined
 							: Number(e.target.value)
 						: e.target.value === ''
@@ -815,6 +872,7 @@ export default class FInput extends TrackedComponent<Props> {
 											{...valueProps}
 											{...inputEventProps}
 											{...inputStyle}
+											formatNumber={this.props.formatNumber}
 										/>
 									) : (
 										<MaskedInput

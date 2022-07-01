@@ -108,6 +108,7 @@ class Forgot extends Component<PropsFromRedux> {
 													required
 													label={'Verification code'}
 													type={'number'}
+													formatNumber={{ disable: true }}
 													name='verificationCode'
 													placeholder={'Check your inbox'}
 												/>

@@ -99,6 +99,7 @@ class Register extends Component<PropsFromRedux> {
 													autoFocus
 													label={'Verification code'}
 													type={'number'}
+													formatNumber={{ disable: true }}
 													name='verificationCode'
 													placeholder={'Check your inbox'}
 												/>

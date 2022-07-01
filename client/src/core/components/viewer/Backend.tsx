@@ -490,6 +490,7 @@ class Register extends Component<PropsFromRedux & { desktop?: boolean }> {
 											//autoFocus
 											label={'Verification code'}
 											type={'number'}
+											formatNumber={{ disable: true }}
 											name='verificationCode'
 											placeholder={'Check your inbox'}
 										/>
@@ -780,6 +781,7 @@ class Forgot extends Component<PropsFromRedux & { desktop?: boolean }> {
 											required
 											label={'Verification code'}
 											type={'number'}
+											formatNumber={{ disable: true }}
 											name='verificationCode'
 											placeholder={'Check your inbox'}
 										/>
