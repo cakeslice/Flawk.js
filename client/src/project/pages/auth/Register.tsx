@@ -7,7 +7,6 @@
 
 import { post } from 'core/api'
 import Animated from 'core/components/Animated'
-import ExitPrompt from 'core/components/ExitPrompt'
 import FButton from 'core/components/FButton'
 import Field from 'core/components/Field'
 import FInput from 'core/components/FInput'
@@ -91,7 +90,8 @@ class Register extends Component<PropsFromRedux> {
 								{({ isSubmitting, dirty, errors }) => {
 									return (
 										<Form noValidate>
-											<ExitPrompt dirty={dirty} />
+											{/* Disabled since it will prompt after registration redirect
+											<ExitPrompt dirty={dirty} /> */}
 											<div className='flex-col items-center justify-center'>
 												<Field
 													component={FInput}
