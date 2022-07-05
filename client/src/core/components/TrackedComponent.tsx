@@ -6,8 +6,62 @@
  */
 
 import config from 'core/config'
-import { Component } from 'react'
+import { Component, useEffect, useRef } from 'react'
 import isEqual from 'react-fast-compare'
+
+function usePrevious<T>(value: T) {
+	const ref = useRef(value)
+	useEffect(() => {
+		ref.current = value
+	})
+	return ref.current
+}
+export function useTracking<T>(trackedName: string, nextProps: T, trackedProps: string[]) {
+	if (!config.prod && !config.staging) {
+		// eslint-disable-next-line
+		const props = usePrevious(nextProps)
+
+		// eslint-disable-next-line
+		useEffect(() => {
+			const name =
+				trackedName +
+				// @ts-ignore
+				(props.name
+					? // @ts-ignore
+					  ' "' + props.name + '"'
+					: // @ts-ignore
+					props.field && props.field.name
+					? // @ts-ignore
+					  ' "' + props.field.name + '"'
+					: // @ts-ignore
+					props.trackedName
+					? // @ts-ignore
+					  ' "' + props.trackedName + '"'
+					: '')
+
+			if (nextProps)
+				Object.keys(nextProps).forEach((key) => {
+					if (trackedProps) {
+						for (let i = 0; i < trackedProps.length; i++) {
+							const t = trackedProps[i]
+							if (t !== key) return
+						}
+					}
+
+					if (
+						// @ts-ignore
+						nextProps[key] !== props[key] ||
+						// @ts-ignore
+						!isEqual(nextProps[key], props[key])
+					) {
+						global.stats && global.stats.track(name, 'prop/' + key)
+					}
+				})
+
+			global.stats && global.stats.track(name, 'totalRenders')
+		})
+	}
+}
 
 // eslint-disable-next-line
 export default class TrackedComponent<Props = {}, State = {}> extends Component<Props, State> {

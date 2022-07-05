@@ -7,6 +7,8 @@
 
 import TrackedComponent from 'core/components/TrackedComponent'
 import { Obj } from 'flawk-types'
+import { useCallback, useEffect, useState } from 'react'
+import isEqual from 'react-fast-compare'
 
 export const getSearch = (object: Obj, removeEmpty = true) => {
 	if (removeEmpty)
@@ -44,6 +46,78 @@ export const parseSearch = (input: string, removeEmpty = true) => {
 	return obj
 }
 
+export function useQueryParams<
+	T = {
+		page: number
+		limit: number
+		sort?: string
+		order?: 'asc' | 'desc'
+		search?: string
+		startDate?: Date
+		endDate?: Date
+	}
+>(defaultParams?: T) {
+	const _getAndParseSearch = (object: Obj) =>
+		parseSearch(getSearch(object, false), false) as Record<keyof T, string>
+	const _parsedDefaultParams = _getAndParseSearch(defaultParams as Obj)
+
+	function _parseQueryParams(): Record<keyof T, string> {
+		if (window.location.search) {
+			return {
+				..._parsedDefaultParams,
+				...parseSearch(window.location.search),
+			}
+		} else return { ..._parsedDefaultParams }
+	}
+
+	//
+
+	const [queryParams, setQuery] = useState<Record<keyof T, string>>(_parseQueryParams())
+
+	useEffect(() => {
+		// Update the cache if there's an update
+		const newParams = _parseQueryParams()
+		if (!isEqual(newParams, queryParams)) setQuery(newParams)
+	})
+
+	function setQueryParams(obj: Partial<T>, addHistory = false) {
+		const nextQueryParams = {
+			..._parseQueryParams(),
+			..._getAndParseSearch(obj),
+		}
+
+		Object.keys(nextQueryParams).forEach((key) => {
+			const k = key as keyof T
+
+			// Remove params that match the default or are empty
+			if (nextQueryParams[k] === _parsedDefaultParams[k] || nextQueryParams[k] === '') {
+				delete nextQueryParams[k]
+			}
+		})
+
+		const search = getSearch(nextQueryParams)
+		const url = (search ? '?' + search : '') + window.location.hash
+		if (addHistory) {
+			window.history.pushState({}, '', url)
+		} else {
+			window.history.replaceState({}, '', url)
+		}
+
+		// ! BUG: we set state param BUT if we fetch right after it won't work!
+
+		setQuery(_parseQueryParams())
+	}
+
+	const queryString = useCallback(
+		(object?: Obj) => {
+			return getSearch(object || (queryParams as Obj))
+		},
+		[queryParams]
+	)
+
+	return { queryParams, setQueryParams, queryString }
+}
+
 export default class QueryParams<
 	T = {
 		page: number
@@ -66,6 +140,7 @@ export default class QueryParams<
 		// eslint-disable-next-line
 		// ! NOTE: This really only works in UNSAFE_componentWillMount
 		// If you try to do a fetch with a 'limit' query param with a default value of '10', it will be 'undefined' if this code is in the constructor or componentDidMount
+		// It doesn't work on the constructor because the target class is extending this class
 
 		this._parsedDefaultParams = this._getAndParseSearch(this.defaultQueryParams as Obj)
 	}
@@ -117,8 +192,8 @@ export default class QueryParams<
 			}
 		})
 
-		const search = '?' + getSearch(nextQueryParams)
-		const url = search + window.location.hash
+		const search = getSearch(nextQueryParams)
+		const url = (search ? '?' + search : '') + window.location.hash
 		if (addHistory) {
 			window.history.pushState({}, '', url)
 		} else {
