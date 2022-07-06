@@ -6,8 +6,57 @@
  */
 
 import config from 'core/config'
-import { Component } from 'react'
+import { usePrevious } from 'core/functions/hooks'
+import { Component, useEffect } from 'react'
 import isEqual from 'react-fast-compare'
+
+export function useTracking<T>(trackedName: string, props: T, trackedProps?: string[]) {
+	if (!config.prod && !config.staging) {
+		// eslint-disable-next-line
+		const previousProps = usePrevious(props)
+
+		// eslint-disable-next-line
+		useEffect(() => {
+			const name =
+				trackedName +
+				// @ts-ignore
+				(previousProps.name
+					? // @ts-ignore
+					  ' "' + previousProps.name + '"'
+					: // @ts-ignore
+					previousProps.field && previousProps.field.name
+					? // @ts-ignore
+					  ' "' + previousProps.field.name + '"'
+					: // @ts-ignore
+					previousProps.trackedName
+					? // @ts-ignore
+					  ' "' + previousProps.trackedName + '"'
+					: '')
+
+			Object.keys(props).forEach((key) => {
+				if (trackedProps) {
+					for (let i = 0; i < trackedProps.length; i++) {
+						const t = trackedProps[i]
+						if (t !== key) return
+					}
+				}
+
+				if (
+					// @ts-ignore
+					props[key] !== previousProps[key] ||
+					// @ts-ignore
+					!isEqual(props[key], previousProps[key])
+				) {
+					global.stats && global.stats.track(name, 'prop/' + key)
+				}
+			})
+
+			global.stats && global.stats.track(name, 'totalRenders')
+
+			// We need to track renders even if props don't change so no dependencies...
+		})
+	}
+}
 
 // eslint-disable-next-line
 export default class TrackedComponent<Props = {}, State = {}> extends Component<Props, State> {

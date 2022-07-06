@@ -22,7 +22,7 @@ import React, { Component, Suspense, useCallback, useState } from 'react'
 import { ErrorBoundary, FallbackProps } from 'react-error-boundary'
 import GitInfo from 'react-git-info/macro'
 import { Helmet } from 'react-helmet'
-import MediaQuery from 'react-responsive'
+import { useMediaQuery } from 'react-responsive'
 import io from 'socket.io-client'
 import * as uuid from 'uuid'
 import FButton from './FButton'
@@ -159,8 +159,8 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 	const [socketConnected, setSocketConnected] = useState(false)
 	const [socketConnectionDelay, setSocketConnectionDelay] = useState(false)
 	const [oldBuild, setOldBuild] = useState(false)
-	const [build, setBuildNumber] = useState<string | undefined>(undefined)
-	const [cookie, setCookieNotice] = useState<string | undefined>(undefined)
+	const [build, setBuildNumber] = useState<string>()
+	const [cookie, setCookieNotice] = useState<string>()
 
 	// ! Should be on top of your function after state is declared
 	useConstructor(() => {
@@ -411,301 +411,290 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 		}
 	}
 
+	const desktop = useMediaQuery({ minWidth: config.mobileWidthTrigger })
 	return (
 		<ErrorBoundary FallbackComponent={ErrorFallback}>
 			<Suspense fallback={<></>}>
-				<MediaQuery minWidth={config.mobileWidthTrigger}>
-					{(desktop) => (
-						<>
-							<Helmet>
-								<title>{title}</title>
-								{Capacitor.isNativePlatform() && (
-									<meta
-										name='viewport'
-										content={
-											'width=device-width, initial-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover'
-										}
-									/>
-								)}
-								{config.appleBrowser && !desktop && (
-									<meta
-										name='viewport'
-										content={
-											'width=device-width, initial-scale=1, maximum-scale=1'
-										}
-									/>
-								)}
-								<meta name='description' content={config.description()} />
-								{/* Don't use canonical unless you have to and don't use redudant og tags like description and url */}
-								{/* Helmet replaces the title and meta tags so if you want to use the default description in other pages you don't have to declare it again */}
-								{config.preconnectURLs &&
-									config.preconnectURLs.map((p) => (
-										<link key={p} rel='preconnect' href={p}></link>
-									))}
-								{config.backendURL && (
-									<link rel='preconnect' href={config.backendURL}></link>
-								)}
-							</Helmet>
+				<>
+					<Helmet>
+						<title>{title}</title>
+						{Capacitor.isNativePlatform() && (
+							<meta
+								name='viewport'
+								content={
+									'width=device-width, initial-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover'
+								}
+							/>
+						)}
+						{config.appleBrowser && !desktop && (
+							<meta
+								name='viewport'
+								content={'width=device-width, initial-scale=1, maximum-scale=1'}
+							/>
+						)}
+						<meta name='description' content={config.description()} />
+						{/* Don't use canonical unless you have to and don't use redudant og tags like description and url */}
+						{/* Helmet replaces the title and meta tags so if you want to use the default description in other pages you don't have to declare it again */}
+						{config.preconnectURLs &&
+							config.preconnectURLs.map((p) => (
+								<link key={p} rel='preconnect' href={p}></link>
+							))}
+						{config.backendURL && (
+							<link rel='preconnect' href={config.backendURL}></link>
+						)}
+					</Helmet>
 
-							{inRestrictedRoute && oldBuild && (
-								<div data-nosnippet style={{ maxHeight: 0 }}>
-									<Animated
-										trackedName='AppBase'
-										animateOffscreen
-										effects={['fade', 'up']}
-										distance={50}
-										duration={0.5}
-										style={bannerStyle(desktop)}
-									>
-										<div></div>
+					{inRestrictedRoute && oldBuild && (
+						<div data-nosnippet style={{ maxHeight: 0 }}>
+							<Animated
+								trackedName='AppBase'
+								animateOffscreen
+								effects={['fade', 'up']}
+								distance={50}
+								duration={0.5}
+								style={bannerStyle(desktop)}
+							>
+								<div></div>
 
-										<p
-											style={{
-												opacity: 0.75,
-												color: 'white',
-											}}
-										>
-											{config.text('extras.newUpdate')}
-										</p>
-
-										<FButton
-											appearance='primary'
-											style={{
-												marginLeft: 15,
-												minHeight: 30,
-												minWidth: 0,
-											}}
-											onClick={() => {
-												window.location.reload()
-											}}
-										>
-											REFRESH
-										</FButton>
-
-										<div></div>
-									</Animated>
-								</div>
-							)}
-							{inRestrictedRoute &&
-								config.websocketSupport &&
-								!socketConnected &&
-								socketConnectionDelay && (
-									<div data-nosnippet style={{ maxHeight: 0 }}>
-										<Animated
-											trackedName='AppBase-socketConnectionDelay'
-											animateOffscreen
-											effects={['fade', 'up']}
-											distance={50}
-											duration={0.5}
-											style={{
-												...bannerStyle(desktop),
-												background: config.replaceAlpha(
-													styles.colors.red,
-													0.9
-												),
-											}}
-										>
-											<p style={{ color: 'white' }}>
-												{config.text('extras.connectionLost')}
-											</p>
-										</Animated>
-									</div>
-								)}
-							{config.showCookieNotice && cookieNotice === 'false' && (
-								<div data-nosnippet style={{ maxHeight: 0 }}>
-									<Animated
-										trackedName='AppBase-cookieNotice'
-										animateOffscreen
-										effects={['fade', 'up']}
-										distance={50}
-										duration={0.5}
-										delay={2}
-										//
-										style={bannerStyle(desktop)}
-									>
-										<div></div>
-
-										<p
-											data-nosnippet
-											style={{
-												marginRight: 15,
-												opacity: 0.75,
-												color: 'white',
-											}}
-										>
-											{config.text(
-												config.hasEssentialCookies
-													? 'common.essentialCookieWarning'
-													: 'common.cookieWarning',
-												global.lang.text,
-												[
-													{
-														key: '{{cookiePolicy}}',
-														value:
-															'<a style="color:white;text-decoration:underline" target="_blank" href="' +
-															config.cookiePolicyURL +
-															'">' +
-															config.text('common.cookiePolicy') +
-															'</a>',
-													},
-													{
-														key: '{{break}}',
-														value: desktop ? ' ' : '<br/>',
-													},
-												]
-											)}
-										</p>
-
-										<div
-											className={!desktop ? 'flex-col items-center' : 'flex'}
-											style={{
-												flexFlow: !desktop ? 'column-reverse' : undefined,
-											}}
-										>
-											<FButton
-												style={{
-													fontSize: 13,
-													marginTop: !desktop ? 10 : undefined,
-													minHeight: 30,
-													minWidth: 0,
-													...(!desktop && {
-														width: 100,
-													}),
-												}}
-												onClick={async () => {
-													await global.storage.setItem(
-														'cookie_notice',
-														'essential'
-													)
-													setCookieNotice('essential')
-												}}
-											>
-												{config.hasEssentialCookies
-													? config.text('common.essentialCookies')
-													: config.text('common.rejectCookies')}
-											</FButton>
-
-											<FButton
-												appearance='primary'
-												style={{
-													fontSize: 13,
-													marginLeft: desktop ? 7.5 : undefined,
-													minHeight: 30,
-													minWidth: 0,
-													...(!desktop && {
-														width: 100,
-													}),
-												}}
-												onClick={async () => {
-													await global.storage.setItem(
-														'cookie_notice',
-														'all'
-													)
-													if (global.gotConsent) await global.gotConsent()
-													setCookieNotice('all')
-												}}
-											>
-												{config.text('common.acceptCookies')}
-											</FButton>
-										</div>
-
-										<div></div>
-									</Animated>
-								</div>
-							)}
-							{/* @ts-ignore */}
-							<Child></Child>
-							{!config.prod && (
-								<div
-									data-nosnippet
+								<p
 									style={{
-										position: 'fixed',
-										bottom: 0,
-										right: 20,
-										display: 'flex',
-										alignItems: 'flex-end',
-										marginBottom: 5,
-										zIndex: 100,
-										height: 45,
-										justifyContent: 'flex-end',
-										maxWidth: 355,
-										userSelect: 'none',
-										paddingLeft: 10,
-										opacity: 0.8,
-										pointerEvents: 'none',
+										opacity: 0.75,
+										color: 'white',
 									}}
 								>
-									<div>
-										<div
-											style={{
-												color: 'red',
-												fontSize: 12,
-												fontWeight: 'bold',
-												textShadow: '1px 1px 2px rgba(0,0,0,.5)',
-											}}
-										>
-											{(!config.staging ? 'DEV' : 'STAG') + '@' + gitHash}
-										</div>
-										{build && (
-											<div
-												style={{
-													color: 'red',
-													fontSize: 12,
-													fontWeight: 'bold',
-													textShadow: '1px 1px 2px rgba(0,0,0,.5)',
-												}}
-											>
-												{'SERV@' + build.split('_')[1]}
-											</div>
-										)}
-									</div>
+									{config.text('extras.newUpdate')}
+								</p>
 
-									{desktop && !config.staging && config.darkModeAvailable && (
-										<button
-											type='button'
-											style={devInfo}
-											onClick={async () => {
-												await toggleNightMode()
-											}}
-										>
-											DARK
-										</button>
-									)}
+								<FButton
+									appearance='primary'
+									style={{
+										marginLeft: 15,
+										minHeight: 30,
+										minWidth: 0,
+									}}
+									onClick={() => {
+										window.location.reload()
+									}}
+								>
+									REFRESH
+								</FButton>
 
-									{desktop && !config.staging && (
-										<button
-											type='button'
-											style={devInfo}
-											onClick={async () => {
-												config.changeLang()
-												await global.storage.setItem(
-													'lang',
-													JSON.stringify(global.lang)
-												)
-												window.location.reload()
-											}}
-										>
-											LANG-
-											{global.lang.text}
-										</button>
-									)}
-
-									{desktop && !config.staging && (
-										<button
-											type='button'
-											onClick={() => {
-												window.open('/components', '_blank')
-											}}
-											style={devInfo}
-										>
-											STYLE
-										</button>
-									)}
-								</div>
-							)}
-						</>
+								<div></div>
+							</Animated>
+						</div>
 					)}
-				</MediaQuery>
+					{inRestrictedRoute &&
+						config.websocketSupport &&
+						!socketConnected &&
+						socketConnectionDelay && (
+							<div data-nosnippet style={{ maxHeight: 0 }}>
+								<Animated
+									trackedName='AppBase-socketConnectionDelay'
+									animateOffscreen
+									effects={['fade', 'up']}
+									distance={50}
+									duration={0.5}
+									style={{
+										...bannerStyle(desktop),
+										background: config.replaceAlpha(styles.colors.red, 0.9),
+									}}
+								>
+									<p style={{ color: 'white' }}>
+										{config.text('extras.connectionLost')}
+									</p>
+								</Animated>
+							</div>
+						)}
+					{config.showCookieNotice && cookieNotice === 'false' && (
+						<div data-nosnippet style={{ maxHeight: 0 }}>
+							<Animated
+								trackedName='AppBase-cookieNotice'
+								animateOffscreen
+								effects={['fade', 'up']}
+								distance={50}
+								duration={0.5}
+								delay={2}
+								//
+								style={bannerStyle(desktop)}
+							>
+								<div></div>
+
+								<p
+									data-nosnippet
+									style={{
+										marginRight: 15,
+										opacity: 0.75,
+										color: 'white',
+									}}
+								>
+									{config.text(
+										config.hasEssentialCookies
+											? 'common.essentialCookieWarning'
+											: 'common.cookieWarning',
+										global.lang.text,
+										[
+											{
+												key: '{{cookiePolicy}}',
+												value:
+													'<a style="color:white;text-decoration:underline" target="_blank" href="' +
+													config.cookiePolicyURL +
+													'">' +
+													config.text('common.cookiePolicy') +
+													'</a>',
+											},
+											{
+												key: '{{break}}',
+												value: desktop ? ' ' : '<br/>',
+											},
+										]
+									)}
+								</p>
+
+								<div
+									className={!desktop ? 'flex-col items-center' : 'flex'}
+									style={{
+										flexFlow: !desktop ? 'column-reverse' : undefined,
+									}}
+								>
+									<FButton
+										style={{
+											fontSize: 13,
+											marginTop: !desktop ? 10 : undefined,
+											minHeight: 30,
+											minWidth: 0,
+											...(!desktop && {
+												width: 100,
+											}),
+										}}
+										onClick={async () => {
+											await global.storage.setItem(
+												'cookie_notice',
+												'essential'
+											)
+											setCookieNotice('essential')
+										}}
+									>
+										{config.hasEssentialCookies
+											? config.text('common.essentialCookies')
+											: config.text('common.rejectCookies')}
+									</FButton>
+
+									<FButton
+										appearance='primary'
+										style={{
+											fontSize: 13,
+											marginLeft: desktop ? 7.5 : undefined,
+											minHeight: 30,
+											minWidth: 0,
+											...(!desktop && {
+												width: 100,
+											}),
+										}}
+										onClick={async () => {
+											await global.storage.setItem('cookie_notice', 'all')
+											if (global.gotConsent) await global.gotConsent()
+											setCookieNotice('all')
+										}}
+									>
+										{config.text('common.acceptCookies')}
+									</FButton>
+								</div>
+
+								<div></div>
+							</Animated>
+						</div>
+					)}
+					{/* @ts-ignore */}
+					<Child></Child>
+					{!config.prod && (
+						<div
+							data-nosnippet
+							style={{
+								position: 'fixed',
+								bottom: 0,
+								right: 20,
+								display: 'flex',
+								alignItems: 'flex-end',
+								marginBottom: 5,
+								zIndex: 100,
+								height: 45,
+								justifyContent: 'flex-end',
+								maxWidth: 355,
+								userSelect: 'none',
+								paddingLeft: 10,
+								opacity: 0.8,
+								pointerEvents: 'none',
+							}}
+						>
+							<div>
+								<div
+									style={{
+										color: 'red',
+										fontSize: 12,
+										fontWeight: 'bold',
+										textShadow: '1px 1px 2px rgba(0,0,0,.5)',
+									}}
+								>
+									{(!config.staging ? 'DEV' : 'STAG') + '@' + gitHash}
+								</div>
+								{build && (
+									<div
+										style={{
+											color: 'red',
+											fontSize: 12,
+											fontWeight: 'bold',
+											textShadow: '1px 1px 2px rgba(0,0,0,.5)',
+										}}
+									>
+										{'SERV@' + build.split('_')[1]}
+									</div>
+								)}
+							</div>
+
+							{desktop && !config.staging && config.darkModeAvailable && (
+								<button
+									type='button'
+									style={devInfo}
+									onClick={async () => {
+										await toggleNightMode()
+									}}
+								>
+									DARK
+								</button>
+							)}
+
+							{desktop && !config.staging && (
+								<button
+									type='button'
+									style={devInfo}
+									onClick={async () => {
+										config.changeLang()
+										await global.storage.setItem(
+											'lang',
+											JSON.stringify(global.lang)
+										)
+										window.location.reload()
+									}}
+								>
+									LANG-
+									{global.lang.text}
+								</button>
+							)}
+
+							{desktop && !config.staging && (
+								<button
+									type='button'
+									onClick={() => {
+										window.open('/components', '_blank')
+									}}
+									style={devInfo}
+								>
+									STYLE
+								</button>
+							)}
+						</div>
+					)}
+				</>
 			</Suspense>
 		</ErrorBoundary>
 	)

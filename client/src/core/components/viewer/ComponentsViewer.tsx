@@ -16,8 +16,8 @@ import config from 'core/config'
 import styles from 'core/styles'
 import { css } from 'glamor'
 import { github } from 'project/components/Icons'
-import React, { Component } from 'react'
-import MediaQuery from 'react-responsive'
+import React, { useEffect, useMemo, useState } from 'react'
+import { useMediaQuery } from 'react-responsive'
 import * as uuid from 'uuid'
 import FButton from '../FButton'
 import CodeCollapse from './common/CodeCollapse'
@@ -45,324 +45,313 @@ const iconWrapper = (icon: (color: string) => React.ReactNode, active: boolean, 
 	</div>
 )
 
-export default class ComponentsViewer extends Component {
-	state = {
-		horizontalDashboard: false,
-	}
+export default function ComponentsViewer() {
+	const [horizontalDashboard, setHorizontalDashboard] = useState(false)
 
-	async componentDidMount() {
-		if ((await global.storage.getItem('horizontalDashboard')) === 'true')
-			this.setState({ horizontalDashboard: true })
-	}
+	useEffect(() => {
+		const run = async () => {
+			if ((await global.storage.getItem('horizontalDashboard')) === 'true')
+				setHorizontalDashboard(true)
+		}
+		run()
+	}, [])
 
-	render() {
-		let routes: Array<DashboardRoute> = [
-			{
-				id: 'logo',
-				desktopTab: true,
-				notRoute: true,
-				tab: (props) =>
-					this.state.horizontalDashboard ? (
-						<div
-							className='flex items-center h-full'
-							style={{
-								minWidth: 90,
-							}}
-						>
-							<button
-								type='button'
-								style={{ display: 'flex', alignItems: 'center' }}
-								onClick={() => global.routerHistory().push('/')}
-							>
-								<img
-									style={{
-										objectFit: 'contain',
-										maxHeight: 25,
-										minHeight: 25,
-									}}
-									src={logo}
-								></img>
-							</button>
-						</div>
-					) : (
-						<>
-							<div className='flex justify-center items-center'>
-								<div
-									className='flex items-center'
-									style={{
-										height: 120,
-									}}
-								>
-									<button
-										type='button'
-										onClick={() => global.routerHistory().push('/')}
-									>
-										<img
-											style={{
-												objectFit: 'contain',
-												maxHeight: props.isOpen ? 50 : 30,
-												minHeight: props.isOpen ? 50 : 30,
-												transition: `min-height 500ms, max-height 500ms`,
-											}}
-											src={logo}
-										></img>
-									</button>
-								</div>
-							</div>
-							<div
-								style={{
-									height: 1,
-									background: styles.colors.lineColor,
-									width: '100%',
-								}}
-							></div>
-							<div style={{ minHeight: 20 }}></div>
-						</>
-					),
-			},
-			{
-				defaultRoute: true,
-				name: 'Get Started',
-				customIcon: (active) => iconWrapper(startLogo, active, 22),
-				id: 'start',
-				page: Start,
-			},
-			{
-				defaultRoute: true,
-				name: 'Style',
-				customIcon: (active) => iconWrapper(styleLogo, active, 22),
-				id: 'style',
-				page: Style,
-			},
-			{
-				name: 'Layout',
-				customIcon: (active) => iconWrapper(layoutLogo, active),
-				id: 'layout',
-				page: Layout,
-			},
-			{
-				name: 'Inputs',
-				customIcon: (active) => iconWrapper(inputsLogo, active, 27),
-				id: 'inputs',
-				page: Inputs,
-			},
-			{
-				name: 'Misc',
-				customIcon: (active) => iconWrapper(miscLogo, active, 20),
-				id: 'misc',
-				page: Misc,
-			},
-			{
-				customIcon: (active) => iconWrapper(backendLogo, active, 18),
-				name: 'Backend',
-				id: 'backend',
-				notExact: true, // Support for routes inside the component
-				subRoutes: [
-					{
-						name: 'Features',
-						id: 'features',
-						page: Backend,
-						defaultRoute: true,
-					},
-					{
-						name: 'API',
-						id: 'api',
-						page: API,
-					},
-				],
-			},
-			{
-				id: 'desktop_space',
-				notRoute: true,
-				tab: (props) => <div style={{ flexGrow: 1, minHeight: 20 }} />,
-				desktopTab: true,
-			},
-			{
-				id: 'line',
-				desktopTab: true,
-				notRoute: true,
-				tab: (props) => (
+	let routes: Array<DashboardRoute> = [
+		{
+			id: 'logo',
+			desktopTab: true,
+			notRoute: true,
+			tab: (p) =>
+				horizontalDashboard ? (
 					<div
+						className='flex items-center h-full'
 						style={{
-							height: 1,
-							background: styles.colors.lineColor,
-							width: '100%',
-							opacity: this.state.horizontalDashboard ? 0 : 1,
+							minWidth: 90,
 						}}
-					></div>
+					>
+						<button
+							type='button'
+							style={{ display: 'flex', alignItems: 'center' }}
+							onClick={() => global.routerHistory().push('/')}
+						>
+							<img
+								style={{
+									objectFit: 'contain',
+									maxHeight: 25,
+									minHeight: 25,
+								}}
+								src={logo}
+							></img>
+						</button>
+					</div>
+				) : (
+					<>
+						<div className='flex justify-center items-center'>
+							<div
+								className='flex items-center'
+								style={{
+									height: 120,
+								}}
+							>
+								<button
+									type='button'
+									onClick={() => global.routerHistory().push('/')}
+								>
+									<img
+										style={{
+											objectFit: 'contain',
+											maxHeight: p.isOpen ? 50 : 30,
+											minHeight: p.isOpen ? 50 : 30,
+											transition: `min-height 500ms, max-height 500ms`,
+										}}
+										src={logo}
+									></img>
+								</button>
+							</div>
+						</div>
+						<div
+							style={{
+								height: 1,
+								background: styles.colors.lineColor,
+								width: '100%',
+							}}
+						></div>
+						<div style={{ minHeight: 20 }}></div>
+					</>
 				),
-			},
+		},
+		{
+			defaultRoute: true,
+			name: 'Get Started',
+			customIcon: (active) => iconWrapper(startLogo, active, 22),
+			id: 'start',
+			page: Start,
+		},
+		{
+			defaultRoute: true,
+			name: 'Style',
+			customIcon: (active) => iconWrapper(styleLogo, active, 22),
+			id: 'style',
+			page: Style,
+		},
+		{
+			name: 'Layout',
+			customIcon: (active) => iconWrapper(layoutLogo, active),
+			id: 'layout',
+			page: Layout,
+		},
+		{
+			name: 'Inputs',
+			customIcon: (active) => iconWrapper(inputsLogo, active, 27),
+			id: 'inputs',
+			page: Inputs,
+		},
+		{
+			name: 'Misc',
+			customIcon: (active) => iconWrapper(miscLogo, active, 20),
+			id: 'misc',
+			page: Misc,
+		},
+		{
+			customIcon: (active) => iconWrapper(backendLogo, active, 18),
+			name: 'Backend',
+			id: 'backend',
+			notExact: true, // Support for routes inside the component
+			subRoutes: [
+				{
+					name: 'Features',
+					id: 'features',
+					page: Backend,
+					defaultRoute: true,
+				},
+				{
+					name: 'API',
+					id: 'api',
+					page: API,
+				},
+			],
+		},
+		{
+			id: 'desktop_space',
+			notRoute: true,
+			tab: (props) => <div style={{ flexGrow: 1, minHeight: 20 }} />,
+			desktopTab: true,
+		},
+		{
+			id: 'line',
+			desktopTab: true,
+			notRoute: true,
+			tab: (props) => (
+				<div
+					style={{
+						height: 1,
+						background: styles.colors.lineColor,
+						width: '100%',
+						opacity: horizontalDashboard ? 0 : 1,
+					}}
+				></div>
+			),
+		},
+		{
+			id: 'middle',
+			notRoute: true,
+			desktopTab: true,
+			tab: (props) => <div style={{ height: 20 }} />,
+		},
+		{
+			id: 'middle_mobile',
+			notRoute: true,
+			mobileTab: true,
+			tab: (props) => <div className='grow' style={{ height: 40 }} />,
+		},
+		{
+			name: 'Flawk',
+			notRoute: true,
+			mobileTab: true,
+			style: { linkStyle: { opacity: 0.75 } },
+			onClick: () =>
+				Capacitor.isNativePlatform()
+					? window.open('https://flawk.cakeslice.dev', '_blank')
+					: global.routerHistory().push('/'),
+			customIcon: (active) => (
+				<div
+					{...css({
+						display: 'flex',
+						width: 20,
+						padding: 0,
+					})}
+				>
+					<img
+						style={{
+							width: 20,
+							position: 'relative',
+							top: -1,
+						}}
+						src={logo}
+					></img>
+				</div>
+			),
+			id: 'flawk_link',
+		},
+		{
+			name: 'Source code',
+			notRoute: true,
+			justIcon: true,
+			style: { linkStyle: { opacity: 0.75 } },
+			onClick: () => window.open('https://github.com/cakeslice/flawk.js', '_blank'),
+			customIcon: (active) => (
+				<div
+					{...css({
+						width: 20,
+						display: 'flex',
+						overflow: 'visible',
+						padding: 0,
+					})}
+				>
+					{github(styles.colors.black, 22)}
+				</div>
+			),
+			id: 'github_link',
+		},
+		{
+			name: (!global.nightMode ? 'Dark' : 'Light') + ' mode',
+			notRoute: true,
+			justIcon: true,
+			style: { linkStyle: { opacity: 0.75 } },
+			onClick: () => global.toggleNightMode(),
+			customIcon: (active) => (
+				<div
+					{...css({
+						width: 20,
+						overflow: 'visible',
+						padding: 0,
+					})}
+				>
+					<img
+						style={{
+							maxHeight: 30,
+							width: 25,
+							position: 'relative',
+							left: -2,
+						}}
+						src={global.nightMode ? lightOff : lightOn}
+					></img>
+				</div>
+			),
+			id: 'dark_mode',
+		},
+	]
+
+	if (horizontalDashboard)
+		routes = [
 			{
-				id: 'middle',
+				id: 'top_space',
 				notRoute: true,
+				tab: (props) => <div style={{ minWidth: '5%' }} />,
 				desktopTab: true,
-				tab: (props) => <div style={{ height: 20 }} />,
 			},
+			...routes,
 			{
-				id: 'middle_mobile',
+				id: 'bottom_space',
 				notRoute: true,
-				mobileTab: true,
-				tab: (props) => <div className='grow' style={{ height: 40 }} />,
-			},
-			{
-				name: 'Flawk',
-				notRoute: true,
-				mobileTab: true,
-				style: { linkStyle: { opacity: 0.75 } },
-				onClick: () =>
-					Capacitor.isNativePlatform()
-						? window.open('https://flawk.cakeslice.dev', '_blank')
-						: global.routerHistory().push('/'),
-				customIcon: (active) => (
-					<div
-						{...css({
-							display: 'flex',
-							width: 20,
-							padding: 0,
-						})}
-					>
-						<img
-							style={{
-								width: 20,
-								position: 'relative',
-								top: -1,
-							}}
-							src={logo}
-						></img>
-					</div>
-				),
-				id: 'flawk_link',
-			},
-			{
-				name: 'Source code',
-				notRoute: true,
-				justIcon: true,
-				style: { linkStyle: { opacity: 0.75 } },
-				onClick: () => window.open('https://github.com/cakeslice/flawk.js', '_blank'),
-				customIcon: (active) => (
-					<div
-						{...css({
-							width: 20,
-							display: 'flex',
-							overflow: 'visible',
-							padding: 0,
-						})}
-					>
-						{github(styles.colors.black, 22)}
-					</div>
-				),
-				id: 'github_link',
-			},
-			{
-				name: (!global.nightMode ? 'Dark' : 'Light') + ' mode',
-				notRoute: true,
-				justIcon: true,
-				style: { linkStyle: { opacity: 0.75 } },
-				onClick: () => global.toggleNightMode(),
-				customIcon: (active) => (
-					<div
-						{...css({
-							width: 20,
-							overflow: 'visible',
-							padding: 0,
-						})}
-					>
-						<img
-							style={{
-								maxHeight: 30,
-								width: 25,
-								position: 'relative',
-								left: -2,
-							}}
-							src={global.nightMode ? lightOff : lightOn}
-						></img>
-					</div>
-				),
-				id: 'dark_mode',
+				tab: (props) => <div style={{ minWidth: '5%' }} />,
+				desktopTab: true,
 			},
 		]
+	else
+		routes.push({
+			id: 'bottom',
+			notRoute: true,
+			desktopTab: true,
+			tab: (props) => <div style={{ height: 40 }} />,
+		})
 
-		if (this.state.horizontalDashboard)
-			routes = [
-				{
-					id: 'top_space',
-					notRoute: true,
-					tab: (props) => <div style={{ minWidth: '5%' }} />,
-					desktopTab: true,
+	const desktop = useMediaQuery({ minWidth: config.mobileWidthTrigger })
+	return (
+		<Dashboard
+			horizontal={horizontalDashboard}
+			horizontalHeight={50}
+			path={'/components/'}
+			placeholderStyle={{
+				padding: '0% 5%',
+			}}
+			style={{ background: styles.colors.white }}
+			linkStyle={{
+				...(horizontalDashboard && desktop && { height: 40 }),
+				':selected': { color: styles.colors.black },
+			}}
+			logo={logo}
+			drawerTitle={'Overview'}
+			wrapperComponent={Wrapper}
+			routes={routes}
+			pageProps={{
+				horizontalDashboard: horizontalDashboard,
+				toggleDashboardLayout: async () => {
+					await global.storage.setItem(
+						'horizontalDashboard',
+						!horizontalDashboard ? 'true' : 'false'
+					)
+					setHorizontalDashboard((prev) => !prev)
 				},
-				...routes,
-				{
-					id: 'bottom_space',
-					notRoute: true,
-					tab: (props) => <div style={{ minWidth: '5%' }} />,
-					desktopTab: true,
-				},
-			]
-		else
-			routes.push({
-				id: 'bottom',
-				notRoute: true,
-				desktopTab: true,
-				tab: (props) => <div style={{ height: 40 }} />,
-			})
-
-		return (
-			<MediaQuery minWidth={config.mobileWidthTrigger}>
-				{(desktop) => (
-					<Dashboard
-						horizontal={this.state.horizontalDashboard}
-						horizontalHeight={50}
-						path={'/components/'}
-						placeholderStyle={{
-							padding: '0% 5%',
-						}}
-						style={{ background: styles.colors.white }}
-						linkStyle={{
-							...(this.state.horizontalDashboard && desktop && { height: 40 }),
-							':selected': { color: styles.colors.black },
-						}}
-						logo={logo}
-						drawerTitle={'Overview'}
-						wrapperComponent={Wrapper}
-						routes={routes}
-						pageProps={{
-							horizontalDashboard: this.state.horizontalDashboard,
-							toggleDashboardLayout: async () => {
-								await global.storage.setItem(
-									'horizontalDashboard',
-									!this.state.horizontalDashboard ? 'true' : 'false'
-								)
-								this.setState({
-									horizontalDashboard: !this.state.horizontalDashboard,
-								})
-							},
-						}}
-					></Dashboard>
-				)}
-			</MediaQuery>
-		)
-	}
+			}}
+		></Dashboard>
+	)
 }
 
-class Wrapper extends Component<{ children: React.ReactNode }> {
-	render() {
-		return (
-			<MediaQuery minWidth={config.mobileWidthTrigger}>
-				{(desktop) => (
-					<div
-						style={{
-							//padding: desktop ? '5%' : '5%',
-							paddingTop: desktop ? 80 : 40,
-							paddingBottom: 160,
-							maxWidth: config.publicMaxWidth,
-						}}
-					>
-						{this.props.children}
-					</div>
-				)}
-			</MediaQuery>
-		)
-	}
+function Wrapper({ children }: { children: React.ReactNode }) {
+	const desktop = useMediaQuery({ minWidth: config.mobileWidthTrigger })
+	return (
+		<div
+			style={{
+				//padding: desktop ? '5%' : '5%',
+				paddingTop: desktop ? 80 : 40,
+				paddingBottom: 160,
+				maxWidth: config.publicMaxWidth,
+			}}
+		>
+			{children}
+		</div>
+	)
 }
 
 export const Next: React.FC<{
@@ -371,86 +360,75 @@ export const Next: React.FC<{
 	backName?: string
 	backLink?: string
 }> = ({ name, link, backName, backLink }) => {
+	const desktop = useMediaQuery({ minWidth: config.mobileWidthTrigger })
 	return (
-		<MediaQuery minWidth={config.mobileWidthTrigger}>
-			{(desktop) => (
+		<div
+			style={{ padding: '0px 5%', paddingTop: 20 }}
+			className={'w-full ' + (desktop ? 'flex justify-between' : 'flex-col items-center')}
+		>
+			{backLink ? (
 				<div
-					style={{ padding: '0px 5%', paddingTop: 20 }}
-					className={
-						'w-full ' + (desktop ? 'flex justify-between' : 'flex-col items-center')
-					}
+					style={{
+						width: 300,
+						margin: 10,
+					}}
 				>
-					{backLink ? (
-						<div
-							style={{
-								width: 300,
-								margin: 10,
-							}}
-						>
-							<FButton
-								href={'/components/' + backLink}
+					<FButton
+						href={'/components/' + backLink}
+						style={{
+							width: '100%',
+							minHeight: 70,
+							fontSize: 16,
+						}}
+					>
+						<div style={{ width: '90%' }} className='flex items-center justify-between'>
+							<div
 								style={{
-									width: '100%',
-									minHeight: 70,
-									fontSize: 16,
+									opacity: 0.5,
+									transform: 'rotate(-90deg) scale(.75)',
 								}}
 							>
-								<div
-									style={{ width: '90%' }}
-									className='flex items-center justify-between'
-								>
-									<div
-										style={{
-											opacity: 0.5,
-											transform: 'rotate(-90deg) scale(.75)',
-										}}
-									>
-										{arrow(styles.colors.main)}
-									</div>
-									<h4 style={{ color: styles.colors.main }}>{backName}</h4>
-								</div>
-							</FButton>
+								{arrow(styles.colors.main)}
+							</div>
+							<h4 style={{ color: styles.colors.main }}>{backName}</h4>
 						</div>
-					) : (
-						<div />
-					)}
-					{link ? (
-						<div
-							style={{
-								width: 300,
-								margin: 10,
-							}}
-						>
-							<FButton
-								href={'/components/' + link}
-								style={{
-									width: '100%',
-									minHeight: 70,
-									fontSize: 16,
-								}}
-							>
-								<div
-									style={{ width: '90%' }}
-									className='flex items-center justify-between'
-								>
-									<h4 style={{ color: styles.colors.main }}>{name}</h4>
-									<div
-										style={{
-											opacity: 0.5,
-											transform: 'rotate(90deg) scale(.75)',
-										}}
-									>
-										{arrow(styles.colors.main)}
-									</div>
-								</div>
-							</FButton>
-						</div>
-					) : (
-						<div />
-					)}
+					</FButton>
 				</div>
+			) : (
+				<div />
 			)}
-		</MediaQuery>
+			{link ? (
+				<div
+					style={{
+						width: 300,
+						margin: 10,
+					}}
+				>
+					<FButton
+						href={'/components/' + link}
+						style={{
+							width: '100%',
+							minHeight: 70,
+							fontSize: 16,
+						}}
+					>
+						<div style={{ width: '90%' }} className='flex items-center justify-between'>
+							<h4 style={{ color: styles.colors.main }}>{name}</h4>
+							<div
+								style={{
+									opacity: 0.5,
+									transform: 'rotate(90deg) scale(.75)',
+								}}
+							>
+								{arrow(styles.colors.main)}
+							</div>
+						</div>
+					</FButton>
+				</div>
+			) : (
+				<div />
+			)}
+		</div>
 	)
 }
 
@@ -464,128 +442,122 @@ export const Section: React.FC<{
 }> = ({ children, title, top, tags, code, lang, description }) => {
 	const id = title ? title.replaceAll(' ', '_').toLowerCase() : uuid.v1()
 
+	const tablet = useMediaQuery({ minWidth: 880 })
+
+	const openStyle: React.CSSProperties = useMemo(() => {
+		return {
+			flexDirection: tablet ? 'row-reverse' : undefined,
+			width: tablet ? undefined : '100%',
+		}
+	}, [tablet])
+
 	return (
-		<MediaQuery minWidth={880}>
-			{(tablet) => (
-				<Anchor id={id} updateHash={title ? true : false}>
+		<Anchor id={id} updateHash={title ? true : false}>
+			<>
+				{!top && (
 					<>
-						{!top && (
-							<>
-								<sp />
-								<sp />
-							</>
-						)}
-						<>
-							{title && (
+						<sp />
+						<sp />
+					</>
+				)}
+				<>
+					{title && (
+						<div
+							style={{
+								padding: tablet ? '0% 5%' : '0% 5%',
+							}}
+						>
+							<div className='flex'>
+								<h3>{title}</h3>
+								{tags && (
+									<div
+										className={!tablet ? 'grow' : ''}
+										style={{ minWidth: 15 }}
+									/>
+								)}
+								{tags && (
+									<div
+										className={
+											'wrapMargin flex flex-wrap ' +
+											(tablet ? 'justify-start' : 'justify-end')
+										}
+									>
+										{tags.map((tag) => (
+											<div
+												key={id + '_' + tag}
+												style={{
+													display: 'flex',
+													position: 'relative',
+													top: 3,
+												}}
+											>
+												<tag
+													style={{
+														fontFamily: 'monospace',
+														color: styles.colors.main,
+														letterSpacing: 0,
+														opacity: 1,
+														padding: '1px 5px',
+														background: config.replaceAlpha(
+															styles.colors.main,
+															0.15
+														),
+													}}
+												>
+													{tag}
+												</tag>
+											</div>
+										))}
+									</div>
+								)}
+							</div>
+							{!tags ? <hsp /> : <sp />}
+							{!tags && description && <hsp />}
+							{(code || description) && (
 								<div
+									className={cssModule.section}
 									style={{
-										padding: tablet ? '0% 5%' : '0% 5%',
+										flexDirection: tablet ? 'row' : 'column',
+										padding: '10px 15px',
+										borderRadius: 5,
+										border: '1px solid ' + styles.colors.lineColor,
+										borderLeft:
+											'6px solid ' +
+											config.replaceAlpha(styles.colors.black, 0.1),
+										fontSize: 13.5,
+										lineHeight: '19px',
+										//width: 'fit-content',
+										color: config.replaceAlpha(styles.colors.black, 0.85),
+										background: config.replaceAlpha(styles.colors.white, 0.5),
 									}}
 								>
-									<div className='flex'>
-										<h3>{title}</h3>
-										{tags && (
-											<div
-												className={!tablet ? 'grow' : ''}
-												style={{ minWidth: 15 }}
-											/>
-										)}
-										{tags && (
-											<div
-												className={
-													'wrapMargin flex flex-wrap ' +
-													(tablet ? 'justify-start' : 'justify-end')
-												}
-											>
-												{tags.map((tag) => (
-													<div
-														key={id + '_' + tag}
-														style={{
-															display: 'flex',
-															position: 'relative',
-															top: 3,
-														}}
-													>
-														<tag
-															style={{
-																fontFamily: 'monospace',
-																color: styles.colors.main,
-																letterSpacing: 0,
-																opacity: 1,
-																padding: '1px 5px',
-																background: config.replaceAlpha(
-																	styles.colors.main,
-																	0.15
-																),
-															}}
-														>
-															{tag}
-														</tag>
-													</div>
-												))}
-											</div>
-										)}
-									</div>
-									{!tags ? <hsp /> : <sp />}
-									{!tags && description && <hsp />}
-									{(code || description) && (
-										<div
-											className={cssModule.section}
-											style={{
-												flexDirection: tablet ? 'row' : 'column',
-												padding: '10px 15px',
-												borderRadius: 5,
-												border: '1px solid ' + styles.colors.lineColor,
-												borderLeft:
-													'6px solid ' +
-													config.replaceAlpha(styles.colors.black, 0.1),
-												fontSize: 13.5,
-												lineHeight: '19px',
-												//width: 'fit-content',
-												color: config.replaceAlpha(
-													styles.colors.black,
-													0.85
-												),
-												background: config.replaceAlpha(
-													styles.colors.white,
-													0.5
-												),
-											}}
-										>
-											<div className='grow'>{description}</div>
-											{code && (
-												<>
-													<hsp />
-													<CodeCollapse
-														className={tablet ? 'flex' : ''}
-														openStyle={{
-															flexDirection: tablet
-																? 'row-reverse'
-																: undefined,
-															width: tablet ? undefined : '100%',
-														}}
-														data={code}
-														lang={lang || 'tsx'}
-													></CodeCollapse>
-												</>
-											)}
-										</div>
+									<div className='grow'>{description}</div>
+									{code && (
+										<>
+											<hsp />
+											<CodeCollapse
+												className={tablet ? 'flex' : ''}
+												openStyle={openStyle}
+												data={code}
+												lang={lang || 'tsx'}
+											></CodeCollapse>
+										</>
 									)}
-									{description && <sp />}
-									{!tags && !description && <hsp />} <hsp />
 								</div>
 							)}
+							{description && <sp />}
+							{!tags && !description && <hsp />} <hsp />
+						</div>
+					)}
 
-							<div style={{ padding: tablet ? '0% 5%' : '0% 5%' }}>{children}</div>
-							<sp />
-							<sp />
-							<sp />
-							<hr />
-						</>
-					</>
-				</Anchor>
-			)}
-		</MediaQuery>
+					<div style={{ padding: tablet ? '0% 5%' : '0% 5%' }}>{children}</div>
+					<sp />
+					<sp />
+					<sp />
+					<hr />
+				</>
+			</>
+		</Anchor>
 	)
 }
 

@@ -7,11 +7,11 @@
 
 import CodeBlock, { Lang } from 'core/components/CodeBlock'
 import Tooltip from 'core/components/Tooltip'
-import TrackedComponent from 'core/components/TrackedComponent'
+import { useTracking } from 'core/components/TrackedComponent'
 import config from 'core/config'
 import styles from 'core/styles'
-import React from 'react'
-import MediaQuery from 'react-responsive'
+import React, { useState } from 'react'
+import { useMediaQuery } from 'react-responsive'
 
 const code = (color: string) => (
 	<svg
@@ -36,92 +36,66 @@ type Props = {
 	data: string
 	lang: Lang
 }
-export default class CodeCollapse extends TrackedComponent<Props> {
-	trackedName = 'CodeCollapse'
-	shouldComponentUpdate(nextProps: Props, nextState: typeof this.state) {
-		super.shouldComponentUpdate(nextProps, nextState, false)
-		return this.deepEqualityCheck(nextProps, nextState)
-	}
+export default function CodeCollapse(props: Props) {
+	useTracking('CodeCollapse', props)
 
-	state = {
-		isOpen: false,
-	}
+	const [isOpen, setIsOpen] = useState(false)
 
-	render() {
-		return (
-			<MediaQuery minWidth={config.mobileWidthTrigger}>
-				{(desktop) => (
-					<MediaQuery minWidth={880}>
-						{(tablet) => (
+	//const desktop = useMediaQuery({ minWidth: config.mobileWidthTrigger })
+	const tablet = useMediaQuery({ minWidth: 880 })
+	return (
+		<div className={props.className} style={{ ...(isOpen && props.openStyle) }}>
+			<div className={'flex-col items-end'}>
+				<Tooltip hidden={!tablet} tooltipProps={{ placement: 'top' }} content='Show code'>
+					<button
+						type='button'
+						onClick={() => {
+							setIsOpen((prev) => !prev)
+						}}
+						style={{
+							display: 'flex',
+							alignItems: 'center',
+						}}
+					>
+						<tag
+							style={{
+								...(isOpen && {
+									background: styles.colors.mainVeryLight,
+									opacity: 1,
+								}),
+							}}
+						>
 							<div
-								className={this.props.className}
-								style={{ ...(this.state.isOpen && this.props.openStyle) }}
+								style={{
+									display: 'flex',
+									alignItems: 'center',
+									width: 21,
+									height: 21,
+								}}
 							>
-								<div className={'flex-col items-end'}>
-									<Tooltip
-										hidden={!tablet}
-										tooltipProps={{ placement: 'top' }}
-										content='Show code'
-									>
-										<button
-											type='button'
-											onClick={() => {
-												this.setState({
-													isOpen: !this.state.isOpen,
-												})
-											}}
-											style={{
-												display: 'flex',
-												alignItems: 'center',
-											}}
-										>
-											<tag
-												style={{
-													...(this.state.isOpen && {
-														background: styles.colors.mainVeryLight,
-														opacity: 1,
-													}),
-												}}
-											>
-												<div
-													style={{
-														display: 'flex',
-														alignItems: 'center',
-														width: 21,
-														height: 21,
-													}}
-												>
-													{code(
-														this.state.isOpen
-															? styles.colors.main
-															: config.replaceAlpha(
-																	styles.colors.black,
-																	0.5
-															  )
-													)}
-												</div>
-											</tag>
-										</button>
-									</Tooltip>
-								</div>
-								{this.state.isOpen && (
-									<>
-										<hsp />
-										<CodeBlock
-											animate
-											style={this.props.codeStyle}
-											containerStyle={this.props.containerStyle}
-											noPrettier
-											lang={this.props.lang}
-											data={this.props.data}
-										/>
-									</>
+								{code(
+									isOpen
+										? styles.colors.main
+										: config.replaceAlpha(styles.colors.black, 0.5)
 								)}
 							</div>
-						)}
-					</MediaQuery>
-				)}
-			</MediaQuery>
-		)
-	}
+						</tag>
+					</button>
+				</Tooltip>
+			</div>
+			{isOpen && (
+				<>
+					<hsp />
+					<CodeBlock
+						animate
+						style={props.codeStyle}
+						containerStyle={props.containerStyle}
+						noPrettier
+						lang={props.lang}
+						data={props.data}
+					/>
+				</>
+			)}
+		</div>
+	)
 }

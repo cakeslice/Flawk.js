@@ -11,7 +11,7 @@ import TrackedComponent from 'core/components/TrackedComponent'
 import config from 'core/config'
 import styles from 'core/styles'
 import { Obj } from 'flawk-types'
-import React, { Component } from 'react'
+import React, { Component, useState } from 'react'
 import FocusLock from 'react-focus-lock'
 import { Portal } from 'react-portal'
 import MediaQuery from 'react-responsive'
@@ -23,6 +23,14 @@ type HeaderStyle = React.CSSProperties & {
 	noCloseButton?: boolean
 	textStyle?: React.CSSProperties
 }
+
+export function useModal() {
+	const [open, setOpen] = useState(false)
+	return { open, setOpen }
+}
+
+// TODO: <Modal/> component using hooks
+// Don't forget to add useTracking()
 
 type Props = {
 	title?: React.ReactNode
@@ -50,11 +58,19 @@ type Props = {
 	noAutoFocus?: boolean
 } & (
 	| {
+			hook: { open: boolean; setOpen: (open: boolean) => void }
+			parent?: undefined
+			visible?: undefined
+			onClose?: (fromHeader: boolean) => void
+	  }
+	| {
+			hook?: undefined
 			parent: Component
 			visible?: undefined
 			onClose?: (fromHeader: boolean) => void
 	  }
 	| {
+			hook?: undefined
 			parent?: undefined
 			// To set modal state manually
 			visible?: boolean
@@ -110,6 +126,8 @@ export default class Modal extends TrackedComponent<Props> {
 			const s: Obj = {}
 			s[this.props.name] = false
 			this.props.parent.setState(s)
+		} else if (this.props.hook) {
+			this.props.hook.setOpen(false)
 		}
 
 		if (!fromNavigation && !this.props.noHistory) window.history.back()
@@ -120,7 +138,9 @@ export default class Modal extends TrackedComponent<Props> {
 		this.onHidden()
 	}
 	componentDidMount() {
-		if (!this.props.parent || !this.props.name) {
+		if (this.props.hook) {
+			if (this.props.hook.open) this.onVisible()
+		} else if (!this.props.parent || !this.props.name) {
 			if (this.props.visible) this.onVisible()
 		} else {
 			// @ts-ignore
@@ -155,6 +175,10 @@ export default class Modal extends TrackedComponent<Props> {
 			} else {
 				this.onHidden()
 			}
+		}
+		if (this.props.hook) {
+			if (this.props.hook.open) this.onVisible()
+			else this.onHidden()
 		}
 	}
 
@@ -261,15 +285,16 @@ export default class Modal extends TrackedComponent<Props> {
 	render() {
 		const modalPadding = styles.modalPadding || 20
 
-		const isOpen =
-			this.props.parent && this.props.name
-				? // @ts-ignore
-				  this.props.parent.state[this.props.name] === true
-					? true
-					: false
-				: this.props.visible !== undefined
-				? this.props.visible
-				: undefined
+		const isOpen = this.props.hook
+			? this.props.hook.open
+			: this.props.parent && this.props.name
+			? // @ts-ignore
+			  this.props.parent.state[this.props.name] === true
+				? true
+				: false
+			: this.props.visible !== undefined
+			? this.props.visible
+			: undefined
 
 		const big = this.props.big
 

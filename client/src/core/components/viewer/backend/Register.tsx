@@ -7,48 +7,24 @@
 
 import { post } from 'core/api'
 import Animated from 'core/components/Animated'
+import ExitPrompt from 'core/components/ExitPrompt'
 import FButton from 'core/components/FButton'
 import Field from 'core/components/Field'
 import FInput from 'core/components/FInput'
 import config from 'core/config'
-import navigation from 'core/functions/navigation'
 import styles from 'core/styles'
 import { Form, Formik } from 'formik'
-import { fetchUser } from 'project/redux/AppReducer'
-import { useStoreDispatch, useStoreSelector } from 'project/redux/_store'
+import { ReduxProps } from 'project-types'
 import { useState } from 'react'
 import ReCaptcha from 'react-google-recaptcha'
-import { Helmet } from 'react-helmet'
-import { useMediaQuery } from 'react-responsive'
-import { Link } from 'react-router-dom'
+import { cardStyle } from './Login'
 
-export default function Register() {
-	const { user, fetchingUser } = useStoreSelector((state) => ({
-		user: state.app.user,
-		fetchingUser: state.app.fetchingUser,
-	}))
-	const dispatch = useStoreDispatch()
-
-	const [wrongLogin, setWrongLogin] = useState<string>()
+export default function Register(props: ReduxProps & { desktop?: boolean }) {
 	const [emailToVerify, setEmailToVerify] = useState<string>()
-
-	const desktop = useMediaQuery({ minWidth: config.mobileWidthTrigger })
-
-	if (!fetchingUser && user) {
-		navigation.loginRedirect()
-		return <div />
-	}
+	const [wrongLogin, setWrongLogin] = useState<string>()
 
 	return (
-		<div>
-			<Helmet>
-				<title>{config.title() + config.separator + 'Signup'}</title>
-			</Helmet>
-
-			<h3>{'Signup'}</h3>
-			<sp />
-			<sp />
-			<sp />
+		<div style={cardStyle(props.desktop)}>
 			{emailToVerify ? (
 				<Formik
 					enableReinitialize
@@ -67,19 +43,14 @@ export default function Register() {
 						)
 
 						if (res.ok && res.body) {
-							/* this.setState({
-											emailToVerify: undefined,
-										}) */
+							setEmailToVerify(undefined)
 							if (global.analytics)
 								global.analytics.event({
 									category: 'User',
 									action: 'Verified account',
 								})
-
 							await global.storage.setItem('token', res.body.token as string)
-							await fetchUser(dispatch)
-
-							navigation.loginRedirect()
+							await props.fetchUser()
 						} else if (res.status === 401) setWrongLogin('Wrong code')
 
 						setSubmitting(false)
@@ -88,13 +59,12 @@ export default function Register() {
 					{({ isSubmitting, dirty, errors }) => {
 						return (
 							<Form noValidate>
-								{/* Disabled since it will prompt after registration redirect
-								<ExitPrompt dirty={dirty} /> */}
+								<ExitPrompt dirty={dirty} />
 								<div className='flex-col items-center justify-center'>
 									<Field
 										component={FInput}
 										required
-										autoFocus
+										//autoFocus
 										label={'Verification code'}
 										type={'number'}
 										formatNumber={{ disable: true }}
@@ -123,7 +93,7 @@ export default function Register() {
 										<FButton
 											type='submit'
 											formErrors={errors}
-											isLoading={isSubmitting || fetchingUser}
+											isLoading={isSubmitting || props.fetchingUser}
 											appearance='primary'
 										>
 											{'Verify'}
@@ -140,7 +110,7 @@ export default function Register() {
 					validate={(values) => {
 						const errors: Partial<typeof values> = {}
 
-						if (config.recaptchaSiteKey && !config.recaptchaBypass && !values.captcha)
+						if (!config.recaptchaBypass && config.recaptchaSiteKey && !values.captcha)
 							errors.captcha = '*'
 
 						return errors
@@ -149,24 +119,20 @@ export default function Register() {
 						{
 							captcha: undefined,
 						} as {
-							captcha?: string
 							firstName?: string
 							lastName?: string
 							email?: string
 							password?: string
+							captcha?: string
 						}
 					}
 					onSubmit={async (values, { setSubmitting, setFieldValue }) => {
 						setWrongLogin('')
 						setSubmitting(true)
 
-						const captcha = !config.recaptchaSiteKey
-							? ''
-							: 'recaptchaToken=' + // eslint-disable-line
-							  (config.recaptchaBypass || values.captcha)
-
 						const res = await post(
-							'client/register?' + captcha,
+							'client/register?recaptchaToken=' +
+								(config.recaptchaBypass || values.captcha || ''),
 							{
 								...values,
 								captcha: undefined,
@@ -181,7 +147,6 @@ export default function Register() {
 									category: 'User',
 									action: 'Signed up',
 								})
-
 							setEmailToVerify(values.email)
 						} else if (res.status === 409) setWrongLogin('User already exists')
 
@@ -190,53 +155,54 @@ export default function Register() {
 				>
 					{({
 						values,
+						errors,
+						touched,
 						isSubmitting,
 						setFieldValue,
 						setFieldTouched,
-						touched,
-						errors,
 					}) => {
 						return (
 							<Form noValidate>
-								<div className='wrapMargin flex flex-wrap justify-start'>
-									<Field
-										component={FInput}
-										required
-										autoFocus
-										label={'First name'}
-										name='firstName'
-										placeholder={'John'}
-									/>
-									<Field
-										component={FInput}
-										required
-										label={'Last name'}
-										name='lastName'
-										placeholder={'Doe'}
-									/>
-								</div>
-								<sp />
-								<div className='wrapMargin flex flex-wrap justify-start'>
-									<Field
-										component={FInput}
-										required
-										label={'E-mail'}
-										type={'email'}
-										autoComplete='new-email'
-										name='email'
-										placeholder={'john.doe@mail.com'}
-									/>
-									<Field
-										component={FInput}
-										required
-										label={'Password'}
-										name='password'
-										autoComplete='new-password'
-										type={'password'}
-										placeholder={'Min. 6 characters'}
-									/>
-								</div>
 								<div className='flex-col items-center justify-center'>
+									<div className='wrapMargin flex flex-wrap justify-around'>
+										<Field
+											component={FInput}
+											required
+											//autoFocus
+											label={'First name'}
+											name='firstName'
+											placeholder={'John'}
+										/>
+										<Field
+											component={FInput}
+											required
+											label={'Last name'}
+											name='lastName'
+											placeholder={'Doe'}
+										/>
+									</div>
+									<sp />
+									<div className='wrapMargin flex flex-wrap justify-around'>
+										<Field
+											component={FInput}
+											required
+											//autoFocus
+											label={'E-mail'}
+											type={'email'}
+											autoComplete='new-email'
+											name='email'
+											placeholder={'john.doe@mail.com'}
+										/>
+										<Field
+											component={FInput}
+											required
+											label={'Password'}
+											name='password'
+											autoComplete='new-password'
+											type={'password'}
+											placeholder={'Min. 6 characters'}
+										/>
+									</div>
 									{values.firstName &&
 										values.lastName &&
 										values.password &&
@@ -244,17 +210,18 @@ export default function Register() {
 										!config.recaptchaBypass &&
 										!values.captcha && (
 											<div
-												className='flex-col items-center'
 												style={{
-													maxWidth: desktop ? 360 : 260,
+													maxWidth: props.desktop ? 360 : 260,
 												}}
 											>
 												<sp />
 												<div
 													style={{
-														transform: !desktop
+														display: 'flex',
+														transform: !props.desktop
 															? 'scale(.85)'
 															: undefined,
+														transformOrigin: 'left',
 													}}
 												>
 													{config.recaptchaSiteKey && (
@@ -303,23 +270,13 @@ export default function Register() {
 									<FButton
 										type='submit'
 										formErrors={errors}
-										isLoading={isSubmitting || fetchingUser}
+										onClick={() => setFieldTouched('captcha', true)}
+										isLoading={isSubmitting || props.fetchingUser}
 										appearance='primary'
 									>
-										{'Sign up'}
+										{'Signup'}
 									</FButton>
 								</Animated>
-								<sp />
-								<sp />
-								<div
-									style={{
-										opacity: 0.8,
-										textAlign: 'center',
-									}}
-								>
-									{config.text('auth.loginMessage1') + ' '}
-									<Link to='/login'>{config.text('auth.loginMessage2')}</Link>
-								</div>
 							</Form>
 						)
 					}}

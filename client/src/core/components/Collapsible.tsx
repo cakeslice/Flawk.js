@@ -12,7 +12,6 @@ import React from 'react'
 import TrackedComponent from './TrackedComponent'
 
 type Props = {
-	key?: string | number
 	className?: string
 	style?: React.CSSProperties
 	content: (set: (isOpen: boolean) => void) => React.ReactNode
@@ -42,7 +41,7 @@ export default class Collapsible extends TrackedComponent<Props> {
 
 	render() {
 		return (
-			<div key={this.props.key} className={this.props.className} style={this.props.style}>
+			<div className={this.props.className} style={this.props.style}>
 				{this.props.customTrigger ? (
 					this.props.trigger(this.state.isOpen, this.set)
 				) : (

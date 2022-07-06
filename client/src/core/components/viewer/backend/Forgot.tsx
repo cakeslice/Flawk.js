@@ -11,90 +11,69 @@ import FButton from 'core/components/FButton'
 import Field from 'core/components/Field'
 import FInput from 'core/components/FInput'
 import config from 'core/config'
-import navigation from 'core/functions/navigation'
 import styles from 'core/styles'
 import { Form, Formik } from 'formik'
-import { fetchUser } from 'project/redux/AppReducer'
-import { useStoreDispatch, useStoreSelector } from 'project/redux/_store'
+import { ReduxProps } from 'project-types'
 import { useState } from 'react'
 import ReCaptcha from 'react-google-recaptcha'
-import { Helmet } from 'react-helmet'
-import { useMediaQuery } from 'react-responsive'
-import { Link } from 'react-router-dom'
+import { cardStyle } from './Login'
 
-export default function Register() {
-	const { user, fetchingUser } = useStoreSelector((state) => ({
-		user: state.app.user,
-		fetchingUser: state.app.fetchingUser,
-	}))
-	const dispatch = useStoreDispatch()
-
+export default function Forgot(props: ReduxProps & { desktop?: boolean }) {
+	const [emailToRecover, setEmailToRecover] = useState<string>()
 	const [wrongLogin, setWrongLogin] = useState<string>()
-	const [emailToVerify, setEmailToVerify] = useState<string>()
-
-	const desktop = useMediaQuery({ minWidth: config.mobileWidthTrigger })
-
-	if (!fetchingUser && user) {
-		navigation.loginRedirect()
-		return <div />
-	}
 
 	return (
-		<div>
-			<Helmet>
-				<title>{config.title() + config.separator + 'Signup'}</title>
-			</Helmet>
-
-			<h3>{'Signup'}</h3>
-			<sp />
-			<sp />
-			<sp />
-			{emailToVerify ? (
+		<div style={cardStyle(props.desktop)}>
+			{emailToRecover ? (
 				<Formik
 					enableReinitialize
+					key={'reset_password'}
 					initialValues={{}}
 					onSubmit={async (values, { setSubmitting }) => {
 						setWrongLogin(undefined)
 						setSubmitting(true)
 
 						const res = await post(
-							'client/register_verify',
+							'client/reset_password',
 							{
+								email: emailToRecover,
 								...values,
-								email: emailToVerify,
 							},
 							{ noErrorFlag: [401] }
 						)
 
 						if (res.ok && res.body) {
-							/* this.setState({
-											emailToVerify: undefined,
-										}) */
 							if (global.analytics)
 								global.analytics.event({
 									category: 'User',
-									action: 'Verified account',
+									action: 'Recovered account',
 								})
-
+							setEmailToRecover(undefined)
 							await global.storage.setItem('token', res.body.token as string)
-							await fetchUser(dispatch)
-
-							navigation.loginRedirect()
+							await props.fetchUser()
 						} else if (res.status === 401) setWrongLogin('Wrong code')
 
 						setSubmitting(false)
 					}}
 				>
-					{({ isSubmitting, dirty, errors }) => {
+					{({ isSubmitting, errors }) => {
 						return (
 							<Form noValidate>
-								{/* Disabled since it will prompt after registration redirect
-								<ExitPrompt dirty={dirty} /> */}
-								<div className='flex-col items-center justify-center'>
+								<div className='flex-col justify-center items-center'>
 									<Field
 										component={FInput}
 										required
-										autoFocus
+										//autoFocus
+										label={'New password'}
+										name='newPassword'
+										autoComplete='new-password'
+										type={'password'}
+										placeholder={'Min. 6 characters'}
+									/>
+									<div style={{ minHeight: 10 }} />
+									<Field
+										component={FInput}
+										required
 										label={'Verification code'}
 										type={'number'}
 										formatNumber={{ disable: true }}
@@ -116,17 +95,17 @@ export default function Register() {
 									)}
 
 									<div className='flex'>
-										<FButton onClick={() => setEmailToVerify(undefined)}>
+										<FButton onClick={() => setEmailToRecover(undefined)}>
 											{'Back'}
 										</FButton>
 										<sp />
 										<FButton
 											type='submit'
 											formErrors={errors}
-											isLoading={isSubmitting || fetchingUser}
+											isLoading={isSubmitting || props.fetchingUser}
 											appearance='primary'
 										>
-											{'Verify'}
+											{'Change Password'}
 										</FButton>
 									</div>
 								</Animated>
@@ -137,10 +116,11 @@ export default function Register() {
 			) : (
 				<Formik
 					enableReinitialize
+					key={'forgot_password'}
 					validate={(values) => {
 						const errors: Partial<typeof values> = {}
 
-						if (config.recaptchaSiteKey && !config.recaptchaBypass && !values.captcha)
+						if (!config.recaptchaBypass && config.recaptchaSiteKey && !values.captcha)
 							errors.captcha = '*'
 
 						return errors
@@ -149,29 +129,22 @@ export default function Register() {
 						{
 							captcha: undefined,
 						} as {
-							captcha?: string
-							firstName?: string
-							lastName?: string
 							email?: string
-							password?: string
+							captcha?: string
 						}
 					}
 					onSubmit={async (values, { setSubmitting, setFieldValue }) => {
 						setWrongLogin('')
 						setSubmitting(true)
 
-						const captcha = !config.recaptchaSiteKey
-							? ''
-							: 'recaptchaToken=' + // eslint-disable-line
-							  (config.recaptchaBypass || values.captcha)
-
 						const res = await post(
-							'client/register?' + captcha,
+							'client/forgot_password?recaptchaToken=' + // eslint-disable-line
+								(config.recaptchaBypass || values.captcha),
 							{
 								...values,
 								captcha: undefined,
 							},
-							{ noErrorFlag: [409] }
+							{ noErrorFlag: [404] }
 						)
 						setFieldValue('captcha', undefined)
 
@@ -179,82 +152,49 @@ export default function Register() {
 							if (global.analytics)
 								global.analytics.event({
 									category: 'User',
-									action: 'Signed up',
+									action: 'Forgot password',
 								})
-
-							setEmailToVerify(values.email)
-						} else if (res.status === 409) setWrongLogin('User already exists')
+							setEmailToRecover(values.email)
+						} else if (res.status === 404) setWrongLogin('Account not found')
 
 						setSubmitting(false)
 					}}
 				>
 					{({
 						values,
+						errors,
+						touched,
 						isSubmitting,
 						setFieldValue,
 						setFieldTouched,
-						touched,
-						errors,
 					}) => {
 						return (
 							<Form noValidate>
-								<div className='wrapMargin flex flex-wrap justify-start'>
+								<div className='flex-col justify-center items-center'>
 									<Field
 										component={FInput}
 										required
-										autoFocus
-										label={'First name'}
-										name='firstName'
-										placeholder={'John'}
-									/>
-									<Field
-										component={FInput}
-										required
-										label={'Last name'}
-										name='lastName'
-										placeholder={'Doe'}
-									/>
-								</div>
-								<sp />
-								<div className='wrapMargin flex flex-wrap justify-start'>
-									<Field
-										component={FInput}
-										required
+										//autoFocus
 										label={'E-mail'}
 										type={'email'}
-										autoComplete='new-email'
 										name='email'
-										placeholder={'john.doe@mail.com'}
 									/>
-									<Field
-										component={FInput}
-										required
-										label={'Password'}
-										name='password'
-										autoComplete='new-password'
-										type={'password'}
-										placeholder={'Min. 6 characters'}
-									/>
-								</div>
-								<div className='flex-col items-center justify-center'>
-									{values.firstName &&
-										values.lastName &&
-										values.password &&
-										values.email /* Only show after filling to avoid loading it when page load */ &&
+									{values.email /* Only show after filling to avoid loading it when page load */ &&
 										!config.recaptchaBypass &&
 										!values.captcha && (
 											<div
-												className='flex-col items-center'
 												style={{
-													maxWidth: desktop ? 360 : 260,
+													maxWidth: props.desktop ? 360 : 260,
 												}}
 											>
 												<sp />
 												<div
 													style={{
-														transform: !desktop
+														display: 'flex',
+														transform: !props.desktop
 															? 'scale(.85)'
 															: undefined,
+														transformOrigin: 'left',
 													}}
 												>
 													{config.recaptchaSiteKey && (
@@ -303,23 +243,13 @@ export default function Register() {
 									<FButton
 										type='submit'
 										formErrors={errors}
-										isLoading={isSubmitting || fetchingUser}
+										onClick={() => setFieldTouched('captcha', true)}
+										isLoading={isSubmitting || props.fetchingUser}
 										appearance='primary'
 									>
-										{'Sign up'}
+										{'Reset Password'}
 									</FButton>
 								</Animated>
-								<sp />
-								<sp />
-								<div
-									style={{
-										opacity: 0.8,
-										textAlign: 'center',
-									}}
-								>
-									{config.text('auth.loginMessage1') + ' '}
-									<Link to='/login'>{config.text('auth.loginMessage2')}</Link>
-								</div>
 							</Form>
 						)
 					}}

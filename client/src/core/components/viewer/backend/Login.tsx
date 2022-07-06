@@ -10,40 +10,24 @@ import Animated from 'core/components/Animated'
 import FButton from 'core/components/FButton'
 import Field from 'core/components/Field'
 import FInput from 'core/components/FInput'
-import config from 'core/config'
-import navigation from 'core/functions/navigation'
 import styles from 'core/styles'
 import { Form, Formik } from 'formik'
-import { fetchUser } from 'project/redux/AppReducer'
-import { useStoreDispatch, useStoreSelector } from 'project/redux/_store'
+import { ReduxProps } from 'project-types'
 import { useState } from 'react'
-import { Helmet } from 'react-helmet'
-import { Link } from 'react-router-dom'
 
-export default function Login() {
-	const { user, fetchingUser } = useStoreSelector((state) => ({
-		user: state.app.user,
-		fetchingUser: state.app.fetchingUser,
-	}))
-	const dispatch = useStoreDispatch()
+export const cardStyle = (desktop?: boolean) => {
+	return {
+		...styles.card,
+		alignSelf: desktop ? 'center' : undefined,
+		width: desktop ? 'fit-content' : undefined,
+	}
+}
 
+export default function Login(props: ReduxProps & { desktop?: boolean }) {
 	const [wrongLogin, setWrongLogin] = useState<string>()
 
-	if (!fetchingUser && user) {
-		navigation.loginRedirect()
-		return <div />
-	}
-
 	return (
-		<div>
-			<Helmet>
-				<title>{config.title() + config.separator + 'Login'}</title>
-			</Helmet>
-
-			<h3>{'Sign in to your account'}</h3>
-			<sp />
-			<sp />
-			<sp />
+		<div style={cardStyle(props.desktop)}>
 			<Formik
 				enableReinitialize
 				initialValues={{}}
@@ -65,10 +49,8 @@ export default function Login() {
 								category: 'User',
 								action: 'Logged in',
 							})
-
 						await global.storage.setItem('token', res.body.token as string)
-						await fetchUser(dispatch)
-						navigation.loginRedirect()
+						await props.fetchUser()
 					} else if (res.status === 401) {
 						setWrongLogin('Authentication Failed')
 					}
@@ -83,7 +65,7 @@ export default function Login() {
 								<Field
 									component={FInput}
 									required
-									autoFocus
+									//autoFocus
 									label={'E-mail'}
 									type={'email'}
 									name='email'
@@ -96,9 +78,6 @@ export default function Login() {
 									name='password'
 									type={'password'}
 								/>
-								<Link style={{ fontSize: 13, marginTop: 5 }} to='/forgot'>
-									{config.text('auth.recoverMessage')}
-								</Link>
 							</div>
 							<sp />
 							<Animated
@@ -116,23 +95,12 @@ export default function Login() {
 								<FButton
 									type='submit'
 									formErrors={errors}
-									isLoading={isSubmitting || fetchingUser}
+									isLoading={isSubmitting || props.fetchingUser}
 									appearance='primary'
 								>
 									{'Login'}
 								</FButton>
 							</Animated>
-							<sp />
-							<sp />
-							<div
-								style={{
-									opacity: 0.8,
-									textAlign: 'center',
-								}}
-							>
-								{config.text('auth.registerMessage1') + ' '}
-								<Link to='/signup'>{config.text('auth.registerMessage2')}</Link>
-							</div>
 						</Form>
 					)
 				}}

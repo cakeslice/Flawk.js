@@ -10,12 +10,13 @@ import Tooltip from 'core/components/Tooltip'
 import lightOn from 'core/components/viewer/assets/lightbulb.svg'
 import lightOff from 'core/components/viewer/assets/lightbulb_off.svg'
 import config from 'core/config'
+import { usePrevious } from 'core/functions/hooks'
 import styles from 'core/styles'
 import { css } from 'glamor'
 import logo from 'project/assets/images/logo.svg'
 import { github } from 'project/components/Icons'
-import { Component } from 'react'
-import MediaQuery from 'react-responsive'
+import { useEffect, useState } from 'react'
+import { useMediaQuery } from 'react-responsive'
 import { Link } from 'react-router-dom'
 import mod from '../main/Main.module.scss'
 
@@ -28,226 +29,198 @@ type Props = {
 	expand?: boolean
 	fillSpace?: boolean
 }
-export default class Header extends Component<Props> {
-	state = {
-		shrink: false,
-	}
+export default function Header(props: Props) {
+	const previousProps = usePrevious(props)
 
-	constructor(props: Props) {
-		super(props)
-
-		this.handleScroll = this.handleScroll.bind(this)
-	}
-
-	handleScroll() {
+	const [shrink, setShrink] = useState(false)
+	function handleScroll() {
 		const scrollTop = document.body.scrollTop || document.documentElement.scrollTop
 
-		this.setState({
-			shrink: this.props.expand ? scrollTop > 0 : true,
-		})
+		setShrink(props.expand ? scrollTop > 0 : true)
 	}
-	componentDidMount() {
-		this.handleScroll()
-		window.addEventListener('scroll', this.handleScroll)
-	}
-	componentWillUnmount() {
-		window.removeEventListener('scroll', this.handleScroll)
-	}
+	useEffect(() => {
+		window.addEventListener('scroll', handleScroll)
 
-	componentDidUpdate(prevProps: Props) {
-		if (prevProps.expand !== this.props.expand) this.handleScroll()
-	}
+		return () => {
+			window.removeEventListener('scroll', handleScroll)
+		}
+	})
 
-	render() {
-		const maxWidth = config.publicMaxWidth
-		const shrink = this.state.shrink
+	useEffect(() => {
+		if (previousProps.expand !== props.expand) {
+			handleScroll()
+		}
+	}, [handleScroll, previousProps, props])
 
-		return (
-			<MediaQuery minWidth={config.mobileWidthTrigger}>
-				{(desktop) => (
-					<div
-						data-nosnippet
-						className={'flex-col w-full ' + mod.local}
+	const maxWidth = config.publicMaxWidth
+
+	const desktop = useMediaQuery({ minWidth: config.mobileWidthTrigger })
+
+	return (
+		<div
+			data-nosnippet
+			className={'flex-col w-full ' + mod.local}
+			style={{
+				minHeight: props.fillSpace ? (desktop ? desktopHeight : mobileHeight) : 0,
+			}}
+		>
+			<div
+				className={'flex-col w-full items-center' + (shrink ? ' blur-background' : '')}
+				style={{
+					transition: 'border-color .5s, box-shadow .5s, background-color .25s',
+					backgroundColor: shrink
+						? config.replaceAlpha(styles.colors.white, 0.85)
+						: config.replaceAlpha(styles.colors.white, 0),
+					boxShadow: shrink ? styles.mediumShadow : undefined,
+					borderBottomStyle: 'solid',
+					borderWidth: 1,
+					borderColor: shrink
+						? styles.colors.lineColor
+						: config.replaceAlpha(styles.colors.lineColor, 0),
+					position: 'fixed',
+					top: 0,
+					zIndex: 30,
+					paddingLeft: '5vw',
+					paddingRight: '5vw',
+				}}
+			>
+				<Animated
+					animateOffscreen
+					effects={['fade', 'up']}
+					duration={0.5}
+					distance={desktop ? -desktopHeight : -mobileHeightTop}
+					//
+					className={'flex justify-between w-full items-center'}
+					style={{
+						maxWidth: maxWidth,
+						minHeight: desktop
+							? shrink
+								? desktopHeight
+								: desktopHeightTop
+							: shrink
+							? mobileHeight
+							: mobileHeightTop,
+						maxHeight: desktop
+							? shrink
+								? desktopHeight
+								: desktopHeightTop
+							: shrink
+							? mobileHeight
+							: mobileHeightTop,
+						transition: 'max-height .5s, min-height .5s',
+						boxSizing: 'border-box',
+					}}
+				>
+					<Link
+						to={'/'}
 						style={{
-							minHeight: this.props.fillSpace
-								? desktop
-									? desktopHeight
-									: mobileHeight
-								: 0,
+							height: 'fit-content',
+							color: styles.colors.black,
+							textDecoration: 'none',
 						}}
+						className='flex items-center'
 					>
-						<div
-							className={
-								'flex-col w-full items-center' + (shrink ? ' blur-background' : '')
-							}
+						<img
 							style={{
-								transition:
-									'border-color .5s, box-shadow .5s, background-color .25s',
-								backgroundColor: shrink
-									? config.replaceAlpha(styles.colors.white, 0.85)
-									: config.replaceAlpha(styles.colors.white, 0),
-								boxShadow: shrink ? styles.mediumShadow : undefined,
-								borderBottomStyle: 'solid',
-								borderWidth: 1,
-								borderColor: shrink
-									? styles.colors.lineColor
-									: config.replaceAlpha(styles.colors.lineColor, 0),
-								position: 'fixed',
-								top: 0,
-								zIndex: 30,
-								paddingLeft: '5vw',
-								paddingRight: '5vw',
+								maxWidth: !shrink ? (desktop ? 38 : 28) : desktop ? 34 : 28,
+								objectFit: 'contain',
+								transition: 'max-width .5s',
+							}}
+							src={logo}
+						></img>
+
+						<h2
+							style={{
+								paddingLeft: desktop ? 15 : 10,
+								transition: 'font-size .5s',
+								fontSize: shrink || !desktop ? '175%' : '200%',
 							}}
 						>
-							<Animated
-								animateOffscreen
-								effects={['fade', 'up']}
-								duration={0.5}
-								distance={desktop ? -desktopHeight : -mobileHeightTop}
-								//
-								className={'flex justify-between w-full items-center'}
+							<span style={{ fontFamily: 'Amaranth' }}>{'Flawk'}</span>
+							<tag
 								style={{
-									maxWidth: maxWidth,
-									minHeight: desktop
-										? shrink
-											? desktopHeight
-											: desktopHeightTop
-										: shrink
-										? mobileHeight
-										: mobileHeightTop,
-									maxHeight: desktop
-										? shrink
-											? desktopHeight
-											: desktopHeightTop
-										: shrink
-										? mobileHeight
-										: mobileHeightTop,
-									transition: 'max-height .5s, min-height .5s',
-									boxSizing: 'border-box',
+									position: 'relative',
+									top: -1,
+									padding: '7.5px 10px',
+									verticalAlign: 'middle',
+									marginLeft: desktop ? 20 : 15,
+									color: styles.colors.purple,
+									opacity: 1,
+									background: config.replaceAlpha(styles.colors.purple, 0.1),
 								}}
 							>
-								<Link
-									to={'/'}
+								{!desktop ? 'WIP' : 'WORK IN PROGRESS'}
+							</tag>
+						</h2>
+					</Link>
+
+					<div className='flex items-center'>
+						<Tooltip
+							foreground
+							hidden={!desktop}
+							content={'Source code'}
+							tooltipProps={{
+								placement: 'bottom',
+							}}
+						>
+							<a
+								{...css({
+									height: 36,
+									transition: 'opacity .25s',
+									opacity: 0.75,
+									':hover': {
+										opacity: 1,
+									},
+								})}
+								className='flex items-center'
+								target='_blank'
+								href='https://github.com/cakeslice/flawk.js'
+								rel='noreferrer'
+							>
+								{github(styles.colors.black, 26)}
+							</a>
+						</Tooltip>
+
+						{desktop ? <sp /> : <hsp />}
+
+						<Tooltip
+							foreground
+							hidden={!desktop}
+							content={!global.nightMode ? 'Dark mode' : 'Light mode'}
+							offsetAlt={9}
+							tooltipProps={{
+								placement: 'bottom',
+							}}
+							containerStyle={{
+								position: 'relative',
+								left: 9,
+							}}
+						>
+							<button
+								type='button'
+								onClick={() => global.toggleNightMode()}
+								{...css({
+									width: 35,
+									padding: 0,
+									transition: 'opacity .25s',
+									opacity: 0.66,
+									':hover': {
+										opacity: 1,
+									},
+								})}
+							>
+								<img
 									style={{
-										height: 'fit-content',
-										color: styles.colors.black,
-										textDecoration: 'none',
+										height: '100%',
+										maxHeight: 30,
 									}}
-									className='flex items-center'
-								>
-									<img
-										style={{
-											maxWidth: !shrink
-												? desktop
-													? 38
-													: 28
-												: desktop
-												? 34
-												: 28,
-											objectFit: 'contain',
-											transition: 'max-width .5s',
-										}}
-										src={logo}
-									></img>
-
-									<h2
-										style={{
-											paddingLeft: desktop ? 15 : 10,
-											transition: 'font-size .5s',
-											fontSize: shrink || !desktop ? '175%' : '200%',
-										}}
-									>
-										<span style={{ fontFamily: 'Amaranth' }}>{'Flawk'}</span>
-										<tag
-											style={{
-												position: 'relative',
-												top: -1,
-												padding: '7.5px 10px',
-												verticalAlign: 'middle',
-												marginLeft: desktop ? 20 : 15,
-												color: styles.colors.purple,
-												opacity: 1,
-												background: config.replaceAlpha(
-													styles.colors.purple,
-													0.1
-												),
-											}}
-										>
-											{!desktop ? 'WIP' : 'WORK IN PROGRESS'}
-										</tag>
-									</h2>
-								</Link>
-
-								<div className='flex items-center'>
-									<Tooltip
-										foreground
-										hidden={!desktop}
-										content={'Source code'}
-										tooltipProps={{
-											placement: 'bottom',
-										}}
-									>
-										<a
-											{...css({
-												height: 36,
-												transition: 'opacity .25s',
-												opacity: 0.75,
-												':hover': {
-													opacity: 1,
-												},
-											})}
-											className='flex items-center'
-											target='_blank'
-											href='https://github.com/cakeslice/flawk.js'
-											rel='noreferrer'
-										>
-											{github(styles.colors.black, 26)}
-										</a>
-									</Tooltip>
-
-									{desktop ? <sp /> : <hsp />}
-
-									<Tooltip
-										foreground
-										hidden={!desktop}
-										content={!global.nightMode ? 'Dark mode' : 'Light mode'}
-										offsetAlt={9}
-										tooltipProps={{
-											placement: 'bottom',
-										}}
-										containerStyle={{
-											position: 'relative',
-											left: 9,
-										}}
-									>
-										<button
-											type='button'
-											onClick={() => global.toggleNightMode()}
-											{...css({
-												width: 35,
-												padding: 0,
-												transition: 'opacity .25s',
-												opacity: 0.66,
-												':hover': {
-													opacity: 1,
-												},
-											})}
-										>
-											<img
-												style={{
-													height: '100%',
-													maxHeight: 30,
-												}}
-												src={global.nightMode ? lightOff : lightOn}
-											></img>
-										</button>
-									</Tooltip>
-								</div>
-							</Animated>
-						</div>
+									src={global.nightMode ? lightOff : lightOn}
+								></img>
+							</button>
+						</Tooltip>
 					</div>
-				)}
-			</MediaQuery>
-		)
-	}
+				</Animated>
+			</div>
+		</div>
+	)
 }
