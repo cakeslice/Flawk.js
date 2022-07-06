@@ -17,7 +17,7 @@ import numeral from 'numeral'
 import _projectText from 'project/text'
 import projectOverrides, { projectConfig as pC } from 'project/_config'
 import pSO, { projectStyles as pS } from 'project/_styles'
-import React, { useState } from 'react'
+import React from 'react'
 
 import { install } from 'resize-observer'
 import { post } from './api'
@@ -366,17 +366,6 @@ const config: Config & InternalConfig = {
 		await method()
 		await _setStateAsync(ref, { [key || 'fetching']: false })
 	},
-	useFetchLock: (call) => {
-		const [fetching, setFetching] = useState(false)
-
-		async function run(...args: unknown[]) {
-			setFetching(true)
-			await call(...args)
-			setFetching(false)
-		}
-
-		return [fetching, run]
-	},
 	setStateAsync: _setStateAsync,
 
 	capitalize: _capitalize,
@@ -593,9 +582,6 @@ type InternalConfig = {
 	appleBrowser: boolean
 
 	lockFetch: (ref: React.Component, method: () => Promise<void>, key?: string) => Promise<void>
-	useFetchLock: (
-		call: (...args: unknown[]) => Promise<void>
-	) => [boolean, (...args: unknown[]) => Promise<void>]
 	setStateAsync: typeof _setStateAsync
 
 	capitalize: typeof _capitalize

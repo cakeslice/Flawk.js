@@ -6,59 +6,54 @@
  */
 
 import config from 'core/config'
-import { Component, useEffect, useRef } from 'react'
+import { usePrevious } from 'core/functions/hooks'
+import { Component, useEffect } from 'react'
 import isEqual from 'react-fast-compare'
 
-function usePrevious<T>(value: T) {
-	const ref = useRef(value)
-	useEffect(() => {
-		ref.current = value
-	})
-	return ref.current
-}
-export function useTracking<T>(trackedName: string, nextProps: T, trackedProps: string[]) {
+export function useTracking<T>(trackedName: string, props: T, trackedProps?: string[]) {
 	if (!config.prod && !config.staging) {
 		// eslint-disable-next-line
-		const props = usePrevious(nextProps)
+		const previousProps = usePrevious(props)
 
 		// eslint-disable-next-line
 		useEffect(() => {
 			const name =
 				trackedName +
 				// @ts-ignore
-				(props.name
+				(previousProps.name
 					? // @ts-ignore
-					  ' "' + props.name + '"'
+					  ' "' + previousProps.name + '"'
 					: // @ts-ignore
-					props.field && props.field.name
+					previousProps.field && previousProps.field.name
 					? // @ts-ignore
-					  ' "' + props.field.name + '"'
+					  ' "' + previousProps.field.name + '"'
 					: // @ts-ignore
-					props.trackedName
+					previousProps.trackedName
 					? // @ts-ignore
-					  ' "' + props.trackedName + '"'
+					  ' "' + previousProps.trackedName + '"'
 					: '')
 
-			if (nextProps)
-				Object.keys(nextProps).forEach((key) => {
-					if (trackedProps) {
-						for (let i = 0; i < trackedProps.length; i++) {
-							const t = trackedProps[i]
-							if (t !== key) return
-						}
+			Object.keys(props).forEach((key) => {
+				if (trackedProps) {
+					for (let i = 0; i < trackedProps.length; i++) {
+						const t = trackedProps[i]
+						if (t !== key) return
 					}
+				}
 
-					if (
-						// @ts-ignore
-						nextProps[key] !== props[key] ||
-						// @ts-ignore
-						!isEqual(nextProps[key], props[key])
-					) {
-						global.stats && global.stats.track(name, 'prop/' + key)
-					}
-				})
+				if (
+					// @ts-ignore
+					props[key] !== previousProps[key] ||
+					// @ts-ignore
+					!isEqual(props[key], previousProps[key])
+				) {
+					global.stats && global.stats.track(name, 'prop/' + key)
+				}
+			})
 
 			global.stats && global.stats.track(name, 'totalRenders')
+
+			// We need to track renders even if props don't change so no dependencies...
 		})
 	}
 }

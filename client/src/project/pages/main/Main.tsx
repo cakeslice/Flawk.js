@@ -9,8 +9,8 @@ import FButton from 'core/components/FButton'
 import config from 'core/config'
 import styles from 'core/styles'
 import { github } from 'project/components/Icons'
-import React, { Component } from 'react'
-import MediaQuery from 'react-responsive'
+import React, { useEffect, useState } from 'react'
+import { useMediaQuery } from 'react-responsive'
 import mod from './Main.module.scss'
 
 const buttonStyle = {
@@ -18,141 +18,116 @@ const buttonStyle = {
 	fontSize: 16,
 }
 
-// eslint-disable-next-line
-type Props = {}
-export default class Main extends Component<Props> {
-	state = { scroll: 0 }
-
-	constructor(props: Props) {
-		super(props)
-
-		this.handleScroll = this.handleScroll.bind(this)
-	}
-
-	handleScroll() {
+export default function Main() {
+	const [scroll, setScroll] = useState(0)
+	function handleScroll() {
 		const scrollTop = document.body.scrollTop || document.documentElement.scrollTop
 
-		this.setState({
-			scroll: Math.min(2000, scrollTop),
-		})
+		setScroll(Math.min(2000, scrollTop))
 	}
-	componentDidMount() {
-		this.handleScroll()
-		window.addEventListener('scroll', this.handleScroll)
-	}
-	componentWillUnmount() {
-		window.removeEventListener('scroll', this.handleScroll)
-	}
+	useEffect(() => {
+		window.addEventListener('scroll', handleScroll)
 
-	render() {
-		return (
-			<MediaQuery minWidth={config.mobileWidthTrigger}>
-				{(desktop) => {
-					const subtleText = { color: config.replaceAlpha(styles.colors.black, 0.66) }
+		return () => {
+			window.removeEventListener('scroll', handleScroll)
+		}
+	})
 
-					return (
-						<div
-							style={{
-								minHeight: '100vh',
-							}}
-							className={mod.local}
-						>
-							<div
-								style={{
-									minHeight: desktop ? 50 + 125 : 25 + 70,
-								}}
-							></div>
+	const subtleText = { color: config.replaceAlpha(styles.colors.black, 0.66) }
 
-							<Section>
-								<div className='flex justify-between'>
-									<div style={{ zIndex: 2 }}>
-										<h1>
-											<span style={{ color: styles.colors.main }}>
-												Full-stack
-											</span>
-											{desktop ? ' ' : <br />}
-											ready for liftoff
-										</h1>
-										<sp />
-										<sp />
-										<sp />
-										<sp />
-										<h4 style={subtleText}>
-											Strongly opinionated <m>full-stack</m> boilerplate
-											{desktop ? <br /> : ' '}
-											powered by{!desktop ? <br /> : ' '}
-											<m style={{ color: styles.colors.main }}>
-												React
-											</m> and{' '}
-											<m style={{ color: styles.colors.main }}>
-												Express/Mongoose
-											</m>
-										</h4>
+	const desktop = useMediaQuery({ minWidth: config.mobileWidthTrigger })
 
-										<sp />
-										<sp />
-										<sp />
-										<sp />
-										<sp />
-										<sp />
-										<sp />
-										<sp />
-									</div>
-								</div>
-
-								<div className='wrapMargin flex flex-wrap justify-center'>
-									<FButton
-										style={{ ...buttonStyle, minWidth: 145.5 }}
-										href='/components'
-										appearance={'primary'}
-									>
-										Get started
-									</FButton>
-									<FButton
-										style={buttonStyle}
-										href='https://github.com/cakeslice/flawk.js'
-										target='_blank'
-									>
-										{github(styles.colors.black, 16)}
-										<div style={{ marginLeft: 10 }}>Source code</div>
-									</FButton>
-								</div>
-							</Section>
-
-							<div style={{ minHeight: 550 }} />
-						</div>
-					)
+	return (
+		<div
+			style={{
+				minHeight: '100vh',
+			}}
+			className={mod.local}
+		>
+			<div
+				style={{
+					minHeight: desktop ? 50 + 125 : 25 + 70,
 				}}
-			</MediaQuery>
-		)
-	}
+			></div>
+
+			<Section>
+				<div className='flex justify-between'>
+					<div style={{ zIndex: 2 }}>
+						<h1>
+							<span style={{ color: styles.colors.main }}>Full-stack</span>
+							{desktop ? ' ' : <br />}
+							ready for liftoff
+						</h1>
+						<sp />
+						<sp />
+						<sp />
+						<sp />
+						<h4 style={subtleText}>
+							Strongly opinionated <m>full-stack</m> boilerplate
+							{desktop ? <br /> : ' '}
+							powered by{!desktop ? <br /> : ' '}
+							<m style={{ color: styles.colors.main }}>React</m> and{' '}
+							<m style={{ color: styles.colors.main }}>Express/Mongoose</m>
+						</h4>
+
+						<sp />
+						<sp />
+						<sp />
+						<sp />
+						<sp />
+						<sp />
+						<sp />
+						<sp />
+					</div>
+				</div>
+
+				<div className='wrapMargin flex flex-wrap justify-center'>
+					<FButton
+						style={{ ...buttonStyle, minWidth: 145.5 }}
+						href='/components'
+						appearance={'primary'}
+					>
+						Get started
+					</FButton>
+					<FButton
+						style={buttonStyle}
+						href='https://github.com/cakeslice/flawk.js'
+						target='_blank'
+					>
+						{github(styles.colors.black, 16)}
+						<div style={{ marginLeft: 10 }}>Source code</div>
+					</FButton>
+				</div>
+			</Section>
+
+			<div style={{ minHeight: 550 }} />
+		</div>
+	)
 }
 
-class Section extends React.Component<{
+function Section(props: {
 	className?: string
 	children?: React.ReactNode
 	style?: React.CSSProperties
-}> {
-	render() {
-		const padding = '100px 5vw'
+}) {
+	const padding = '100px 5vw'
 
-		return (
+	return (
+		<div
+			className={'flex-col items-center'}
+			style={{ overflow: 'hidden', padding: padding, ...props.style }}
+		>
 			<div
-				className={'flex-col items-center'}
-				style={{ overflow: 'hidden', padding: padding, ...this.props.style }}
+				className={props.className || 'w-full'}
+				style={{
+					maxWidth: 1280,
+					alignSelf: 'center',
+				}}
 			>
-				<div
-					className={this.props.className || 'w-full'}
-					style={{
-						maxWidth: 1280,
-						alignSelf: 'center',
-					}}
-				>
-					{this.props.children}
-				</div>
+				{props.children}
 			</div>
-		)
-	}
+		</div>
+	)
 }
 
 const warn = (color: string) => (

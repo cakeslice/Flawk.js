@@ -16,7 +16,7 @@ import config from 'core/config'
 import styles from 'core/styles'
 import { css } from 'glamor'
 import { github } from 'project/components/Icons'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useMediaQuery } from 'react-responsive'
 import * as uuid from 'uuid'
 import FButton from '../FButton'
@@ -444,6 +444,13 @@ export const Section: React.FC<{
 
 	const tablet = useMediaQuery({ minWidth: 880 })
 
+	const openStyle: React.CSSProperties = useMemo(() => {
+		return {
+			flexDirection: tablet ? 'row-reverse' : undefined,
+			width: tablet ? undefined : '100%',
+		}
+	}, [tablet])
+
 	return (
 		<Anchor id={id} updateHash={title ? true : false}>
 			<>
@@ -530,12 +537,7 @@ export const Section: React.FC<{
 											<hsp />
 											<CodeCollapse
 												className={tablet ? 'flex' : ''}
-												openStyle={{
-													flexDirection: tablet
-														? 'row-reverse'
-														: undefined,
-													width: tablet ? undefined : '100%',
-												}}
+												openStyle={openStyle}
 												data={code}
 												lang={lang || 'tsx'}
 											></CodeCollapse>

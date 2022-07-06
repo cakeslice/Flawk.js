@@ -15,6 +15,7 @@ import Paginate from 'core/components/Paginate'
 import { useQueryParams } from 'core/components/QueryParams'
 import { Section } from 'core/components/viewer/ComponentsViewer'
 import config from 'core/config'
+import { useFetchLock } from 'core/functions/hooks'
 import styles from 'core/styles'
 import _remove from 'lodash/remove'
 import { useEffect, useState } from 'react'
@@ -52,7 +53,7 @@ export default function Table() {
 	const [selected, setSelected] = useState<string[]>([])
 	const [tableAppearance, setTableAppearance] = useState('default')
 
-	const [fetching, fetchData] = config.useFetchLock(async () => {
+	const [fetching, fetchData] = useFetchLock(async () => {
 		const queryParams = getQueryParams()
 		const q = {
 			_sort: queryParams.sort,

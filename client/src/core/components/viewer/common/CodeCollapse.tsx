@@ -7,6 +7,7 @@
 
 import CodeBlock, { Lang } from 'core/components/CodeBlock'
 import Tooltip from 'core/components/Tooltip'
+import { useTracking } from 'core/components/TrackedComponent'
 import config from 'core/config'
 import styles from 'core/styles'
 import React, { useState } from 'react'
@@ -36,7 +37,7 @@ type Props = {
 	lang: Lang
 }
 export default function CodeCollapse(props: Props) {
-	//useTracking('CodeCollapse')
+	useTracking('CodeCollapse', props)
 
 	const [isOpen, setIsOpen] = useState(false)
 

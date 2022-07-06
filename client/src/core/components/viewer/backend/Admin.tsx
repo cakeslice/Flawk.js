@@ -9,7 +9,7 @@ import { post } from 'core/api'
 import FInput from 'core/components/FInput'
 import FTable from 'core/components/FTable'
 import { useQueryParams } from 'core/components/QueryParams'
-import config from 'core/config'
+import { useFetchLock } from 'core/functions/hooks'
 import styles from 'core/styles'
 import { useEffect, useState } from 'react'
 
@@ -26,7 +26,7 @@ export default function Admin() {
 	}
 	const [data, setData] = useState<Data>()
 
-	const [fetching, fetchData] = config.useFetchLock(async () => {
+	const [fetching, fetchData] = useFetchLock(async () => {
 		const queryParams = getQueryParams()
 		const q = {
 			...queryParams,
