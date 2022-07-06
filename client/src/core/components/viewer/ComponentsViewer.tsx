@@ -17,7 +17,7 @@ import styles from 'core/styles'
 import { css } from 'glamor'
 import { github } from 'project/components/Icons'
 import React, { useEffect, useState } from 'react'
-import MediaQuery from 'react-responsive'
+import { useMediaQuery } from 'react-responsive'
 import * as uuid from 'uuid'
 import FButton from '../FButton'
 import CodeCollapse from './common/CodeCollapse'
@@ -45,7 +45,7 @@ const iconWrapper = (icon: (color: string) => React.ReactNode, active: boolean, 
 	</div>
 )
 
-export default function ComponentsViewer({ isOpen }: { isOpen: boolean }): React.ReactNode {
+export default function ComponentsViewer() {
 	const [horizontalDashboard, setHorizontalDashboard] = useState(false)
 
 	useEffect(() => {
@@ -61,7 +61,7 @@ export default function ComponentsViewer({ isOpen }: { isOpen: boolean }): React
 			id: 'logo',
 			desktopTab: true,
 			notRoute: true,
-			tab: (props) =>
+			tab: (p) =>
 				horizontalDashboard ? (
 					<div
 						className='flex items-center h-full'
@@ -100,8 +100,8 @@ export default function ComponentsViewer({ isOpen }: { isOpen: boolean }): React
 									<img
 										style={{
 											objectFit: 'contain',
-											maxHeight: isOpen ? 50 : 30,
-											minHeight: isOpen ? 50 : 30,
+											maxHeight: p.isOpen ? 50 : 30,
+											minHeight: p.isOpen ? 50 : 30,
 											transition: `min-height 500ms, max-height 500ms`,
 										}}
 										src={logo}
@@ -306,57 +306,51 @@ export default function ComponentsViewer({ isOpen }: { isOpen: boolean }): React
 			tab: (props) => <div style={{ height: 40 }} />,
 		})
 
+	const desktop = useMediaQuery({ minWidth: config.mobileWidthTrigger })
 	return (
-		<MediaQuery minWidth={config.mobileWidthTrigger}>
-			{(desktop) => (
-				<Dashboard
-					horizontal={horizontalDashboard}
-					horizontalHeight={50}
-					path={'/components/'}
-					placeholderStyle={{
-						padding: '0% 5%',
-					}}
-					style={{ background: styles.colors.white }}
-					linkStyle={{
-						...(horizontalDashboard && desktop && { height: 40 }),
-						':selected': { color: styles.colors.black },
-					}}
-					logo={logo}
-					drawerTitle={'Overview'}
-					wrapperComponent={Wrapper}
-					routes={routes}
-					pageProps={{
-						horizontalDashboard: horizontalDashboard,
-						toggleDashboardLayout: async () => {
-							await global.storage.setItem(
-								'horizontalDashboard',
-								!horizontalDashboard ? 'true' : 'false'
-							)
-							setHorizontalDashboard((prev) => !prev)
-						},
-					}}
-				></Dashboard>
-			)}
-		</MediaQuery>
+		<Dashboard
+			horizontal={horizontalDashboard}
+			horizontalHeight={50}
+			path={'/components/'}
+			placeholderStyle={{
+				padding: '0% 5%',
+			}}
+			style={{ background: styles.colors.white }}
+			linkStyle={{
+				...(horizontalDashboard && desktop && { height: 40 }),
+				':selected': { color: styles.colors.black },
+			}}
+			logo={logo}
+			drawerTitle={'Overview'}
+			wrapperComponent={Wrapper}
+			routes={routes}
+			pageProps={{
+				horizontalDashboard: horizontalDashboard,
+				toggleDashboardLayout: async () => {
+					await global.storage.setItem(
+						'horizontalDashboard',
+						!horizontalDashboard ? 'true' : 'false'
+					)
+					setHorizontalDashboard((prev) => !prev)
+				},
+			}}
+		></Dashboard>
 	)
 }
 
 function Wrapper({ children }: { children: React.ReactNode }) {
+	const desktop = useMediaQuery({ minWidth: config.mobileWidthTrigger })
 	return (
-		<MediaQuery minWidth={config.mobileWidthTrigger}>
-			{(desktop) => (
-				<div
-					style={{
-						//padding: desktop ? '5%' : '5%',
-						paddingTop: desktop ? 80 : 40,
-						paddingBottom: 160,
-						maxWidth: config.publicMaxWidth,
-					}}
-				>
-					{children}
-				</div>
-			)}
-		</MediaQuery>
+		<div
+			style={{
+				//padding: desktop ? '5%' : '5%',
+				paddingTop: desktop ? 80 : 40,
+				paddingBottom: 160,
+				maxWidth: config.publicMaxWidth,
+			}}
+		>
+			{children}
+		</div>
 	)
 }
 
@@ -366,86 +360,75 @@ export const Next: React.FC<{
 	backName?: string
 	backLink?: string
 }> = ({ name, link, backName, backLink }) => {
+	const desktop = useMediaQuery({ minWidth: config.mobileWidthTrigger })
 	return (
-		<MediaQuery minWidth={config.mobileWidthTrigger}>
-			{(desktop) => (
+		<div
+			style={{ padding: '0px 5%', paddingTop: 20 }}
+			className={'w-full ' + (desktop ? 'flex justify-between' : 'flex-col items-center')}
+		>
+			{backLink ? (
 				<div
-					style={{ padding: '0px 5%', paddingTop: 20 }}
-					className={
-						'w-full ' + (desktop ? 'flex justify-between' : 'flex-col items-center')
-					}
+					style={{
+						width: 300,
+						margin: 10,
+					}}
 				>
-					{backLink ? (
-						<div
-							style={{
-								width: 300,
-								margin: 10,
-							}}
-						>
-							<FButton
-								href={'/components/' + backLink}
+					<FButton
+						href={'/components/' + backLink}
+						style={{
+							width: '100%',
+							minHeight: 70,
+							fontSize: 16,
+						}}
+					>
+						<div style={{ width: '90%' }} className='flex items-center justify-between'>
+							<div
 								style={{
-									width: '100%',
-									minHeight: 70,
-									fontSize: 16,
+									opacity: 0.5,
+									transform: 'rotate(-90deg) scale(.75)',
 								}}
 							>
-								<div
-									style={{ width: '90%' }}
-									className='flex items-center justify-between'
-								>
-									<div
-										style={{
-											opacity: 0.5,
-											transform: 'rotate(-90deg) scale(.75)',
-										}}
-									>
-										{arrow(styles.colors.main)}
-									</div>
-									<h4 style={{ color: styles.colors.main }}>{backName}</h4>
-								</div>
-							</FButton>
+								{arrow(styles.colors.main)}
+							</div>
+							<h4 style={{ color: styles.colors.main }}>{backName}</h4>
 						</div>
-					) : (
-						<div />
-					)}
-					{link ? (
-						<div
-							style={{
-								width: 300,
-								margin: 10,
-							}}
-						>
-							<FButton
-								href={'/components/' + link}
-								style={{
-									width: '100%',
-									minHeight: 70,
-									fontSize: 16,
-								}}
-							>
-								<div
-									style={{ width: '90%' }}
-									className='flex items-center justify-between'
-								>
-									<h4 style={{ color: styles.colors.main }}>{name}</h4>
-									<div
-										style={{
-											opacity: 0.5,
-											transform: 'rotate(90deg) scale(.75)',
-										}}
-									>
-										{arrow(styles.colors.main)}
-									</div>
-								</div>
-							</FButton>
-						</div>
-					) : (
-						<div />
-					)}
+					</FButton>
 				</div>
+			) : (
+				<div />
 			)}
-		</MediaQuery>
+			{link ? (
+				<div
+					style={{
+						width: 300,
+						margin: 10,
+					}}
+				>
+					<FButton
+						href={'/components/' + link}
+						style={{
+							width: '100%',
+							minHeight: 70,
+							fontSize: 16,
+						}}
+					>
+						<div style={{ width: '90%' }} className='flex items-center justify-between'>
+							<h4 style={{ color: styles.colors.main }}>{name}</h4>
+							<div
+								style={{
+									opacity: 0.5,
+									transform: 'rotate(90deg) scale(.75)',
+								}}
+							>
+								{arrow(styles.colors.main)}
+							</div>
+						</div>
+					</FButton>
+				</div>
+			) : (
+				<div />
+			)}
+		</div>
 	)
 }
 
@@ -459,128 +442,120 @@ export const Section: React.FC<{
 }> = ({ children, title, top, tags, code, lang, description }) => {
 	const id = title ? title.replaceAll(' ', '_').toLowerCase() : uuid.v1()
 
+	const tablet = useMediaQuery({ minWidth: 880 })
+
 	return (
-		<MediaQuery minWidth={880}>
-			{(tablet) => (
-				<Anchor id={id} updateHash={title ? true : false}>
+		<Anchor id={id} updateHash={title ? true : false}>
+			<>
+				{!top && (
 					<>
-						{!top && (
-							<>
-								<sp />
-								<sp />
-							</>
-						)}
-						<>
-							{title && (
+						<sp />
+						<sp />
+					</>
+				)}
+				<>
+					{title && (
+						<div
+							style={{
+								padding: tablet ? '0% 5%' : '0% 5%',
+							}}
+						>
+							<div className='flex'>
+								<h3>{title}</h3>
+								{tags && (
+									<div
+										className={!tablet ? 'grow' : ''}
+										style={{ minWidth: 15 }}
+									/>
+								)}
+								{tags && (
+									<div
+										className={
+											'wrapMargin flex flex-wrap ' +
+											(tablet ? 'justify-start' : 'justify-end')
+										}
+									>
+										{tags.map((tag) => (
+											<div
+												key={id + '_' + tag}
+												style={{
+													display: 'flex',
+													position: 'relative',
+													top: 3,
+												}}
+											>
+												<tag
+													style={{
+														fontFamily: 'monospace',
+														color: styles.colors.main,
+														letterSpacing: 0,
+														opacity: 1,
+														padding: '1px 5px',
+														background: config.replaceAlpha(
+															styles.colors.main,
+															0.15
+														),
+													}}
+												>
+													{tag}
+												</tag>
+											</div>
+										))}
+									</div>
+								)}
+							</div>
+							{!tags ? <hsp /> : <sp />}
+							{!tags && description && <hsp />}
+							{(code || description) && (
 								<div
+									className={cssModule.section}
 									style={{
-										padding: tablet ? '0% 5%' : '0% 5%',
+										flexDirection: tablet ? 'row' : 'column',
+										padding: '10px 15px',
+										borderRadius: 5,
+										border: '1px solid ' + styles.colors.lineColor,
+										borderLeft:
+											'6px solid ' +
+											config.replaceAlpha(styles.colors.black, 0.1),
+										fontSize: 13.5,
+										lineHeight: '19px',
+										//width: 'fit-content',
+										color: config.replaceAlpha(styles.colors.black, 0.85),
+										background: config.replaceAlpha(styles.colors.white, 0.5),
 									}}
 								>
-									<div className='flex'>
-										<h3>{title}</h3>
-										{tags && (
-											<div
-												className={!tablet ? 'grow' : ''}
-												style={{ minWidth: 15 }}
-											/>
-										)}
-										{tags && (
-											<div
-												className={
-													'wrapMargin flex flex-wrap ' +
-													(tablet ? 'justify-start' : 'justify-end')
-												}
-											>
-												{tags.map((tag) => (
-													<div
-														key={id + '_' + tag}
-														style={{
-															display: 'flex',
-															position: 'relative',
-															top: 3,
-														}}
-													>
-														<tag
-															style={{
-																fontFamily: 'monospace',
-																color: styles.colors.main,
-																letterSpacing: 0,
-																opacity: 1,
-																padding: '1px 5px',
-																background: config.replaceAlpha(
-																	styles.colors.main,
-																	0.15
-																),
-															}}
-														>
-															{tag}
-														</tag>
-													</div>
-												))}
-											</div>
-										)}
-									</div>
-									{!tags ? <hsp /> : <sp />}
-									{!tags && description && <hsp />}
-									{(code || description) && (
-										<div
-											className={cssModule.section}
-											style={{
-												flexDirection: tablet ? 'row' : 'column',
-												padding: '10px 15px',
-												borderRadius: 5,
-												border: '1px solid ' + styles.colors.lineColor,
-												borderLeft:
-													'6px solid ' +
-													config.replaceAlpha(styles.colors.black, 0.1),
-												fontSize: 13.5,
-												lineHeight: '19px',
-												//width: 'fit-content',
-												color: config.replaceAlpha(
-													styles.colors.black,
-													0.85
-												),
-												background: config.replaceAlpha(
-													styles.colors.white,
-													0.5
-												),
-											}}
-										>
-											<div className='grow'>{description}</div>
-											{code && (
-												<>
-													<hsp />
-													<CodeCollapse
-														className={tablet ? 'flex' : ''}
-														openStyle={{
-															flexDirection: tablet
-																? 'row-reverse'
-																: undefined,
-															width: tablet ? undefined : '100%',
-														}}
-														data={code}
-														lang={lang || 'tsx'}
-													></CodeCollapse>
-												</>
-											)}
-										</div>
+									<div className='grow'>{description}</div>
+									{code && (
+										<>
+											<hsp />
+											<CodeCollapse
+												className={tablet ? 'flex' : ''}
+												openStyle={{
+													flexDirection: tablet
+														? 'row-reverse'
+														: undefined,
+													width: tablet ? undefined : '100%',
+												}}
+												data={code}
+												lang={lang || 'tsx'}
+											></CodeCollapse>
+										</>
 									)}
-									{description && <sp />}
-									{!tags && !description && <hsp />} <hsp />
 								</div>
 							)}
+							{description && <sp />}
+							{!tags && !description && <hsp />} <hsp />
+						</div>
+					)}
 
-							<div style={{ padding: tablet ? '0% 5%' : '0% 5%' }}>{children}</div>
-							<sp />
-							<sp />
-							<sp />
-							<hr />
-						</>
-					</>
-				</Anchor>
-			)}
-		</MediaQuery>
+					<div style={{ padding: tablet ? '0% 5%' : '0% 5%' }}>{children}</div>
+					<sp />
+					<sp />
+					<sp />
+					<hr />
+				</>
+			</>
+		</Anchor>
 	)
 }
 

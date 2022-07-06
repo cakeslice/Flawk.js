@@ -7,7 +7,7 @@
 
 import TrackedComponent from 'core/components/TrackedComponent'
 import { Obj } from 'flawk-types'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState, useMemo } from 'react'
 import isEqual from 'react-fast-compare'
 
 export const getSearch = (object: Obj, removeEmpty = true) => {
@@ -46,6 +46,9 @@ export const parseSearch = (input: string, removeEmpty = true) => {
 	return obj
 }
 
+function _getAndParseSearch<T>(object: Obj) {
+	return parseSearch(getSearch(object, false), false) as Record<keyof T, string>
+}
 export function useQueryParams<
 	T = {
 		page: number
@@ -56,66 +59,71 @@ export function useQueryParams<
 		startDate?: Date
 		endDate?: Date
 	}
->(defaultParams?: T) {
-	const _getAndParseSearch = (object: Obj) =>
-		parseSearch(getSearch(object, false), false) as Record<keyof T, string>
-	const _parsedDefaultParams = _getAndParseSearch(defaultParams as Obj)
+>(defaultParams?: Obj) {
+	const parsedDefaultParams = useMemo(
+		() =>
+			defaultParams ? _getAndParseSearch<T>(defaultParams) : ({} as Record<keyof T, string>),
+		[defaultParams]
+	)
 
-	function _parseQueryParams(): Record<keyof T, string> {
+	const parseQueryParams = useCallback((): Record<keyof T, string> => {
 		if (window.location.search) {
 			return {
-				..._parsedDefaultParams,
+				...parsedDefaultParams,
 				...parseSearch(window.location.search),
 			}
-		} else return { ..._parsedDefaultParams }
-	}
+		} else return { ...parsedDefaultParams }
+	}, [parsedDefaultParams])
+	const queryString = useCallback(
+		(object?: Obj) => {
+			return getSearch(object || parseQueryParams())
+		},
+		[parseQueryParams]
+	)
+	const getQueryParams = useCallback(() => {
+		return parseQueryParams()
+	}, [parseQueryParams])
 
 	//
 
-	const [queryParams, setQuery] = useState<Record<keyof T, string>>(_parseQueryParams())
+	const [queryParams, setQuery] = useState<Record<keyof T, string>>(parseQueryParams())
 
 	useEffect(() => {
-		// Update the cache if there's an update
-		const newParams = _parseQueryParams()
+		// Check if params changed in every update
+		const newParams = parseQueryParams()
 		if (!isEqual(newParams, queryParams)) setQuery(newParams)
 	})
 
-	function setQueryParams(obj: Partial<T>, addHistory = false) {
-		const nextQueryParams = {
-			..._parseQueryParams(),
-			..._getAndParseSearch(obj),
-		}
-
-		Object.keys(nextQueryParams).forEach((key) => {
-			const k = key as keyof T
-
-			// Remove params that match the default or are empty
-			if (nextQueryParams[k] === _parsedDefaultParams[k] || nextQueryParams[k] === '') {
-				delete nextQueryParams[k]
+	const setQueryParams = useCallback(
+		(obj: Partial<T>, addHistory = false) => {
+			const nextQueryParams = {
+				...parseQueryParams(),
+				..._getAndParseSearch(obj),
 			}
-		})
 
-		const search = getSearch(nextQueryParams)
-		const url = (search ? '?' + search : '') + window.location.hash
-		if (addHistory) {
-			window.history.pushState({}, '', url)
-		} else {
-			window.history.replaceState({}, '', url)
-		}
+			Object.keys(nextQueryParams).forEach((key) => {
+				const k = key as keyof T
 
-		// ! BUG: we set state param BUT if we fetch right after it won't work!
+				// Remove params that match the default or are empty
+				if (nextQueryParams[k] === parsedDefaultParams[k] || nextQueryParams[k] === '') {
+					delete nextQueryParams[k]
+				}
+			})
 
-		setQuery(_parseQueryParams())
-	}
+			const search = '?' + getSearch(nextQueryParams)
+			const url = search + window.location.hash
+			if (addHistory) {
+				window.history.pushState({}, '', url)
+			} else {
+				window.history.replaceState({}, '', url)
+			}
 
-	const queryString = useCallback(
-		(object?: Obj) => {
-			return getSearch(object || (queryParams as Obj))
+			setQuery(parseQueryParams())
 		},
-		[queryParams]
+		[setQuery, parseQueryParams, parsedDefaultParams]
 	)
 
-	return { queryParams, setQueryParams, queryString }
+	return { getQueryParams, setQueryParams, queryString }
 }
 
 export default class QueryParams<

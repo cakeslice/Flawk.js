@@ -9,62 +9,55 @@ import { get } from 'core/api'
 import CodeBlock from 'core/components/CodeBlock'
 import styles from 'core/styles'
 import { Obj } from 'flawk-types'
-import React, { Component } from 'react'
+import { useEffect, useState } from 'react'
 import Collapsible from '../Collapsible'
 import { Next, Section } from './ComponentsViewer'
 
-export default class API extends Component {
-	state: {
-		api?: { paths: Obj }
-	} = {}
+export default function API() {
+	const [api, setApi] = useState<{ paths: Obj }>()
 
-	async componentDidMount() {
-		const res = await get('api')
-		if (res.ok) this.setState({ api: res.body })
-	}
+	useEffect(() => {
+		async function run() {
+			const res = await get('api')
+			if (res.ok) setApi(res.body as { paths: Obj })
+		}
+		run()
+	}, [])
 
-	render() {
-		return this.state.api && this.state.api.paths ? (
-			<div>
-				<Section title='API' top>
-					{Object.keys(this.state.api.paths).map((p) => {
-						return (
-							<Collapsible
-								key={p}
-								trigger={(isOpen, set) => (
-									<b
-										style={{
-											color: isOpen ? styles.colors.main : undefined,
-										}}
-									>
-										{this.state.api &&
-											Object.keys(
-												this.state.api.paths[p] as Obj
-											)[0].toUpperCase() +
-												' ' +
-												p}
-									</b>
-								)}
-								content={(set) => (
-									<>
-										<CodeBlock
-											lang='json'
-											data={JSON.stringify(
-												this.state.api && this.state.api.paths[p]
-											)}
-										/>
-										<sp />
-									</>
-								)}
-							></Collapsible>
-						)
-					})}
-				</Section>
+	return api && api.paths ? (
+		<div>
+			<Section title='API' top>
+				{Object.keys(api.paths).map((p) => {
+					return (
+						<Collapsible
+							key={p}
+							trigger={(isOpen, set) => (
+								<b
+									style={{
+										color: isOpen ? styles.colors.main : undefined,
+									}}
+								>
+									{api &&
+										Object.keys(api.paths[p] as Obj)[0].toUpperCase() + ' ' + p}
+								</b>
+							)}
+							content={(set) => (
+								<>
+									<CodeBlock
+										lang='json'
+										data={JSON.stringify(api && api.paths[p])}
+									/>
+									<sp />
+								</>
+							)}
+						></Collapsible>
+					)
+				})}
+			</Section>
 
-				<Next backName='Backend' backLink='backend/features' />
-			</div>
-		) : (
-			<div />
-		)
-	}
+			<Next backName='Backend' backLink='backend/features' />
+		</div>
+	) : (
+		<div />
+	)
 }

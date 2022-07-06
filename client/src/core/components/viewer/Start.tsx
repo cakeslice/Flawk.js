@@ -6,11 +6,9 @@
  */
 
 import CodeBlock from 'core/components/CodeBlock'
-import config from 'core/config'
 import styles from 'core/styles'
 import { useEffect, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
-import MediaQuery from 'react-responsive'
 import remarkGfm from 'remark-gfm'
 import { Next, Section } from './ComponentsViewer'
 import mod from './ComponentsViewer.module.scss'
@@ -53,48 +51,43 @@ export default function Start(props: Props) {
 		}
 	}, [])
 
-	return (
-		<MediaQuery minWidth={config.mobileWidthTrigger}>
-			{(desktop) => {
-				return !md ? (
-					<div />
-				) : (
-					<div className={mod.markdown}>
-						<Section top>
-							<div style={{ ...styles.card, width: 'auto' }}>
-								<ReactMarkdown
-									components={{
-										h1: 'h2',
-										h2: 'h3',
-										h3: 'h4',
-										code({ node, inline, className, children, ...props }) {
-											const match = /language-(\w+)/.exec(className || '')
-											return !inline && match ? (
-												<CodeBlock
-													style={{ maxWidth: 600 }}
-													noPrettier
-													//@ts-ignore
-													lang={match[1]}
-													data={String(children).replace(/\n$/, '')}
-												></CodeBlock>
-											) : (
-												<code className={className} {...props}>
-													{children}
-												</code>
-											)
-										},
-									}}
-									remarkPlugins={[remarkGfm]}
-								>
-									{md}
-								</ReactMarkdown>
-							</div>
-						</Section>
+	//const desktop = useMediaQuery({ minWidth: config.mobileWidthTrigger })
+	return !md ? (
+		<div />
+	) : (
+		<div className={mod.markdown}>
+			<Section top>
+				<div style={{ ...styles.card, width: 'auto' }}>
+					<ReactMarkdown
+						components={{
+							h1: 'h2',
+							h2: 'h3',
+							h3: 'h4',
+							code({ node, inline, className, children, ...props }) {
+								const match = /language-(\w+)/.exec(className || '')
+								return !inline && match ? (
+									<CodeBlock
+										style={{ maxWidth: 600 }}
+										noPrettier
+										//@ts-ignore
+										lang={match[1]}
+										data={String(children).replace(/\n$/, '')}
+									></CodeBlock>
+								) : (
+									<code className={className} {...props}>
+										{children}
+									</code>
+								)
+							},
+						}}
+						remarkPlugins={[remarkGfm]}
+					>
+						{md}
+					</ReactMarkdown>
+				</div>
+			</Section>
 
-						<Next name='Style' link='style' />
-					</div>
-				)
-			}}
-		</MediaQuery>
+			<Next name='Style' link='style' />
+		</div>
 	)
 }

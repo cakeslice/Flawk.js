@@ -15,9 +15,9 @@ import RouterBase from 'core/components/RouterBase'
 import config from 'core/config'
 import styles, { projectStyles } from 'core/styles'
 import logo from 'project/assets/images/logo.svg'
-import React, { Component, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { Helmet } from 'react-helmet'
-import MediaQuery from 'react-responsive'
+import { useMediaQuery } from 'react-responsive'
 import { Redirect, Route, Switch } from 'react-router-dom'
 import './assets/fonts.css'
 import './assets/main.scss'
@@ -267,157 +267,145 @@ export default function Router(): React.ReactNode {
 		},
 	])
 
+	const desktop = useMediaQuery({ minWidth: config.mobileWidthTrigger })
 	return (
 		<RouterBase>
-			<MediaQuery minWidth={config.mobileWidthTrigger}>
-				{(desktop) => (
-					<Switch>
-						<Route path='/dashboard'>
-							<>
-								<Helmet>
-									<title>{config.title() + config.separator + 'Dashboard'}</title>
-								</Helmet>
+			<Switch>
+				<Route path='/dashboard'>
+					<>
+						<Helmet>
+							<title>{config.title() + config.separator + 'Dashboard'}</title>
+						</Helmet>
 
-								<Dashboard
-									wrapperComponent={DashboardWrapper}
-									path={'/dashboard/'}
-									style={{ background: styles.colors.white }}
-									logo={logo}
-									routes={user ? routes : []}
-									// Redux props
-									pageProps={{
-										structures,
-										fetchingStructures,
-										user,
-										fetchingUser,
-										authError,
-										//
-										fetchUser: async () => await fetchUser(dispatch),
-										fetchStructures: async () =>
-											await fetchStructures(dispatch),
-									}}
-								></Dashboard>
-							</>
-						</Route>
+						<Dashboard
+							wrapperComponent={DashboardWrapper}
+							path={'/dashboard/'}
+							style={{ background: styles.colors.white }}
+							logo={logo}
+							routes={user ? routes : []}
+							// Redux props
+							pageProps={{
+								structures,
+								fetchingStructures,
+								user,
+								fetchingUser,
+								authError,
+								//
+								fetchUser: async () => await fetchUser(dispatch),
+								fetchStructures: async () => await fetchStructures(dispatch),
+							}}
+						></Dashboard>
+					</>
+				</Route>
 
-						{/* {!config.prod && !config.staging && ( */}
-						<Route /* exact */ path='/components'>
-							<ComponentsViewer />
-						</Route>
-						{/* )} */}
+				{/* {!config.prod && !config.staging && ( */}
+				<Route /* exact */ path='/components'>
+					<ComponentsViewer />
+				</Route>
+				{/* )} */}
 
-						<Route>
-							<div style={{ background: styles.colors.white }}>
-								<Switch>
-									<Route exact path='/login'>
-										<PublicWrapper auth desktop={desktop}>
-											<Login />
-										</PublicWrapper>
-									</Route>
-									<Route exact path='/signup'>
-										<PublicWrapper auth desktop={desktop}>
-											<Register />
-										</PublicWrapper>
-									</Route>
-									<Route exact path='/forgot'>
-										<PublicWrapper auth desktop={desktop}>
-											<Forgot />
-										</PublicWrapper>
-									</Route>
+				<Route>
+					<div style={{ background: styles.colors.white }}>
+						<Switch>
+							<Route exact path='/login'>
+								<PublicWrapper auth desktop={desktop}>
+									<Login />
+								</PublicWrapper>
+							</Route>
+							<Route exact path='/signup'>
+								<PublicWrapper auth desktop={desktop}>
+									<Register />
+								</PublicWrapper>
+							</Route>
+							<Route exact path='/forgot'>
+								<PublicWrapper auth desktop={desktop}>
+									<Forgot />
+								</PublicWrapper>
+							</Route>
 
-									<Route path='/'>
-										{Capacitor.isNativePlatform() ? (
-											<Redirect to={'/components'} />
-										) : (
-											<PublicWrapper landingPage desktop={desktop}>
-												<Animated
-													animateOffscreen
-													effects={['fade']}
-													duration={0.5}
-													delay={0.75}
-													style={{ width: '100%' }}
-												>
-													<Main />
-												</Animated>
-											</PublicWrapper>
-										)}
-									</Route>
-								</Switch>
-							</div>
-						</Route>
-					</Switch>
-				)}
-			</MediaQuery>
+							<Route path='/'>
+								{Capacitor.isNativePlatform() ? (
+									<Redirect to={'/components'} />
+								) : (
+									<PublicWrapper landingPage desktop={desktop}>
+										<Animated
+											animateOffscreen
+											effects={['fade']}
+											duration={0.5}
+											delay={0.75}
+											style={{ width: '100%' }}
+										>
+											<Main />
+										</Animated>
+									</PublicWrapper>
+								)}
+							</Route>
+						</Switch>
+					</div>
+				</Route>
+			</Switch>
 		</RouterBase>
 	)
 }
 
-class PublicWrapper extends Component<{ auth?: boolean; desktop: boolean; landingPage?: boolean }> {
-	render() {
-		return (
-			<div style={{ overflow: 'hidden' }}>
-				<Header expand={this.props.landingPage} fillSpace={this.props.auth} />
+function PublicWrapper(props: {
+	children?: React.ReactNode
+	auth?: boolean
+	desktop: boolean
+	landingPage?: boolean
+}) {
+	return (
+		<div style={{ overflow: 'hidden' }}>
+			<Header expand={props.landingPage} fillSpace={props.auth} />
+			<div
+				style={{
+					paddingTop: props.auth ? 30 : undefined,
+					minHeight: 'calc(100vh + 210px)',
+				}}
+			>
 				<div
+					className={props.desktop ? 'flex-col justify-center items-center' : undefined}
 					style={{
-						paddingTop: this.props.auth ? 30 : undefined,
-						minHeight: 'calc(100vh + 210px)',
+						minHeight: props.auth ? '80vh' : undefined,
+						padding: props.auth && !props.desktop ? '5vw' : undefined,
+						width: props.auth ? (!props.desktop ? '100%' : undefined) : '100%',
 					}}
 				>
-					<div
-						className={
-							this.props.desktop ? 'flex-col justify-center items-center' : undefined
-						}
-						style={{
-							minHeight: this.props.auth ? '80vh' : undefined,
-							padding: this.props.auth && !this.props.desktop ? '5vw' : undefined,
-							width: this.props.auth
-								? !this.props.desktop
-									? '100%'
-									: undefined
-								: '100%',
-						}}
-					>
-						{this.props.children}
-						{this.props.auth && <sp />}
-						{this.props.auth && <sp />}
-						{this.props.auth && <sp />}
-						{this.props.auth && <sp />}
-						{this.props.auth && <sp />}
-						{this.props.auth && <sp />}
-					</div>
+					{props.children}
+					{props.auth && <sp />}
+					{props.auth && <sp />}
+					{props.auth && <sp />}
+					{props.auth && <sp />}
+					{props.auth && <sp />}
+					{props.auth && <sp />}
 				</div>
-				<Footer fillSpace={false} />
 			</div>
-		)
-	}
+			<Footer fillSpace={false} />
+		</div>
+	)
 }
-class DashboardWrapper extends Component<DashboardWrapperProps> {
-	render() {
-		return (
-			<MediaQuery minWidth={config.mobileWidthTrigger}>
-				{(desktop) => (
-					<div
-						style={{
-							padding: desktop ? '5%' : '5%',
-							paddingTop: desktop ? 80 : 40,
-							paddingBottom: 160,
-							maxWidth: config.publicMaxWidth,
-						}}
-					>
-						{!this.props.overrideHeader && this.props.title && (
-							<div style={projectStyles.dashboardHeader}>
-								<h3>
-									{this.props.parentTitle ? this.props.parentTitle + ': ' : ''}
-									{this.props.title}
-								</h3>
-							</div>
-						)}
-						{this.props.children}
-					</div>
-				)}
-			</MediaQuery>
-		)
-	}
+function DashboardWrapper(props: DashboardWrapperProps) {
+	const desktop = useMediaQuery({ minWidth: config.mobileWidthTrigger })
+	return (
+		<div
+			style={{
+				padding: desktop ? '5%' : '5%',
+				paddingTop: desktop ? 80 : 40,
+				paddingBottom: 160,
+				maxWidth: config.publicMaxWidth,
+			}}
+		>
+			{!props.overrideHeader && props.title && (
+				<div style={projectStyles.dashboardHeader}>
+					<h3>
+						{props.parentTitle ? props.parentTitle + ': ' : ''}
+						{props.title}
+					</h3>
+				</div>
+			)}
+			{props.children}
+		</div>
+	)
 }
 
 const logout = (color: string) => {
