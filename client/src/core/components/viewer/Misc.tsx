@@ -27,14 +27,12 @@ import { SizeMe } from 'react-sizeme'
 import FInput from '../FInput'
 import { Next, Section } from './ComponentsViewer'
 
-//
+// Can't use React.lazy() for anchor links to work
 
-const QueryParams = React.lazy(() => import('core/components/viewer/misc/QueryParams'))
-const Localization = React.lazy(() => import('core/components/viewer/misc/Localization'))
-const Web3Wallet = React.lazy(() => import('core/components/viewer/misc/Web3Wallet'))
-const Unity = React.lazy(() => import('core/components/viewer/misc/Unity'))
-
-//
+import Localization from 'core/components/viewer/misc/Localization'
+import QueryParams from 'core/components/viewer/misc/QueryParams'
+import Unity from 'core/components/viewer/misc/Unity'
+import Web3Wallet from 'core/components/viewer/misc/Web3Wallet'
 
 // @ts-ignore
 const ReactErrorTest = React.lazy(() => {

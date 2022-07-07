@@ -5,17 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import React from 'react'
 import { Next, Section } from './ComponentsViewer'
 
-//
+// Can't use React.lazy() for anchor links to work
 
-const Input = React.lazy(() => import('core/components/viewer/inputs/Input'))
-const FDropdown = React.lazy(() => import('core/components/viewer/inputs/Dropdown'))
-const Form = React.lazy(() => import('core/components/viewer/inputs/Form'))
-const Slider = React.lazy(() => import('core/components/viewer/inputs/Slider'))
-
-//
+import FDropdown from 'core/components/viewer/inputs/Dropdown'
+import Form from 'core/components/viewer/inputs/Form'
+import Input from 'core/components/viewer/inputs/Input'
+import Slider from 'core/components/viewer/inputs/Slider'
 
 export default function Inputs() {
 	return (

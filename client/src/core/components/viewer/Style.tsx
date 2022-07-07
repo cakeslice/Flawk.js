@@ -8,22 +8,19 @@
 import FButton from 'core/components/FButton'
 import Loading from 'core/components/Loading'
 import styles from 'core/styles'
-import React from 'react'
 import { Next, Section } from './ComponentsViewer'
 
-//
+// Can't use React.lazy() for anchor links to work
 
-const Typography = React.lazy(() => import('core/components/viewer/style/Typography'))
-const Color = React.lazy(() => import('core/components/viewer/style/Color'))
-const Card = React.lazy(() => import('core/components/viewer/style/Card'))
-const Button = React.lazy(() => import('core/components/viewer/style/Button'))
-const Animation = React.lazy(() => import('core/components/viewer/style/Animation'))
-const Avatar = React.lazy(() => import('core/components/viewer/style/Avatar'))
-const Tooltip = React.lazy(() => import('core/components/viewer/style/Tooltip'))
-const CSSModules = React.lazy(() => import('core/components/viewer/style/CSSModules'))
-const DOMElements = React.lazy(() => import('core/components/viewer/style/DOMElements'))
-
-//
+import Animation from 'core/components/viewer/style/Animation'
+import Avatar from 'core/components/viewer/style/Avatar'
+import Button from 'core/components/viewer/style/Button'
+import Card from 'core/components/viewer/style/Card'
+import Color from 'core/components/viewer/style/Color'
+import CSSModules from 'core/components/viewer/style/CSSModules'
+import DOMElements from 'core/components/viewer/style/DOMElements'
+import Tooltip from 'core/components/viewer/style/Tooltip'
+import Typography from 'core/components/viewer/style/Typography'
 
 export default function Style() {
 	return (

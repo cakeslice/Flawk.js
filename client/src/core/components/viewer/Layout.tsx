@@ -8,21 +8,18 @@
 import FButton from 'core/components/FButton'
 import config from 'core/config'
 import styles from 'core/styles'
-import React from 'react'
 import { useMediaQuery } from 'react-responsive'
 import { Next, Section } from './ComponentsViewer'
 
-//
+// Can't use React.lazy() for anchor links to work
 
-const Table = React.lazy(() => import('core/components/viewer/layout/Table'))
-const Modal = React.lazy(() => import('core/components/viewer/layout/Modal'))
-const Chart = React.lazy(() => import('core/components/viewer/layout/Chart'))
-const Pagination = React.lazy(() => import('core/components/viewer/layout/Pagination'))
-const Toast = React.lazy(() => import('core/components/viewer/layout/Toast'))
-const Collapse = React.lazy(() => import('core/components/viewer/layout/Collapse'))
-const Sticky = React.lazy(() => import('core/components/viewer/layout/Sticky'))
-
-//
+import Chart from 'core/components/viewer/layout/Chart'
+import Collapse from 'core/components/viewer/layout/Collapse'
+import Modal from 'core/components/viewer/layout/Modal'
+import Pagination from 'core/components/viewer/layout/Pagination'
+import Sticky from 'core/components/viewer/layout/Sticky'
+import Table from 'core/components/viewer/layout/Table'
+import Toast from 'core/components/viewer/layout/Toast'
 
 type Props = { horizontalDashboard: boolean; toggleDashboardLayout: () => void }
 export default function Layout(props: Props) {

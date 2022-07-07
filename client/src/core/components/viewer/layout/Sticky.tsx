@@ -16,7 +16,7 @@ export default function FSticky() {
 	return (
 		<div className={desktop ? 'grid grid-cols-2 sticky_boundary' : 'flex-col sticky_boundary'}>
 			<Sticky
-				positionRecheckInterval={50} // Needed if DOM is mutates after load
+				//positionRecheckInterval={50} // Needed if DOM is mutates after load
 				topOffset={desktop ? -80 : -80}
 				bottomOffset={desktop ? 80 : 80}
 				stickyStyle={{ marginTop: desktop ? 80 : 80 }}

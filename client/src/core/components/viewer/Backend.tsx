@@ -12,21 +12,18 @@ import config from 'core/config'
 import styles from 'core/styles'
 import { fetchStructures, fetchUser } from 'project/redux/AppReducer'
 import { useStoreDispatch, useStoreSelector } from 'project/redux/_store'
-import React from 'react'
 import { useMediaQuery } from 'react-responsive'
 import { lock, Next, Section } from './ComponentsViewer'
 
-//
+// Can't use React.lazy() for anchor links to work
 
-const Login = React.lazy(() => import('core/components/viewer/backend/auth/Login'))
-const Register = React.lazy(() => import('core/components/viewer/backend/auth/Register'))
-const Forgot = React.lazy(() => import('core/components/viewer/backend/auth/Forgot'))
-const Account = React.lazy(() => import('core/components/viewer/backend/Account'))
-const Settings = React.lazy(() => import('core/components/viewer/backend/Settings'))
-const Admin = React.lazy(() => import('core/components/viewer/backend/Admin'))
-const RemoteData = React.lazy(() => import('core/components/viewer/backend/RemoteData'))
-
-//
+import Account from 'core/components/viewer/backend/Account'
+import Admin from 'core/components/viewer/backend/Admin'
+import Forgot from 'core/components/viewer/backend/auth/Forgot'
+import Login from 'core/components/viewer/backend/auth/Login'
+import Register from 'core/components/viewer/backend/auth/Register'
+import RemoteData from 'core/components/viewer/backend/RemoteData'
+import Settings from 'core/components/viewer/backend/Settings'
 
 export default function Backend() {
 	const { structures, fetchingStructures, user, fetchingUser, authError } = useStoreSelector(
@@ -56,6 +53,7 @@ export default function Backend() {
 		<div className='flex-col'>
 			<Section
 				title='Authentication'
+				description='Components that showcase how to login, register and recover the account'
 				top
 				github='client/src/core/components/viewer/backend/auth'
 			>
@@ -85,6 +83,7 @@ export default function Backend() {
 			<Section
 				title='Account & Logout'
 				github='client/src/core/components/viewer/backend/Account.tsx'
+				description='Components that showcase displaying account data and how to logout'
 			>
 				{user ? (
 					<Account {...reduxProps} />
@@ -107,6 +106,7 @@ export default function Backend() {
 			<Section
 				title='Settings'
 				github='client/src/core/components/viewer/backend/Settings.tsx'
+				description='Components that showcase how to get and set account settings'
 			>
 				{user ? (
 					<div>
@@ -128,7 +128,11 @@ export default function Backend() {
 				)}
 			</Section>
 
-			<Section title='Notifications' github='client/src/core/components/Notifications.tsx'>
+			<Section
+				title='Notifications'
+				github='client/src/core/components/Notifications.tsx'
+				description='Components that showcase the notification system'
+			>
 				{user ? (
 					<div className='flex' style={{ ...styles.card }}>
 						<Notifications></Notifications>
@@ -191,11 +195,16 @@ export default function Backend() {
 			<Section
 				title='Remote data'
 				github='client/src/core/components/viewer/backend/RemoteData.tsx'
+				description='Components that showcase how to use remote data stored in the server'
 			>
 				<RemoteData {...reduxProps} />
 			</Section>
 
-			<Section title='Websockets' tags={['global.socket.emit()']}>
+			<Section
+				title='Websockets'
+				tags={['global.socket.emit()']}
+				//description='Components to test websockets'
+			>
 				{user ? (
 					<div className='wrapMargin flex flex-wrap justify-start items-center'>
 						<FButton
