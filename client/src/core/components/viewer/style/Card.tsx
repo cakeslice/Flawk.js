@@ -6,7 +6,6 @@
  */
 
 import FButton from 'core/components/FButton'
-import { Section } from 'core/components/viewer/ComponentsViewer'
 import config from 'core/config'
 import styles from 'core/styles'
 import { css } from 'glamor'
@@ -16,42 +15,7 @@ export default function Card() {
 	const desktop = useMediaQuery({ minWidth: config.mobileWidthTrigger })
 
 	return (
-		<Section
-			title='Card'
-			description={
-				<>
-					{"There's"} no <m>Card</m> component in Flawk. You can use{' '}
-					<code>styles.card</code> and <code>styles.outlineCard</code> as a base for your
-					own cards.
-					<sp />
-					The base card styles are however used in some Flawk components like{' '}
-					<code>{'<Modal/>'}</code>. You can override them in{' '}
-					<code>src/project/_styles.ts</code>
-				</>
-			}
-			code={`import { css } from 'glamor'
-import styles from 'core/styles'
-
-// Basic
-<div style={{...styles.card}}></div>
-
-// Outline
-<div style={{...styles.outlineCard}}></div>
-
-// Hover
-<div {...css({
-	...styles.card,
-	top: 0,
-	position: 'relative',
-	transition: 'top 250ms, box-shadow 250ms',
-	':hover': {
-		boxShadow: styles.strongerShadow,
-		top: -5,
-	},
-})}></div>
-`}
-			tags={['styles.card', 'styles.outlineCard']}
-		>
+		<>
 			<div
 				className='flex-col'
 				{...css({
@@ -180,6 +144,6 @@ import styles from 'core/styles'
 					<tag>Muted</tag>
 				</div>
 			</div>
-		</Section>
+		</>
 	)
 }

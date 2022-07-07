@@ -10,10 +10,12 @@ import Animated from 'core/components/Animated'
 import FButton from 'core/components/FButton'
 import Field from 'core/components/Field'
 import FInput from 'core/components/FInput'
+import config from 'core/config'
 import styles from 'core/styles'
 import { Form, Formik } from 'formik'
 import { ReduxProps } from 'project-types'
 import { useState } from 'react'
+import { useMediaQuery } from 'react-responsive'
 
 export const cardStyle = (desktop?: boolean) => {
 	return {
@@ -23,11 +25,13 @@ export const cardStyle = (desktop?: boolean) => {
 	}
 }
 
-export default function Login(props: ReduxProps & { desktop?: boolean }) {
+export default function Login(props: ReduxProps) {
 	const [wrongLogin, setWrongLogin] = useState<string>()
 
+	const desktop = useMediaQuery({ minWidth: config.mobileWidthTrigger })
+
 	return (
-		<div style={cardStyle(props.desktop)}>
+		<div style={cardStyle(desktop)}>
 			<Formik
 				enableReinitialize
 				initialValues={{}}

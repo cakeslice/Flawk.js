@@ -16,11 +16,14 @@ import styles from 'core/styles'
 import { Form, Formik } from 'formik'
 import { css } from 'glamor'
 import { ReduxProps } from 'project-types'
-import { cardStyle } from './Login'
+import { useMediaQuery } from 'react-responsive'
+import { cardStyle } from './auth/Login'
 
-export default function Settings(props: ReduxProps & { desktop?: boolean }) {
+export default function Settings(props: ReduxProps) {
+	const desktop = useMediaQuery({ minWidth: config.mobileWidthTrigger })
+
 	return (
-		<div style={cardStyle(props.desktop)}>
+		<div style={cardStyle(desktop)}>
 			<Formik
 				enableReinitialize
 				initialValues={{
@@ -113,7 +116,7 @@ export default function Settings(props: ReduxProps & { desktop?: boolean }) {
 							<sp />
 							<div className='flex items-center'>
 								<label
-									htmlFor={props.desktop ? 'file_upload' : 'file_upload_mobile'}
+									htmlFor={desktop ? 'file_upload' : 'file_upload_mobile'}
 									style={{
 										alignSelf: 'center',
 										display: 'flex',
@@ -123,7 +126,7 @@ export default function Settings(props: ReduxProps & { desktop?: boolean }) {
 									<input
 										disabled={isSubmitting}
 										type='file'
-										id={props.desktop ? 'file_upload' : 'file_upload_mobile'}
+										id={desktop ? 'file_upload' : 'file_upload_mobile'}
 										accept='image/*'
 										onChange={async (e) => {
 											const img = await upload.handleFileChange(e)

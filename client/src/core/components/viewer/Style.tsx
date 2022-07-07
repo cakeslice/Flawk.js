@@ -5,17 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import Avatar from 'core/components/Avatar'
 import FButton from 'core/components/FButton'
 import Loading from 'core/components/Loading'
-import Tooltip from 'core/components/Tooltip'
-import config from 'core/config'
 import styles from 'core/styles'
 import React from 'react'
-import { useMediaQuery } from 'react-responsive'
-import { Link } from 'react-router-dom'
 import { Next, Section } from './ComponentsViewer'
-import cssModule from './ComponentsViewer.module.scss'
 
 //
 
@@ -24,25 +18,60 @@ const Color = React.lazy(() => import('core/components/viewer/style/Color'))
 const Card = React.lazy(() => import('core/components/viewer/style/Card'))
 const Button = React.lazy(() => import('core/components/viewer/style/Button'))
 const Animation = React.lazy(() => import('core/components/viewer/style/Animation'))
+const Avatar = React.lazy(() => import('core/components/viewer/style/Avatar'))
+const Tooltip = React.lazy(() => import('core/components/viewer/style/Tooltip'))
+const CSSModules = React.lazy(() => import('core/components/viewer/style/CSSModules'))
+const DOMElements = React.lazy(() => import('core/components/viewer/style/DOMElements'))
 
 //
 
-const customElement = {
-	padding: '3px 8px',
-	fontFamily: 'monospace',
-	fontSize: 15,
-}
-
-// eslint-disable-next-line
-type Props = {}
-export default function Style(props: Props) {
-	const desktop = useMediaQuery({ minWidth: config.mobileWidthTrigger })
-
+export default function Style() {
 	return (
 		<div>
-			<Typography />
+			<Section
+				code={`import styles from 'core/styles'
 
-			<Color />
+const style = {
+	fontSize: 16,
+	fontFamily: styles.font
+}
+`}
+				description={
+					<>
+						Default fonts can be overridden in <code>src/project/_styles.ts</code> by
+						changing the <code>font</code> and <code>fontAlt</code> properties.
+						<sp />
+						To import new fonts, add them to <code>src/project/assets/fonts.css</code>.
+					</>
+				}
+				title='Typography'
+				top
+				github='client/src/core/components/viewer/style/Typography.tsx'
+			>
+				<Typography />
+			</Section>
+
+			<Section
+				title='Color'
+				code={`import styles from 'core/styles'
+
+const mainColor = styles.colors.main
+
+const redColor = styles.colors.red
+`}
+				description={
+					<>
+						In <code>styles.colors</code> you can find the main app colors and some
+						basic colors to use in your project.
+						<sp />
+						You can override them in <code>src/project/_styles.ts</code>
+					</>
+				}
+				tags={['styles.colors']}
+				github='client/src/core/components/viewer/style/Color.tsx'
+			>
+				<Color />
+			</Section>
 
 			<Section
 				title='Dark mode'
@@ -73,7 +102,45 @@ await global.toggleNightMode()
 				</FButton>
 			</Section>
 
-			<Card />
+			<Section
+				title='Card'
+				description={
+					<>
+						{"There's"} no <m>Card</m> component in Flawk. You can use{' '}
+						<code>styles.card</code> and <code>styles.outlineCard</code> as a base for
+						your own cards.
+						<sp />
+						The base card styles are however used in some Flawk components like{' '}
+						<code>{'<Modal/>'}</code>. You can override them in{' '}
+						<code>src/project/_styles.ts</code>
+					</>
+				}
+				code={`import { css } from 'glamor'
+import styles from 'core/styles'
+
+// Basic
+<div style={{...styles.card}}></div>
+
+// Outline
+<div style={{...styles.outlineCard}}></div>
+
+// Hover
+<div {...css({
+	...styles.card,
+	top: 0,
+	position: 'relative',
+	transition: 'top 250ms, box-shadow 250ms',
+	':hover': {
+		boxShadow: styles.strongerShadow,
+		top: -5,
+	},
+})}></div>
+`}
+				tags={['styles.card', 'styles.outlineCard']}
+				github='client/src/core/components/viewer/style/Card.tsx'
+			>
+				<Card />
+			</Section>
 
 			<Section
 				description={
@@ -90,28 +157,11 @@ await global.toggleNightMode()
 						to indicate that the user is online.
 					</>
 				}
-				code={`import Avatar from 'core/components/Avatar'
-
-// Basic
-<Avatar src='AVATAR_PICTURE' name='John Doe' />
-
-// Is online
-<Avatar isOnline />
-
-// Custom size
-<Avatar style={{ width: 40, height: 40 }} />
-`}
 				title='Avatar'
 				tags={['<Avatar/>']}
+				github='client/src/core/components/viewer/style/Avatar.tsx'
 			>
-				<div style={{ ...styles.card }}>
-					<div className='wrapMarginBig flex flex-wrap justify-start'>
-						<Avatar name='John Doe' />
-						<Avatar isOnline />
-						<Avatar />
-						<Avatar style={{ width: 40, height: 40 }} />
-					</div>
-				</div>
+				<Avatar />
 			</Section>
 
 			<Section
@@ -126,6 +176,10 @@ await global.toggleNightMode()
 					</>
 				}
 				code={`import Loading from 'core/components/Loading'
+
+<Loading size={28 * 3} />
+
+<Loading />
 
 <Loading size={18.5} />
 `}
@@ -176,48 +230,111 @@ await global.toggleNightMode()
 `}
 				title='Tooltip'
 				tags={['<Tooltip/>']}
+				github='client/src/core/components/viewer/style/Tooltip.tsx'
 			>
-				<div className='wrapMargin flex flex-wrap justify-start'>
-					<Tooltip
-						tooltipProps={{ placement: 'right' }}
-						content={
-							<div>
-								<p>
-									Lorem ipsum dolor sit amet, <s>strikethrough</s> adipiscing
-									elit, sed do eiusmod tempor <b>bold</b> ut labore et dolore
-									magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-									ullamco laboris nisi ut aliquip ex ea commodo{' '}
-									<Link to='/components/style#button'>anchor link</Link>.
-								</p>
-							</div>
-						}
-					>
-						<div style={styles.card}>
-							<b>{desktop ? 'Hover' : 'Click'} me</b>
-						</div>
-					</Tooltip>
-					<sp />
-					<Tooltip
-						content={(forceHide) => {
-							return <div style={{ padding: 5 }}>Tooltip</div>
-						}}
-					>
-						<div
-							style={{
-								opacity: 0.5,
-								position: 'relative',
-								top: 0.5,
-							}}
-						>
-							{infoIcon(styles.colors.black)}
-						</div>
-					</Tooltip>
-				</div>
+				<Tooltip />
 			</Section>
 
-			<Button />
+			<Section
+				description={
+					<>
+						Use <code>appearance</code> prop to set the <m>button style</m>. You can
+						override or add new button styles in <code>src/project/_styles.ts</code>{' '}
+						using the <code>buttonAppearances</code> property.
+						<br />
+						You can also use <code>glamor</code> overrides like <code>{':hover'}</code>{' '}
+						to customize the style in <m>different states</m>.
+						<sp />
+						If the button is supposed to be just a <m>link</m>, you can use{' '}
+						<code>href</code> and <code>target</code> props instead of the{' '}
+						<code>onClick</code> prop.
+						<sp />
+						The button component can also be used as a <m>checkbox</m> with the{' '}
+						<code>checkbox</code> prop which is a string for the checkbox label.
+					</>
+				}
+				code={`import FButton from 'core/components/FButton'
 
-			<Animation />
+// Default
+<FButton onClick={() => alert('Hello!')}>Click Me</FButton>
+
+// Primary
+<FButton appearance='primary'>Click Me</FButton>
+
+// Secondary
+<FButton appearance='secondary'>Click Me</FButton>
+
+// Checkbox
+<FButton checkbox='I Agree'></FButton>
+
+// Link
+<FButton href='https://google.com' target='_blank'>Link</FButton>
+
+// Loading
+<FButton isLoading={true}>Click Me</FButton>
+`}
+				title='Button'
+				tags={['<FButton/>', '<button/>']}
+				github='client/src/core/components/viewer/style/Button.tsx'
+			>
+				<Button />
+			</Section>
+
+			<Section
+				description={
+					<>
+						Use <code>effects</code> prop to set the effects to be applied when the
+						component is <m>visible</m>.
+						<br />
+						Multiple effects can be applied at the <m>same time</m>.
+						<sp />
+						The <code>duration</code>, <code>delay</code>, and <code>distance</code>{' '}
+						props can be used to configure the effects <m>behaviour</m>.
+						<sp />
+						To control when the animation is <m>triggered</m>, use{' '}
+						<code>controlled</code> prop. If set to <m>false</m>, it will <m>revert</m>{' '}
+						the animation including visibility for some effects like <code>fade</code>.
+						<sp />
+						To animate children <m>sequentially</m>, use <code>staggered</code> prop.
+						For nested children, use <code>staggeredChildren</code> prop.
+						<sp />
+						This component uses <code>framer-motion</code> internally.
+					</>
+				}
+				code={`import Animated from 'core/components/Animated'
+
+// Fade-in when visible
+<Animated
+	effects={['fade']}
+>
+	<div>Content</div>
+</Animated>
+
+// Fade-in when 'isVisible' is set to true and
+// fade-out when 'isVisible' is set to false
+<Animated
+	controlled={isVisible}
+	effects={['fade']}
+>
+	<div>Content</div>
+</Animated>
+
+// Fade-in sequentially
+<Animated
+	staggered
+	effects={['fade']}
+>
+	<div>First</div>
+	<div>Second</div>
+	<div>Third</div>
+</Animated>
+`}
+				title='Animation'
+				tags={['<Animated/>', '<motion.div/>', 'transition']}
+				github='client/src/core/components/viewer/style/Animation.tsx'
+			>
+				<Animation />
+			</Section>
 
 			<Section
 				description={
@@ -227,29 +344,9 @@ await global.toggleNightMode()
 					</>
 				}
 				title='CSS Modules'
+				github='client/src/core/components/viewer/style/CSSModules.tsx'
 			>
-				<div className={'wrapMarginBig flex flex-wrap'}>
-					<div className={cssModule.example}>
-						<div style={{ ...styles.card }}>
-							<h1>
-								{'Hello. '}
-								<tag>h1</tag>
-							</h1>
-							<sp />
-							<p>Default font size of 16px</p>
-						</div>
-					</div>
-					<div className={cssModule.example_2}>
-						<div style={{ ...styles.card }}>
-							<h1>
-								{'Hello. '}
-								<tag>h1</tag>
-							</h1>
-							<sp />
-							<p>Default font size of 12px</p>
-						</div>
-					</div>
-				</div>
+				<CSSModules />
 			</Section>
 
 			<Section
@@ -260,69 +357,12 @@ await global.toggleNightMode()
 					</>
 				}
 				title='Custom DOM elements'
+				github='client/src/core/components/viewer/style/DOMElements.tsx'
 			>
-				<div
-					className={'wrapMarginBig flex flex-wrap'}
-					style={{ ...styles.card, fontSize: 13 }}
-				>
-					<div className='flex items-center'>
-						<tag style={customElement}>{'<sp/>'}</tag>
-						<hsp />
-						<div style={{ opacity: 0.85 }}>Spacer</div>
-					</div>
-					<div className='flex items-center'>
-						<tag style={customElement}>{'<hsp/>'}</tag>
-						<hsp />
-						<div style={{ opacity: 0.85 }}>
-							Half of <code>{'<sp/>'}</code>
-						</div>
-					</div>
-					<div className='flex items-center'>
-						<tag style={customElement}>{'<vr/>'}</tag>
-						<hsp />
-						<div style={{ opacity: 0.85 }}>
-							Same as native <code>{'<hr/>'}</code> but vertical
-						</div>
-					</div>
-					<div className='flex items-center'>
-						<tag style={customElement}>{'<tag/>'}</tag>
-						<hsp />
-						<div style={{ opacity: 0.85 }}>Badge like container</div>
-					</div>
-					<div className='flex items-center'>
-						<tag style={customElement}>{'<hl/>'}</tag>
-						<hsp />
-						<div style={{ opacity: 0.85 }}>Text highlight</div>
-					</div>
-					<div className='flex items-center'>
-						<tag style={customElement}>{'<m/>'}</tag>
-						<hsp />
-						<div style={{ opacity: 0.85 }}>Medium font weight</div>
-					</div>
-					<div className='flex items-center'>
-						<tag style={customElement}>{'<bb/>'}</tag>
-						<hsp />
-						<div style={{ opacity: 0.85 }}>Bigger font size</div>
-					</div>
-				</div>
+				<DOMElements />
 			</Section>
 
 			<Next backName='Get Started' backLink='start' name='Layout' link='layout' />
 		</div>
 	)
 }
-
-const infoIcon = (color: string) => (
-	<svg
-		width='10'
-		height='10'
-		viewBox='0 0 460 460'
-		fill='none'
-		xmlns='http://www.w3.org/2000/svg'
-	>
-		<path
-			d='M230 0C102.975 0 0 102.975 0 230C0 357.025 102.975 460 230 460C357.025 460 460 357.026 460 230C460 102.974 357.025 0 230 0ZM268.333 377.36C268.333 386.036 261.299 393.07 252.623 393.07H209.522C200.846 393.07 193.812 386.036 193.812 377.36V202.477C193.812 193.801 200.845 186.767 209.522 186.767H252.623C261.299 186.767 268.333 193.8 268.333 202.477V377.36ZM230 157C208.461 157 191 139.539 191 118C191 96.461 208.461 79 230 79C251.539 79 269 96.461 269 118C269 139.539 251.539 157 230 157Z'
-			fill={color}
-		/>
-	</svg>
-)

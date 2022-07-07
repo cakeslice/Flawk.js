@@ -8,7 +8,6 @@
 import logo from 'core/assets/images/logo.svg'
 import Dropdown from 'core/components/Dropdown'
 import FButton from 'core/components/FButton'
-import { Section } from 'core/components/viewer/ComponentsViewer'
 import config from 'core/config'
 import styles from 'core/styles'
 import _find from 'lodash/find'
@@ -27,47 +26,8 @@ export default function Card() {
 	}
 
 	return (
-		<Section
-			description={
-				<>
-					Use <code>appearance</code> prop to set the <m>button style</m>. You can
-					override or add new button styles in <code>src/project/_styles.ts</code> using
-					the <code>buttonAppearances</code> property.
-					<br />
-					You can also use <code>glamor</code> overrides like <code>{':hover'}</code> to
-					customize the style in <m>different states</m>.
-					<sp />
-					If the button is supposed to be just a <m>link</m>, you can use{' '}
-					<code>href</code> and <code>target</code> props instead of the{' '}
-					<code>onClick</code> prop.
-					<sp />
-					The button component can also be used as a <m>checkbox</m> with the{' '}
-					<code>checkbox</code> prop which is a string for the checkbox label.
-				</>
-			}
-			code={`import FButton from 'core/components/FButton'
-
-// Default
-<FButton onClick={() => alert('Hello!')}>Click Me</FButton>
-
-// Primary
-<FButton appearance='primary'>Click Me</FButton>
-
-// Secondary
-<FButton appearance='secondary'>Click Me</FButton>
-
-// Checkbox
-<FButton checkbox='I Agree'></FButton>
-
-// Link
-<FButton href='https://google.com' target='_blank'>Link</FButton>
-
-// Loading
-<FButton isLoading={true}>Click Me</FButton>
-`}
-			title='Button'
-			tags={['<FButton/>', '<button/>']}
-		>
+		<>
+			{' '}
 			<div
 				style={{
 					...styles.card,
@@ -364,6 +324,6 @@ export default function Card() {
 					</div>
 				</div>
 			</div>
-		</Section>
+		</>
 	)
 }

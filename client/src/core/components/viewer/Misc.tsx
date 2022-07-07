@@ -10,21 +10,12 @@ import Anchor from 'core/components/Anchor'
 import CodeBlock from 'core/components/CodeBlock'
 import Dropdown from 'core/components/Dropdown'
 import FButton from 'core/components/FButton'
-import LanguageSelect from 'core/components/LanguageSelect'
 import TextEditor from 'core/components/TextEditor'
 import Unity from 'core/components/Unity'
 import config from 'core/config'
 import { countriesSearch, sortedCountries } from 'core/functions/countries'
-import {
-	connectWallet as _connectWallet,
-	Options,
-	setupWallet,
-	Wallet,
-} from 'core/functions/web3wallet'
 import styles from 'core/styles'
 import { countries } from 'countries-list'
-import { formatDistanceToNow, subDays } from 'date-fns'
-import { pt } from 'date-fns/locale'
 import Parser from 'html-react-parser'
 import 'moment/locale/pt'
 import React, { useEffect, useState } from 'react'
@@ -39,6 +30,8 @@ import { Next, Section } from './ComponentsViewer'
 //
 
 const QueryParams = React.lazy(() => import('core/components/viewer/misc/QueryParams'))
+const Localization = React.lazy(() => import('core/components/viewer/misc/Localization'))
+const Web3Wallet = React.lazy(() => import('core/components/viewer/misc/Web3Wallet'))
 
 //
 
@@ -60,12 +53,10 @@ export default function Misc() {
 
 		locallyStored: '',
 		newLocallyStored: '',
+
 		reactErrorTest: false,
+
 		toggleTitle: false,
-
-		//
-
-		wallet: undefined as Wallet | undefined,
 
 		//
 
@@ -90,28 +81,8 @@ export default function Misc() {
 		},
 	]
 
-	const connectWallet = async () => {
-		const wallet = await _connectWallet(walletOptions)
-		setState({ wallet })
-	}
-	const walletOptions: Options = {
-		targetChain: 3,
-		callbacks: {
-			accountsChanged: connectWallet,
-			chainChanged: connectWallet,
-			disconnected: async () => {
-				setState({ wallet: undefined })
-			},
-		},
-	}
-
 	useEffect(() => {
 		async function run() {
-			const wallet = await setupWallet(walletOptions)
-			setState({ wallet })
-
-			//
-
 			let e = await global.storage.getItem('locallyStored')
 			if (!e) {
 				e = 'Something'
@@ -125,7 +96,24 @@ export default function Misc() {
 	const desktop = useMediaQuery({ minWidth: config.mobileWidthTrigger })
 	return (
 		<div>
-			<QueryParams />
+			<Section
+				description={
+					<>
+						<m>Extend</m> your component with <code>QueryParams</code> to <m>set/get</m>{' '}
+						query params easily.
+						<sp />
+						To set query params use <code>this.setQueryParams</code>.
+						<br />
+						To get query params use <code>this.queryParams</code>.
+					</>
+				}
+				title='Query parameters'
+				top
+				tags={['useQueryParams', 'extends QueryParams']}
+				github='client/src/core/components/viewer/misc/QueryParams.tsx'
+			>
+				<QueryParams />
+			</Section>
 
 			<Section
 				code={`await global.storage.setItem(
@@ -134,6 +122,7 @@ export default function Misc() {
 )
 
 const stored = await global.storage.getItem('example')
+
 alert(stored) // Hello!
 `}
 				description={
@@ -235,56 +224,9 @@ changeLanguage('en')
 				}
 				title='Localization'
 				tags={['global.lang', 'config.text()', 'config.localize()', 'LanguageSelect.ts']}
+				github='client/src/core/components/viewer/misc/Localization.tsx'
 			>
-				<LanguageSelect />
-				<sp />
-				<div style={styles.card}>
-					<div className='wrapMargin flex flex-wrap justify-start'>
-						<div>
-							{/* Needs "import 'moment/locale/LANGUAGE'" to support other locales */}
-							<FInput label='Date' datePicker />
-						</div>
-						<div>
-							<Dropdown label='Dropdown' />
-						</div>
-					</div>
-					<sp />
-					<div className='wrapMargin flex flex-wrap justify-start'>
-						<div>
-							<tag>{config.text('common.searching')}</tag>
-						</div>
-						<div>
-							<tag>
-								{config.localize({
-									pt: 'Cancelar',
-									en: 'Cancel',
-								})}
-							</tag>
-						</div>
-						<div>
-							<tag>{config.formatNumber(15000)}</tag>
-						</div>
-						<div>
-							<tag>{config.formatDecimal(15000)}</tag>
-						</div>
-						<div>
-							<tag>
-								{new Date().toLocaleDateString(global.lang.date, {
-									day: '2-digit',
-									month: 'long',
-									year: 'numeric',
-								})}
-							</tag>
-						</div>
-						<div>
-							<tag>
-								{formatDistanceToNow(subDays(new Date(), 1), {
-									...(global.lang.moment === 'pt' && { locale: pt }),
-								})}
-							</tag>
-						</div>
-					</div>
-				</div>
+				<Localization />
 			</Section>
 
 			<Section
@@ -631,36 +573,6 @@ import { SizeMe } from 'react-sizeme'
 
 			{!Capacitor.isNativePlatform() && desktop && (
 				<Section
-					code={`import { connectWallet, Options, setupWallet, Wallet } from 'core/functions/web3wallet'
-
-state = {
-	wallet: undefined as Wallet | undefined,
-}
-
-connectWallet = async () => {
-	const wallet = await connectWallet(this.walletOptions)
-	this.setState({ wallet })
-}
-walletOptions: Options = {
-	targetChain: 3,
-	callbacks: {
-		accountsChanged: this.connectWallet,
-		chainChanged: this.connectWallet,
-		disconnected: async () => {
-			this.setState({ wallet: undefined })
-		},
-	},
-}
-
-async componentDidMount() {
-	const wallet = await setupWallet(this.walletOptions)
-	this.setState({ wallet })
-}
-
-//
-
-<button type='button' onClick={this.connectWallet}>Connect Wallet</button>
-`}
 					description={
 						<>
 							This component uses <code>ethers</code> and <code>web3modal</code>{' '}
@@ -669,8 +581,9 @@ async componentDidMount() {
 					}
 					title='Web3 wallet'
 					tags={['web3wallet.ts']}
+					github='client/src/core/components/viewer/misc/Web3Wallet.tsx'
 				>
-					<FButton onClick={connectWallet}>Connect Wallet</FButton>
+					<Web3Wallet />
 				</Section>
 			)}
 

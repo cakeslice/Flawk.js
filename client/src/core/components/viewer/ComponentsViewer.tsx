@@ -438,8 +438,9 @@ export const Section: React.FC<{
 	tags?: string[]
 	code?: string
 	lang?: Lang
+	github?: string
 	description?: React.ReactNode
-}> = ({ children, title, top, tags, code, lang, description }) => {
+}> = ({ children, title, top, tags, code, lang, description, github }) => {
 	const id = title ? title.replaceAll(' ', '_').toLowerCase() : uuid.v1()
 
 	const tablet = useMediaQuery({ minWidth: 880 })
@@ -513,7 +514,7 @@ export const Section: React.FC<{
 							</div>
 							{!tags ? <hsp /> : <sp />}
 							{!tags && description && <hsp />}
-							{(code || description) && (
+							{(code || github || description) && (
 								<div
 									className={cssModule.section}
 									style={{
@@ -532,7 +533,8 @@ export const Section: React.FC<{
 									}}
 								>
 									<div className='grow'>{description}</div>
-									{code && (
+									{!tablet && <hsp />}
+									{(code || github) && (
 										<>
 											<hsp />
 											<CodeCollapse
@@ -540,6 +542,7 @@ export const Section: React.FC<{
 												openStyle={openStyle}
 												data={code}
 												lang={lang || 'tsx'}
+												github={github}
 											></CodeCollapse>
 										</>
 									)}

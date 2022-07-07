@@ -9,7 +9,6 @@ import { get } from 'core/api'
 import logo from 'core/assets/images/logo.svg'
 import Dropdown from 'core/components/Dropdown'
 import { getSearch } from 'core/components/QueryParams'
-import { Section } from 'core/components/viewer/ComponentsViewer'
 import config from 'core/config'
 import styles from 'core/styles'
 import _find from 'lodash/find'
@@ -64,7 +63,6 @@ export default function _Dropdown() {
 		color: usageBackground && config.invertColor(usageBackground, styles.colors.whiteDay),
 		maxWidth: 950,
 	}
-
 	const appearanceDropdown = () => {
 		const appearances = styles.inputAppearances()
 
@@ -92,55 +90,12 @@ export default function _Dropdown() {
 		)
 	}
 
+	//
+
 	const desktop = useMediaQuery({ minWidth: config.mobileWidthTrigger })
 
 	return (
-		<Section
-			description={
-				<>
-					Use <code>appearance</code> prop to set the <m>input style</m>. You can override
-					or add new input styles in <code>src/project/_styles.ts</code> using the{' '}
-					<code>inputAppearances</code> property.
-					<br />
-					You can also use <code>glamor</code> overrides like <code>{':hover'}</code> to
-					customize the style in <m>different states</m>.
-					<sp />
-					The <code>options</code> prop is an array of objects with a <m>label</m> and a{' '}
-					<m>value</m>.
-					<br />
-					To load options asynchronously, use <code>loadOptions</code> prop.
-					<br />
-					Use <code>isSearchable</code> prop to make the dropdown <m>options</m>{' '}
-					searchable.
-					<sp />
-					Use with <code>{'<Field/>'}</code> if inside a <a href='#form'>form</a>.
-					<sp />
-					This component uses <code>react-select</code> internally.
-				</>
-			}
-			code={`import Dropdown from 'core/components/Dropdown'
-
-<Dropdown
-	isSearchable
-	label='Dropdown'
-	onChange={(e) => {
-		this.setState({option: e}) // The 'value' of chosen option
-	}}
-	options={[
-		{
-			label: 'Option 1',
-			value: 'option_1'
-		},
-		{
-			label: 'Option 2',
-			value: 'option_2'
-		}
-	]}
-/>
-`}
-			title='Dropdown'
-			tags={['<Dropdown/>']}
-		>
+		<>
 			<div style={{ ...styles.card, maxWidth: 783 }}>
 				<div className='wrapMargin flex flex-wrap justify-start'>
 					{desktop && (
@@ -387,7 +342,7 @@ export default function _Dropdown() {
 					</div>
 				</div>
 			</div>
-		</Section>
+		</>
 	)
 }
 

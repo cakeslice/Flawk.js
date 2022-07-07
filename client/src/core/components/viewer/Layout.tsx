@@ -5,31 +5,27 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import Animated from 'core/components/Animated'
 import FButton from 'core/components/FButton'
-import Chart from 'core/components/viewer/layout/Chart'
-import Modal from 'core/components/viewer/layout/Modal'
-import Table from 'core/components/viewer/layout/Table'
 import config from 'core/config'
 import styles from 'core/styles'
-import { useState } from 'react'
+import React from 'react'
 import { useMediaQuery } from 'react-responsive'
-import Sticky from 'react-sticky-el'
-import Collapsible from '../Collapsible'
 import { Next, Section } from './ComponentsViewer'
 
-// <Sticky/> breaks if we use React.lazy()
+//
 
-/* const Table = React.lazy(() => import('core/components/viewer/layout/Table'))
+const Table = React.lazy(() => import('core/components/viewer/layout/Table'))
 const Modal = React.lazy(() => import('core/components/viewer/layout/Modal'))
-const Chart = React.lazy(() => import('core/components/viewer/layout/Chart')) */
+const Chart = React.lazy(() => import('core/components/viewer/layout/Chart'))
+const Pagination = React.lazy(() => import('core/components/viewer/layout/Pagination'))
+const Toast = React.lazy(() => import('core/components/viewer/layout/Toast'))
+const Collapse = React.lazy(() => import('core/components/viewer/layout/Collapse'))
+const Sticky = React.lazy(() => import('core/components/viewer/layout/Sticky'))
 
 //
 
 type Props = { horizontalDashboard: boolean; toggleDashboardLayout: () => void }
 export default function Layout(props: Props) {
-	const [collapse, setCollapse] = useState(false)
-
 	const fixedExample = {
 		width: 200,
 		height: 50,
@@ -209,9 +205,163 @@ const growExample = {
 				</div>
 			</Section>
 
-			<Table />
+			<Section
+				description={
+					<>
+						To supply <m>data</m> to the table, use <code>data</code> prop which expects
+						an array of objects.
+						<br />
+						To define the <m>table columns</m>, use <code>columns</code> prop. Each
+						column has a <code>name</code> for the table header and a{' '}
+						<code>selector</code> which maps a property of each data object to the
+						column.
+						<sp />
+						Use <code>keySelector</code> prop to define a <m>main key</m> found in the
+						data array. This key needs to be <m>unique</m> and usually is the id of each
+						object or some other unique identifier.
+						<sp />
+						To <m>override or modify</m> the value displayed in a <m>specific column</m>
+						, use the <code>cell</code> property when defining the column.
+						<sp />
+						<sp />
+						The table component also has built-in <m>pagination</m>, <m>sorting</m>,{' '}
+						<m>expandable rows</m> and is optimized for <m>large datasets</m>.
+					</>
+				}
+				code={`import FTable from 'core/components/FTable'
 
-			<Modal />
+const data = [
+	{
+		id: 1,
+		name: 'John',
+		percent: 0.26,
+	},
+	{
+		id: 2,
+		name: 'Jane',
+		percent: 0.28
+	}
+]
+
+<FTable
+	data={data}
+	keySelector='id'
+	columns={[
+		{		
+			name: 'Name',
+			selector: 'name'
+		},
+		{		
+			name: 'Percentage',
+			selector: 'percent',
+			cell: (value) => (<div>{value * 100}%</div>)
+		}
+	]}
+/>
+`}
+				title='Table'
+				tags={['<FTable/>']}
+				github='client/src/core/components/viewer/layout/Table.tsx'
+			>
+				<Table />
+			</Section>
+
+			<Section
+				description={
+					<>
+						Use <code>currentPage</code> prop to set the <m>current</m> displayed page
+						<br />
+						Use <code>totalPages</code> prop to set the <m>total</m> number of pages
+						<sp />
+						The <code>onClick</code> prop is called when the page changes
+					</>
+				}
+				code={`import Paginate from 'core/components/Paginate'
+
+<Paginate
+	onClick={async (e) => {
+		this.setState({
+			page: e,
+		})
+	}}
+	totalPages={10}
+	currentPage={this.state.page}
+></Paginate>
+`}
+				title='Pagination'
+				tags={['<Paginate/>']}
+				github='client/src/core/components/viewer/layout/Pagination.tsx'
+			>
+				<Pagination />
+			</Section>
+
+			<Section
+				description={
+					<>
+						The <code>{'<Modal/>'}</code> component is not <m>mounted</m> until {"it's"}{' '}
+						displayed and where you place it in the component tree is <m>irrelevant</m>.
+						<br />
+						With the <code>content</code> prop you can set the content of the modal.
+						<sp />
+						Use <code>name</code> prop to define a <m>key</m> for the modal. This key
+						will be expected to be in <code>this.state</code> and will be used to set if
+						the modal is <m>closed</m> or <m>open</m>
+						.
+						<br />
+						The <code>parent</code> prop is also <m>required</m> for the modal to access{' '}
+						<code>this.state</code>.
+						<sp />
+						Use <code>title</code> prop to set the modal title.
+						<br />
+						Use <code>onClose</code> prop to define a function to be called when the
+						modal is closed.
+					</>
+				}
+				code={`import Modal from 'core/components/Modal'
+
+state = {
+	myModal: false
+}
+
+<>
+	<Modal
+		name='myModal' // Name needs to match the key in this.state
+		parent={this}
+		title='Hello'
+		content={(close, Content, Buttons, Parent) => (
+			<Parent>
+				<Content>
+					<p>
+						Are you sure?
+					</p>
+				</Content>
+				
+				<Buttons>
+					<FButton onClick={close}>Cancel</FButton>
+					<FButton appearance='primary' onClick={() => {
+						alert('Hello!')
+						close()
+					}}>
+						Proceed
+					</FButton>
+				</Buttons>
+			</Parent>
+		)}
+	/>
+	
+	<button type='button' onClick={() => {
+		this.setState({ myModal: true })
+	}}>
+		Open
+	</button>
+</>
+`}
+				title='Modal'
+				tags={['useModal', '<Modal/>']}
+				github='client/src/core/components/viewer/layout/Modal.tsx'
+			>
+				<Modal />
+			</Section>
 
 			<Section
 				description={
@@ -228,97 +378,76 @@ const growExample = {
 						Toasts use <code>react-toastify</code> internally.
 					</>
 				}
-				code={`<button
-	type='button'
-	onClick={() =>
-		global.addFlag(
-			'This is a notification',
-			undefined,
-			'default',
-			{
-				closeAfter: 2000, // In milliseconds
-			}
-		)
+				code={`global.addFlag('This is a notification', 
+	'Optional description...',
+	'default', // Style
+	{
+		closeAfter: 2000, // In milliseconds
 	}
->
-	Show Toast
-</button>
+)
 `}
 				title='Toast'
 				tags={['global.addFlag()']}
+				github='client/src/core/components/viewer/layout/Toast.tsx'
 			>
-				<div className='wrapMargin flex flex-wrap justify-start'>
-					<FButton
-						onClick={() =>
-							global.addFlag('Uploading file...', undefined, 'default', {
-								closeAfter: 2000,
-							})
-						}
-					>
-						Default
-					</FButton>
-					<FButton
-						onClick={() =>
-							global.addFlag(
-								'New message',
-								(p) => (
-									<div>
-										<div>
-											<b>Chris:</b> Have you heard about the new Tesla?
-										</div>
-										<sp />
-										<div className='flex justify-end'>
-											<FButton onClick={p.closeToast}>Reply</FButton>
-										</div>
-									</div>
-								),
-								'info',
-								{
-									playSound: true,
-								}
-							)
-						}
-					>
-						Info
-					</FButton>
-					<FButton
-						onClick={() =>
-							global.addFlag('Your changes were saved', undefined, 'success', {
-								closeAfter: 2000,
-								playSound: true,
-							})
-						}
-					>
-						Success
-					</FButton>
-					<FButton
-						onClick={() =>
-							global.addFlag(
-								'Warning',
-								'There is out-of-sync data you need to review to continue',
-								'warning',
-								{
-									closeAfter: 5000,
-									playSound: true,
-								}
-							)
-						}
-					>
-						Warning
-					</FButton>
-					<FButton
-						onClick={() =>
-							global.addFlag('Error', 'File upload failed', 'error', {
-								playSound: true,
-							})
-						}
-					>
-						Error
-					</FButton>
-				</div>
+				<Toast />
 			</Section>
 
-			<Chart />
+			<Section
+				description={
+					<>
+						The the following <m>chart types</m> are available:
+						<ul>
+							<li>
+								<code>{'BarChart'}</code>
+							</li>
+							<li>
+								<code>{'LineChart'}</code>
+							</li>
+							<li>
+								<code>{'DoughnutChart'}</code>
+							</li>
+							<li>
+								<code>{'PieChart'}</code>
+							</li>
+							<li>
+								<code>{'TreemapChart'}</code>
+							</li>
+						</ul>
+						<sp />
+						Use <code>data</code> prop to supply the chart with the <m>datasets</m>,{' '}
+						<m>labels</m> and <m>options</m>.
+						<sp />
+						This component uses <code>react-chartjs-2</code> internally.
+					</>
+				}
+				code={`import {
+	DoughnutChart,
+} from 'core/components/Chart'
+			
+const colors = ['#28c986', '#5841D8', '#FF8B8B', '#FEB58D']
+const labels = ['Tech', 'Finance', 'Marketing', 'Sales']
+const data = [33, 40, 12, 15]
+
+<DoughnutChart
+	data={{
+		labels: labels,
+		datasets: [
+			{
+				label: 'Dataset 1',
+				data: data,
+				backgroundColor: colors,
+			},
+		],
+	}}
+></DoughnutChart>
+`}
+				title='Chart'
+				tags={['Chart.tsx', 'chart.js']}
+				github='client/src/core/components/viewer/layout/Chart.tsx'
+			>
+				<Chart />
+			</Section>
 
 			<Section
 				description={
@@ -345,61 +474,11 @@ const growExample = {
 `}
 				title='Collapse'
 				tags={['<Collapsible/>', '<Animated/>']}
+				github='client/src/core/components/viewer/layout/Collapse.tsx'
 			>
-				<div style={{ ...styles.card, width: desktop ? 400 : '100%' }}>
-					<div>
-						<FButton onClick={() => setCollapse((prev) => !prev)}>
-							{collapse ? 'Close' : 'Expand'}
-						</FButton>
-						<sp />
-						<Animated
-							controlled={collapse}
-							effects={['fade', 'height']}
-							duration={0.25}
-							style={{
-								overflow: 'visible',
-								pointerEvents: collapse ? 'auto' : 'none',
-							}}
-						>
-							<div
-								className='flex-col'
-								style={{
-									...styles.outlineCard,
-									width: desktop ? 300 : '100%',
-								}}
-							>
-								<p>Content</p>
-								<sp />
-								<div style={{ alignSelf: 'flex-end' }}>
-									<FButton onClick={() => setCollapse(false)}>{'Close'}</FButton>
-								</div>
-							</div>
-						</Animated>
-					</div>
-					<sp />
-					<Collapsible
-						trigger={(isOpen, set) => (
-							<b
-								style={{
-									color: isOpen ? styles.colors.main : undefined,
-								}}
-							>
-								What is this component for?
-							</b>
-						)}
-						content={(set) => (
-							<div
-								style={{
-									paddingTop: 15,
-									paddingLeft: 25,
-								}}
-							>
-								It expands and shows hidden content
-							</div>
-						)}
-					></Collapsible>
-				</div>
+				<Collapse />
 			</Section>
+
 			<Section
 				description={
 					<>
@@ -415,67 +494,11 @@ const growExample = {
 						<m>scroll</m> vertically in that section.
 					</>
 				}
-				code={`import Sticky from 'react-sticky-el'
-
-<div className='grid grid-cols-2 sticky_boundary'>
-	<Sticky
-		topOffset={-80}
-		bottomOffset={80}
-		stickyStyle={{ marginTop: 80 }}
-		boundaryElement='.sticky_boundary'
-	>
-		<div
-			style={{
-				height: 200,
-				width: 'auto',
-			}}
-		>
-			This element is sticky in this section
-		</div>
-	</Sticky>
-
-	<div>
-		<div style={{ height: 400, width: 'auto' }}>Card #1</div>
-		<sp />
-		<div style={{ height: 400, width: 'auto' }}>Card #2</div>
-		<sp />
-		<div style={{ height: 400, width: 'auto' }}>Card #3</div>
-	</div>
-</div>
-`}
 				title='Sticky'
 				tags={['react-sticky-el']}
+				github='client/src/core/components/viewer/layout/Sticky.tsx'
 			>
-				<div
-					className={
-						desktop ? 'grid grid-cols-2 sticky_boundary' : 'flex-col sticky_boundary'
-					}
-				>
-					<Sticky
-						topOffset={desktop ? -80 : -80}
-						bottomOffset={desktop ? 80 : 80}
-						stickyStyle={{ marginTop: desktop ? 80 : 80 }}
-						boundaryElement='.sticky_boundary'
-					>
-						<div
-							style={{
-								...styles.card,
-								height: 200,
-								width: 'auto',
-							}}
-						>
-							This element is sticky in this section
-						</div>
-					</Sticky>
-					{!desktop && <sp />}
-					<div>
-						<div style={{ ...styles.card, height: 400, width: 'auto' }}>Card #1</div>
-						<sp />
-						<div style={{ ...styles.card, height: 400, width: 'auto' }}>Card #2</div>
-						<sp />
-						<div style={{ ...styles.card, height: 400, width: 'auto' }}>Card #3</div>
-					</div>
-				</div>
+				<Sticky />
 			</Section>
 
 			<Next backName='Style' backLink='style' name='Inputs' link='inputs' />

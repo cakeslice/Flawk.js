@@ -15,14 +15,13 @@ import RouterBase from 'core/components/RouterBase'
 import config from 'core/config'
 import styles, { projectStyles } from 'core/styles'
 import logo from 'project/assets/images/logo.svg'
+import notificationSound from 'project/assets/sounds/notification.mp3'
 import React, { useEffect } from 'react'
 import { Helmet } from 'react-helmet'
 import { useMediaQuery } from 'react-responsive'
 import { Redirect, Route, Switch } from 'react-router-dom'
 import './assets/fonts.css'
 import './assets/main.scss'
-// eslint-disable-next-line
-//const notificationSound = require('project/assets/sounds/notification.mp3')
 import Footer from './pages/common/Footer'
 import Header from './pages/common/Header'
 import { fetchStructures, fetchUser, UserState } from './redux/AppReducer'
@@ -45,19 +44,17 @@ const Register = React.lazy(() => import('./pages/auth/Register'))
 const Main = React.lazy(() => import('./pages/main/Main'))
 
 global.playNotificationSound = async () => {
-	/*
 	try {
-		// eslint-disable-next-line
 		const audio = new Audio(notificationSound)
+		audio.volume = 0.5
 		await audio.play()
 	} catch (e) {
 		// In case audio is not allowed because user didn't interact yet
 		console.warn(e)
 	}
-	*/
 }
 
-export default function Router(): React.ReactNode {
+export default function Router() {
 	const { structures, fetchingStructures, user, fetchingUser, authError } = useStoreSelector(
 		(state) => ({
 			structures: state.app.structures,

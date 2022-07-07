@@ -10,6 +10,7 @@ import Tooltip from 'core/components/Tooltip'
 import { useTracking } from 'core/components/TrackedComponent'
 import config from 'core/config'
 import styles from 'core/styles'
+import { github } from 'project/components/Icons'
 import React, { useState } from 'react'
 import { useMediaQuery } from 'react-responsive'
 
@@ -33,7 +34,8 @@ type Props = {
 	containerStyle?: React.CSSProperties
 	codeStyle?: React.CSSProperties
 	className?: string
-	data: string
+	github?: string
+	data?: string
 	lang: Lang
 }
 export default function CodeCollapse(props: Props) {
@@ -45,45 +47,99 @@ export default function CodeCollapse(props: Props) {
 	const tablet = useMediaQuery({ minWidth: 880 })
 	return (
 		<div className={props.className} style={{ ...(isOpen && props.openStyle) }}>
-			<div className={'flex-col items-end'}>
-				<Tooltip hidden={!tablet} tooltipProps={{ placement: 'top' }} content='Show code'>
-					<button
-						type='button'
-						onClick={() => {
-							setIsOpen((prev) => !prev)
-						}}
-						style={{
-							display: 'flex',
-							alignItems: 'center',
-						}}
+			<div
+				className={'flex justify-end'}
+				style={{
+					...(tablet && {
+						flexFlow: 'column-reverse',
+					}),
+				}}
+			>
+				{props.github && (
+					<Tooltip
+						hidden={!tablet}
+						tooltipProps={{ placement: 'left' }}
+						content='Source code'
 					>
-						<tag
-							style={{
-								...(isOpen && {
-									background: styles.colors.mainVeryLight,
-									opacity: 1,
-								}),
-							}}
-						>
-							<div
+						<button className='flex' type='button'>
+							<a
+								href={
+									'https://github.com/cakeslice/Flawk.js/blob/main/' +
+									props.github
+								}
+								target='_blank'
 								style={{
 									display: 'flex',
 									alignItems: 'center',
-									width: 21,
-									height: 21,
+								}}
+								rel='noreferrer'
+							>
+								<tag
+									style={{
+										opacity: 0.9,
+									}}
+								>
+									<div
+										style={{
+											display: 'flex',
+											alignItems: 'center',
+											width: 21,
+											height: 21,
+										}}
+									>
+										{github(config.replaceAlpha(styles.colors.black, 0.5))}
+									</div>
+								</tag>
+							</a>
+						</button>
+					</Tooltip>
+				)}
+				{props.data && props.github && <hsp />}
+				{props.data && (
+					<Tooltip
+						hidden={!tablet}
+						tooltipProps={{ placement: 'left' }}
+						content='Example'
+					>
+						<button
+							type='button'
+							onClick={() => {
+								setIsOpen((prev) => !prev)
+							}}
+							style={{
+								display: 'flex',
+								alignItems: 'center',
+							}}
+						>
+							<tag
+								style={{
+									opacity: 0.9,
+									...(isOpen && {
+										background: styles.colors.mainVeryLight,
+										opacity: 1,
+									}),
 								}}
 							>
-								{code(
-									isOpen
-										? styles.colors.main
-										: config.replaceAlpha(styles.colors.black, 0.5)
-								)}
-							</div>
-						</tag>
-					</button>
-				</Tooltip>
+								<div
+									style={{
+										display: 'flex',
+										alignItems: 'center',
+										width: 21,
+										height: 21,
+									}}
+								>
+									{code(
+										isOpen
+											? styles.colors.main
+											: config.replaceAlpha(styles.colors.black, 0.5)
+									)}
+								</div>
+							</tag>
+						</button>
+					</Tooltip>
+				)}
 			</div>
-			{isOpen && (
+			{isOpen && props.data && (
 				<>
 					<hsp />
 					<CodeBlock

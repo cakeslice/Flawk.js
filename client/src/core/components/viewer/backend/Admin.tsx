@@ -56,7 +56,7 @@ export default function Admin() {
 	}, [])
 
 	const queryParams = getQueryParams()
-	//const desktop = useMediaQuery({ minWidth: config.mobileWidthTrigger })
+
 	return (
 		<div style={{ maxWidth: 700 }}>
 			<div>

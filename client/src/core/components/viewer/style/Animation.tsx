@@ -7,7 +7,6 @@
 
 import logo from 'core/assets/images/logo.svg'
 import Animated from 'core/components/Animated'
-import { Section } from 'core/components/viewer/ComponentsViewer'
 import config from 'core/config'
 import styles from 'core/styles'
 import { motion, Variants } from 'framer-motion'
@@ -39,58 +38,7 @@ export default function Animation() {
 	}
 
 	return (
-		<Section
-			description={
-				<>
-					Use <code>effects</code> prop to set the effects to be applied when the
-					component is <m>visible</m>.
-					<br />
-					Multiple effects can be applied at the <m>same time</m>.
-					<sp />
-					The <code>duration</code>, <code>delay</code>, and <code>distance</code> props
-					can be used to configure the effects <m>behaviour</m>.
-					<sp />
-					To control when the animation is <m>triggered</m>, use <code>controlled</code>{' '}
-					prop. If set to <m>false</m>, it will <m>revert</m> the animation including
-					visibility for some effects like <code>fade</code>.
-					<sp />
-					To animate children <m>sequentially</m>, use <code>staggered</code> prop. For
-					nested children, use <code>staggeredChildren</code> prop.
-					<sp />
-					This component uses <code>framer-motion</code> internally.
-				</>
-			}
-			code={`import Animated from 'core/components/Animated'
-
-// Fade-in when visible
-<Animated
-	effects={['fade']}
->
-	<div>Content</div>
-</Animated>
-
-// Fade-in when 'isVisible' is set to true and
-// fade-out when 'isVisible' is set to false
-<Animated
-	controlled={isVisible}
-	effects={['fade']}
->
-	<div>Content</div>
-</Animated>
-
-// Fade-in sequentially
-<Animated
-	staggered
-	effects={['fade']}
->
-	<div>First</div>
-	<div>Second</div>
-	<div>Third</div>
-</Animated>
-`}
-			title='Animation'
-			tags={['<Animated/>', '<motion.div/>', 'transition']}
-		>
+		<>
 			<div style={{ opacity: 0.75, fontSize: 13.5, textAlign: 'center' }}>
 				Click any card to toggle
 			</div>
@@ -321,6 +269,6 @@ export default function Animation() {
 					<tag>animation</tag>
 				</div>
 			</div>
-		</Section>
+		</>
 	)
 }

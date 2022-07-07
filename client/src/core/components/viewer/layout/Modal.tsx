@@ -12,11 +12,9 @@ import Field from 'core/components/Field'
 import FInput from 'core/components/FInput'
 import Modal, { useModal } from 'core/components/Modal'
 import Tooltip from 'core/components/Tooltip'
-import { Section } from 'core/components/viewer/ComponentsViewer'
 import config from 'core/config'
 import styles from 'core/styles'
 import { Form, Formik } from 'formik'
-import { useMediaQuery } from 'react-responsive'
 
 export default function _Modal() {
 	const confirmModal = useModal()
@@ -152,12 +150,12 @@ export default function _Modal() {
 		)
 	}
 
-	const desktop = useMediaQuery({ minWidth: config.mobileWidthTrigger })
-
 	return (
 		<>
 			{exampleModal()}
+
 			{bigModal()}
+
 			<Modal
 				closeOnOutsideClick
 				hook={confirmModal}
@@ -187,78 +185,13 @@ export default function _Modal() {
 				)}
 			/>
 
-			<Section
-				description={
-					<>
-						The <code>{'<Modal/>'}</code> component is not <m>mounted</m> until {"it's"}{' '}
-						displayed and where you place it in the component tree is <m>irrelevant</m>.
-						<br />
-						With the <code>content</code> prop you can set the content of the modal.
-						<sp />
-						Use <code>name</code> prop to define a <m>key</m> for the modal. This key
-						will be expected to be in <code>this.state</code> and will be used to set if
-						the modal is <m>closed</m> or <m>open</m>
-						.
-						<br />
-						The <code>parent</code> prop is also <m>required</m> for the modal to access{' '}
-						<code>this.state</code>.
-						<sp />
-						Use <code>title</code> prop to set the modal title.
-						<br />
-						Use <code>onClose</code> prop to define a function to be called when the
-						modal is closed.
-					</>
-				}
-				code={`import Modal from 'core/components/Modal'
-
-state = {
-	myModal: false
-}
-
-<>
-	<Modal
-		name='myModal' // Name needs to match the key in this.state
-		parent={this}
-		title='Hello'
-		content={(close, Content, Buttons, Parent) => (
-			<Parent>
-				<Content>
-					<p>
-						Are you sure?
-					</p>
-				</Content>
-				
-				<Buttons>
-					<FButton onClick={close}>Cancel</FButton>
-					<FButton appearance='primary' onClick={() => {
-						alert('Hello!')
-						close()
-					}}>
-						Proceed
-					</FButton>
-				</Buttons>
-			</Parent>
-		)}
-	/>
-	
-	<button type='button' onClick={() => {
-		this.setState({ myModal: true })
-	}}>
-		Open
-	</button>
-</>
-`}
-				title='Modal'
-				tags={['<Modal/>']}
-			>
-				<div className='wrapMargin flex flex-wrap justify-start'>
-					<FButton onClick={() => exampleModalHook.setOpen(true)}>Default</FButton>
-					<FButton appearance='delete' onClick={() => confirmModal.setOpen(true)}>
-						Delete
-					</FButton>
-					<FButton onClick={() => bigModalHook.setOpen(true)}>Big</FButton>
-				</div>
-			</Section>
+			<div className='wrapMargin flex flex-wrap justify-start'>
+				<FButton onClick={() => exampleModalHook.setOpen(true)}>Default</FButton>
+				<FButton appearance='delete' onClick={() => confirmModal.setOpen(true)}>
+					Delete
+				</FButton>
+				<FButton onClick={() => bigModalHook.setOpen(true)}>Big</FButton>
+			</div>
 		</>
 	)
 }

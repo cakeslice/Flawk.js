@@ -9,7 +9,6 @@ import Dropdown from 'core/components/Dropdown'
 import FButton from 'core/components/FButton'
 import FInput from 'core/components/FInput'
 import Tooltip from 'core/components/Tooltip'
-import { Section } from 'core/components/viewer/ComponentsViewer'
 import config from 'core/config'
 import styles from 'core/styles'
 import { css } from 'glamor'
@@ -29,7 +28,6 @@ export default function Input() {
 		color: usageBackground && config.invertColor(usageBackground, styles.colors.whiteDay),
 		maxWidth: 950,
 	}
-
 	const appearanceDropdown = () => {
 		const appearances = styles.inputAppearances()
 
@@ -57,55 +55,12 @@ export default function Input() {
 		)
 	}
 
+	//
+
 	const desktop = useMediaQuery({ minWidth: config.mobileWidthTrigger })
 
 	return (
-		<Section
-			description={
-				<>
-					Use <code>appearance</code> prop to set the <m>input style</m>. You can override
-					or add new input styles in <code>src/project/_styles.ts</code> using the{' '}
-					<code>inputAppearances</code> property.
-					<br />
-					You can also use <code>glamor</code> overrides like <code>{':hover'}</code> to
-					customize the style in <m>different states</m>.
-					<sp />
-					To make it a <m>controlled</m> input, use <code>isControlled</code> prop and
-					supply a value to <code>value</code> prop.
-					<sp />
-					Use with <code>{'<Field/>'}</code> if inside a <a href='#form'>form</a>.
-				</>
-			}
-			code={`import FInput from 'core/components/FInput'
-
-// E-mail
-<FInput
-	type='email'
-	label='E-mail'
-	autoComplete='new-email'
-	placeholder='you@gmail.com'
-	onChange={(e) => {
-		this.setState({email: e})
-	}}
-/>
-
-// Text area
-<FInput
-	style={{ width: '100%', minHeight: 50 }}
-	label='Text Area'
-	textArea
-></FInput>
-
-// Date
-<FInput
-	label='Date'
-	datePicker
-/>
-`}
-			title='Input field'
-			tags={['<FInput/>', '<input>']}
-			top
-		>
+		<>
 			<div style={{ ...styles.card, maxWidth: 783 }}>
 				<div className='wrapMargin flex flex-wrap justify-start items-end'>
 					<FInput
@@ -358,7 +313,7 @@ export default function Input() {
 					</div>
 				</div>
 			</div>
-		</Section>
+		</>
 	)
 }
 

@@ -16,14 +16,17 @@ import { Form, Formik } from 'formik'
 import { ReduxProps } from 'project-types'
 import { useState } from 'react'
 import ReCaptcha from 'react-google-recaptcha'
+import { useMediaQuery } from 'react-responsive'
 import { cardStyle } from './Login'
 
-export default function Forgot(props: ReduxProps & { desktop?: boolean }) {
+export default function Forgot(props: ReduxProps) {
 	const [emailToRecover, setEmailToRecover] = useState<string>()
 	const [wrongLogin, setWrongLogin] = useState<string>()
 
+	const desktop = useMediaQuery({ minWidth: config.mobileWidthTrigger })
+
 	return (
-		<div style={cardStyle(props.desktop)}>
+		<div style={cardStyle(desktop)}>
 			{emailToRecover ? (
 				<Formik
 					enableReinitialize
@@ -184,14 +187,14 @@ export default function Forgot(props: ReduxProps & { desktop?: boolean }) {
 										!values.captcha && (
 											<div
 												style={{
-													maxWidth: props.desktop ? 360 : 260,
+													maxWidth: desktop ? 360 : 260,
 												}}
 											>
 												<sp />
 												<div
 													style={{
 														display: 'flex',
-														transform: !props.desktop
+														transform: !desktop
 															? 'scale(.85)'
 															: undefined,
 														transformOrigin: 'left',
