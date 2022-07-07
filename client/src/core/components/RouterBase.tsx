@@ -25,7 +25,7 @@ import _sortBy from 'lodash/sortBy'
 import { useStoreSelector } from 'project/redux/_store'
 import React, { useCallback, useEffect, useState } from 'react'
 import GitInfo from 'react-git-info/macro'
-import { useMediaQuery } from 'react-responsive'
+import MediaQuery from 'react-responsive'
 import { Router } from 'react-router-dom'
 import { Bounce, toast, ToastContainer, ToastContentProps } from 'react-toastify'
 import './RouterBase.scss'
@@ -524,12 +524,16 @@ export default function RouterBase({ children }: { children: React.ReactNode }) 
 		SplashScreen.hide()
 	}, [])
 
-	/* Use <MediaQuery/> to make sure nightMode and other properties are updated */
-	const desktop = useMediaQuery({ minWidth: config.mobileWidthTrigger })
 	return (
 		<>
 			<Router history={history}>
-				<ScrollToTop>{children}</ScrollToTop>
+				<ScrollToTop>
+					{/* Use <MediaQuery/> to make sure nightMode and other properties are updated on page load */}
+					{/* useMediaQuery WILL NOT WORK CORRECTLY */}
+					<MediaQuery minWidth={config.mobileWidthTrigger}>
+						{(desktop) => children}
+					</MediaQuery>
+				</ScrollToTop>
 			</Router>
 
 			<ToastContainer />
