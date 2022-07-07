@@ -87,20 +87,18 @@ export default function Layout(props: Props) {
 	wrapperComponent={Wrapper}
 />
 
-class Wrapper extends Component<{ children: React.ReactNode }> {
-	render() {
-		return (
-			<div
-				style={{
-					paddingTop: 80,
-					paddingBottom: 160,
-					maxWidth: 1700,
-				}}
-			>
-				{this.props.children}
-			</div>
-		)
-	}
+function Wrapper (props: { children: React.ReactNode }) {
+	return (
+		<div
+			style={{
+				paddingTop: 80,
+				paddingBottom: 160,
+				maxWidth: 1700,
+			}}
+		>
+			{props.children}
+		</div>
+	)
 }
 `}
 					title='Dashboard'
@@ -125,7 +123,9 @@ class Wrapper extends Component<{ children: React.ReactNode }> {
 						You can use the built-in CSS classes to build a <m>flex</m> layout easily.
 					</>
 				}
-				code={`const fixedExample = {
+				code={`import styles from 'core/styles'
+				
+const fixedExample = {
 	width: 200,
 	height: 50,
 	opacity: 0.1,
@@ -169,7 +169,9 @@ const growExample = {
 						You can use the built-in CSS classes to build a <m>grid</m> layout easily.
 					</>
 				}
-				code={`const gridExample = {
+				code={`import styles from 'core/styles'
+				
+const gridExample = {
 	height: 50,
 	opacity: 0.1,
 	backgroundColor: styles.colors.black,
@@ -254,7 +256,7 @@ const data = [
 		{		
 			name: 'Percentage',
 			selector: 'percent',
-			cell: (value) => (<div>{value * 100}%</div>)
+			cell: (value) => <div>{value * 100}%</div>
 		}
 	]}
 />
@@ -276,17 +278,22 @@ const data = [
 						The <code>onClick</code> prop is called when the page changes
 					</>
 				}
-				code={`import Paginate from 'core/components/Paginate'
+				code={`import { useState } from 'react'
+import Paginate from 'core/components/Paginate'
 
-<Paginate
-	onClick={async (e) => {
-		this.setState({
-			page: e,
-		})
-	}}
-	totalPages={10}
-	currentPage={this.state.page}
-></Paginate>
+const [page, setPage] = useState(1)
+
+function MyComponent() {
+	return (
+		<Paginate
+			onClick={async (e) => {
+				setPage(e)
+			}}
+			totalPages={10}
+			currentPage={page}
+		/>
+	)
+}
 `}
 				title='Pagination'
 				tags={['<Paginate/>']}
@@ -317,44 +324,47 @@ const data = [
 						modal is closed.
 					</>
 				}
-				code={`import Modal from 'core/components/Modal'
+				code={`import FButton from 'core/components/FButton'
+import Modal, { useModal } from 'core/components/Modal'
 
-state = {
-	myModal: false
+function MyComponent () {
+	const myModal = useModal()
+
+	return (
+		<>
+			<Modal
+				hook={myModal}
+				title='Hello'
+				content={(close, Content, Buttons, Parent) => (
+					<Parent>
+						<Content>
+							<p>
+								Are you sure?
+							</p>
+						</Content>
+						
+						<Buttons>
+							<FButton onClick={close}>Cancel</FButton>
+
+							<FButton appearance='primary' onClick={() => {
+								alert('Hello!')
+								close()
+							}}>
+								Proceed
+							</FButton>
+						</Buttons>
+					</Parent>
+				)}
+			/>
+			
+			<button type='button' onClick={() => {
+				myModal.setOpen(true)
+			}}>
+				Open
+			</button>
+		</>
+	)
 }
-
-<>
-	<Modal
-		name='myModal' // Name needs to match the key in this.state
-		parent={this}
-		title='Hello'
-		content={(close, Content, Buttons, Parent) => (
-			<Parent>
-				<Content>
-					<p>
-						Are you sure?
-					</p>
-				</Content>
-				
-				<Buttons>
-					<FButton onClick={close}>Cancel</FButton>
-					<FButton appearance='primary' onClick={() => {
-						alert('Hello!')
-						close()
-					}}>
-						Proceed
-					</FButton>
-				</Buttons>
-			</Parent>
-		)}
-	/>
-	
-	<button type='button' onClick={() => {
-		this.setState({ myModal: true })
-	}}>
-		Open
-	</button>
-</>
 `}
 				title='Modal'
 				tags={['useModal', '<Modal/>']}

@@ -45,7 +45,7 @@ export default function Inputs() {
 	autoComplete='new-email'
 	placeholder='you@gmail.com'
 	onChange={(e) => {
-		this.setState({email: e})
+		console.log('E-mail value: ' + e)
 	}}
 />
 
@@ -99,7 +99,8 @@ export default function Inputs() {
 	isSearchable
 	label='Dropdown'
 	onChange={(e) => {
-		this.setState({option: e}) // The 'value' of chosen option
+		console.log('Dropdown value: ' + e)
+		// The 'value' of chosen option
 	}}
 	options={[
 		{

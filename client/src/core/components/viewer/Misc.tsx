@@ -11,14 +11,14 @@ import CodeBlock from 'core/components/CodeBlock'
 import Dropdown from 'core/components/Dropdown'
 import FButton from 'core/components/FButton'
 import TextEditor from 'core/components/TextEditor'
-import Unity from 'core/components/Unity'
 import config from 'core/config'
 import { countriesSearch, sortedCountries } from 'core/functions/countries'
+import { useSetState } from 'core/functions/hooks'
 import styles from 'core/styles'
 import { countries } from 'countries-list'
 import Parser from 'html-react-parser'
 import 'moment/locale/pt'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import Flag from 'react-flagkit'
 import Helmet from 'react-helmet'
@@ -32,6 +32,7 @@ import { Next, Section } from './ComponentsViewer'
 const QueryParams = React.lazy(() => import('core/components/viewer/misc/QueryParams'))
 const Localization = React.lazy(() => import('core/components/viewer/misc/Localization'))
 const Web3Wallet = React.lazy(() => import('core/components/viewer/misc/Web3Wallet'))
+const Unity = React.lazy(() => import('core/components/viewer/misc/Unity'))
 
 //
 
@@ -44,13 +45,7 @@ const ReactErrorTest = React.lazy(() => {
 })
 
 export default function Misc() {
-	const [state, _setState] = useState({
-		unityReady: false,
-		unityFullscreen: false,
-		unityProgress: undefined as number | undefined,
-
-		//
-
+	const [state, setState] = useSetState({
 		locallyStored: '',
 		newLocallyStored: '',
 
@@ -66,20 +61,6 @@ export default function Misc() {
 
 		chunkLoadError: undefined as undefined | boolean,
 	})
-	const setState = (obj: Partial<typeof state>) => {
-		_setState((prev) => {
-			return { ...prev, ...obj }
-		})
-	}
-
-	const unityEvents = [
-		{
-			name: 'GameOver',
-			callback: () => {
-				alert('GameOver')
-			},
-		},
-	]
 
 	useEffect(() => {
 		async function run() {
@@ -315,26 +296,30 @@ import { countries } from 'countries-list'
 
 			<Section
 				code={`import config from 'core/config'
-import MediaQuery from 'react-responsive'
+import { useMediaQuery } from 'react-responsive'
 import { SizeMe } from 'react-sizeme'
 
-<MediaQuery minWidth={config.mobileWidthTrigger}>
-	{(desktop) => (
-		<div>
-			{desktop
-				? 'This is a big screen'
-				: 'This is a small screen'}
-		</div>
-	)}
-</MediaQuery>
+function MyComponent() {
+	const desktop = useMediaQuery({ minWidth: config.mobileWidthTrigger })
 
-<SizeMe>
-	{({ size }) => (
-		<div>
-			{'This container is ' + size.width + ' pixels wide'}
-		</div>
-	)}
-</SizeMe>
+	return (
+		<>
+			<div>
+				{desktop
+					? 'This is a big screen'
+					: 'This is a small screen'}
+			</div>			
+
+			<SizeMe>
+				{({ size }) => (
+					<div>
+						{'This container is ' + size.width + ' pixels wide'}
+					</div>
+				)}
+			</SizeMe>
+		</>
+	)
+}
 `}
 				description={
 					<>
@@ -489,12 +474,12 @@ import { SizeMe } from 'react-sizeme'
 			<Section
 				code={`import config from 'core/config'
 
-<button type='button' onClick={() => config.scrollToTop()}>Scroll</button>
+config.scrollToTop()
 `}
 				description={
 					<>
-						Use the <code>{'<CopyToClipboard/>'}</code> component from{' '}
-						<code>react-copy-to-clipboard</code> to copy text to the <m>clipboard</m>.
+						Use <code>{'config.scrollToTop()'}</code> to scroll to the top of the
+						<m>page</m>.
 					</>
 				}
 				title='Scroll to top'
@@ -591,9 +576,6 @@ import { SizeMe } from 'react-sizeme'
 				<Section
 					code={`import Unity from 'core/components/Unity'
 
-state = {
-	unityFullscreen: false,
-}
 unityEvents = [
 	{
 		name: 'GameOver',
@@ -602,8 +584,6 @@ unityEvents = [
 		},
 	},
 ]
-
-//
 
 <div>
 	<button type='button'
@@ -615,7 +595,7 @@ unityEvents = [
 	</button>
 	<sp/>
 	<Unity
-		fullscreen={this.state.unityFullscreen}
+		fullscreen={false}
 		extension={'.unityweb'}
 		events={this.unityEvents}
 		buildPath={'/unity/Build'}
@@ -643,52 +623,9 @@ unityEvents = [
 					}
 					title='Unity'
 					tags={['<Unity/>']}
+					github='client/src/core/components/viewer/misc/Unity.tsx'
 				>
-					<div className='wrapMargin flex flex-wrap justify-start'>
-						<FButton
-							onClick={() => {
-								global.sendUnityEvent?.('Neo', 'ChangeColor')
-							}}
-						>
-							Change Color
-						</FButton>
-						<FButton
-							onClick={() => {
-								setState({
-									unityFullscreen: !state.unityFullscreen,
-								})
-							}}
-						>
-							Fullscreen
-						</FButton>
-					</div>
-					<hsp />
-					<div
-						className='flex justify-center items-center'
-						style={{
-							...styles.card,
-							padding: 0,
-							overflow: 'hidden',
-							borderRadius: 10,
-							width: '100%',
-							maxWidth: 400,
-							height: 400,
-						}}
-					>
-						<Unity
-							fullscreen={state.unityFullscreen}
-							backgroundColor={styles.colors.white}
-							extension={'.unityweb'}
-							events={unityEvents}
-							onReady={() => {
-								setState({ unityReady: true })
-							}}
-							onLoadingProgress={(progress) => {
-								setState({ unityProgress: progress })
-							}}
-							buildPath={'/unity/Build'}
-						/>
-					</div>
+					<Unity />
 				</Section>
 			)}
 
@@ -771,17 +708,31 @@ config.injectScript(
 
 			{desktop && (
 				<Section
-					code={`import TextEditor from 'core/components/TextEditor'
+					code={`import { useSetState } from 'core/functions/hooks'
+import TextEditor from 'core/components/TextEditor'
 
-<TextEditor
-	onBlur={() => {
-		this.setState({ text: this.state.textEditor })
-	}}
-	onChange={(e) => {
-		this.state.text = e
-		// For <Formik/> use setFieldValue
-	}}
-/>
+function MyComponent() {
+	const [state, setState] = useSetState({
+		textEditor: '',
+	})
+
+	return (
+		<TextEditor
+			value={state.textEditor}
+
+			onChange={(e) => {
+				// Mutate directly while editing for performance
+				state.textEditor = e
+
+				// For <Formik/> use setFieldValue
+			}}
+
+			onBlur={() => {
+				setState({ textEditor: state.textEditor })
+			}}
+		/>
+	)
+}
 `}
 					description={
 						<>
@@ -823,8 +774,11 @@ config.injectScript(
 							onBlur={() => {
 								setState({ textEditor: state.textEditor })
 							}}
+							value={state.textEditor}
 							onChange={(e) => {
+								// Mutate directly while editing for performance
 								state.textEditor = e
+
 								// For <Formik/> use setFieldValue
 							}}
 						/>
