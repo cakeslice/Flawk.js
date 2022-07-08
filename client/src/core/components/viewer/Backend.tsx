@@ -53,7 +53,7 @@ export default function Backend() {
 		<div className='flex-col'>
 			<Section
 				title='Authentication'
-				description='Components that showcase how to login, register and recover the account'
+				description='How to login, register and recover an account'
 				top
 				github='client/src/core/components/viewer/backend/auth'
 			>
@@ -83,7 +83,7 @@ export default function Backend() {
 			<Section
 				title='Account & Logout'
 				github='client/src/core/components/viewer/backend/Account.tsx'
-				description='Components that showcase displaying account data and how to logout'
+				description='How to display account data and logout of the account'
 			>
 				{user ? (
 					<Account {...reduxProps} />
@@ -106,7 +106,7 @@ export default function Backend() {
 			<Section
 				title='Settings'
 				github='client/src/core/components/viewer/backend/Settings.tsx'
-				description='Components that showcase how to get and set account settings'
+				description='How to get and set account settings'
 			>
 				{user ? (
 					<div>
@@ -131,7 +131,7 @@ export default function Backend() {
 			<Section
 				title='Notifications'
 				github='client/src/core/components/Notifications.tsx'
-				description='Components that showcase the notification system'
+				description='Component that showcase the notifications system'
 			>
 				{user ? (
 					<div className='flex' style={{ ...styles.card }}>
@@ -195,7 +195,7 @@ export default function Backend() {
 			<Section
 				title='Remote data'
 				github='client/src/core/components/viewer/backend/RemoteData.tsx'
-				description='Components that showcase how to use remote data stored in the server'
+				description='How to get remote public data stored in the server'
 			>
 				<RemoteData {...reduxProps} />
 			</Section>
@@ -203,7 +203,7 @@ export default function Backend() {
 			<Section
 				title='Websockets'
 				tags={['global.socket.emit()']}
-				//description='Components to test websockets'
+				//description='Websockets notification system test'
 			>
 				{user ? (
 					<div className='wrapMargin flex flex-wrap justify-start items-center'>
