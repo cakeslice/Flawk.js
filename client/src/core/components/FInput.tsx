@@ -440,6 +440,7 @@ export default class FInput extends TrackedComponent<Props> {
 			fontSize: styles.defaultFontSize,
 			fontFamily: styles.font,
 			textAlign: this.props.center ? 'center' : 'left',
+			lineHeight: 'normal',
 			fontWeight: styles.inputFontWeight || undefined,
 
 			borderRadius: styles.inputBorder === 'bottom' ? 0 : styles.defaultBorderRadius,

@@ -7,7 +7,7 @@
 
 import TrackedComponent from 'core/components/TrackedComponent'
 import { Obj } from 'flawk-types'
-import { useCallback, useEffect, useState, useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import isEqual from 'react-fast-compare'
 
 export const getSearch = (object: Obj, removeEmpty = true) => {
@@ -111,6 +111,7 @@ export function useQueryParams<
 			})
 
 			const search = '?' + getSearch(nextQueryParams)
+			// Can't set url to "'' + window.location.hash"...
 			const url = search + window.location.hash
 			if (addHistory) {
 				window.history.pushState({}, '', url)
@@ -201,7 +202,8 @@ export default class QueryParams<
 		})
 
 		const search = getSearch(nextQueryParams)
-		const url = (search ? '?' + search : '') + window.location.hash
+		// Can't set url to "'' + window.location.hash"...
+		const url = '?' + search + window.location.hash //(search ? '?' + search : '') + window.location.hash
 		if (addHistory) {
 			window.history.pushState({}, '', url)
 		} else {

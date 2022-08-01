@@ -273,6 +273,7 @@ export default class Dropdown extends TrackedComponent<Props> {
 		}
 		let defaultInputStyle: CSSObjectWithLabel = {
 			...defaultStyle,
+			lineHeight: 'normal',
 			padding: 0,
 		}
 
@@ -831,7 +832,9 @@ export default class Dropdown extends TrackedComponent<Props> {
 										this.props.onBlur && this.props.onBlur(o)
 									}}
 									placeholder={
-										this.props.placeholder || config.text('common.select')
+										<p style={{ lineHeight: 'normal' }}>
+											{this.props.placeholder || config.text('common.select')}
+										</p>
 									}
 									value={
 										this.props.uncontrolled
