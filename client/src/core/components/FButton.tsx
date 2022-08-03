@@ -487,7 +487,6 @@ export default class FButton extends TrackedComponent<Props> {
 										</a>
 									) : (
 										<Link
-											className={className}
 											to={this.props.href}
 											target={this.props.target}
 											rel={
@@ -498,9 +497,10 @@ export default class FButton extends TrackedComponent<Props> {
 											style={{
 												textDecoration: 'none',
 											}}
-											{...cssStyle}
 										>
-											{this.props.children}
+											<div className={className}>
+												<span {...cssStyle}>{this.props.children}</span>
+											</div>
 										</Link>
 									)
 								) : (
@@ -614,6 +614,7 @@ export default class FButton extends TrackedComponent<Props> {
 											letterSpacing: 0.4,
 											fontSize: styles.defaultFontSize,
 											marginLeft: 7.5,
+											lineHeight: 'normal',
 											...styles.inputLabelStyle,
 											...styles.checkboxLabelStyle,
 											...this.props.checkboxLabelStyle,
