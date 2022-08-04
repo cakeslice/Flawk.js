@@ -38,6 +38,7 @@ const scrollToErrors = (errors: FormikErrors<unknown>, thisElement: HTMLElement 
 export type Appearance = 'primary' | 'secondary' | string // We need to support string for custom appearances declared in styles.buttonAppearances
 type Props = {
 	style?: React.CSSProperties & GlamorProps & { ':checkbox'?: React.CSSProperties & GlamorProps }
+	id?: string
 	className?: string
 	children?: React.ReactNode
 	appearance?: Appearance
@@ -470,6 +471,7 @@ export default class FButton extends TrackedComponent<Props> {
 									this.props.href.includes('http') ||
 									this.props.href.includes('mailto') ? (
 										<a
+											id={this.props.id}
 											className={className}
 											href={this.props.href}
 											target={this.props.target}
@@ -487,6 +489,7 @@ export default class FButton extends TrackedComponent<Props> {
 										</a>
 									) : (
 										<Link
+											id={this.props.id}
 											to={this.props.href}
 											target={this.props.target}
 											rel={
@@ -505,6 +508,7 @@ export default class FButton extends TrackedComponent<Props> {
 									)
 								) : (
 									<button
+										id={this.props.id}
 										ref={this.setButtonRef}
 										className={className}
 										{...cssStyle}
