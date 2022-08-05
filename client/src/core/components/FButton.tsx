@@ -490,6 +490,7 @@ export default class FButton extends TrackedComponent<Props> {
 									) : (
 										<Link
 											id={this.props.id}
+											className={className}
 											to={this.props.href}
 											target={this.props.target}
 											rel={
@@ -500,10 +501,9 @@ export default class FButton extends TrackedComponent<Props> {
 											style={{
 												textDecoration: 'none',
 											}}
+											{...cssStyle}
 										>
-											<div className={className}>
-												<span {...cssStyle}>{this.props.children}</span>
-											</div>
+											{this.props.children}
 										</Link>
 									)
 								) : (

@@ -236,7 +236,6 @@ class MobileDrawer extends TrackedComponent<Props> {
 
 										const textStyle: React.CSSProperties = {
 											marginLeft: hasIcon ? 10 : 0,
-											whiteSpace: 'nowrap',
 											...(link.style && link.style.textStyle),
 										}
 
@@ -407,8 +406,6 @@ class MobileDrawer extends TrackedComponent<Props> {
 																					<div
 																						style={{
 																							marginLeft: 20,
-																							whiteSpace:
-																								'nowrap',
 																						}}
 																					>
 																						{config.localize(

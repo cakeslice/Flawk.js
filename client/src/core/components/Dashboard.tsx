@@ -359,6 +359,7 @@ class DashboardClass extends TrackedComponent<
 																this.state.open &&
 																!this.props.horizontal
 															}
+															alwaysOpen={this.props.alwaysOpen}
 															isHover={this.state.open}
 															linkStyle={this.props.linkStyle}
 															linkMaxWidth={
@@ -684,6 +685,7 @@ type MenuProps = {
 	logo: string
 	isOpen: boolean
 	isOpenDynamic: boolean
+	alwaysOpen?: boolean
 	isHover: boolean
 	linkStyle?: LinkStyle
 	linkMaxWidth: number
@@ -855,7 +857,7 @@ class MenuClass extends TrackedComponent<MenuProps> {
 					)
 
 					const textStyle: React.CSSProperties = {
-						whiteSpace: 'nowrap',
+						whiteSpace: this.props.alwaysOpen ? undefined : 'nowrap',
 						...(!isOpen && { opacity: 0 }),
 						...(this.props.horizontal
 							? {
@@ -1053,7 +1055,10 @@ class MenuClass extends TrackedComponent<MenuProps> {
 																	!this.props.horizontal) && (
 																	<div
 																		style={{
-																			whiteSpace: 'nowrap',
+																			whiteSpace: this.props
+																				.alwaysOpen
+																				? undefined
+																				: 'nowrap',
 																		}}
 																	>
 																		{config.localize(sub.name)}

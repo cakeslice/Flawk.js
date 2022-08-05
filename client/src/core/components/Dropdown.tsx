@@ -214,6 +214,7 @@ export default class Dropdown extends TrackedComponent<Props> {
 		let defaultStyle: CSSObjectWithLabel = {
 			fontSize: styles.defaultFontSize,
 			fontFamily: styles.font,
+			fontWeight: styles.inputFontWeight || undefined,
 
 			color: styles.colors.black,
 			cursor: this.props.isSearchable === true ? 'text' : 'pointer',
@@ -273,6 +274,7 @@ export default class Dropdown extends TrackedComponent<Props> {
 		}
 		let defaultInputStyle: CSSObjectWithLabel = {
 			...defaultStyle,
+			fontWeight: 'inherit',
 			lineHeight: 'normal',
 			padding: 0,
 		}

@@ -139,10 +139,12 @@ const DatePicker = (
 		foreground?: boolean
 		table?: boolean
 		inputStyle: StyleAttribute
+		dateFormat?: string
 	} & { inputRef: LegacyRef<HTMLInputElement> }
 ) => (
 	<Suspense fallback={<></>}>
 		<Datetime
+			dateFormat={props.dateFormat}
 			renderView={(mode, renderDefault) => {
 				if (mode === 'time') return <div>NOT IMPLEMENTED</div>
 
@@ -337,6 +339,7 @@ type Props = {
 	(
 		| {
 				datePicker?: true
+				dateFormat?: string
 				/** Set to true to bring the input to the foreground in case it's hidden behind a modal for example */
 				foreground?: true
 				/** Set to true to make the input visible if it's inside a table */
@@ -344,6 +347,7 @@ type Props = {
 		  }
 		| {
 				datePicker?: true
+				dateFormat?: string
 				/** Set to true to bring the input to the foreground in case it's hidden behind a modal for example */
 				foreground?: undefined
 				/** Set to true to make the input visible if it's inside a table */
@@ -351,6 +355,7 @@ type Props = {
 		  }
 		| {
 				datePicker?: undefined
+				dateFormat?: undefined
 				/** Set to true to bring the input to the foreground in case it's hidden behind a modal for example */
 				foreground?: undefined
 				/** Set to true to make the input visible if it's inside a table */
@@ -518,6 +523,7 @@ export default class FInput extends TrackedComponent<Props> {
 			fontSize: styles.defaultFontSize,
 			width: '100%',
 			textAlign: 'inherit',
+			fontWeight: 'inherit',
 		}
 
 		styles.inputAppearances &&
@@ -845,6 +851,7 @@ export default class FInput extends TrackedComponent<Props> {
 											{...commonProps}
 											{...datePickerValueProps}
 											{...inputEventProps}
+											dateFormat={this.props.dateFormat}
 											table={this.props.table}
 											foreground={this.props.foreground}
 											inputStyle={inputStyle}
