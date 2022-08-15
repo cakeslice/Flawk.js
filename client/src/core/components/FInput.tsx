@@ -36,6 +36,7 @@ const MaskedInput = (
 		placeholder?: string
 		autoFocus?: boolean
 		disabled?: boolean
+		name?: string
 		required?: boolean
 		inputStyle: StyleAttribute
 		value?: string | number | undefined
@@ -63,6 +64,7 @@ const MaskedInput = (
 				>
 			) => (
 				<input
+					name={props.name}
 					ref={props.inputRef}
 					{...inputProps}
 					// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
