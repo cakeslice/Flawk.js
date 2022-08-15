@@ -438,6 +438,15 @@ const config: Config & InternalConfig = {
 		return Parser(output)
 	},
 
+	triggerInputEvent: (input, value) => {
+		// @ts-ignore
+		Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set.call(
+			input,
+			value
+		)
+		const event = new Event('change', { bubbles: true })
+		input.dispatchEvent(event)
+	},
 	getRemoteConfig: (structures, key, code = 'default'): Obj | undefined => {
 		if (structures && structures['remoteconfigs']) {
 			const s = _find(structures['remoteconfigs'], { code: code }) as KeyObject
@@ -615,6 +624,7 @@ type InternalConfig = {
 	text: typeof _text
 	localize: (obj: string | Obj, lang?: string) => string | JSX.Element | JSX.Element[]
 
+	triggerInputEvent: (input: HTMLInputElement, value: string | number) => void
 	getRemoteConfig: (structures: KeyObject, key: string, code?: string) => Obj | undefined
 
 	calculateAge: (birthday: Date) => number
