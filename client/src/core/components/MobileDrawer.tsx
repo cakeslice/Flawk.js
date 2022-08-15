@@ -29,7 +29,6 @@ type Props = {
 	title?: React.ReactNode
 	headerHeight: number
 	path?: string
-	toggleOpen?: (open?: boolean) => void
 	//
 	pageProps?: Obj
 	links: DashboardRoute[]
@@ -41,8 +40,23 @@ class MobileDrawer extends TrackedComponent<Props> {
 		isOpen: false,
 	}
 
+	constructor(props: Props) {
+		super(props)
+
+		this.toggleOpen = this.toggleOpen.bind(this)
+	}
+
 	componentWillUnmount() {
 		clearAllBodyScrollLocks()
+	}
+
+	toggleOpen(open?: boolean, justUpdate?: boolean) {
+		if (justUpdate) return this.forceUpdate()
+
+		const o = open !== undefined ? open : !this.state.isOpen
+		this.setState({
+			isOpen: o,
+		})
 	}
 
 	renderList = () => {
@@ -164,7 +178,7 @@ class MobileDrawer extends TrackedComponent<Props> {
 													{link.tab({
 														...this.props.pageProps,
 														isOpen: this.state.isOpen,
-														toggleOpen: this.props.toggleOpen,
+														toggleOpen: this.toggleOpen,
 													})}
 												</div>
 											)

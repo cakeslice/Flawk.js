@@ -142,7 +142,7 @@ const config: Config & InternalConfig = {
 	/////////////////////////////////
 
 	response: function (id: string, req: Request, obj?: Obj): string {
-		let output = 'STRING NOT FOUND! (' + id + ')'
+		let output = 'String missing'
 
 		const responses = _projectText.responses as KeyObject
 
@@ -155,10 +155,12 @@ const config: Config & InternalConfig = {
 			if (typeof s === 'string') output = s
 		}
 
+		if (output === 'String missing')
+			console.error('No localization found for ' + id + ' in language ' + lang)
 		return output
 	},
 	text: function (id: string, req: Request, obj?: Obj): string {
-		let output = 'STRING NOT FOUND! (' + id + ')'
+		let output = 'String missing'
 
 		const messages = _projectText.messages as KeyObject
 
@@ -171,6 +173,8 @@ const config: Config & InternalConfig = {
 			if (typeof s === 'string') output = s
 		}
 
+		if (output === 'String missing')
+			console.error('No localization found for ' + id + ' in language ' + lang)
 		return output
 	},
 

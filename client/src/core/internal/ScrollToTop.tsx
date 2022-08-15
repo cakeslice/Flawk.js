@@ -7,7 +7,7 @@
 
 import TrackedComponent from 'core/components/TrackedComponent'
 import navigation from 'core/functions/navigation'
-import { RouteComponentProps, withRouter } from 'react-router'
+import { RouteComponentProps, withRouter } from 'react-router-dom'
 
 type Props = {
 	location: Location

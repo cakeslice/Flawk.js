@@ -232,7 +232,8 @@ function _text(
 	replaces?: Array<{ key: string; value: string }>,
 	text?: Obj
 ) {
-	const get = _get(text || _projectText, key + '.' + (lang || global.lang.text))
+	const language = lang || global.lang.text
+	const get = _get(text || _projectText, key + '.' + language)
 
 	let o: string | undefined
 	if (typeof get === 'string') o = get
@@ -244,7 +245,10 @@ function _text(
 	}
 
 	if (o !== undefined) return Parser(o)
-	else return 'STRING NOT FOUND! (' + key + ')'
+	else {
+		console.error('No localization found for ' + key + ' in language ' + language)
+		return 'String missing'
+	}
 }
 
 function _setStateAsync(that: React.Component, statePart: Obj) {

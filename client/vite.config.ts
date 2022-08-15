@@ -30,6 +30,7 @@ export default ({ mode }) => {
 			macrosPlugin(),
 			imagetools({
 				include: '**/*.{heic,heif,avif,jpeg,jpg,png,tiff,webp,gif}*',
+				exclude: '**/img_original/**',
 				defaultDirectives: (id) => {
 					if (id.search === '') {
 						if (id.pathname.includes('img_thumb/')) {

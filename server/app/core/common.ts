@@ -267,7 +267,9 @@ const _setResponse = function (
 		(user ? user + ' ' : '') +
 		ip +
 		' ' +
-		(req.useragent.isBot
+		(!req.useragent
+			? 'Unknown'
+			: req.useragent.isBot
 			? 'Robot'
 			: (req.useragent.isMobile ? 'Mobile' : 'Desktop') + '/' + req.useragent.browser) +
 		')'

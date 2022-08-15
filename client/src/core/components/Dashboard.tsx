@@ -78,7 +78,7 @@ type DashboardProps = {
 	//** Component that wraps all pages. Will receive DashboardWrapperProps */
 	wrapperComponent: React.ReactNode
 	path: string
-	logo: string
+	logo?: string
 	mobileHeader?: React.ReactNode
 	drawerTitle?: string
 	routes: Array<DashboardRoute>
@@ -347,7 +347,6 @@ class DashboardClass extends TrackedComponent<
 													>
 														<Menu
 															style={this.props.style}
-															logo={this.props.logo}
 															isOpen={
 																bigScreen ||
 																this.props.alwaysOpen ||
@@ -426,7 +425,6 @@ class DashboardClass extends TrackedComponent<
 																menuStyle={mobileMenuStyle}
 																linkStyle={this.props.linkStyle}
 																headerHeight={mobileHeight}
-																toggleOpen={this.toggleOpen}
 																//
 																pageProps={this.props.pageProps}
 																path={this.props.path}
@@ -439,39 +437,45 @@ class DashboardClass extends TrackedComponent<
 																		{selectedMobileName}
 																	</h3>
 																) : (
-																	<button
-																		className='flex items-center'
-																		type='button'
-																		onClick={() =>
-																			global
-																				.routerHistory()
-																				.push('/')
-																		}
-																		style={{
-																			marginBottom: this.state
-																				.showHeaderBackground
-																				? 10
-																				: 15,
-																			marginTop: this.state
-																				.showHeaderBackground
-																				? 10
-																				: 15,
-																			transition:
-																				'margin-top .5s, margin-bottom .5s',
-																		}}
-																	>
-																		<img
+																	this.props.logo && (
+																		<button
+																			className='flex items-center'
+																			type='button'
+																			onClick={() =>
+																				global
+																					.routerHistory()
+																					.push('/')
+																			}
 																			style={{
-																				maxHeight: 30,
-																				minHeight: 30,
-																				objectFit:
-																					'contain',
-																				...this.props
-																					.logoStyle,
+																				marginBottom: this
+																					.state
+																					.showHeaderBackground
+																					? 10
+																					: 15,
+																				marginTop: this
+																					.state
+																					.showHeaderBackground
+																					? 10
+																					: 15,
+																				transition:
+																					'margin-top .5s, margin-bottom .5s',
 																			}}
-																			src={this.props.logo}
-																		></img>
-																	</button>
+																		>
+																			<img
+																				style={{
+																					maxHeight: 30,
+																					minHeight: 30,
+																					objectFit:
+																						'contain',
+																					...this.props
+																						.logoStyle,
+																				}}
+																				src={
+																					this.props.logo
+																				}
+																			></img>
+																		</button>
+																	)
 																))}
 														</div>
 													</div>
@@ -682,7 +686,6 @@ type MenuProps = {
 	style?: React.CSSProperties
 	desktop?: boolean
 	path: string
-	logo: string
 	isOpen: boolean
 	isOpenDynamic: boolean
 	alwaysOpen?: boolean
