@@ -918,7 +918,7 @@ export default class Dropdown extends TrackedComponent<Props> {
 								)}
 							</div>
 							{invalidType === 'bottom' && name && (
-								<div style={{ minHeight: 26 }}>
+								<div style={{ minHeight: 31 }}>
 									{!this.props.isDisabled && invalid && invalid.length > 0 && (
 										<div style={{ minHeight: 5 }}></div>
 									)}

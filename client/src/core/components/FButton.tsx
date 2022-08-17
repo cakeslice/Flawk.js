@@ -635,7 +635,7 @@ export default class FButton extends TrackedComponent<Props> {
 								)}
 							</div>
 							{invalidType === 'bottom' && name && !this.props.noInvalidLabel && (
-								<div style={{ minHeight: 26 }}>
+								<div style={{ minHeight: 31 }}>
 									{invalid && <div style={{ minHeight: 5 }} />}
 									{invalid && <p style={invalidTextStyle}>{invalid}</p>}
 								</div>
