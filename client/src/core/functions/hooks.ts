@@ -15,14 +15,14 @@ export function usePrevious<T>(value: T) {
 	return ref.current
 }
 
-export function useFetchLock(
-	call: (...args: unknown[]) => Promise<void>
-): [boolean, (...args: unknown[]) => Promise<void>] {
+export function useFetchLock<T>(
+	call: (args?: T) => Promise<void>
+): [boolean, (args?: T) => Promise<void>] {
 	const [fetching, setFetching] = useState(false)
 
-	async function run(...args: unknown[]) {
+	async function run(args?: T) {
 		setFetching(true)
-		await call(...args)
+		await call(args)
 		setFetching(false)
 	}
 
