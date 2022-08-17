@@ -73,10 +73,11 @@ export default function Router() {
 		fetchStructures(dispatch)
 		fetchUser(dispatch)
 
-		global.socket.on('data_update', (data: { test: string }) => {
-			console.warn('Socket data_update: ' + data.test)
-			fetchUser(dispatch)
-		})
+		if (global.socket)
+			global.socket.on('data_update', (data: { test: string }) => {
+				console.warn('Socket data_update: ' + data.test)
+				fetchUser(dispatch)
+			})
 	}, [dispatch])
 
 	let permission = 1000

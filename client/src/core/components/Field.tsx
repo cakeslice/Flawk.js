@@ -14,6 +14,8 @@ import React from 'react'
 import isDate from 'validator/lib/isDate'
 import isEmail from 'validator/lib/isEmail'
 
+const defaultError = '*'
+
 export default function Field(
 	props: {
 		component: typeof React.Component
@@ -30,7 +32,7 @@ export default function Field(
 		let empty = false
 
 		const requiredError =
-			props.required && typeof props.required === 'string' ? props.required : '*'
+			props.required && typeof props.required === 'string' ? props.required : defaultError
 		const validationError = props.invalidMessage
 
 		if (props.checkbox) {
@@ -43,7 +45,7 @@ export default function Field(
 
 		if (!empty) {
 			if (props.validate) {
-				if (!props.validate(value)) error = validationError || '*'
+				if (!props.validate(value)) error = validationError || defaultError
 			} else {
 				// @ts-ignore
 				if (props.datePicker) {
@@ -59,6 +61,16 @@ export default function Field(
 							: value
 						: undefined
 					if (!isDate(d as string)) error = validationError || config.text('invalid.date')
+				}
+				// @ts-ignore
+				else if (props.mask) {
+					if (value) {
+						// @ts-ignore
+						const length = value.split('-').length
+						// @ts-ignore
+						const maskLength = props.mask.split('-').length
+						if (length !== maskLength) error = validationError || defaultError
+					}
 				} else if (props.type === 'email') {
 					if (!isEmail(value as string)) {
 						error = validationError || config.text('invalid.email')
@@ -71,7 +83,7 @@ export default function Field(
 				// @ts-ignore
 				else if (props.timeInput) {
 					if ((value as string).includes('-')) {
-						error = validationError || '*'
+						error = validationError || defaultError
 					}
 				}
 			}

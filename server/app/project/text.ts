@@ -11,7 +11,7 @@ export default {
 	messages: {
 		passwordChanged: {
 			pt: 'A sua password foi alterada',
-			en: 'Your password was changed',
+			en: 'Your password has changed',
 		},
 		forgotVerify: {
 			pt: 'Código de verificação',

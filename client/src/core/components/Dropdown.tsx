@@ -508,6 +508,7 @@ export default class Dropdown extends TrackedComponent<Props> {
 				let output: CSSObjectWithLabel = {
 					...internalStyle,
 					...finalStyle,
+					...(this.props.style && this.props.style.input),
 
 					...(!this.props.isDisabled &&
 						(isFocused ||
