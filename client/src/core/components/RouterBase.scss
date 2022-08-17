@@ -2,7 +2,7 @@
 
 .Toastify__toast-theme--dark {
 	padding: 4px 8px;
-	background: #1e1e1e;
+	background: var(--blackDay);
 	border-radius: 6px;
 	border-color: rgba(255, 255, 255, 0.05);
 	border-width: 1px;
@@ -13,7 +13,7 @@
 }
 .Toastify__toast-theme--light {
 	padding: 4px 8px;
-	background: #fff;
+	background: var(--whiteDay);
 	border-radius: 6px;
 	border-color: rgba(0, 0, 0, 0.05);
 	border-width: 1px;

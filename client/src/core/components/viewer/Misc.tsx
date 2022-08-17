@@ -15,7 +15,6 @@ import config from 'core/config'
 import { countriesSearch, sortedCountries } from 'core/functions/countries'
 import { useSetState } from 'core/functions/hooks'
 import styles from 'core/styles'
-import { countries } from 'countries-list'
 import Parser from 'html-react-parser'
 import 'moment/locale/pt'
 import React, { useEffect } from 'react'
@@ -235,7 +234,7 @@ import { countries } from 'countries-list'
 					>
 						{
 							// @ts-ignore
-							countries[c].name
+							sortedCountries[c].name
 						}
 					</div>
 				</div>
@@ -278,10 +277,10 @@ import { countries } from 'countries-list'
 									>
 										{
 											// @ts-ignore
-											countries[c].name +
+											sortedCountries[c].name +
 												' (+' +
 												// @ts-ignore
-												countries[c].phone +
+												sortedCountries[c].phone +
 												')'
 										}
 									</div>

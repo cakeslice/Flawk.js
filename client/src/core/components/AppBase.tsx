@@ -355,6 +355,8 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 		document.documentElement.style.setProperty('--font', styles.font)
 		document.documentElement.style.setProperty('--fontAlt', styles.fontAlt)
 		document.documentElement.style.setProperty('--main', styles.colors.main)
+		document.documentElement.style.setProperty('--blackDay', styles.colors.blackDay)
+		document.documentElement.style.setProperty('--whiteDay', styles.colors.whiteDay)
 		styles.outlineCard.borderColor = styles.colors.borderColor
 		styles.dropZone.borderColor = styles.colors.borderColor
 		styles.dropZoneActive.background = config.replaceAlpha(styles.colors.main, 0.1)
