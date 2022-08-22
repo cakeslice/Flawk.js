@@ -122,6 +122,16 @@
 # ---------------------------
 # ---------------------------
 
+# ----- To clean-up disk space used by Docker images:
+# Create an app with persistent data
+# Don't expose as a webapp
+# Map /var/run/docker.sock to /var/run/docker.sock as a persistent directory
+# Deploy captain-definition file:
+#  {
+#    "schemaVersion": 2,
+#    "imageName": "marcopeg/docker-vacuum"
+#  }
+
 # Last but not least, make sure you have an image of the entire server after it's all setup!
 #     The image can be used on another Droplet, all you need to do is change the IP on CloudFlare
 

@@ -61,6 +61,7 @@ export default function Backend() {
 					<div>
 						<tag>Signup</tag>
 						<hsp />
+						{/* @ts-ignore */}
 						<Register {...reduxProps}></Register>
 					</div>
 					{!desktop && <sp />}
@@ -68,6 +69,7 @@ export default function Backend() {
 					<div>
 						<tag>Login</tag>
 						<hsp />
+						{/* @ts-ignore */}
 						<Login {...reduxProps}></Login>
 					</div>
 					{!desktop && <sp />}
@@ -75,6 +77,7 @@ export default function Backend() {
 					<div>
 						<tag>Forgot password</tag>
 						<hsp />
+						{/* @ts-ignore */}
 						<Forgot {...reduxProps}></Forgot>
 					</div>
 				</div>
@@ -86,6 +89,7 @@ export default function Backend() {
 				description='How to display account data and logout of the account'
 			>
 				{user ? (
+					/* @ts-ignore */
 					<Account {...reduxProps} />
 				) : (
 					<div>
@@ -110,6 +114,7 @@ export default function Backend() {
 			>
 				{user ? (
 					<div>
+						{/* @ts-ignore */}
 						<Settings {...reduxProps}></Settings>
 					</div>
 				) : (
@@ -197,6 +202,7 @@ export default function Backend() {
 				github='client/src/core/components/viewer/backend/RemoteData.tsx'
 				description='How to get remote public data stored in the server'
 			>
+				{/* @ts-ignore */}
 				<RemoteData {...reduxProps} />
 			</Section>
 
