@@ -1294,20 +1294,25 @@ async function updateDatabaseStructures() {
 }
 async function onDatabaseConnected() {
 	console.log('Connected to database')
-	const mongoAdmin = mongoose.connection.db.admin()
-	mongoAdmin.buildInfo(function (err, info) {
-		console.log(
-			common.colorizeLog('MongoDB target: ', 'yellow') +
-				common.colorizeLog('4.4.10', 'magenta')
-		)
-		console.log(
-			common.colorizeLog(
-				`MongoDB version: ${info ? (info.version as string) : 'Unknown'}`,
-				'grey'
+
+	try {
+		const mongoAdmin = mongoose.connection.db.admin()
+		mongoAdmin.buildInfo(function (err, info) {
+			console.log(
+				common.colorizeLog('MongoDB target: ', 'yellow') +
+					common.colorizeLog('4.4.10', 'magenta')
 			)
-		)
-		console.log(common.colorizeLog(`Mongoose version: ${mongoose.version}\n`, 'grey'))
-	})
+			console.log(
+				common.colorizeLog(
+					`MongoDB version: ${info ? (info.version as string) : 'Unknown'}`,
+					'grey'
+				)
+			)
+			console.log(common.colorizeLog(`Mongoose version: ${mongoose.version}\n`, 'grey'))
+		})
+	} catch (err) {
+		console.error(common.colorizeLog('--- FAILED to get database info', 'red') + '\n' + err)
+	}
 
 	try {
 		await updateDatabaseStructures()
