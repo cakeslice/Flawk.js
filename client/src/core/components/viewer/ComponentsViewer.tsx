@@ -18,6 +18,7 @@ import { css } from 'glamor'
 import { github } from 'project/components/Icons'
 import React, { useEffect, useMemo, useState } from 'react'
 import { useMediaQuery } from 'react-responsive'
+import { Link } from 'react-router-dom'
 import * as uuid from 'uuid'
 import FButton from '../FButton'
 import CodeCollapse from './common/CodeCollapse'
@@ -69,11 +70,7 @@ export default function ComponentsViewer() {
 							minWidth: 90,
 						}}
 					>
-						<button
-							type='button'
-							style={{ display: 'flex', alignItems: 'center' }}
-							onClick={() => global.routerHistory().push('/')}
-						>
+						<Link style={{ display: 'flex', alignItems: 'center' }} to='/'>
 							<img
 								style={{
 									objectFit: 'contain',
@@ -82,7 +79,7 @@ export default function ComponentsViewer() {
 								}}
 								src={logo}
 							></img>
-						</button>
+						</Link>
 					</div>
 				) : (
 					<>
@@ -93,10 +90,7 @@ export default function ComponentsViewer() {
 									height: 120,
 								}}
 							>
-								<button
-									type='button'
-									onClick={() => global.routerHistory().push('/')}
-								>
+								<Link to='/'>
 									<img
 										style={{
 											objectFit: 'contain',
@@ -106,7 +100,7 @@ export default function ComponentsViewer() {
 										}}
 										src={logo}
 									></img>
-								</button>
+								</Link>
 							</div>
 						</div>
 						<div

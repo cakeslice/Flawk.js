@@ -19,7 +19,7 @@ import notificationSound from 'project/assets/sounds/notification.mp3'
 import React, { useEffect } from 'react'
 import { Helmet } from 'react-helmet'
 import { useMediaQuery } from 'react-responsive'
-import { Redirect, Route, Switch } from 'react-router-dom'
+import { Link, Redirect, Route, Switch } from 'react-router-dom'
 import './assets/fonts.css'
 import './assets/main.scss'
 import Footer from './pages/common/Footer'
@@ -106,7 +106,7 @@ export default function Router() {
 								height: 120,
 							}}
 						>
-							<button type='button' onClick={() => global.routerHistory().push('/')}>
+							<Link to='/'>
 								<img
 									style={{
 										objectFit: 'contain',
@@ -116,7 +116,7 @@ export default function Router() {
 									}}
 									src={logo}
 								></img>
-							</button>
+							</Link>
 						</div>
 					</div>
 					<div

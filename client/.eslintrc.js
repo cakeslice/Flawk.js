@@ -95,7 +95,7 @@ module.exports = {
 		'import/no-unresolved': 'off',
 		'import/no-anonymous-default-export': 'off',
 		//
-		'no-secrets/no-secrets': 'error',
+		'no-secrets/no-secrets': 'off',
 		'security/detect-object-injection': 0,
 		//
 		eqeqeq: 'error',

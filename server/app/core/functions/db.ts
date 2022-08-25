@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { ArrayKeyObject, ArrayObject, KeyObject, Obj } from 'flawk-types'
+import { ArrayKeyObject, ArrayObject, KeyObject, Obj, ObjectId } from 'flawk-types'
 import mongoose, { Model, Schema, Types } from 'mongoose'
 // @ts-ignore
 import mongooseLeanId from 'mongoose-lean-id'
@@ -18,7 +18,6 @@ export type AggregationCount = {
 	count: number
 }[]
 
-export type ObjectId = mongoose.Types.ObjectId
 export function newObjectId() {
 	return new mongoose.Types.ObjectId()
 }
@@ -82,10 +81,10 @@ export default {
 	unshiftToArray: async function unshiftToArray(
 		// eslint-disable-next-line
 		schema: Model<any>,
-		id: mongoose.Types.ObjectId,
+		id: ObjectId,
 		arrayName: string,
 		sortObject: Obj | undefined,
-		objectsArray: ArrayObject | mongoose.Types.ObjectId[]
+		objectsArray: ArrayObject | ObjectId[]
 	) {
 		const o: { $push: KeyObject } = { $push: {} }
 		o['$push'][arrayName] = {
@@ -105,10 +104,10 @@ export default {
 	removeFromArray: async function removeFromArray(
 		// eslint-disable-next-line
 		schema: Model<any>,
-		id: mongoose.Types.ObjectId,
+		id: ObjectId,
 		arrayName: string,
 		key: string | undefined,
-		keysArray: (string | mongoose.Types.ObjectId)[]
+		keysArray: (string | ObjectId)[]
 	) {
 		const o: { $pull: KeyObject } = { $pull: {} }
 		o['$pull'][arrayName] = !key

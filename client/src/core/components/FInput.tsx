@@ -41,6 +41,9 @@ const MaskedInput = (
 		inputStyle: StyleAttribute
 		value?: string | number | undefined
 		onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
+		onBlur?: (event: React.FocusEvent<HTMLInputElement, Element>) => void
+		onFocus?: (event: React.FocusEvent<HTMLInputElement, Element>) => void
+		onKeyPress?: (event: React.KeyboardEvent<HTMLInputElement>) => void
 	} & { inputRef: LegacyRef<HTMLInputElement> } & React.DetailedHTMLProps<
 			React.InputHTMLAttributes<HTMLInputElement>,
 			HTMLInputElement
@@ -54,6 +57,9 @@ const MaskedInput = (
 			placeholder={props.placeholder}
 			value={props.value}
 			onChange={props.onChange}
+			onBlur={props.onBlur}
+			onFocus={props.onFocus}
+			onKeyPress={props.onKeyPress}
 			autoFocus={props.autoFocus}
 			disabled={props.disabled}
 		>
@@ -249,7 +255,9 @@ type Props = {
 	form?: FormikProps<Obj>
 	onClick?: (event: React.MouseEvent<HTMLInputElement | HTMLTextAreaElement, MouseEvent>) => void
 	onChange?: (value: string | number | undefined) => void
-	onBlur?: (event: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>) => void
+	onBlur?:
+		| ((event: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>) => void)
+		| (() => void)
 	onFocus?: (event: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>) => void
 	onKeyPress?: (event: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => void
 	//
@@ -682,7 +690,7 @@ export default class FInput extends TrackedComponent<Props> {
 				}
 			},
 			onBlur: (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>) => {
-				e.target.placeholder = placeholder || this.props.placeholder || ''
+				e.target.placeholder = placeholder || this.props.placeholder || '' // @ts-ignore
 				this.props.onBlur && this.props.onBlur(e)
 
 				formIK && formIK.handleBlur && formIK.handleBlur(e)

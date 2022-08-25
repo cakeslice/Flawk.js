@@ -6,22 +6,21 @@
  */
 
 import { Router } from '@awaitjs/express'
-import db, { AggregationCount, ObjectId } from 'core/functions/db'
+import db, { AggregationCount } from 'core/functions/db'
 import { clientSocketNotification } from 'core/functions/sockets'
-import { Obj } from 'flawk-types'
-import mongoose from 'mongoose'
+import { Obj, ObjectId } from 'flawk-types'
 import { Client } from 'project/database'
 
 const router = Router()
 
 type NotificationData = {
 	message: string
-	client?: mongoose.Types.ObjectId
+	client?: ObjectId
 }
 
 export const clientNotification = async (
 	notificationType: string,
-	clientID: mongoose.Types.ObjectId,
+	clientID: ObjectId,
 	data?: NotificationData
 ) => {
 	await db.unshiftToArray(Client, clientID, 'core.arrays.notifications', { date: -1 }, [
@@ -43,7 +42,7 @@ export const clientNotification = async (
 async function outputNotification(
 	lang = 'en',
 	notification: {
-		_id: mongoose.Types.ObjectId
+		_id: ObjectId
 		isRead: boolean
 		date: Date
 		notificationType: string
@@ -51,7 +50,7 @@ async function outputNotification(
 	}
 ) {
 	const output: {
-		_id: mongoose.Types.ObjectId
+		_id: ObjectId
 		isRead: boolean
 		date: Date
 		notificationType: string

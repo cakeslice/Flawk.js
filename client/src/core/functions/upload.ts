@@ -196,7 +196,7 @@ export default {
 								? 'O tamanho máximo é de ' + maxSize + ' MB'
 								: 'Maximum size is ' + maxSize + ' MB',
 							'error',
-							{}
+							{ closeAfter: 3000 }
 						)
 					} else {
 						const reader = new FileReader()
@@ -226,7 +226,7 @@ export default {
 														minHeight.toString() +
 														'px',
 											'error',
-											{}
+											{ closeAfter: 3000 }
 										)
 									} else {
 										resolve({ file: file, url: reader.result })
@@ -247,7 +247,7 @@ export default {
 							? 'Apenas PNG ou JPG são válidos'
 							: 'Only PNG or JPG are valid',
 						'error',
-						{}
+						{ closeAfter: 3000 }
 					)
 					resolve(undefined)
 				}
@@ -256,7 +256,7 @@ export default {
 					global.lang.text === 'pt' ? 'Ficheiro inválido' : 'Invalid file',
 					'',
 					'error',
-					{}
+					{ closeAfter: 3000 }
 				)
 				resolve(undefined)
 			}

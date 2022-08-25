@@ -444,6 +444,7 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 						{config.backendURL && (
 							<link rel='preconnect' href={config.backendURL}></link>
 						)}
+						{!config.prod && <meta name='robots' content='noindex' />}
 					</Helmet>
 
 					{inRestrictedRoute && oldBuild && (
