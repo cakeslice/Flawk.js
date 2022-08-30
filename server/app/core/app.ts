@@ -1097,7 +1097,7 @@ function setup() {
 						structure = await s.schema
 							.find({})
 							.lean()
-							.sort(s.sortKey)
+							.sort(s.sortKey || '_id')
 							// @ts-ignore
 							.cache(6 * 10 * 60)
 					// 60 minute cache
@@ -1105,7 +1105,7 @@ function setup() {
 						structure = (await s.schema
 							.find({})
 							.lean()
-							.sort(s.sortKey)) as ArrayKeyObject
+							.sort(s.sortKey || '_id')) as ArrayKeyObject
 
 					if (structure && s.postProcess) {
 						structure = await s.postProcess(structure)
@@ -1289,7 +1289,8 @@ async function updateDatabaseStructures() {
 	for (let structure = 0; structure < structures.length; structure++) {
 		const s = structures[structure]
 		const doc = await s.schema.findOne({})
-		if (!doc || s.overrideJson) await buildStructure('./app/project' + s.path, s.schema)
+		if ((!doc || s.overrideJson) && s.path)
+			await buildStructure('./app/project' + s.path, s.schema)
 	}
 }
 async function onDatabaseConnected() {

@@ -628,16 +628,28 @@ export default class FButton extends TrackedComponent<Props> {
 									</label>
 								)}
 								{invalidType === 'right' && name && !this.props.noInvalidLabel && (
-									<div style={{ minHeight: 26 }}>
-										{invalid && <div style={{ minHeight: 5 }} />}
-										{invalid && <p style={invalidTextStyle}>{invalid}</p>}
+									<div className='flex' style={{ minWidth: 16 }}>
+										{!this.props.isDisabled &&
+											invalid &&
+											invalid.length > 0 && (
+												<div style={{ minWidth: 7.5 }}></div>
+											)}
+										{!this.props.isDisabled &&
+											invalid &&
+											invalid.length > 0 && (
+												<p style={invalidTextStyle}>{invalid}</p>
+											)}
 									</div>
 								)}
 							</div>
 							{invalidType === 'bottom' && name && !this.props.noInvalidLabel && (
 								<div style={{ minHeight: 31 }}>
-									{invalid && <div style={{ minHeight: 5 }} />}
-									{invalid && <p style={invalidTextStyle}>{invalid}</p>}
+									{!this.props.isDisabled && invalid && invalid.length > 0 && (
+										<div style={{ minHeight: 5 }}></div>
+									)}
+									{!this.props.isDisabled && invalid && invalid.length > 0 && (
+										<p style={invalidTextStyle}>{invalid}</p>
+									)}
 								</div>
 							)}
 						</div>

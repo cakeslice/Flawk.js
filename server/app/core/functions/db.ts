@@ -33,12 +33,20 @@ export async function getNextRef(model: Model<any>) {
 export type StructureConfig = {
 	sendToFrontend: boolean
 	cache: boolean
-	sortKey: string
+	sortKey?: string
 	schema: Model<unknown>
-	path: string
-	overrideJson?: boolean
 	postProcess?: (array: ArrayKeyObject) => Promise<ArrayKeyObject>
-}
+} & (
+	| {
+			path: string
+			/** To always override the DB collection with the hardcoded json file while keeping the same ObjectIds */
+			overrideJson?: true
+	  }
+	| {
+			path?: undefined
+			overrideJson?: undefined
+	  }
+)
 
 export default {
 	validateObjectID: function (id: string) {
