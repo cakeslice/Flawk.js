@@ -1333,6 +1333,11 @@ async function listen() {
 		await mongoose.connect(config.databaseURL as string)
 	} catch (err) {
 		console.error(common.colorizeLog('--- FAILED to connect to database', 'red') + '\n' + err)
+
+		// If we can't estabilish initial connection to MongoDB, let the process finish with code 1
+		// This is because mongoose will not try to reconnect if it cannot connect on first try
+		process.exitCode = 1
+		return
 	}
 	await onDatabaseConnected()
 
