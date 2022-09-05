@@ -162,7 +162,7 @@ export const structures: StructureConfig[] = [
 		sortKey: 'name',
 		schema: Country,
 		path: '/structures/countries.json',
-		//overrideJson: false,
+		overrideJson: true,
 		//postProcess: (array)
 	},
 	{

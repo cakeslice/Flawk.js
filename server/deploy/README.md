@@ -21,15 +21,11 @@ Change CapRover password in control panel (very strong!)
 
 **Datadog**
 - Setup Docker: https://app.datadoghq.eu/account/settings#integrations/docker
-- Setup APM: https://docs.datadoghq.com/tracing/setup_overview/setup/nodejs/?tab=containers
-  - To send traces from containers: [TODO - https://github.com/caprover/caprover/issues/1361]
-  - Set app env var DD_TRACE_DEBUG=true to check for issues
 - Use the following dashboards: Docker / System Metrics
 - Add desired alerts
 
 **Digital Ocean**
 - Add alerts for CPU/Memory/Disk usage
-
 
 #
 ## Domain & SSL
@@ -67,20 +63,23 @@ Change CapRover password in control panel (very strong!)
 ## MongoDB Setup
 #
 
-Create the MongoDB app in CAPROVER
+**MongoDB Atlas** (max reliability)
+- Create a cluster in Atlas (serverless plan)
+- Allow all connections (0.0.0.0)
+- Add daily backups
 
-Add the port forwarding: Host: 1337 -> Container: 27017
+**MongoDB in server**
+- Create the MongoDB app in CAPROVER
+- Add the port forwarding: Host: 1337 -> Container: 27017
+- ```sudo ufw allow 1337```
+- Follow deploy/mongo_backup.txt
 
-```sudo ufw allow 1337```
+**WARNING**: *This method only works for a single Mongo instance! If you use sharding you need another method!*
+**WARNING**: *If you use sharding/clusters, you need to enable SSL/TLS for security*
 
 Connection string: 
 - Internal: mongodb://dbuser:dbpassword@srv-captain--YOUR_CONTAINER_NAME:27017/dbname?authSource=admin&w=1
 - External: mongodb://dbuser:dbpassword@SERVER_IP_ADDRESS:1337/dbname?authSource=admin&w=1
-
-Follow deploy/mongo_backup.txt
-
-**WARNING**: *This method only works for a single Mongo instance! If you use sharding you need another method!*
-**WARNING**: *If you use sharding/clusters, you need to enable SSL/TLS for security*
 
 #
 ## S3 Storage
@@ -104,7 +103,9 @@ Set CORS in space settings:
 - Add DNS CNAME record: cloud -> Space_URL (with Proxy)
 - *NOTE: Can't use this for a lot of video or audio files since CloudFlare doesn't allow!*
 
-Follow deploy/S3_backup.txt
+**Optional**: Use a service to do daily backups of the last 7 days of your bucket (which includes the MongoDB backups if not using Atlas)
+- This is in case something happens to your bucket or a hacker obtains your bucket keys and everything is deleted
+- A good example is SimpleBackups.com
 
 #
 ## Web App Deployment

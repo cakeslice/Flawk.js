@@ -404,7 +404,7 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 			position: 'fixed',
 			overflow: 'hidden',
 			bottom: 0,
-			zIndex: 8,
+			zIndex: 50,
 			background: 'rgba(30,30,30,.9)',
 			textAlign: 'center',
 			alignItems: 'center',

@@ -42,6 +42,7 @@ type Props = {
 	style?: React.CSSProperties
 	onChange?: (value: string) => void
 	onBlur?: () => void
+	defaultValue?: string
 	value?: string
 	toolbar?: Toolbar[]
 }
@@ -61,7 +62,8 @@ export default class TextEditor extends TrackedComponent<Props> {
 							<ReactQuill
 								data-nosnippet
 								theme='snow'
-								//value={values.someText || ''}
+								defaultValue={this.props.defaultValue}
+								value={this.props.value}
 								onBlur={this.props.onBlur}
 								onChange={this.props.onChange}
 								modules={{

@@ -8,9 +8,9 @@
 import CodeBlock, { Lang } from 'core/components/CodeBlock'
 import Tooltip from 'core/components/Tooltip'
 import { useTracking } from 'core/components/TrackedComponent'
+import { github } from 'core/components/viewer/ComponentsViewer'
 import config from 'core/config'
 import styles from 'core/styles'
-import { github } from 'project/components/Icons'
 import React, { useState } from 'react'
 import { useMediaQuery } from 'react-responsive'
 
