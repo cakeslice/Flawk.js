@@ -336,28 +336,31 @@ export default class Dropdown extends TrackedComponent<Props> {
 		const color = finalStyle.color as string | undefined
 		finalStyle = {
 			...finalStyle,
-			...(invalid && {
-				boxShadow: styles.inputBoxShadow
-					? '0 0 0 2px ' + config.replaceAlpha(styles.colors.red, 0.2)
-					: undefined,
-				borderColor: config.replaceAlpha(
-					styles.colors.red,
-					global.nightMode ? styles.inputBorderFactorNight : styles.inputBorderFactorDay
-				),
-				...(styles.inputBorder === 'bottom' && {
-					borderRadius: styles.defaultBorderRadius,
-				}),
-				':hover': {
-					borderColor: styles.colors.red,
-				},
-				':focus': {
-					...finalStyle[':focus'],
-					borderColor: styles.colors.red,
-					...(styles.inputBoxShadow && {
-						boxShadow: '0 0 0 2px ' + config.replaceAlpha(styles.colors.red, 0.2),
+			...(invalid &&
+				!this.props.isDisabled && {
+					boxShadow: styles.inputBoxShadow
+						? '0 0 0 2px ' + config.replaceAlpha(styles.colors.red, 0.2)
+						: undefined,
+					borderColor: config.replaceAlpha(
+						styles.colors.red,
+						global.nightMode
+							? styles.inputBorderFactorNight
+							: styles.inputBorderFactorDay
+					),
+					...(styles.inputBorder === 'bottom' && {
+						borderRadius: styles.defaultBorderRadius,
 					}),
-				},
-			}),
+					':hover': {
+						borderColor: styles.colors.red,
+					},
+					':focus': {
+						...finalStyle[':focus'],
+						borderColor: styles.colors.red,
+						...(styles.inputBoxShadow && {
+							boxShadow: '0 0 0 2px ' + config.replaceAlpha(styles.colors.red, 0.2),
+						}),
+					},
+				}),
 		}
 		finalStyle = {
 			...finalStyle,
