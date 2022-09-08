@@ -12,8 +12,8 @@
 			"showSpinner": false,
 			"splashFullScreen": false,
 			"splashImmersive": false,
-			"_COMMENT:": "See styles.xml for background color",
-			"_DOUBLE_SPLASH_FIX": "<style name='AppTheme.NoActionBarLaunch' parent='AppTheme.NoActionBar'><item name='android:background'>#FFF</item></style>",
+			"_DOUBLE_SPLASH_FIX": "In styles.xml add: <style name='AppTheme.NoActionBarLaunch' parent='AppTheme.NoActionBar'><item name='android:statusBarColor'>#000000</item><item name='android:navigationBarColor'>#000000</item><item name='android:background'>#000000</item></style>",
+			"_BACKGROUND_COLOR:": "See styles.xml for background color",
 			"_SCREEN_ORIENTATION": "https://capacitorjs.com/docs/guides/screen-orientation",
 			"_STATUS_BAR": "Should be hidden in iOS to avoid overlapping when scrolling. Android should be normal to guarantee notch support"
 		}
