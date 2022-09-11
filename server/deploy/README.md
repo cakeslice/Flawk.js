@@ -133,22 +133,6 @@ Make sure the captain definition path is the right one:
 - IF there's a "TOO MANY REDIRECTS" issue, it's probably because the SSL setting in CloudFlare is not set to ***Full (strict)***
 
 #
-## Clean-up disk space used by Docker images
-#
-
-Create an app with persistent data
-
-Don't expose as a webapp
-
-Map /var/run/docker.sock to /var/run/docker.sock as a persistent directory
-
-Deploy captain-definition file:
-- ```{ "schemaVersion": 2, "imageName": "marcopeg/docker-vacuum" }```
-
-In env vars:
--  ```VACUUM_RULES='[{ "match": "(.*)", "retain": 1 }]'```
-
-#
 ## Some tips
 #
 
