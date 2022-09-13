@@ -99,7 +99,7 @@ function addFlagFunction(
 						{_isFunction(customComponent) ? customComponent(props) : customComponent}
 					</div>
 				)) || (
-					<div style={{ padding: 5 }}>
+					<div style={{ padding: 5, maxWidth: 295 }}>
 						<div className='flex items-center justify-between'>
 							<b
 								style={{
@@ -140,6 +140,7 @@ function addFlagFunction(
 									fontFamily: styles.font,
 									fontSize: styles.defaultFontSize,
 									color: styles.colors.black,
+									overflow: 'auto',
 								}}
 							>
 								{_isFunction(description) ? description(props) : description}
