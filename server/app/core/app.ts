@@ -141,8 +141,10 @@ async function extractRouteTypes(file: string): Promise<{ noChanges: boolean; ca
 			text = text.replaceAll(';', ',')
 			text = text.replaceAll(': "', ': ')
 			text = text.replaceAll('",', ',')
+			text = text.replaceAll('"?', '?')
+			text = text.replaceAll("'?", '?')
 
-			text = text.replace(/(['"])?([a-z0-9A-Z_?]+)(['"])?:/g, '"$2": ') // Add quotes to keys
+			text = text.replace(/(['"])?([a-z0-9A-Z_.?]+)(['"])?:/g, '"$2": ') // Add quotes to keys
 
 			text = text.replaceAll(':  ', ': "')
 			text = text.replaceAll(',', '",')
@@ -930,7 +932,12 @@ function setup() {
 	app.use(express.urlencoded({ extended: true }))
 
 	// Prevent mongo injection attacks
-	app.use(config.path + '/*', mongoSanitize())
+	app.use(
+		config.path + '/*',
+		mongoSanitize({
+			allowDots: true,
+		})
+	)
 
 	// Helper functions and defaults
 	app.all(config.path + '/*', function (req, res, next) {
