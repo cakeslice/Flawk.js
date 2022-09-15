@@ -294,7 +294,12 @@ export default class FButton extends TrackedComponent<Props> {
 					finalStyle = {
 						...finalStyle,
 						...b,
-						...(checkbox && { minWidth: 20 }),
+						...(checkbox && {
+							minWidth: 20,
+							padding: 0,
+							paddingLeft: 0,
+							paddingRight: 0,
+						}),
 						...(checkbox && { ...b[':checkbox'] }),
 						':hover': {
 							...finalStyle[':hover'],
@@ -360,11 +365,10 @@ export default class FButton extends TrackedComponent<Props> {
 
 			finalStyle[':hover'] = {
 				...finalStyle[':hover'],
-				...(invalid &&
-					!this.props.isDisabled && {
-						borderColor: styles.colors.red,
-						boxShadow: '0 0 0 2px ' + config.replaceAlpha(styles.colors.red, 0.2),
-					}),
+				...(invalid && {
+					borderColor: styles.colors.red,
+					boxShadow: '0 0 0 2px ' + config.replaceAlpha(styles.colors.red, 0.2),
+				}),
 			}
 			finalStyle[':focus-visible'] = {
 				...finalStyle[':hover'],
@@ -389,20 +393,17 @@ export default class FButton extends TrackedComponent<Props> {
 					),
 					opacity: 0.75,
 				}),
-			...(invalid &&
-				!this.props.isDisabled && {
-					boxShadow: '0 0 0 2px ' + config.replaceAlpha(styles.colors.red, 0.2),
-					borderColor: config.replaceAlpha(
-						styles.colors.red,
-						global.nightMode
-							? styles.inputBorderFactorNight
-							: styles.inputBorderFactorDay
-					),
-					':focus-visible': {
-						...finalStyle[':focus-visible'],
-						borderColor: styles.colors.red,
-					},
-				}),
+			...(invalid && {
+				boxShadow: '0 0 0 2px ' + config.replaceAlpha(styles.colors.red, 0.2),
+				borderColor: config.replaceAlpha(
+					styles.colors.red,
+					global.nightMode ? styles.inputBorderFactorNight : styles.inputBorderFactorDay
+				),
+				':focus-visible': {
+					...finalStyle[':focus-visible'],
+					borderColor: styles.colors.red,
+				},
+			}),
 			...(this.props.isDisabled && {
 				cursor: 'default',
 				':hover': {},
