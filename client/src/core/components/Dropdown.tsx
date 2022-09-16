@@ -128,6 +128,7 @@ type Props = {
 	noPortal?: boolean
 	erasable?: boolean
 	customMenu?: (close: () => void) => React.ReactNode
+	onCustomClose?: () => void | Promise<void>
 	isSearchable?: boolean
 	/** Show menu only if there's any input value */
 	showOnlyIfSearch?: boolean
@@ -268,6 +269,7 @@ export default class Dropdown extends TrackedComponent<Props> {
 	}
 
 	onCustomClose = () => {
+		if (this.props.onCustomClose && this.state.customIsOpen) this.props.onCustomClose()
 		this.setState({ customIsOpen: false })
 	}
 
