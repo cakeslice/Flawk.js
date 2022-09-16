@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import OutsideAlerter from 'core/components/OutsideAlerter'
 import TrackedComponent from 'core/components/TrackedComponent'
 import config from 'core/config'
 import styles from 'core/styles'
@@ -17,6 +18,7 @@ import Select, {
 	components,
 	CSSObjectWithLabel,
 	DropdownIndicatorProps,
+	MenuProps,
 	StylesConfig,
 } from 'react-select'
 import CreatableSelect from 'react-select/creatable'
@@ -75,6 +77,26 @@ const DropdownIndicator = ({ children, ...rest }: DropdownIndicatorProps<unknown
 		</components.DropdownIndicator>
 	)
 }
+const MenuComponent = ({ children, ...rest }: MenuProps<unknown, boolean>) => {
+	const { customMenu, onCustomClose } = rest.selectProps as unknown as {
+		customMenu?: (close: () => void) => React.ReactNode
+		onCustomClose: () => void
+	}
+	return (
+		<components.Menu {...rest}>
+			<div
+				onMouseDown={(e) => {
+					e.stopPropagation()
+				}}
+				onTouchEnd={(e) => {
+					e.stopPropagation()
+				}}
+			>
+				{(customMenu && customMenu(() => onCustomClose())) || children}
+			</div>
+		</components.Menu>
+	)
+}
 
 type Props = {
 	style?: CSSObjectWithLabel & {
@@ -87,6 +109,7 @@ type Props = {
 	labelStyle?: React.CSSProperties
 	button?: boolean
 	emptyLabel?: boolean
+	autoFocus?: boolean
 	dropdownIndicator?: React.ReactNode
 	/** Set to true to hide the dropdown input box and show only 'dropdownIndicator' */
 	customInput?: boolean
@@ -94,7 +117,6 @@ type Props = {
 	foreground?: boolean
 	//
 	placeholder?: string
-	value?: string | number
 	bufferInterval?: number
 	//
 	loadOptions?: (
@@ -103,9 +125,9 @@ type Props = {
 	) => Promise<void>
 	options?: Option[]
 	searchFunction?: (candidate: { value: string }, input: string) => boolean
-	defaultValue?: string
 	noPortal?: boolean
 	erasable?: boolean
+	customMenu?: (close: () => void) => React.ReactNode
 	isSearchable?: boolean
 	/** Show menu only if there's any input value */
 	showOnlyIfSearch?: boolean
@@ -113,7 +135,6 @@ type Props = {
 	//
 	field?: FieldInputProps<Obj>
 	form?: FormikProps<Obj>
-	onChange?: (value: string | undefined) => void
 	onBlur?: (event: React.FocusEvent<HTMLInputElement, Element>) => void
 	//
 	/** For development purposes only */
@@ -122,20 +143,34 @@ type Props = {
 	eventOverride?: 'focus' | 'hover'
 } & (
 	| {
-			name: string
-			invalid?: string
-			isDisabled?: undefined
-			/** If true and isDisabled is true, skips 'disabled' styling */
-			simpleDisabled?: undefined
+			isMulti: true
+			onChangeMulti?: (value: string[] | undefined) => void | Promise<void>
+			valueMulti?: string[] | number[]
+			defaultValueMulti?: string[]
 	  }
 	| {
-			name?: string
-			invalid?: undefined
-			isDisabled?: boolean
-			/** If true and isDisabled is true, skips 'disabled' styling */
-			simpleDisabled?: boolean
+			isMulti?: undefined
+			onChange?: (value: string | undefined) => void | Promise<void>
+			value?: string | number
+			defaultValue?: string
 	  }
 ) &
+	(
+		| {
+				name: string
+				invalid?: string
+				isDisabled?: undefined
+				/** If true and isDisabled is true, skips 'disabled' styling */
+				simpleDisabled?: undefined
+		  }
+		| {
+				name?: string
+				invalid?: undefined
+				isDisabled?: boolean
+				/** If true and isDisabled is true, skips 'disabled' styling */
+				simpleDisabled?: boolean
+		  }
+	) &
 	(
 		| {
 				creatable: true
@@ -169,7 +204,8 @@ export default class Dropdown extends TrackedComponent<Props> {
 		} else this.setState({ bufferedValue: this.bufferedValue })
 	}
 
-	state: { loadedOptions?: Option[]; bufferedValue: string | undefined } = {
+	state: { customIsOpen: false; loadedOptions?: Option[]; bufferedValue: string | undefined } = {
+		customIsOpen: false,
 		loadedOptions: undefined,
 		bufferedValue: undefined,
 	}
@@ -183,6 +219,56 @@ export default class Dropdown extends TrackedComponent<Props> {
 	}
 	componentWillUnmount() {
 		if (this.timer) clearTimeout(this.timer)
+	}
+
+	findOption = (options: Option[] | undefined, value: string | number | boolean | undefined) => {
+		let selected: Option[] | undefined = undefined
+
+		if (options) selected = options.filter((option) => option.value === value)
+
+		if ((!selected || selected.length === 0) && options) {
+			options.forEach((o) => {
+				if (o.options) {
+					const found = o.options.filter((option) => option.value === value)
+					if (found && found.length > 0) {
+						selected = found
+					}
+				}
+			})
+		}
+
+		return selected
+	}
+	findOptions = (
+		options: Option[] | undefined,
+		values: string[] | number[] | boolean[] | undefined
+	) => {
+		let output = [] as Option[]
+
+		values?.forEach((value) => {
+			let selected: Option[] | undefined = undefined
+
+			if (options) selected = options.filter((option) => option.value === value)
+
+			if ((!selected || selected.length === 0) && options) {
+				options.forEach((o) => {
+					if (o.options) {
+						const found = o.options.filter((option) => option.value === value)
+						if (found && found.length > 0) {
+							selected = found
+						}
+					}
+				})
+			}
+
+			if (selected && selected.length > 0) output = output.concat(selected)
+		})
+
+		return output
+	}
+
+	onCustomClose = () => {
+		this.setState({ customIsOpen: false })
 	}
 
 	render() {
@@ -205,7 +291,18 @@ export default class Dropdown extends TrackedComponent<Props> {
 		}
 
 		const name = (formIK && formIK.name) || this.props.name
-		const value = formIK ? (formIK.value as string | undefined) : this.props.value
+		const value = formIK
+			? (formIK.value as
+					| string
+					| number
+					| boolean
+					| string[]
+					| number[]
+					| boolean[]
+					| undefined)
+			: this.props.isMulti
+			? this.props.valueMulti
+			: this.props.value
 		const invalid =
 			formIK && (formIK.touch || formIK.submitCount > 0) ? formIK.error : this.props.invalid
 
@@ -459,6 +556,9 @@ export default class Dropdown extends TrackedComponent<Props> {
 						justifyContent: 'center',
 						alignItems: 'center',
 					}),
+					...(this.props.isMulti && {
+						flexWrap: 'nowrap',
+					}),
 				}
 			},
 			input: (s): CSSObjectWithLabel => {
@@ -570,6 +670,37 @@ export default class Dropdown extends TrackedComponent<Props> {
 					...(d && d.style),
 				}
 			},
+			multiValue: (internalStyle, { data }): CSSObjectWithLabel => {
+				// eslint-disable-next-line
+				const d = data as Option
+				return {
+					...internalStyle,
+					background: 'transparent',
+					margin: 0,
+					marginRight: 4,
+				}
+			},
+			multiValueLabel: (internalStyle, { data }): CSSObjectWithLabel => {
+				// eslint-disable-next-line
+				const d = data as Option
+				return {
+					...internalStyle,
+					...defaultInputStyle,
+					...(this.props.button && {
+						color: styles.colors.black,
+						fontWeight: styles.buttonFontWeight || 500,
+						marginLeft: 15,
+						width: 'auto',
+					}),
+					// isMulti fix
+					paddingLeft: 0,
+					//
+					...(this.props.style && this.props.style.input),
+					...conditionalInputStyle,
+					...(d && d.style),
+				}
+			},
+			multiValueRemove: (base) => ({ ...base, display: 'none' }),
 			option: (
 				internalStyle,
 				{ data, isDisabled, isFocused, isSelected }
@@ -641,6 +772,13 @@ export default class Dropdown extends TrackedComponent<Props> {
 				singleValue: (): CSSObjectWithLabel => {
 					return { maxWidth: 0, overflow: 'hidden' }
 				},
+				multiValue: (): CSSObjectWithLabel => {
+					return { maxWidth: 0, overflow: 'hidden' }
+				},
+				multiValueLabel: (): CSSObjectWithLabel => {
+					return { maxWidth: 0, overflow: 'hidden' }
+				},
+				multiValueRemove: (base) => ({ ...base, display: 'none' }),
 				control: (internalStyle, { isFocused }): CSSObjectWithLabel => {
 					return {
 						cursor: 'pointer',
@@ -775,136 +913,229 @@ export default class Dropdown extends TrackedComponent<Props> {
 							)}
 							{label && <div style={{ minHeight: 5 }}></div>}
 							<div style={{ display: 'flex' }}>
-								<Sel
-									// Custom props (access with props.selectProps)
-									// @ts-ignore
-									dropdownIndicator={
-										this.props.showOnlyIfSearch ? (
-											<div />
-										) : (
-											this.props.dropdownIndicator
-										)
-									}
-									//
-									noOptionsMessage={() => config.text('common.noOptions')}
-									loadingMessage={() => config.text('common.searching')}
-									menuPortalTarget={
-										!this.props.noPortal
-											? document.getElementById(
-													this.props.foreground
-														? 'portals-foreground'
-														: 'portals-background'
-											  )
-											: undefined
-									}
-									onCreateOption={this.props.onCreateOption}
-									isClearable={this.props.erasable}
-									isDisabled={this.props.isDisabled}
-									menuPlacement={this.props.menuPlacement}
-									isSearchable={this.props.isSearchable === true ? true : false}
-									onChange={(output) => {
-										const o = output as { value: string } | undefined
-
-										if (formIK && name && formIK.setFieldValue)
-											formIK.setFieldValue(
-												name,
-												o
-													? o.value === ''
-														? undefined
-														: o.value
-													: undefined
+								<OutsideAlerter
+									style={{ display: 'contents' }}
+									clickedOutside={() => {
+										if (this.props.customMenu) this.onCustomClose()
+									}}
+								>
+									<Sel
+										// Custom props (access with props.selectProps)
+										// @ts-ignore
+										customMenu={this.props.customMenu}
+										onCustomClose={() => this.onCustomClose()}
+										dropdownIndicator={
+											this.props.showOnlyIfSearch ? (
+												<div />
+											) : (
+												this.props.dropdownIndicator
 											)
+										}
+										//
+										isMulti={this.props.isMulti}
+										onMenuOpen={() => {
+											if (this.props.customMenu) {
+												this.setState({ customIsOpen: true })
+											}
+										}}
+										hideSelectedOptions={false}
+										noOptionsMessage={() => config.text('common.noOptions')}
+										loadingMessage={() => config.text('common.searching')}
+										menuPortalTarget={
+											!this.props.noPortal
+												? document.getElementById(
+														this.props.foreground
+															? 'portals-foreground'
+															: 'portals-background'
+												  )
+												: undefined
+										}
+										closeMenuOnSelect={
+											!this.props.customMenu && !this.props.isMulti
+										}
+										autoFocus={this.props.autoFocus}
+										backspaceRemovesValue={!this.props.customMenu}
+										tabSelectsValue={!this.props.isMulti}
+										onCreateOption={this.props.onCreateOption}
+										isClearable={this.props.erasable}
+										isDisabled={this.props.isDisabled}
+										menuPlacement={this.props.menuPlacement}
+										isSearchable={
+											this.props.isSearchable === true ? true : false
+										}
+										onChange={(output) => {
+											if (this.props.isMulti) {
+												const o = (output || []) as { value: string }[]
 
-										this.props.onChange &&
-											this.props.onChange(
-												o
-													? o.value === ''
-														? undefined
-														: o.value
+												if (formIK && name && formIK.setFieldValue)
+													formIK.setFieldValue(
+														name,
+														o
+															? o.length === 0
+																? []
+																: o.map((k) => k.value)
+															: []
+													)
+
+												this.props.onChangeMulti &&
+													this.props.onChangeMulti(
+														o
+															? o.length === 0
+																? []
+																: o.map((k) => k.value)
+															: []
+													)
+											} else {
+												const o = output as { value: string } | undefined
+
+												if (formIK && name && formIK.setFieldValue)
+													formIK.setFieldValue(
+														name,
+														o
+															? o.value === ''
+																? undefined
+																: o.value
+															: undefined
+													)
+
+												this.props.onChange &&
+													this.props.onChange(
+														o
+															? o.value === ''
+																? undefined
+																: o.value
+															: undefined
+													)
+											}
+										}}
+										onBlur={(output) => {
+											const o = output as React.FocusEvent<
+												HTMLInputElement,
+												Element
+											>
+
+											if (formIK && name && formIK.setFieldTouched)
+												setTimeout(() => {
+													if (formIK) formIK.setFieldTouched(name, true)
+												})
+
+											this.props.onBlur && this.props.onBlur(o)
+										}}
+										placeholder={
+											<p style={{ lineHeight: 'normal' }}>
+												{this.props.placeholder ||
+													config.text('common.select')}
+											</p>
+										}
+										value={
+											this.props.uncontrolled
+												? undefined
+												: this.props.customMenu
+												? !this.props.isMulti && this.props.value
+													? { label: this.props.value, value: 'value' }
 													: undefined
+												: this.state.loadedOptions
+												? this.props.isMulti
+													? this.findOptions(
+															this.state.loadedOptions,
+															value as
+																| string[]
+																| number[]
+																| boolean[]
+																| undefined
+													  )
+													: this.findOption(
+															this.state.loadedOptions,
+															value as
+																| string
+																| number
+																| boolean
+																| undefined
+													  )
+												: this.props.isMulti
+												? this.findOptions(
+														this.props.options,
+														value as
+															| string[]
+															| number[]
+															| boolean[]
+															| undefined
+												  )
+												: this.findOption(
+														this.props.options,
+														value as
+															| string
+															| number
+															| boolean
+															| undefined
+												  )
+										}
+										defaultValue={
+											this.props.isMulti
+												? this.props.defaultValueMulti &&
+												  this.findOptions(
+														this.props.options,
+														this.props.defaultValueMulti
+												  )
+												: this.props.defaultValue &&
+												  this.findOption(
+														this.props.options,
+														this.props.defaultValue
+												  )
+										}
+										components={{
+											...(this.props.showOnlyIfSearch
+												? {
+														DropdownIndicator,
+												  }
+												: this.props.dropdownIndicator ||
+												  this.props.customInput
+												? {
+														DropdownIndicator,
+												  }
+												: undefined),
+											...(this.props.customMenu && {
+												Menu: MenuComponent,
+											}),
+										}}
+										styles={
+											{
+												...selectStyles,
+												container: (styles): CSSObjectWithLabel => {
+													return {
+														...styles,
+														width: width,
+														flex: 1,
+													}
+												},
+											} as StylesConfig
+										}
+										filterOption={
+											this.props.searchFunction
+												? this.props.searchFunction
+												: this.props.loadOptions
+												? () => {
+														return true
+												  }
+												: undefined
+										}
+										onInputChange={(value?: string) => {
+											this.handleChangeBuffered(
+												value === '' ? undefined : value
 											)
-									}}
-									onBlur={(output) => {
-										const o = output as React.FocusEvent<
-											HTMLInputElement,
-											Element
-										>
-
-										if (formIK && name && formIK.setFieldTouched)
-											setTimeout(() => {
-												if (formIK) formIK.setFieldTouched(name, true)
-											})
-
-										this.props.onBlur && this.props.onBlur(o)
-									}}
-									placeholder={
-										<p style={{ lineHeight: 'normal' }}>
-											{this.props.placeholder || config.text('common.select')}
-										</p>
-									}
-									value={
-										this.props.uncontrolled
-											? undefined
-											: this.state.loadedOptions
-											? this.state.loadedOptions.filter(
-													(option) => option.value === value
-											  )
-											: this.props.options &&
-											  this.props.options.filter(
-													(option) => option.value === value
-											  )
-									}
-									defaultValue={
-										this.props.defaultValue &&
-										this.props.options &&
-										this.props.options.filter(
-											(option) => option.value === this.props.defaultValue
-										)
-									}
-									components={
-										this.props.showOnlyIfSearch
-											? {
-													DropdownIndicator,
-											  }
-											: this.props.dropdownIndicator || this.props.customInput
-											? {
-													DropdownIndicator,
-											  }
-											: undefined
-									}
-									styles={
-										{
-											...selectStyles,
-											container: (styles): CSSObjectWithLabel => {
-												return {
-													...styles,
-													width: width,
-													flex: 1,
-												}
-											},
-										} as StylesConfig
-									}
-									filterOption={
-										this.props.searchFunction
-											? this.props.searchFunction
-											: this.props.loadOptions
-											? () => {
-													return true
-											  }
-											: undefined
-									}
-									onInputChange={(value?: string) => {
-										this.handleChangeBuffered(value === '' ? undefined : value)
-									}}
-									menuIsOpen={
-										this.props.showOnlyIfSearch
-											? this.state.bufferedValue
-												? true
-												: false
-											: undefined
-									}
-									options={this.state.loadedOptions || this.props.options}
-								></Sel>
+										}}
+										menuIsOpen={
+											this.props.customMenu
+												? this.state.customIsOpen
+												: this.props.showOnlyIfSearch
+												? this.state.bufferedValue
+													? true
+													: false
+												: undefined
+										}
+										options={this.state.loadedOptions || this.props.options}
+									></Sel>
+								</OutsideAlerter>
 								{invalidType === 'right' && name && (
 									<div style={{ minWidth: 16, display: 'flex' }}>
 										{!this.props.isDisabled &&
