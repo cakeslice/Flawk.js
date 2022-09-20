@@ -104,7 +104,7 @@ class MobileDrawer extends TrackedComponent<Props> {
 						right: 0,
 						bottom: 0,
 						zIndex: 31,
-						pointerEvents: 'none',
+						pointerEvents: this.state.isOpen ? 'all' : 'none',
 						transition: 'background 150ms',
 						background: this.state.isOpen
 							? styles.modalBackground ||
@@ -466,7 +466,8 @@ class MobileDrawer extends TrackedComponent<Props> {
 				<button
 					type='button'
 					className='scrollTarget'
-					onClick={() => this.changeState(true)}
+					disabled={this.state.isOpen}
+					onClick={() => !this.state.isOpen && this.changeState(true)}
 					style={this.props.burgerStyle}
 				>
 					<div

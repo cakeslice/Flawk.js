@@ -7,6 +7,7 @@
 
 import config from 'core/config'
 import React from 'react'
+import { CSSObjectWithLabel } from 'react-select'
 import Dropdown from './Dropdown'
 
 export async function changeLanguage(lang: string) {
@@ -27,15 +28,25 @@ export async function changeLanguage(lang: string) {
 		window.location.reload()
 	}
 }
-export default function LanguageSelect() {
+export default function LanguageSelect(props: {
+	style?: CSSObjectWithLabel & {
+		input?: CSSObjectWithLabel
+		menu?: CSSObjectWithLabel
+	}
+	arrow?: React.ReactNode
+}) {
 	const lang = global.lang.text
 
 	return (
 		<Dropdown
-			style={{ menu: { minWidth: 65, width: 65 } }}
+			style={{
+				...props.style,
+				menu: { minWidth: 65, width: 65, ...props.style?.menu },
+			}}
 			onChange={async (e) => {
 				await changeLanguage(e as string)
 			}}
+			dropdownIndicator={props.arrow}
 			value={lang}
 			options={config.supportedLanguages.map((l) => {
 				return {

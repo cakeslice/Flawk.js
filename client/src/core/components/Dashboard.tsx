@@ -402,7 +402,7 @@ class DashboardClass extends TrackedComponent<
 														style={mobileStyle}
 													>
 														<div
-															className='flex justify-between w-full'
+															className='flex items-center justify-between w-full'
 															style={{
 																minHeight: this.state
 																	.showHeaderBackground
