@@ -73,6 +73,7 @@ type DashboardProps = {
 	style?: React.CSSProperties
 	placeholder?: React.ReactNode
 	containerStyle?: React.CSSProperties
+	pageStyle?: React.CSSProperties
 	placeholderStyle?: React.CSSProperties
 	mobileStyle?: React.CSSProperties
 	//** Component that wraps all pages. Will receive DashboardWrapperProps */
@@ -483,7 +484,7 @@ class DashboardClass extends TrackedComponent<
 											</div>
 										)}
 
-										<div style={pageStyle}>
+										<div style={{ ...pageStyle, ...this.props.pageStyle }}>
 											<Switch>
 												{subRoutes.map((route) => {
 													const foundDefaultSubroute = route.subRoutes
