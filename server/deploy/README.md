@@ -63,19 +63,18 @@ Change CapRover password in control panel (very strong!)
 ## MongoDB Setup
 #
 
-**MongoDB Atlas** (max reliability)
+**MongoDB Atlas** (max reliability and scalability)
 - Create a cluster in Atlas (serverless plan)
 - Allow all connections (0.0.0.0)
 - Add daily backups
 
-**MongoDB in server**
-- Create the MongoDB app in CAPROVER
+**MongoDB in server** (single point of failure)
+- Create the MongoDB app in CapRover
 - Add the port forwarding: Host: 1337 -> Container: 27017
 - ```sudo ufw allow 1337```
 - Follow deploy/mongo_backup.txt
 
-**WARNING**: *This method only works for a single Mongo instance! If you use sharding you need another method!*
-**WARNING**: *If you use sharding/clusters, you need to enable SSL/TLS for security*
+	**WARNING**: *This method only works for a single Mongo instance! If you use sharding you need another method! Additionally, if you use sharding/clusters, you need to enable SSL/TLS for security*
 
 Connection string: 
 - Internal: mongodb://dbuser:dbpassword@srv-captain--YOUR_CONTAINER_NAME:27017/dbname?authSource=admin&w=1
@@ -139,5 +138,7 @@ Make sure the captain definition path is the right one:
 Make sure you have an image of the entire server after it's all setup
 - The image can be used on another VM, all you need to do is change the IP on CloudFlare
 
-To take advantage of multiple cores in Node.js you can use clusters but consider websocket support: https://socket.io/docs/using-multiple-nodes/
+To take advantage of multiple cores in Node.js you can use multiple instances but consider websocket support: https://socket.io/docs/using-multiple-nodes/
 - However, if using MongoDB or multiple apps, multiple cores will still be useful
+
+- For scalability and automatic failover, you can use a **Load balancer** service (with app containers instead of CapRover) or use multiple servers with a leader: **CapRover cluster**
