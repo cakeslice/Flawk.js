@@ -109,8 +109,8 @@ class MobileDrawer extends TrackedComponent<Props> {
 						background: this.state.isOpen
 							? styles.modalBackground ||
 							  config.replaceAlpha(
-									global.nightMode ? styles.colors.white : 'rgba(127,127,127,1)',
-									0.25
+									global.nightMode ? 'rgba(40,40,40,1)' : 'rgba(180,180,180,1)',
+									global.nightMode ? 0.75 : 0.25
 							  )
 							: 'transparent',
 					}}

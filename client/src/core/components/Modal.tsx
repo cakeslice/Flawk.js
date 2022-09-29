@@ -311,19 +311,21 @@ export default class Modal extends TrackedComponent<Props> {
 									right: 0,
 									bottom: 0,
 									zIndex: 35,
-									transition: 'background 150ms',
+									transition: 'background 250ms',
 									...(isOpen === true
 										? {
-												...((!big || desktop) && {
-													backdropFilter: 'blur(2px)',
-												}),
+												// Disable for better performance
+												/* ...((!big || desktop) &&
+													{
+														backdropFilter: 'blur(2px)',
+													}), */
 												background:
 													styles.modalBackground ||
 													config.replaceAlpha(
 														global.nightMode
 															? 'rgba(40,40,40,1)'
 															: 'rgba(180,180,180,1)',
-														global.nightMode ? 0.5 : 0.25
+														global.nightMode ? 0.75 : 0.25
 													),
 										  }
 										: {
