@@ -1,9 +1,9 @@
 ## Install
 #
 
-[Ubuntu] Install Docker and CapRover: deploy/ubuntu.txt
+SSH in your machine
 
-To SSH - Use your SSH key and use "root" username
+[Ubuntu] Install Docker and CapRover: deploy/ubuntu.txt
 
 Then connect using SSH again using port 1000
 
@@ -20,6 +20,7 @@ Change CapRover password in control panel (very strong!)
 #
 
 **Datadog**
+- Install for Ubuntu
 - Setup Docker: https://app.datadoghq.eu/account/settings#integrations/docker
 - Use the following dashboards: Docker / System Metrics
 - Add desired alerts
