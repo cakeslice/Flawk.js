@@ -29,6 +29,7 @@ type Props = {
 	title?: React.ReactNode
 	headerHeight: number
 	path?: string
+	locationOverride?: string
 	//
 	pageProps?: Obj
 	links: DashboardRoute[]
@@ -61,7 +62,9 @@ class MobileDrawer extends TrackedComponent<Props> {
 
 	renderList = () => {
 		const iconSize = 25
-		const selectedRoute = this.props.location.pathname.toString()
+		const selectedRoute = this.props.locationOverride
+			? '/' + this.props.locationOverride
+			: this.props.location.pathname.toString()
 
 		const linkStyle: React.CSSProperties & GlamorProps = {
 			transition: 'opacity 500ms',

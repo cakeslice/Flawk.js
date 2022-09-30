@@ -44,3 +44,18 @@ function setStateFunction<T>(setFunction: React.Dispatch<React.SetStateAction<T>
 	}
 	return set
 }
+
+export function useDebounce(value: string | number | boolean, delay = 250) {
+	const [debouncedValue, setDebouncedValue] = useState(value)
+
+	useEffect(() => {
+		const handler = setTimeout(() => {
+			setDebouncedValue(value)
+		}, delay)
+		return () => {
+			clearTimeout(handler)
+		}
+	}, [value, delay])
+
+	return debouncedValue
+}

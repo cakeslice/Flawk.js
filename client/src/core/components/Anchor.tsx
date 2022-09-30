@@ -18,7 +18,9 @@ type Props = {
 	/** In case the page has layout shift and scrolling to anchor needs to happen later. If using React.lazy, disabling it can also fix the issue. */
 	delay?: boolean
 	delayAmount?: number
-	onTrigger?: () => void
+	onTrigger?: (id?: string) => void
+	style?: React.CSSProperties
+	className?: string
 }
 export default class Anchor extends TrackedComponent<Props> {
 	triggered = false
@@ -55,12 +57,17 @@ export default class Anchor extends TrackedComponent<Props> {
 									window.history.replaceState({}, '', '#' + this.props.id)
 								}
 							}
-							if (this.props.onTrigger) this.props.onTrigger()
+							if (this.props.onTrigger) this.props.onTrigger('#' + this.props.id)
 						}
 					} else this.triggered = false
 
 					return (
-						<div ref={ref} id={this.props.id}>
+						<div
+							className={this.props.className}
+							style={this.props.style}
+							ref={ref}
+							id={this.props.id}
+						>
 							{this.props.children}
 						</div>
 					)
