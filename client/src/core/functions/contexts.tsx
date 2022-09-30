@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { useState } from 'react'
+import { createContext, useState } from 'react'
 
 /** This can be used with <Anchor/> and triggerUpdate() to set the current component in view and highlight the link in a nav bar for example */
 export const inViewContext = // @ts-ignore
