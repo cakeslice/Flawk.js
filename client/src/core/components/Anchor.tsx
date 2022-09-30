@@ -15,6 +15,9 @@ type Props = {
 	triggerOffset?: number
 	updateHash?: boolean
 	children?: React.ReactNode
+	/** In case the page has layout shift and scrolling to anchor needs to happen later */
+	delay?: boolean
+	delayAmount?: number
 	onTrigger?: () => void
 }
 export default class Anchor extends TrackedComponent<Props> {
@@ -29,7 +32,12 @@ export default class Anchor extends TrackedComponent<Props> {
 	componentDidMount() {
 		if (window.location.hash) {
 			// Don't use a scroll offset because it should be consistent with the same on <ScrollToTop/>
-			navigation.scrollToHash(window.location.hash.replace('#', ''), 150)
+
+			if (this.props.delay) {
+				setTimeout(() => {
+					navigation.scrollToHash(window.location.hash.replace('#', ''), 150)
+				}, this.props.delayAmount || 0)
+			} else navigation.scrollToHash(window.location.hash.replace('#', ''), 150)
 		}
 	}
 
