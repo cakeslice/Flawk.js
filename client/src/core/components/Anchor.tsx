@@ -15,7 +15,7 @@ type Props = {
 	triggerOffset?: number
 	updateHash?: boolean
 	children?: React.ReactNode
-	/** In case the page has layout shift and scrolling to anchor needs to happen later */
+	/** In case the page has layout shift and scrolling to anchor needs to happen later. If using React.lazy, disabling it can also fix the issue. */
 	delay?: boolean
 	delayAmount?: number
 	onTrigger?: () => void
