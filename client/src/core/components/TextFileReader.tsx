@@ -11,6 +11,7 @@ import TrackedComponent from './TrackedComponent'
 type Props = {
 	txt: string
 	className?: string
+	repeat?: number
 	style?: React.CSSProperties
 }
 export default class TextFileReader extends TrackedComponent<Props> {
@@ -34,7 +35,10 @@ export default class TextFileReader extends TrackedComponent<Props> {
 		rawFile.onreadystatechange = () => {
 			if (rawFile.readyState === 4) {
 				if (rawFile.status === 200 || rawFile.status === 0) {
-					const allText = rawFile.responseText
+					let allText = rawFile.responseText
+					for (let i = 0; i < (this.props.repeat || 0); i++) {
+						allText += rawFile.responseText
+					}
 					this.setState({
 						text: allText,
 					})
