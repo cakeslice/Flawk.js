@@ -46,8 +46,8 @@ export default class Anchor extends TrackedComponent<Props> {
 	render() {
 		const rootMargin = '0px 0px ' + (-80 + (this.props.triggerOffset || 0)).toString() + '% 0px'
 		return (
-			<InView rootMargin={rootMargin}>
-				{({ inView, ref, entry }) => {
+			<InView
+				onChange={(inView) => {
 					if (inView) {
 						if (!this.triggered) {
 							this.triggered = true
@@ -60,7 +60,10 @@ export default class Anchor extends TrackedComponent<Props> {
 							if (this.props.onTrigger) this.props.onTrigger('#' + this.props.id)
 						}
 					} else this.triggered = false
-
+				}}
+				rootMargin={rootMargin}
+			>
+				{({ inView, ref, entry }) => {
 					return (
 						<div
 							className={this.props.className}
