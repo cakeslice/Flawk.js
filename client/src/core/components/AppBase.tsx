@@ -420,19 +420,19 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 				<>
 					<Helmet>
 						<title>{title}</title>
-						{Capacitor.isNativePlatform() && (
+						<html lang={global.lang.text.toLowerCase()} />
+						{Capacitor.isNativePlatform() ? (
 							<meta
 								name='viewport'
-								content={
-									'width=device-width, initial-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover'
-								}
+								content='width=device-width, initial-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover'
 							/>
-						)}
-						{config.appleBrowser && !desktop && (
+						) : config.appleBrowser && !desktop ? (
 							<meta
 								name='viewport'
-								content={'width=device-width, initial-scale=1, maximum-scale=1'}
+								content='width=device-width, initial-scale=1, maximum-scale=1'
 							/>
+						) : (
+							<meta name='viewport' content='width=device-width, initial-scale=1' />
 						)}
 						<meta name='description' content={config.description()} />
 						{/* Don't use canonical unless you have to and don't use redudant og tags like description and url */}
