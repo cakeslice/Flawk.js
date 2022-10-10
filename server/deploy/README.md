@@ -103,9 +103,10 @@ Set CORS in space settings:
 - Add DNS CNAME record: cloud -> Space_URL (with Proxy)
 - *NOTE: Can't use this for a lot of video or audio files since CloudFlare doesn't allow!*
 
-**Optional**: Use a service to do daily backups of the last 7 days of your bucket (which includes the MongoDB backups if not using Atlas)
+**Recommended**: Use a service to do daily backups of your bucket (which includes the MongoDB backups if not using Atlas)
 - This is in case something happens to your bucket or a hacker obtains your bucket keys and everything is deleted
 - A good example is SimpleBackups.com
+- Your destination bucket should be on a different provider and have versioning enabled!
 
 #
 ## Web App Deployment
