@@ -189,6 +189,7 @@ type CoreProps = {
 	style?: React.CSSProperties
 	className?: string
 	percentTooltip?: boolean
+	processTooltip?: (value: string, percent: string) => string
 	children?: React.ReactNode
 }
 
@@ -283,18 +284,17 @@ export class BarChart extends TrackedComponent<BarProps> {
 							if (label) {
 								label += ': '
 							}
-							label += this.props.percentTooltip
-								? getPercent(
-										this.props.horizontal
-											? context[0].parsed.x
-											: context[0].parsed.y,
-										context[0].chart.data.datasets[0].data as number[]
-								  )
-								: config.formatNumber(
-										this.props.horizontal
-											? context[0].parsed.x
-											: context[0].parsed.y
-								  )
+
+							const percent = getPercent(
+								this.props.horizontal ? context[0].parsed.x : context[0].parsed.y,
+								context[0].chart.data.datasets[0].data as number[]
+							)
+							const value = config.formatNumber(
+								this.props.horizontal ? context[0].parsed.x : context[0].parsed.y
+							)
+							label += this.props.percentTooltip ? percent : value
+							label = this.props.processTooltip?.(value, percent) || label
+
 							return label
 						},
 						label: (context) => {
@@ -471,12 +471,14 @@ export class LineChart extends TrackedComponent<LineProps> {
 								label += ': '
 							}
 
-							label += this.props.percentTooltip
-								? getPercent(
-										context[0].parsed.y,
-										context[0].chart.data.datasets[0].data as number[]
-								  )
-								: config.formatNumber(context[0].parsed.y)
+							const percent = getPercent(
+								context[0].parsed.y,
+								context[0].chart.data.datasets[0].data as number[]
+							)
+							const value = config.formatNumber(context[0].parsed.y)
+							label += this.props.percentTooltip ? percent : value
+							label = this.props.processTooltip?.(value, percent) || label
+
 							return label
 						},
 						label: (context) => {
@@ -569,9 +571,12 @@ export class DoughnutChart extends TrackedComponent<DoughnutProps> {
 							if (label) {
 								label += ': '
 							}
-							label += this.props.percentTooltip
-								? getPercent(context.parsed, context.dataset.data)
-								: config.formatNumber(context.parsed)
+
+							const percent = getPercent(context.parsed, context.dataset.data)
+							const value = config.formatNumber(context.parsed)
+							label += this.props.percentTooltip ? percent : value
+							label = this.props.processTooltip?.(value, percent) || label
+
 							return label
 						},
 					},
@@ -644,9 +649,12 @@ export class PieChart extends TrackedComponent<PieProps> {
 							if (label) {
 								label += ': '
 							}
-							label += this.props.percentTooltip
-								? getPercent(context.parsed, context.dataset.data)
-								: config.formatNumber(context.parsed)
+
+							const percent = getPercent(context.parsed, context.dataset.data)
+							const value = config.formatNumber(context.parsed)
+							label += this.props.percentTooltip ? percent : value
+							label = this.props.processTooltip?.(value, percent) || label
+
 							return label
 						},
 					},
@@ -729,14 +737,17 @@ export class TreemapChart extends TrackedComponent<TreemapProps> {
 							if (label) {
 								label += ': '
 							}
-							label += this.props.percentTooltip
-								? getPercent(
-										value,
-										// @ts-ignore
-										// eslint-disable-next-line
-										context.datasets[ctx.datasetIndex].tree.map((d) => d.count)
-								  )
-								: config.formatNumber(value)
+
+							const percent = getPercent(
+								value,
+								// @ts-ignore
+								// eslint-disable-next-line
+								context.datasets[ctx.datasetIndex].tree.map((d) => d.count)
+							)
+							const v = config.formatNumber(value)
+							label += this.props.percentTooltip ? percent : v
+							label = this.props.processTooltip?.(v, percent) || label
+
 							return label
 						},
 					},
