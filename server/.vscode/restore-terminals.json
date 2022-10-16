@@ -1,0 +1,18 @@
+{
+	"terminals": [
+		{
+			"runOnStartup": false,
+			"artificialDelayMilliseconds": 1000,
+			"splitTerminals": [
+				{
+					"name": "Backend",
+					"commands": ["cd ../server", "npm run start:dev"]
+				},
+				{
+					"name": "Frontend",
+					"commands": ["cd ../client", "npm run start:dev"]
+				}
+			]
+		}
+	]
+}
