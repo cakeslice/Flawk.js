@@ -189,7 +189,7 @@ type CoreProps = {
 	style?: React.CSSProperties
 	className?: string
 	percentTooltip?: boolean
-	processTooltip?: (value: string, percent: string) => string
+	processTooltip?: (value: string, percent: string, label: string) => string
 	children?: React.ReactNode
 }
 
@@ -280,7 +280,8 @@ export class BarChart extends TrackedComponent<BarProps> {
 						// @ts-ignore
 						yPadding: 3,
 						title: (context) => {
-							let label = context[0].label || ''
+							const l = context[0].dataset.label || context[0].label || ''
+							let label = l
 							if (label) {
 								label += ': '
 							}
@@ -293,7 +294,7 @@ export class BarChart extends TrackedComponent<BarProps> {
 								this.props.horizontal ? context[0].parsed.x : context[0].parsed.y
 							)
 							label += this.props.percentTooltip ? percent : value
-							label = this.props.processTooltip?.(value, percent) || label
+							label = this.props.processTooltip?.(value, percent, l) || label
 
 							return label
 						},
@@ -463,7 +464,8 @@ export class LineChart extends TrackedComponent<LineProps> {
 						// @ts-ignore
 						yPadding: 3,
 						title: (context) => {
-							let label = context[0].label || ''
+							const l = context[0].dataset.label || context[0].label || ''
+							let label = l
 
 							if (multipleDatasets) return label
 
@@ -477,7 +479,7 @@ export class LineChart extends TrackedComponent<LineProps> {
 							)
 							const value = config.formatNumber(context[0].parsed.y)
 							label += this.props.percentTooltip ? percent : value
-							label = this.props.processTooltip?.(value, percent) || label
+							label = this.props.processTooltip?.(value, percent, l) || label
 
 							return label
 						},
@@ -567,7 +569,8 @@ export class DoughnutChart extends TrackedComponent<DoughnutProps> {
 					// @ts-ignore
 					callbacks: {
 						label: (context) => {
-							let label = context.label || ''
+							const l = context.dataset.label || context.label || ''
+							let label = l
 							if (label) {
 								label += ': '
 							}
@@ -575,7 +578,7 @@ export class DoughnutChart extends TrackedComponent<DoughnutProps> {
 							const percent = getPercent(context.parsed, context.dataset.data)
 							const value = config.formatNumber(context.parsed)
 							label += this.props.percentTooltip ? percent : value
-							label = this.props.processTooltip?.(value, percent) || label
+							label = this.props.processTooltip?.(value, percent, l) || label
 
 							return label
 						},
@@ -645,7 +648,8 @@ export class PieChart extends TrackedComponent<PieProps> {
 					// @ts-ignore
 					callbacks: {
 						label: (context) => {
-							let label = context.label || ''
+							const l = context.dataset.label || context.label || ''
+							let label = l
 							if (label) {
 								label += ': '
 							}
@@ -653,7 +657,7 @@ export class PieChart extends TrackedComponent<PieProps> {
 							const percent = getPercent(context.parsed, context.dataset.data)
 							const value = config.formatNumber(context.parsed)
 							label += this.props.percentTooltip ? percent : value
-							label = this.props.processTooltip?.(value, percent) || label
+							label = this.props.processTooltip?.(value, percent, l) || label
 
 							return label
 						},
@@ -732,8 +736,10 @@ export class TreemapChart extends TrackedComponent<TreemapProps> {
 							// @ts-ignore
 							const value = context.datasets[ctx.datasetIndex].tree[ctx.dataIndex]
 								.count as number
-							let label = // @ts-ignore
+
+							const l: string = // @ts-ignore
 								context.datasets[ctx.datasetIndex].tree[ctx.dataIndex].label || ''
+							let label = l
 							if (label) {
 								label += ': '
 							}
@@ -746,7 +752,7 @@ export class TreemapChart extends TrackedComponent<TreemapProps> {
 							)
 							const v = config.formatNumber(value)
 							label += this.props.percentTooltip ? percent : v
-							label = this.props.processTooltip?.(v, percent) || label
+							label = this.props.processTooltip?.(v, percent, l) || label
 
 							return label
 						},
