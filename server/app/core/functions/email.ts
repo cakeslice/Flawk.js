@@ -152,8 +152,10 @@ export async function sendEmail(
 		await emailTrack.save()
 
 		console.log(
-			'Message sent: %s',
-			info && info.messageId ? (info.messageId as string) : 'UNKNOWN'
+			'Message sent to ' +
+				body.To +
+				': ' +
+				(info && info.messageId ? (info.messageId as string) : 'UNKNOWN')
 		)
 		return true
 	} else {
@@ -264,8 +266,10 @@ export async function sendAdminEmail(data: EmailData, template = 'generic', deve
 		})) as Obj
 
 		console.log(
-			'Message sent: %s',
-			info && info.messageId ? (info.messageId as string) : 'UNKNOWN'
+			'Message sent to ' +
+				body.To +
+				': ' +
+				(info && info.messageId ? (info.messageId as string) : 'UNKNOWN')
 		)
 		return true
 	} else {
