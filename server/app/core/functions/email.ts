@@ -13,12 +13,10 @@ import { Obj } from 'flawk-types'
 import nodemailer from 'nodemailer'
 import hbs from 'nodemailer-express-handlebars'
 import { htmlToText } from 'nodemailer-html-to-text'
-import postmark from 'postmark'
+import { ServerClient as Postmark } from 'postmark'
 import { Client } from 'project/database'
 
-const postmarkClient = config.postmarkKey
-	? new postmark.ServerClient(config.postmarkKey)
-	: undefined
+const postmarkClient = config.postmarkKey ? new Postmark(config.postmarkKey) : undefined
 let nodemailerClient: nodemailer.Transporter<unknown> | undefined = undefined
 function setupNodemailer() {
 	const port = config.nodemailerPort || 465
