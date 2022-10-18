@@ -1,8 +1,7 @@
 {
+	"runOnStartup": false,
 	"terminals": [
 		{
-			"runOnStartup": false,
-			"artificialDelayMilliseconds": 1000,
 			"splitTerminals": [
 				{
 					"name": "Backend",
