@@ -638,12 +638,7 @@ config.injectScript(
 `}
 				description={
 					<>
-						Component used for code syntax highlighting.
-						<sp />
-						By default <code>prettier</code> is used to format the code but can be
-						disabled with the <code>noPrettier</code> prop.
-						<sp />
-						This component uses <code>react-syntax-highlighter</code> internally.
+						Function to inject <code>{'<script/>'}</code> tags.
 					</>
 				}
 				title='Inject script'

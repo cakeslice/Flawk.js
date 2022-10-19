@@ -156,9 +156,9 @@ async function bodyOf(
 					' (' +
 					response.status.toString() +
 					')',
-				response.message ||
-					(response.body && JSON.stringify(response.body)) ||
-					response.status.toString(),
+				response.message && response.message !== 'undefined'
+					? response.message
+					: (response.body && JSON.stringify(response.body)) || undefined,
 				'error',
 				{}
 			)

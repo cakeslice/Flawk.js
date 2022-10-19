@@ -66,7 +66,7 @@
       body: {} as {
         email: string; // Required
         password: string; // Required
-		  rememberMe?: boolean; // Optional
+        rememberMe?: boolean; // Optional
       },
     };
     router.postAsync(Login.call, async (req, res) => {

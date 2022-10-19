@@ -119,10 +119,13 @@ type Props = {
 	placeholder?: string
 	bufferInterval?: number
 	//
+	/** Use a function to load options dynamically based on input */
 	loadOptions?: (
 		input: string | undefined,
 		callback: (options: Option[]) => void
 	) => Promise<void>
+	/** Load dynamic options every time the menu is opened */
+	loadOptionsOnOpen?: boolean
 	options?: Option[]
 	searchFunction?: (candidate: { value: string }, input: string) => boolean
 	noPortal?: boolean
@@ -938,6 +941,24 @@ export default class Dropdown extends TrackedComponent<Props> {
 										onMenuOpen={() => {
 											if (this.props.customMenu) {
 												this.setState({ customIsOpen: true })
+											}
+											if (
+												this.props.loadOptions &&
+												this.props.loadOptionsOnOpen
+											) {
+												this.setState({
+													loadedOptions: [],
+													bufferedValue: this.bufferedValue,
+												})
+												this.props.loadOptions(
+													this.bufferedValue,
+													(options) => {
+														this.setState({
+															loadedOptions: options,
+															bufferedValue: this.bufferedValue,
+														})
+													}
+												)
 											}
 										}}
 										hideSelectedOptions={false}
