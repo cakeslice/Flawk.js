@@ -10,11 +10,6 @@ import navigation from 'core/functions/navigation'
 import { KeyUnknown } from 'flawk-types'
 import _find from 'lodash/find'
 
-type Response = {
-	status: number
-	headers: Headers
-	text: () => Promise<string>
-}
 type ParsedResponse = {
 	ok: boolean
 	status: number
@@ -129,7 +124,7 @@ async function handleResponse(response: Response): Promise<ParsedResponse> {
 	if (body && body.invalidToken) navigation.invalidTokenRedirect()
 
 	return {
-		ok: response.status < 400,
+		ok: response.ok,
 		status: response.status,
 		headers: response.headers,
 		body: body,
