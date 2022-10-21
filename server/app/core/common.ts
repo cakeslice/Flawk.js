@@ -7,6 +7,7 @@
 
 import { Logtail } from '@logtail/node'
 import { LogtailTransport } from '@logtail/winston'
+import { CaptureConsole } from '@sentry/integrations'
 import * as Sentry from '@sentry/node'
 import Nexmo, { MessageError, MessageRequestResponse } from '@vonage/server-sdk'
 import AWS from 'aws-sdk'
@@ -111,6 +112,9 @@ function initLogging() {
 			environment: config.prod ? 'production' : config.staging ? 'staging' : 'development',
 			dsn: config.sentryID,
 			integrations: [
+				new CaptureConsole({
+					levels: ['error'],
+				}),
 				// Enable HTTP calls tracing
 				new Sentry.Integrations.Http({ tracing: true }),
 			],
@@ -258,6 +262,32 @@ const _setResponse = function (
 	message?: string,
 	data?: Obj
 ) {
+	/* const { ip } = _getUserIP(req)
+
+	let str =
+		req.originalUrl +
+		' | ' +
+		(req.useragent.isBot ? 'ROBOT' : req.useragent.isMobile ? 'MOBILE' : 'DESKTOP') +
+		' | ' +
+		req.useragent.browser +
+		' | ' +
+		ip
+	let o
+	if (!req.originalUrl.includes('_rawbody') && req.body && !_.isEmpty(req.body)) {
+		o = JSON.parse(JSON.stringify(req.body, null, 3))
+		if (o.password) o.password = '*******'
+		str += '\nbody ' + JSON.stringify(o, null, 3)
+	}
+	if (req.query && !_.isEmpty(req.query)) {
+		o = JSON.parse(JSON.stringify(req.query, null, 3))
+		if (o.password) o.password = '*******'
+		str += '\nquery ' + JSON.stringify(o, null, 3)
+	}
+
+	console.log('\n-- ' + req.method + ': ' + str) */
+
+	///
+
 	const { user, ip } = _getUserIP(req)
 
 	const str: string =

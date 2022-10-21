@@ -7,8 +7,9 @@
 
 //
 import { SplashScreen } from '@capacitor/splash-screen'
+import { CaptureConsole } from '@sentry/integrations'
 import { init as sentryInit, reactRouterV5Instrumentation } from '@sentry/react'
-import { BrowserTracing } from '@sentry/tracing/dist/browser'
+import { BrowserTracing } from '@sentry/tracing'
 // @ts-ignore
 import { useConstructor } from '@toolz/use-constructor'
 import { get } from 'core/api'
@@ -221,6 +222,9 @@ export default function RouterBase({ children }: { children: React.ReactNode }) 
 						return event
 					},
 					integrations: [
+						new CaptureConsole({
+							levels: ['error'],
+						}),
 						new BrowserTracing({
 							routingInstrumentation: reactRouterV5Instrumentation(history),
 						}),
