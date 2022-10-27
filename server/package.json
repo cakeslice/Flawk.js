@@ -23,7 +23,7 @@
 		"deleteDist": "del-cli ./dist/*",
 		"buildCI": "npm run lintCI && npm run deleteDist && tsc && npm run copyExtra",
 		"buildLocal": "npm run auditCI && npm run testCI && npm run buildCI",
-		"buildPushDocker": "npm run buildLocal && cross-env-shell docker image build -t $DOCKER_IMAGE . -f Dockerfile.local && cross-env-shell docker push $DOCKER_IMAGE && cross-env-shell docker run caprover/cli-caprover:v2.1.1 caprover deploy --caproverUrl $CAPROVER_URL --caproverPassword $CAPROVER_PASSWORD --caproverApp $CAPROVER_APP --imageName $DOCKER_IMAGE && cross-env-shell docker image rm $DOCKER_IMAGE",
+		"buildPushDocker": "npm run buildLocal && cross-env-shell docker image build -t $DOCKER_IMAGE . -f Dockerfile.local && cross-env-shell docker push $DOCKER_IMAGE && cross-env-shell docker run --rm caprover/cli-caprover:v2.1.1 caprover deploy --caproverUrl $CAPROVER_URL --caproverPassword $CAPROVER_PASSWORD --caproverApp $CAPROVER_APP --imageName $DOCKER_IMAGE && cross-env-shell docker image rm $DOCKER_IMAGE",
 		"- EXTRA SCRIPTS -": "-----------------------------",
 		"precommit": "npm-run-all --aggregate-output --parallel checkStaged",
 		"postinstall": "cd .. && git config core.hooksPath ./git-hooks && cd server",
