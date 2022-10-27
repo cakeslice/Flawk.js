@@ -275,6 +275,8 @@ export default {
 
 		const maxR = maxResolution || (thumbnail ? 200 : 1920)
 
+		if (!file) return { success: false }
+
 		const isImage =
 			file.type === 'image/png' || file.type === 'image/jpeg' || file.type === 'image/jpg'
 
