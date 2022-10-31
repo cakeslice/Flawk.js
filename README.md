@@ -94,20 +94,30 @@
 
 - Clone the repo
 
-- To run the **Backend**:
+- To run the project for development:
+	- *Backend*:
+		- cd server
+		- npm install --force
+		- npm run start:dev
+		- **Note**: To run you need this file: *server/_env/dev.env*
+	- *Frontend*:
+		- cd client
+		- npm install --force
+		- npm run start:dev
+		- **Note**: To run you need this file: *client/_env/dev.env*
 
-  - Create a **dev.env** file in _/server/\_env_ based on **dev.env.template**
-  - In a terminal run:
-    ```bash
-    cd server && npm install --force && npm run dev
-    ```
+- To deploy:
+	- *Backend*:
+		- cd server
+		- npm run build_docker:prod
+		- **Note**: To deploy you need this file: *server/_env/build-prod.env*
+			- Also you need to set the env variables in whatever system you're using to run the app (for example CapRover)
+	- *Frontend*:
+		- cd client
+		- npm run build_docker:prod
+		- **Note**: To deploy you need this file: *client/_env/dev.env*
 
-- To run the **Frontend**:
-  - In a terminal run:
-    ```bash
-    cd client && npm install --force && npm run dev
-    ```
-- Note: **VSCode** is highly recommended and the following extensions should be installed:
+- **VSCode** is highly recommended and the following extensions should be installed:
   - [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
   - [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
 
