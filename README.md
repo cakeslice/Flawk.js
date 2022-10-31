@@ -115,7 +115,7 @@
 	- *Frontend*:
 		- cd client
 		- npm run build_docker:prod
-		- **Note**: To deploy you need this file: *client/_env/dev.env*
+		- **Note**: To deploy you need this file: *client/_env/prod.env*
 
 - **VSCode** is highly recommended and the following extensions should be installed:
   - [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
