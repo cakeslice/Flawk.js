@@ -136,7 +136,7 @@
 		"redux-logger": "^3.0.6",
 		"remark-gfm": "^3.0.1",
 		"resize-observer": "^1.0.4",
-		"socket.io-client": "^4.4.0",
+		"socket.io-client": "^4.5.3",
 		"ultimate-pagination": "^1.0.0",
 		"uniqolor": "^1.0.1",
 		"universal-cookie": "^4.0.4",
