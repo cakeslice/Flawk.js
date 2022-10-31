@@ -51,7 +51,7 @@
 		"prettierCI": "prettier --check ./",
 		"lintCI": "eslint --cache --quiet ./",
 		"lintTypescriptCI": "tsc --noEmit --incremental",
-		"auditFix": "npm audit fix && npm run auditCI",
+		"auditFix": "npm audit fix --legacy-peer-deps && npm run auditCI",
 		"auditCI": "npm audit --production --audit-level=critical",
 		"checkStaged": "lint-staged --no-stash",
 		"analyzeBundle": "source-map-explorer --no-border-checks ./build/assets/*.js",

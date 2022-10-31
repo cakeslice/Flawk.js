@@ -33,7 +33,7 @@
 		"prettierCI": "prettier --check ./",
 		"lintCI": "eslint --quiet --cache ./",
 		"lintTypescriptCI": "tsc --noEmit --incremental",
-		"auditFix": "npm audit fix && npm run auditCI",
+		"auditFix": "npm audit fix --legacy-peer-deps && npm run auditCI",
 		"auditCI": "npm audit --audit-level=critical",
 		"checkStaged": "lint-staged --no-stash",
 		"copyExtra": "cross-env cpy --cwd=app --parents '**/*.json' '../dist/' && cross-env cpy --cwd=app --parents '**/*.hbs' '../dist/'"
