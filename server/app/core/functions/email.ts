@@ -47,8 +47,8 @@ function setupNodemailer() {
 	nodemailerClient.use('compile', htmlToText())
 }
 
-type EmailData = { subject: string; substitutions: Obj }
-type EmailBulkData = { subject: string; substitutions: Obj } & {
+type EmailData = Obj & { subject?: string }
+type EmailBulkData = Obj & { subject?: string } & {
 	email: string
 }
 type EmailBody = {
@@ -74,8 +74,8 @@ export async function sendEmail(
 	const body: EmailBody = {
 		TemplateAlias: template,
 		TemplateModel: {
-			...data.substitutions,
-			subject: !config.prod ? '[TEST] ' + data.subject : data.subject,
+			...data,
+			subject: !config.prod ? '[TEST] ' + (data.subject || '') : data.subject || '',
 		},
 		From: config.emailFrom,
 		ReplyTo: config.replyTo,
@@ -131,7 +131,7 @@ export async function sendEmail(
 
 			context: {
 				email: body.To,
-				...data.substitutions,
+				...data,
 				...(process.env.emailTrackingURL && {
 					_tracking_:
 						process.env.emailTrackingURL +
@@ -169,8 +169,8 @@ export async function sendBulkEmails(array: [EmailBulkData], template: string) {
 		bodies.push({
 			TemplateAlias: template,
 			TemplateModel: {
-				...a.substitutions,
-				subject: !config.prod ? '[TEST-BULK] ' + a.subject : a.subject,
+				...a,
+				subject: !config.prod ? '[TEST-BULK] ' + (a.subject || '') : a.subject || '',
 			},
 			From: config.emailFrom,
 			ReplyTo: config.replyTo,
@@ -218,7 +218,7 @@ export async function sendAdminEmail(data: EmailData, template = 'generic', deve
 		TemplateAlias: template,
 		TemplateModel: {
 			email: to,
-			...data.substitutions,
+			...data,
 			subject: !config.prod ? '[TEST-ADMIN] ' + pre + data.subject : pre + data.subject,
 		},
 		From: config.emailFrom,
@@ -261,7 +261,7 @@ export async function sendAdminEmail(data: EmailData, template = 'generic', deve
 			template: template,
 
 			context: {
-				...data.substitutions,
+				...data,
 			},
 		})) as Obj
 

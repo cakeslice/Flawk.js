@@ -726,7 +726,7 @@ export default {
 							// @ts-ignore: Object is possibly 'undefined'.
 							req.tokenExpiration = decoded.exp * 1000
 							req.permission = user.permission
-							if (user.core.language) req.lang = user.core.language
+							req.lang = user.core.language || (req.headers['lang'] as string) || 'en'
 
 							next()
 						} else {
@@ -817,7 +817,7 @@ export default {
 							// @ts-ignore: Object is possibly 'undefined'.
 							req.tokenExpiration = decoded.exp * 1000
 							req.permission = user.permission
-							if (user.core.language) req.lang = user.core.language
+							req.lang = user.core.language || (req.headers['lang'] as string) || 'en'
 
 							next()
 						} else {
