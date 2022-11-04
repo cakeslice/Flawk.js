@@ -11,8 +11,8 @@ import crypto from 'crypto'
 import { subDays } from 'date-fns'
 import { Obj } from 'flawk-types'
 import nodemailer from 'nodemailer'
-import hbs from 'nodemailer-express-handlebars'
 import { htmlToText } from 'nodemailer-html-to-text'
+import { nodemailerMjmlPlugin } from 'nodemailer-mjml'
 import { ServerClient as Postmark } from 'postmark'
 import { Client } from 'project/database'
 
@@ -33,15 +33,9 @@ function setupNodemailer() {
 	const dir = './app/project/email_templates/'
 	nodemailerClient.use(
 		'compile',
-		hbs({
-			viewEngine: {
-				partialsDir: dir + 'partials',
-				layoutsDir: dir + 'layouts',
-				defaultLayout: 'main',
-				extname: '.hbs',
-			},
-			extName: '.hbs',
-			viewPath: dir,
+		nodemailerMjmlPlugin({
+			templateFolder: dir,
+			minifyHtmlOutput: true,
 		})
 	)
 	nodemailerClient.use('compile', htmlToText())
@@ -74,6 +68,7 @@ export async function sendEmail(
 	const body: EmailBody = {
 		TemplateAlias: template,
 		TemplateModel: {
+			preview: '',
 			...data,
 			subject: !config.prod ? '[TEST] ' + (data.subject || '') : data.subject || '',
 		},
@@ -127,9 +122,10 @@ export async function sendEmail(
 			//text: 'Hello world?',
 			//html: '<b>Hello world?</b>',
 			// @ts-ignore
-			template: template,
+			templateName: template,
 
-			context: {
+			templateData: {
+				preview: '',
 				email: body.To,
 				...data,
 				...(process.env.emailTrackingURL && {
@@ -169,6 +165,7 @@ export async function sendBulkEmails(array: [EmailBulkData], template: string) {
 		bodies.push({
 			TemplateAlias: template,
 			TemplateModel: {
+				preview: '',
 				...a,
 				subject: !config.prod ? '[TEST-BULK] ' + (a.subject || '') : a.subject || '',
 			},
@@ -217,6 +214,7 @@ export async function sendAdminEmail(data: EmailData, template = 'generic', deve
 	const body: EmailBody = {
 		TemplateAlias: template,
 		TemplateModel: {
+			preview: '',
 			email: to,
 			...data,
 			subject: !config.prod ? '[TEST-ADMIN] ' + pre + data.subject : pre + data.subject,
@@ -258,9 +256,10 @@ export async function sendAdminEmail(data: EmailData, template = 'generic', deve
 			//text: 'Hello world?',
 			//html: '<b>Hello world?</b>',
 			// @ts-ignore
-			template: template,
+			templateName: template,
 
-			context: {
+			templateData: {
+				preview: '',
 				...data,
 			},
 		})) as Obj
@@ -340,27 +339,25 @@ if (!config.postmarkKey && config.nodemailerHost) {
 			) {
 				await sendAdminEmail({
 					subject: 'Weekly E-mail Report',
-					substitutions: {
-						text:
-							'In the last week, we sent <b>' +
-							count +
-							' e-mails</b> and about <b>' +
-							openedPercent.toFixed(1) +
-							'%</b> of them were opened.<br/><br/>Template statistics:<br/>' +
-							stats
-								.map(
-									(s) =>
-										'<b>' +
-										s.template +
-										'</b>' +
-										': ' +
-										s.count +
-										' sent, ' +
-										s.openedCount +
-										' read'
-								)
-								.join('<br/>'),
-					},
+					text:
+						'In the last week, we sent <b>' +
+						count +
+						' e-mails</b> and about <b>' +
+						openedPercent.toFixed(1) +
+						'%</b> of them were opened.<br/><br/>Template statistics:<br/>' +
+						stats
+							.map(
+								(s) =>
+									'<b>' +
+									s.template +
+									'</b>' +
+									': ' +
+									s.count +
+									' sent, ' +
+									s.openedCount +
+									' read'
+							)
+							.join('<br/>'),
 				})
 				appState.lastEmailReport = new Date()
 				await appState.save()

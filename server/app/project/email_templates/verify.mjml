@@ -1,0 +1,21 @@
+<mjml>
+  <mj-include path="./includes/head.mjml" />
+
+  <mj-body>
+    <mj-include path="./includes/header.mjml" />
+
+    <mj-section>
+      <mj-column>
+        <mj-text>Hey {{firstName}},</mj-text>
+        <mj-text>Please enter the following verification code:</mj-text>
+      </mj-column>
+    </mj-section>
+    <mj-section>
+      <mj-column>
+        <mj-button>{{code}}</mj-button>
+      </mj-column>
+    </mj-section>
+
+    <mj-include path="./includes/footer.mjml" />
+  </mj-body>
+</mjml>

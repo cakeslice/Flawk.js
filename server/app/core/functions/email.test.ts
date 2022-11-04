@@ -15,7 +15,6 @@ it('should not send an e-mail to empty address', async () => {
 		'',
 		{
 			subject: subject,
-			substitutions: {},
 		},
 		''
 	)
@@ -27,7 +26,6 @@ it('should not send an e-mail without a template', async () => {
 		config.developerEmail,
 		{
 			subject: subject,
-			substitutions: {},
 		},
 		''
 	)

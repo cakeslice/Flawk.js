@@ -168,10 +168,8 @@ router.postAsync(Register.call, async (req, res) => {
 		body.email,
 		{
 			subject: res.text('verifyAccount'),
-			substitutions: {
-				firstName: newUser.personal.firstName,
-				code: newUser.appState.verificationCode,
-			},
+			firstName: newUser.personal.firstName,
+			code: newUser.appState.verificationCode,
 		},
 		'verify'
 	)
@@ -272,10 +270,8 @@ router.postAsync(ForgotPassword.call, async (req, res) => {
 		user.email,
 		{
 			subject: res.text('forgotVerify'),
-			substitutions: {
-				firstName: user.personal.firstName,
-				code: user.appState.verificationCode,
-			},
+			firstName: user.personal.firstName,
+			code: user.appState.verificationCode,
 		},
 		'verify'
 	)
@@ -331,9 +327,7 @@ router.postAsync(ResetPassword.call, async (req, res) => {
 			body.email,
 			{
 				subject: res.text('passwordChanged'),
-				substitutions: {
-					firstName: user.personal.firstName,
-				},
+				firstName: user.personal.firstName,
 			},
 			'password_changed'
 		)

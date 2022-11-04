@@ -1,0 +1,44 @@
+<mj-head>
+  <mj-preview>{{preview}}</mj-preview>
+
+  <mj-attributes>
+    <mj-all padding="10px" color="black" font-size="16px" line-height:"22px" font-weight:"400" font-family="Roboto" font-style="normal" letter-spacing=".2px" />
+
+    <mj-button background-color="rgba(51, 108, 251, 1)" color="white" />
+    <mj-body background-color="rgba(238, 238, 238, 1)" />
+    <mj-section background-color="white" />
+    <mj-column padding="10px" />
+  </mj-attributes>
+
+  <mj-style>
+    @import url('https://fonts.googleapis.com/css?family=Roboto:400,500,600,700');
+
+    body {
+      padding: 5%;
+    }
+
+    a,
+    a:hover {
+      text-decoration: none;
+    }
+
+    .h1 div {
+      font-family: 'Roboto' !important;
+      color: rgba(51, 108, 251, 1) !important;
+      font-size: 24px !important;
+      line-height: 30px !important;
+      font-weight: bold !important;
+    }
+
+    .h2 div {
+      font-family: 'Roboto' !important;
+      font-size: 20px !important;
+      line-height: 26px !important;
+      font-weight: bold !important;
+    }
+
+    .faded div {
+      opacity: .5;
+    }
+  </mj-style>
+</mj-head>

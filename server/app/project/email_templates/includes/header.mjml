@@ -1,0 +1,8 @@
+<mj-section background-color="transparent" />
+
+<mj-section border-radius="10px 10px 0px 0px">
+  <mj-column>
+    <!-- <mj-image width="25px" src="http://191n.mj.am/img/191n/3s/x01.png"></mj-image> -->
+    <mj-text css-class="h1" align="center">Flawk</mj-text>
+  </mj-column>
+</mj-section>

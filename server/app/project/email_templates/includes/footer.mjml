@@ -1,0 +1,23 @@
+<mj-section />
+
+<mj-section border-radius="0px 0px 10px 10px" />
+
+<mj-section background-color="transparent" />
+
+<mj-section background-color="transparent">
+  <mj-column>
+    <mj-text css-class="faded" align="center" font-size="14px">
+      <a style="color:black" href="mailto:flawk@cakeslice.dev?subject=Question about Flawk - {{email}}" target="_blank">Contact</a>
+    </mj-text>
+
+    <mj-text css-class="faded" align="center" font-size="14px">
+      <a style="color:black" href="https://flawk.cakeslice.dev" target="_blank">flawk.cakeslice.dev</a>
+    </mj-text>
+  </mj-column>
+</mj-section>
+
+<mj-section background-color="transparent" />
+
+<mj-raw>
+  <img src="{{_tracking_}}" style="display:none">
+</mj-raw>

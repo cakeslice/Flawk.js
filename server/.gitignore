@@ -8,3 +8,5 @@ node_modules/*
 /dist
 
 /local-storage
+
+/app/project/email_templates/compiled

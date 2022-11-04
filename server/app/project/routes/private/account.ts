@@ -168,9 +168,7 @@ router.postAsync(ChangeSettings.call, async (req, res) => {
 				body.email,
 				{
 					subject: res.text('passwordChanged'),
-					substitutions: {
-						firstName: user.personal.firstName,
-					},
+					firstName: user.personal.firstName,
 				},
 				'password_changed'
 			)
