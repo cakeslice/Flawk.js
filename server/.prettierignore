@@ -2,6 +2,7 @@ coverage/*
 node_modules/*
 *.html
 *.hbs
+*.mjml
 *.md
 *.yml
 *api.json
