@@ -1,0 +1,24 @@
+diff --git a/node_modules/nodemailer-mjml/dist/helpers/buildMjmlTemplate.js b/node_modules/nodemailer-mjml/dist/helpers/buildMjmlTemplate.js
+index 0124d3f..e200c47 100644
+--- a/node_modules/nodemailer-mjml/dist/helpers/buildMjmlTemplate.js
++++ b/node_modules/nodemailer-mjml/dist/helpers/buildMjmlTemplate.js
+@@ -25,13 +25,16 @@ const buildMjmlTemplate = async (options, templateName, templateData) => {
+         throw new Error(`[nodemailer-mjml] - Could not read mjml template at path: ${mjmlTemplatePath}`);
+     });
+     const shouldRunMustacheCompiler = !!templateData && Object.keys(templateData ?? {}).length > 0;
+-    const mustacheRenderedTemplate = shouldRunMustacheCompiler ? (0, mustache_1.render)(rawMjmlTemplate, templateData) : rawMjmlTemplate;
+-    const mjmlOutput = (0, mjml_1.default)(mustacheRenderedTemplate, {
++    const mjmlOutput = (0, mjml_1.default)(rawMjmlTemplate, {
+         filePath: mjmlTemplatePath,
+         ...renderOptions.mjmlOptions
+     });
+     (0, checkMjmlError_1.checkMjmlError)(mjmlOutput);
++	 
+     const finalHtmlOutput = renderOptions.minifyHtmlOutput ? (0, html_minifier_1.minify)(mjmlOutput.html, renderOptions.htmlMinifierOptions) : mjmlOutput.html;
+-    return finalHtmlOutput;
++
++    const mustacheRenderedTemplate = shouldRunMustacheCompiler ? (0, mustache_1.render)(finalHtmlOutput, templateData) : finalHtmlOutput;
++
++    return mustacheRenderedTemplate;
+ };
+ exports.buildMjmlTemplate = buildMjmlTemplate;

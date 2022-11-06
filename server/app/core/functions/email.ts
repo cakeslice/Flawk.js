@@ -35,7 +35,7 @@ function setupNodemailer() {
 		'compile',
 		nodemailerMjmlPlugin({
 			templateFolder: dir,
-			minifyHtmlOutput: true,
+			minifyHtmlOutput: false,
 		})
 	)
 	nodemailerClient.use('compile', htmlToText())
