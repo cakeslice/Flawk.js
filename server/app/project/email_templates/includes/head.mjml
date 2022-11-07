@@ -2,11 +2,11 @@
   <mj-preview>{{preview}}</mj-preview>
 
   <mj-attributes>
-    <mj-all padding="10px" color="black" font-size="16px" line-height:"22px" font-weight:"400" font-family="Roboto" font-style="normal" letter-spacing=".2px" />
+    <mj-all padding="10px" color="black" font-size="16px" font-family="'Roboto', Verdana, sans-serif" font-style="normal" letter-spacing=".2px" />
 
     <mj-button background-color="rgba(51, 108, 251, 1)" color="white" />
-    <mj-body background-color="rgba(238, 238, 238, 1)" />
-    <mj-section background-color="white" />
+    <mj-body width="600px" background-color="rgba(238, 238, 238, 1)" />
+    <mj-section padding="0px 20px" background-color="white" />
     <mj-column padding="10px" />
   </mj-attributes>
 
@@ -14,7 +14,13 @@
     @import url('https://fonts.googleapis.com/css?family=Roboto:400,500,600,700');
 
     body {
-      padding: 5%;
+      padding: 5% 0%;
+      min-width: 300px;
+    }
+
+    div {
+      font-weight: 400 !important;
+      line-height: 25.6px !important;
     }
 
     a,
@@ -23,7 +29,7 @@
     }
 
     .h1 div {
-      font-family: 'Roboto' !important;
+      font-family: 'Roboto', sans-serif !important;
       color: rgba(51, 108, 251, 1) !important;
       font-size: 24px !important;
       line-height: 30px !important;
@@ -31,7 +37,7 @@
     }
 
     .h2 div {
-      font-family: 'Roboto' !important;
+      font-family: 'Roboto', sans-serif !important;
       font-size: 20px !important;
       line-height: 26px !important;
       font-weight: bold !important;

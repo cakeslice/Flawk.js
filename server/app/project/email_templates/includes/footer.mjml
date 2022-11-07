@@ -1,8 +1,8 @@
-<mj-section />
+<mj-section padding="10px 0px" />
 
-<mj-section border-radius="0px 0px 10px 10px" />
+<mj-section padding="10px 0px" border-radius="0px 0px 10px 10px" />
 
-<mj-section background-color="transparent" />
+<mj-section padding="10px 0px" background-color="transparent" />
 
 <mj-section background-color="transparent">
   <mj-column>
@@ -16,7 +16,7 @@
   </mj-column>
 </mj-section>
 
-<mj-section background-color="transparent" />
+<mj-section padding="10px 0px" background-color="transparent" />
 
 <mj-raw>
   <img src="{{_tracking_}}" style="display:none">
