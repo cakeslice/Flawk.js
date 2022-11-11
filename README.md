@@ -105,13 +105,15 @@
 		- npm install --force
 		- npm run start:dev
 		- **Note**: To run you need this file: *client/_env/dev.env*
+			- You will need a docker container repository to set the DOCKER_IMAGE var in *client/_env/build-prod.env*
 
 - To deploy:
 	- *Backend*:
 		- cd server
 		- npm run build_docker:prod
 		- **Note**: To deploy you need this file: *server/_env/build-prod.env*
-			- Also you need to set the env variables in whatever system you're using to run the app (for example CapRover)
+		   - You will need a docker container repository to set the DOCKER_IMAGE var in *server/_env/build-prod.env*
+			- Also you need to set the env variables in whatever system you're using to run the app based on *server/_env/prod.env* (for example in the CapRover app)
 	- *Frontend*:
 		- cd client
 		- npm run build_docker:prod
