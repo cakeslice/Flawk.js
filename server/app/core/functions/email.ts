@@ -334,30 +334,28 @@ if (!config.postmarkKey && config.nodemailerHost) {
 				appState = new AppState({})
 			}
 			if (
-				!appState.lastEmailReport ||
-				new Date(appState.lastEmailReport).getTime() < sevenDaysAgo.getTime()
+				count > 0 &&
+				(!appState.lastEmailReport ||
+					new Date(appState.lastEmailReport).getTime() < sevenDaysAgo.getTime())
 			) {
 				await sendAdminEmail({
 					subject: 'Weekly E-mail Report',
 					text:
-						'In the last week, we sent <b>' +
+						'In the last week, we sent ' +
 						count +
-						' e-mails</b> and about <b>' +
+						' e-mails and about ' +
 						openedPercent.toFixed(1) +
-						'%</b> of them were opened.<br/><br/>Template statistics:<br/>' +
-						stats
-							.map(
-								(s) =>
-									'<b>' +
-									s.template +
-									'</b>' +
-									': ' +
-									s.count +
-									' sent, ' +
-									s.openedCount +
-									' read'
-							)
-							.join('<br/>'),
+						'% of them were opened' +
+						stats.map(
+							(s) =>
+								' | ' +
+								s.template +
+								': ' +
+								s.count +
+								' sent, ' +
+								s.openedCount +
+								' read'
+						),
 				})
 				appState.lastEmailReport = new Date()
 				await appState.save()
