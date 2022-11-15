@@ -26,8 +26,8 @@ jobs:
 
       - run:
           command: npm run auditCI
-      - run:
-          command: npm run prettierCI
+      #- run:
+      #    command: npm run prettierCI
       - run:
           command: npm run lintCI
       - run:
@@ -59,8 +59,8 @@ jobs:
 
       - run:
           command: npm run auditCI
-      - run:
-          command: npm run prettierCI
+      #- run:
+      #    command: npm run prettierCI
       - run:
           command: npm run lintCI
       - run:

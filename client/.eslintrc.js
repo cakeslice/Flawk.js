@@ -41,9 +41,7 @@ module.exports = {
 		//
 		'plugin:security/recommended',
 		'plugin:cypress/recommended',
-		// Disable rules that conflict with Prettier
-		// Prettier must be last to override other configs
-		'prettier',
+		'plugin:prettier/recommended',
 	],
 	// Only add plugins to customize the rules
 	plugins: ['import', 'jsx-a11y', 'security', 'jest', 'no-secrets'],

@@ -33,19 +33,19 @@
 	"eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
 	"[javascript]": {
 		"editor.defaultFormatter": "esbenp.prettier-vscode",
-		"editor.formatOnSave": true
+		"editor.formatOnSave": false
 	},
 	"[javascriptreact]": {
 		"editor.defaultFormatter": "esbenp.prettier-vscode",
-		"editor.formatOnSave": true
+		"editor.formatOnSave": false
 	},
 	"[typescript]": {
 		"editor.defaultFormatter": "esbenp.prettier-vscode",
-		"editor.formatOnSave": true
+		"editor.formatOnSave": false
 	},
 	"[typescriptreact]": {
 		"editor.defaultFormatter": "esbenp.prettier-vscode",
-		"editor.formatOnSave": true
+		"editor.formatOnSave": false
 	},
 	"[json]": {
 		"editor.defaultFormatter": "esbenp.prettier-vscode"

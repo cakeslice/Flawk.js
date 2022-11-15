@@ -128,11 +128,12 @@
 		"cross-env": "^7.0.3",
 		"env-cmd": "^10.1.0",
 		"eslint": "^8.3.0",
-		"eslint-config-prettier": "^8.3.0",
+		"eslint-config-prettier": "^8.5.0",
 		"eslint-plugin-import": "^2.25.3",
 		"eslint-plugin-jest": "^25.3.0",
 		"eslint-plugin-jsdoc": "^37.0.3",
 		"eslint-plugin-no-secrets": "^0.8.9",
+		"eslint-plugin-prettier": "^4.2.1",
 		"eslint-plugin-security": "^1.4.0",
 		"eslint-plugin-security-node": "^1.0.14",
 		"jest": "^27.3.1",
@@ -151,7 +152,6 @@
 	"lint-staged": {
 		"*.{js,jsx,css,less,scss,md,ts,tsx}": [
 			"eslint --cache --quiet",
-			"prettier --check",
 			"cross-env JEST=true jest --passWithNoTests --bail --runInBand --findRelatedTests"
 		]
 	},
