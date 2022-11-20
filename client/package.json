@@ -206,7 +206,11 @@
 	},
 	"lint-staged": {
 		"*.{js,jsx,css,less,scss,md,ts,tsx}": [
-			"eslint --cache --quiet",
+			"eslint --cache --quiet"
+		]
+	},
+	"lint-staged_EXTRA": {
+		"*.{js,jsx,css,less,scss,md,ts,tsx}": [
 			"cross-env jest --passWithNoTests --bail --runInBand --findRelatedTests"
 		]
 	},
