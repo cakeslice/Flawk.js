@@ -44,7 +44,7 @@ module.exports = {
 		'plugin:prettier/recommended',
 	],
 	// Only add plugins to customize the rules
-	plugins: ['import', 'jsx-a11y', 'security', 'jest', 'no-secrets'],
+	plugins: ['import', 'jsx-a11y', 'security', 'jest', 'no-secrets', 'unused-imports'],
 	rules: {
 		'jest/valid-describe': 'off',
 		//
@@ -97,6 +97,7 @@ module.exports = {
 		'security/detect-object-injection': 0,
 		//
 		eqeqeq: 'error',
+		'unused-imports/no-unused-imports': 'error',
 		'no-return-assign': 'error',
 		'no-console': 'off',
 		'no-unused-vars': 'warn',

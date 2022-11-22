@@ -15,7 +15,7 @@ module.exports = {
 		'plugin:prettier/recommended',
 	],
 	// Only add plugins to customize the rules
-	plugins: ['security', 'security-node', 'jest', 'no-secrets'],
+	plugins: ['security', 'security-node', 'jest', 'no-secrets', 'unused-imports'],
 	globals: {
 		Atomics: 'readonly',
 		SharedArrayBuffer: 'readonly',
@@ -34,6 +34,7 @@ module.exports = {
 		'security-node/detect-possible-timing-attacks': 'error',
 		//
 		eqeqeq: 'error',
+		'unused-imports/no-unused-imports': 'error',
 		'no-return-assign': 'error',
 		'no-console': 'off',
 		'no-unused-vars': 'warn',

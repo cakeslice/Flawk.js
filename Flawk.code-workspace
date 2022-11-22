@@ -8,15 +8,5 @@
       "name": "Frontend",
       "path": "client"
     }
-  ],
-  "settings": {
-    "workbench.colorCustomizations": {
-      "activityBar.background": "#0A2F50",
-      "titleBar.activeBackground": "#0E426F",
-      "titleBar.activeForeground": "#F9FCFE"
-    },
-    "workbench.editorAssociations": {
-      "*.md": "vscode.markdown.preview.editor"
-    }
-  }
+  ]
 }
