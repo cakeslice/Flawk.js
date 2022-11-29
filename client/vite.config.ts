@@ -10,6 +10,7 @@ const iconImage = image + 'w=75&h=75'
 const thumbImage = image + 'w=350&h=350'
 const defaultImage = image + 'w=800&h=800'
 const imageProcessor = {
+	original: new URLSearchParams('fit=inside&webp&quality=100'),
 	icon: new URLSearchParams(iconImage),
 	thumb: new URLSearchParams(thumbImage),
 	default: new URLSearchParams(defaultImage),
@@ -30,9 +31,11 @@ export default ({ mode }) => {
 			macrosPlugin(),
 			imagetools({
 				include: '**/*.{heic,heif,avif,jpeg,jpg,png,tiff,webp,gif}*',
-				exclude: '**/img_original/**',
 				defaultDirectives: (id) => {
 					if (id.search === '') {
+						if (id.pathname.includes('img_original/')) {
+							return imageProcessor.original
+						}
 						if (id.pathname.includes('img_thumb/')) {
 							return imageProcessor.thumb
 						}
