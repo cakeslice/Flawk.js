@@ -686,7 +686,7 @@ export default class FInput extends TrackedComponent<Props> {
 					? this.handleKeyDown(e)
 					: this.props.onKeyPress && this.props.onKeyPress(e)
 
-				if (!this.props.textArea && e.key === 'Enter') {
+				if (!this.props.onKeyPress && !this.props.textArea && e.key === 'Enter') {
 					if (e.target instanceof HTMLElement) {
 						e.target.blur()
 					}
