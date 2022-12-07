@@ -5,18 +5,18 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import Dropdown from 'core/components/Dropdown'
-import FButton from 'core/components/FButton'
-import FInput from 'core/components/FInput'
+import { CustomDropdown } from 'core/components/Dropdown'
+import { Button } from 'core/components/FButton'
+import { CustomInput } from 'core/components/FInput'
 import config from 'core/config'
 import { FastField as FormFastField, Field as FormField } from 'formik'
-import React from 'react'
+import React, { memo } from 'react'
 import isDate from 'validator/lib/isDate'
 import isEmail from 'validator/lib/isEmail'
 
 const defaultError = '*'
 
-export default function Field(
+const Field = memo(function Field(
 	props: {
 		component: typeof React.Component
 		required?: boolean | string
@@ -25,7 +25,7 @@ export default function Field(
 		validate?: (value: string | number | boolean | undefined) => boolean
 		fastField?: false
 		type?: string
-	} & (FInput['props'] | Dropdown['props'] | FButton['props'])
+	} & (CustomInput['props'] | CustomDropdown['props'] | Button['props'])
 ) {
 	function validate(value: string | number | boolean | undefined) {
 		let error
@@ -95,4 +95,6 @@ export default function Field(
 	if (props.fastField === undefined || props.fastField)
 		return <FormFastField {...props} validate={validate}></FormFastField>
 	else return <FormField {...props} validate={validate}></FormField>
-}
+})
+
+export default Field

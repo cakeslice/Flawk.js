@@ -7,7 +7,7 @@
 
 import Loading from 'core/components/Loading'
 import config from 'core/config'
-import React from 'react'
+import React, { memo } from 'react'
 import MediaQuery from 'react-responsive'
 import Unity, { UnityContext } from 'react-unity-webgl'
 
@@ -32,7 +32,7 @@ type Props = {
 			devicePixelRatio?: undefined
 	  }
 )
-export default class UnityComponent extends React.Component<Props> {
+class UnityComponent extends React.Component<Props> {
 	state = { ready: false, visible: false, progress: 0 }
 	unityContext: UnityContext | undefined = undefined
 
@@ -193,3 +193,5 @@ export default class UnityComponent extends React.Component<Props> {
 		)
 	}
 }
+
+export default memo(UnityComponent)

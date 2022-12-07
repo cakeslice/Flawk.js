@@ -15,7 +15,7 @@ import lightOff from 'core/components/viewer/assets/lightbulb_off.svg'
 import config from 'core/config'
 import styles from 'core/styles'
 import { css } from 'glamor'
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { memo, useEffect, useMemo, useState } from 'react'
 import { useMediaQuery } from 'react-responsive'
 import { Link } from 'react-router-dom'
 import * as uuid from 'uuid'
@@ -365,12 +365,19 @@ function Wrapper({ children }: { children: React.ReactNode }) {
 	)
 }
 
-export const Next: React.FC<{
+export const Next = memo(function Next({
+	name,
+	link,
+	backName,
+	backLink,
+	children,
+}: {
 	name?: string
 	link?: string
 	backName?: string
 	backLink?: string
-}> = ({ name, link, backName, backLink }) => {
+	children?: React.ReactNode
+}) {
 	const desktop = useMediaQuery({ minWidth: config.mobileWidthTrigger })
 	return (
 		<div
@@ -441,9 +448,19 @@ export const Next: React.FC<{
 			)}
 		</div>
 	)
-}
+})
 
-export const Section: React.FC<{
+export const Section = memo(function Section({
+	children,
+	title,
+	top,
+	tags,
+	code,
+	lang,
+	description,
+	github,
+}: {
+	children?: React.ReactNode
 	title?: string
 	top?: boolean
 	tags?: string[]
@@ -451,7 +468,7 @@ export const Section: React.FC<{
 	lang?: Lang
 	github?: string
 	description?: React.ReactNode
-}> = ({ children, title, top, tags, code, lang, description, github }) => {
+}) {
 	const id = title ? title.replaceAll(' ', '_').toLowerCase() : uuid.v1()
 
 	const tablet = useMediaQuery({ minWidth: 880 })
@@ -573,7 +590,7 @@ export const Section: React.FC<{
 			</>
 		</Anchor>
 	)
-}
+})
 
 export const arrow = (color: string) => (
 	<svg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'>

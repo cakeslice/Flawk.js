@@ -13,7 +13,7 @@ import { FormIKStruct, GlamorProps, Obj } from 'flawk-types'
 import { FieldInputProps, FormikProps } from 'formik'
 import { css, StyleAttribute } from 'glamor'
 import numeral from 'numeral'
-import React, { LegacyRef, Suspense } from 'react'
+import React, { memo, LegacyRef, Suspense } from 'react'
 import NumberFormat from 'react-number-format'
 import MediaQuery from 'react-responsive'
 import TextareaAutosize, { TextareaAutosizeProps } from 'react-textarea-autosize'
@@ -372,7 +372,8 @@ type Props = {
 				table?: undefined
 		  }
 	)
-export default class FInput extends TrackedComponent<Props> {
+/** Use default export. This is only for type checking */
+export class CustomInput extends TrackedComponent<Props> {
 	trackedName = 'FInput'
 	shouldComponentUpdate(nextProps: Props, nextState: typeof this.state) {
 		super.shouldComponentUpdate(nextProps, nextState, false)
@@ -968,3 +969,6 @@ export default class FInput extends TrackedComponent<Props> {
 		)
 	}
 }
+
+const FInput = memo(CustomInput)
+export default FInput

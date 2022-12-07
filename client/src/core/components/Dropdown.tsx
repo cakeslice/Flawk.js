@@ -12,7 +12,7 @@ import styles from 'core/styles'
 import { FormIKStruct, Obj } from 'flawk-types'
 import { FieldInputProps, FormikProps } from 'formik'
 import { css } from 'glamor'
-import React from 'react'
+import React, { memo } from 'react'
 import MediaQuery from 'react-responsive'
 import Select, {
 	components,
@@ -185,7 +185,8 @@ type Props = {
 				onCreateOption?: undefined
 		  }
 	)
-export default class Dropdown extends TrackedComponent<Props> {
+/** Use default export. This is only for type checking */
+export class CustomDropdown extends TrackedComponent<Props> {
 	trackedName = 'Dropdown'
 	shouldComponentUpdate(nextProps: Props, nextState: typeof this.state) {
 		super.shouldComponentUpdate(nextProps, nextState, false)
@@ -1191,3 +1192,6 @@ export default class Dropdown extends TrackedComponent<Props> {
 		)
 	}
 }
+
+const Dropdown = memo(CustomDropdown)
+export default Dropdown

@@ -6,11 +6,11 @@
  */
 
 import config from 'core/config'
-import React from 'react'
+import React, { memo } from 'react'
 import { Beforeunload } from 'react-beforeunload'
 import { Prompt } from 'react-router-dom'
 
-export default function ExitPrompt(props: { dirty: boolean; noRouter?: boolean }) {
+const ExitPrompt = memo(function ExitPrompt(props: { dirty: boolean; noRouter?: boolean }) {
 	return (
 		<Beforeunload
 			// eslint-disable-next-line
@@ -24,4 +24,6 @@ export default function ExitPrompt(props: { dirty: boolean; noRouter?: boolean }
 			)}
 		</Beforeunload>
 	)
-}
+})
+
+export default ExitPrompt

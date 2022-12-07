@@ -13,7 +13,7 @@ import config from 'core/config'
 import styles from 'core/styles'
 import { GlamorProps, Obj } from 'flawk-types'
 import { css } from 'glamor'
-import React from 'react'
+import React, { memo } from 'react'
 import FocusLock from 'react-focus-lock'
 import { Portal } from 'react-portal'
 import { Link, RouteComponentProps, withRouter } from 'react-router-dom'
@@ -489,7 +489,7 @@ class MobileDrawer extends TrackedComponent<Props> {
 		)
 	}
 }
-export default withRouter(MobileDrawer)
+export default memo(withRouter(MobileDrawer))
 
 function burger(color: string) {
 	return (

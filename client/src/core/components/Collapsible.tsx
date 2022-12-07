@@ -8,7 +8,7 @@
 import Animated from 'core/components/Animated'
 import config from 'core/config'
 import styles from 'core/styles'
-import React from 'react'
+import React, { memo } from 'react'
 import TrackedComponent from './TrackedComponent'
 
 type Props = {
@@ -20,7 +20,7 @@ type Props = {
 	customTrigger?: boolean
 	noArrow?: boolean
 }
-export default class Collapsible extends TrackedComponent<Props> {
+class Collapsible extends TrackedComponent<Props> {
 	trackedName = 'Collapsible'
 	shouldComponentUpdate(nextProps: Props, nextState: typeof this.state) {
 		super.shouldComponentUpdate(nextProps, nextState, false)
@@ -92,6 +92,7 @@ export default class Collapsible extends TrackedComponent<Props> {
 		)
 	}
 }
+export default memo(Collapsible)
 
 const arrow = (color: string) => (
 	<svg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'>

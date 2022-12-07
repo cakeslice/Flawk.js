@@ -13,7 +13,7 @@ import config from 'core/config'
 import styles from 'core/styles'
 import { GlamorProps, Obj } from 'flawk-types'
 import { css } from 'glamor'
-import React, { Suspense } from 'react'
+import React, { memo, Suspense } from 'react'
 import { Portal } from 'react-portal'
 import MediaQuery from 'react-responsive'
 import { Link, Redirect, Route, RouteComponentProps, Switch, withRouter } from 'react-router-dom'
@@ -1100,6 +1100,6 @@ class MenuClass extends TrackedComponent<MenuProps> {
 		)
 	}
 }
-const Menu = withRouter(MenuClass)
-const Dashboard = withRouter(DashboardClass)
+const Menu = memo(withRouter(MenuClass))
+const Dashboard = memo(withRouter(DashboardClass))
 export default Dashboard

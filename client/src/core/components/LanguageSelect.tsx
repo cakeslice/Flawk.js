@@ -6,7 +6,7 @@
  */
 
 import config from 'core/config'
-import React from 'react'
+import React, { memo } from 'react'
 import { CSSObjectWithLabel } from 'react-select'
 import Dropdown from './Dropdown'
 
@@ -28,7 +28,7 @@ export async function changeLanguage(lang: string) {
 		window.location.reload()
 	}
 }
-export default function LanguageSelect(props: {
+const LanguageSelect = memo(function LanguageSelect(props: {
 	style?: CSSObjectWithLabel & {
 		input?: CSSObjectWithLabel
 		menu?: CSSObjectWithLabel
@@ -56,4 +56,5 @@ export default function LanguageSelect(props: {
 			})}
 		></Dropdown>
 	)
-}
+})
+export default LanguageSelect

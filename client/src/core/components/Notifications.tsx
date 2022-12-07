@@ -9,7 +9,7 @@ import { get, post } from 'core/api'
 import config from 'core/config'
 import styles from 'core/styles'
 import Parser from 'html-react-parser'
-import React from 'react'
+import React, { memo } from 'react'
 import VisibilitySensor from 'react-visibility-sensor'
 import Avatar from './Avatar'
 import OutsideAlerter from './OutsideAlerter'
@@ -29,7 +29,7 @@ type Notification = {
 }
 
 type Props = { children?: React.ReactNode }
-export default class Notifications extends TrackedComponent<Props> {
+class Notifications extends TrackedComponent<Props> {
 	trackedName = 'Notifications'
 	shouldComponentUpdate(nextProps: Props, nextState: typeof this.state) {
 		super.shouldComponentUpdate(nextProps, nextState, false)
@@ -143,6 +143,8 @@ export default class Notifications extends TrackedComponent<Props> {
 		)
 	}
 }
+
+export default memo(Notifications)
 
 class Popup extends React.Component<{
 	readNotification: (notificationID: string) => Promise<void>

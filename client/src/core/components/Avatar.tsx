@@ -7,12 +7,12 @@
 
 import Loading from 'core/components/Loading'
 import styles from 'core/styles'
-import React from 'react'
+import React, { memo } from 'react'
 import { Img } from 'react-image'
 import uniqolor from 'uniqolor'
 import avatar from '../assets/images/avatar.svg'
 
-export default function Avatar({
+const Avatar = memo(function Avatar({
 	src,
 	name,
 	emptyOverride,
@@ -107,4 +107,6 @@ export default function Avatar({
 			)}
 		</div>
 	)
-}
+})
+
+export default Avatar

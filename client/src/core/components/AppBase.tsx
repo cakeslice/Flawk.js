@@ -18,7 +18,7 @@ import navigation from 'core/functions/navigation'
 import styles from 'core/styles'
 import { Lang } from 'flawk-types'
 import { CookieStorage, isSupported, MemoryStorage } from 'local-storage-fallback'
-import React, { Component, Suspense, useCallback, useState } from 'react'
+import React, { memo, Component, Suspense, useCallback, useState } from 'react'
 import { ErrorBoundary, FallbackProps } from 'react-error-boundary'
 import GitInfo from 'react-git-info/macro'
 import { Helmet } from 'react-helmet'
@@ -148,7 +148,7 @@ class ErrorFallback extends Component<FallbackProps> {
 	}
 }
 
-export default function AppBase({ component }: { component: React.ReactNode }) {
+export const AppBase = memo(function AppBase({ component }: { component: React.ReactNode }) {
 	const [nightMode, setNightMode] = useState<boolean | undefined>(undefined)
 	const applyNightMode = useCallback(applyNightModeFunction, [])
 	const toggleNightMode = useCallback(toggleNightModeFunction, [nightMode, applyNightMode])
@@ -701,4 +701,6 @@ export default function AppBase({ component }: { component: React.ReactNode }) {
 			</Suspense>
 		</ErrorBoundary>
 	)
-}
+})
+
+export default AppBase

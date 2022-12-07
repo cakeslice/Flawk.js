@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import React from 'react'
+import React, { memo } from 'react'
 import TrackedComponent from './TrackedComponent'
 
 type Props = {
@@ -14,7 +14,7 @@ type Props = {
 	repeat?: number
 	style?: React.CSSProperties
 }
-export default class TextFileReader extends TrackedComponent<Props> {
+class TextFileReader extends TrackedComponent<Props> {
 	trackedName = 'TextFileReader'
 	shouldComponentUpdate(nextProps: Props, nextState: typeof this.state) {
 		super.shouldComponentUpdate(nextProps, nextState, false)
@@ -71,3 +71,5 @@ export default class TextFileReader extends TrackedComponent<Props> {
 		)
 	}
 }
+
+export default memo(TextFileReader)

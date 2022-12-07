@@ -11,7 +11,7 @@ import TrackedComponent from 'core/components/TrackedComponent'
 import config from 'core/config'
 import styles from 'core/styles'
 import { Obj } from 'flawk-types'
-import React, { Component, useState } from 'react'
+import React, { memo, Component, useState } from 'react'
 import FocusLock from 'react-focus-lock'
 import { Portal } from 'react-portal'
 import MediaQuery from 'react-responsive'
@@ -77,7 +77,7 @@ type Props = {
 			onClose: (fromHeader: boolean) => void
 	  }
 )
-export default class Modal extends TrackedComponent<Props> {
+class Modal extends TrackedComponent<Props> {
 	trackedName = 'Modal'
 	shouldComponentUpdate(nextProps: Props, nextState: typeof this.state) {
 		super.shouldComponentUpdate(nextProps, nextState, false)
@@ -443,100 +443,93 @@ export default class Modal extends TrackedComponent<Props> {
 		)
 	}
 }
-class ModalHeader extends Component<{
+export default memo(Modal)
+
+const ModalHeader = memo(function ModalHeader(props: {
 	title?: React.ReactNode
 	headerStyle?: HeaderStyle
 	modalPadding: number
 	onClose: (fromComponent: boolean) => void
 	big?: boolean
-}> {
-	render() {
-		return (
-			<div>
+}) {
+	return (
+		<div>
+			<div
+				className='flex justify-between items-center'
+				style={{
+					padding:
+						(props.big ? props.modalPadding : props.modalPadding / 2) +
+						'px ' +
+						(props.big ? props.modalPadding : props.modalPadding / 2) +
+						'px ' +
+						(props.big ? props.modalPadding : props.modalPadding / 2) +
+						'px ' +
+						props.modalPadding +
+						'px',
+					...styles.modalHeaderStyle,
+					...props.headerStyle,
+				}}
+			>
 				<div
-					className='flex justify-between items-center'
 					style={{
-						padding:
-							(this.props.big
-								? this.props.modalPadding
-								: this.props.modalPadding / 2) +
-							'px ' +
-							(this.props.big
-								? this.props.modalPadding
-								: this.props.modalPadding / 2) +
-							'px ' +
-							(this.props.big
-								? this.props.modalPadding
-								: this.props.modalPadding / 2) +
-							'px ' +
-							this.props.modalPadding +
-							'px',
-						...styles.modalHeaderStyle,
-						...this.props.headerStyle,
+						...{
+							letterSpacing: 0.4,
+							width: '90%',
+							maxWidth: '90%',
+							...(styles.modalHeaderStyle && styles.modalHeaderStyle.textStyle),
+							...(props.headerStyle && props.headerStyle.textStyle),
+						},
 					}}
 				>
-					<div
-						style={{
-							...{
-								letterSpacing: 0.4,
-								width: '90%',
-								maxWidth: '90%',
-								...(styles.modalHeaderStyle && styles.modalHeaderStyle.textStyle),
-								...(this.props.headerStyle && this.props.headerStyle.textStyle),
-							},
-						}}
-					>
-						{this.props.title}
-					</div>
-					{((styles.modalHeaderStyle && !styles.modalHeaderStyle.noCloseButton) ||
-						(this.props.headerStyle &&
-							(this.props.headerStyle.noCloseButton === undefined ||
-								this.props.headerStyle.noCloseButton === false))) && (
-						<button
-							type='button'
-							style={{
-								borderRadius: 5,
-								height: 24,
-								background: 'transparent',
-							}}
-							onClick={() => this.props.onClose(true)}
-						>
-							<div
-								style={{
-									opacity: 0.5,
-								}}
-							>
-								{close(styles.colors.black)}
-							</div>
-						</button>
-					)}
+					{props.title}
 				</div>
-				{((!this.props.headerStyle &&
-					styles.modalHeaderStyle &&
-					(styles.modalHeaderStyle.line === undefined || styles.modalHeaderStyle.line)) ||
-					(this.props.headerStyle &&
-						(this.props.headerStyle.line === undefined ||
-							this.props.headerStyle.line))) && (
-					<div
+				{((styles.modalHeaderStyle && !styles.modalHeaderStyle.noCloseButton) ||
+					(props.headerStyle &&
+						(props.headerStyle.noCloseButton === undefined ||
+							props.headerStyle.noCloseButton === false))) && (
+					<button
+						type='button'
 						style={{
-							height: 2,
-							background:
-								(this.props.headerStyle && this.props.headerStyle.lineColor) ||
-								styles.modalHeaderStyle.lineColor ||
-								styles.colors.black,
-							opacity:
-								(this.props.headerStyle && this.props.headerStyle.lineColor) ||
-								styles.modalHeaderStyle.lineColor
-									? 1
-									: 0.1,
-							width: '100%',
+							borderRadius: 5,
+							height: 24,
+							background: 'transparent',
 						}}
-					></div>
+						onClick={() => props.onClose(true)}
+					>
+						<div
+							style={{
+								opacity: 0.5,
+							}}
+						>
+							{close(styles.colors.black)}
+						</div>
+					</button>
 				)}
 			</div>
-		)
-	}
-}
+			{((!props.headerStyle &&
+				styles.modalHeaderStyle &&
+				(styles.modalHeaderStyle.line === undefined || styles.modalHeaderStyle.line)) ||
+				(props.headerStyle &&
+					(props.headerStyle.line === undefined || props.headerStyle.line))) && (
+				<div
+					style={{
+						height: 2,
+						background:
+							(props.headerStyle && props.headerStyle.lineColor) ||
+							styles.modalHeaderStyle.lineColor ||
+							styles.colors.black,
+						opacity:
+							(props.headerStyle && props.headerStyle.lineColor) ||
+							styles.modalHeaderStyle.lineColor
+								? 1
+								: 0.1,
+						width: '100%',
+					}}
+				></div>
+			)}
+		</div>
+	)
+})
 
 const close = (color: string) => {
 	return (

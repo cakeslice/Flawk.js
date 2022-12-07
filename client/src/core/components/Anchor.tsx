@@ -6,7 +6,7 @@
  */
 
 import navigation from 'core/functions/navigation'
-import React from 'react'
+import React, { memo } from 'react'
 import { InView } from 'react-intersection-observer'
 import TrackedComponent from './TrackedComponent'
 
@@ -22,7 +22,7 @@ type Props = {
 	style?: React.CSSProperties
 	className?: string
 }
-export default class Anchor extends TrackedComponent<Props> {
+class Anchor extends TrackedComponent<Props> {
 	triggered = false
 
 	trackedName = 'Anchor'
@@ -79,3 +79,5 @@ export default class Anchor extends TrackedComponent<Props> {
 		)
 	}
 }
+
+export default memo(Anchor)

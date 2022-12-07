@@ -17,7 +17,7 @@ import { GlamorProps, Obj } from 'flawk-types'
 import { css, StyleAttribute } from 'glamor'
 import _find from 'lodash/find'
 import _get from 'lodash/get'
-import React from 'react'
+import React, { memo } from 'react'
 import MediaQuery from 'react-responsive'
 import { SizeMe } from 'react-sizeme'
 import VisibilitySensor from 'react-visibility-sensor'
@@ -997,7 +997,7 @@ const sorting = (color: string, colorActive: string, direction?: 'asc' | 'desc')
 	</svg>
 )
 
-export function TablePagination({
+export const TablePagination = memo(function TablePagination({
 	items,
 	onClick,
 	limit,
@@ -1083,4 +1083,4 @@ export function TablePagination({
 			}}
 		</SizeMe>
 	)
-}
+})

@@ -7,7 +7,7 @@
 
 import TrackedComponent from 'core/components/TrackedComponent'
 import config from 'core/config'
-import React from 'react'
+import React, { memo } from 'react'
 import ReactQuill from 'react-quill'
 import MediaQuery from 'react-responsive'
 import './TextEditor.scss'
@@ -46,7 +46,7 @@ type Props = {
 	value?: string
 	toolbar?: Toolbar[]
 }
-export default class TextEditor extends TrackedComponent<Props> {
+class TextEditor extends TrackedComponent<Props> {
 	trackedName = 'TextEditor'
 	shouldComponentUpdate(nextProps: Props, nextState: typeof this.state) {
 		super.shouldComponentUpdate(nextProps, nextState, false)
@@ -93,3 +93,5 @@ export default class TextEditor extends TrackedComponent<Props> {
 		)
 	}
 }
+
+export default memo(TextEditor)

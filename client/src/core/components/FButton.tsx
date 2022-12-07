@@ -12,7 +12,7 @@ import styles from 'core/styles'
 import { FormIKStruct, GlamorProps, Obj } from 'flawk-types'
 import { FieldInputProps, FormikErrors, FormikProps } from 'formik'
 import { css } from 'glamor'
-import React from 'react'
+import React, { memo } from 'react'
 import MediaQuery from 'react-responsive'
 import { Link } from 'react-router-dom'
 
@@ -124,7 +124,8 @@ type Props = {
 				onBlur?: (event: React.FocusEvent<HTMLButtonElement, Element>) => void
 		  }
 	)
-export default class FButton extends TrackedComponent<Props> {
+/** Use default export. This is only for type checking */
+export class Button extends TrackedComponent<Props> {
 	trackedName = 'FButton'
 	shouldComponentUpdate(nextProps: Props, nextState: typeof this.state) {
 		super.shouldComponentUpdate(nextProps, nextState, false)
@@ -664,6 +665,9 @@ export default class FButton extends TrackedComponent<Props> {
 		)
 	}
 }
+
+const FButton = memo(Button)
+export default FButton
 
 const checkedIcon = (color: string) => (
 	<svg width='17' height='13' viewBox='0 0 17 13' fill='none' xmlns='http://www.w3.org/2000/svg'>

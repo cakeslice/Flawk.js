@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import React from 'react'
+import React, { memo } from 'react'
 import TrackedComponent from './TrackedComponent'
 
 type Props = {
@@ -16,7 +16,7 @@ type Props = {
 	style?: React.CSSProperties
 	className?: string
 }
-export default class OutsideAlerter extends TrackedComponent<Props> {
+class OutsideAlerter extends TrackedComponent<Props> {
 	trackedName = 'OutsideAlerter'
 	shouldComponentUpdate(nextProps: Props, nextState: typeof this.state) {
 		super.shouldComponentUpdate(nextProps, nextState, false)
@@ -62,3 +62,5 @@ export default class OutsideAlerter extends TrackedComponent<Props> {
 		)
 	}
 }
+
+export default memo(OutsideAlerter)

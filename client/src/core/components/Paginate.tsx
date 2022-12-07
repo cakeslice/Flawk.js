@@ -6,7 +6,7 @@
  */
 
 import styles from 'core/styles'
-import React from 'react'
+import React, { memo } from 'react'
 import { SizeMe } from 'react-sizeme'
 import { getPaginationModel } from 'ultimate-pagination'
 
@@ -26,7 +26,7 @@ type Props = {
 	hideEllipsis?: boolean
 	style?: React.CSSProperties
 }
-export default function Paginate(props: Props) {
+const Paginate = memo(function Paginate(props: Props) {
 	const {
 		onClick,
 		currentPage,
@@ -179,7 +179,8 @@ export default function Paginate(props: Props) {
 			}}
 		</SizeMe>
 	)
-}
+})
+export default Paginate
 
 export const pageArrow = (color: string) => (
 	<svg width='7' height='11' viewBox='0 0 7 11' fill='none' xmlns='http://www.w3.org/2000/svg'>

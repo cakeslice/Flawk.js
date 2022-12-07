@@ -33,6 +33,7 @@ export function useTracking<T>(trackedName: string, props: T, trackedProps?: str
 					  ' "' + previousProps.trackedName + '"'
 					: '')
 
+			// @ts-ignore
 			Object.keys(props).forEach((key) => {
 				if (trackedProps) {
 					for (let i = 0; i < trackedProps.length; i++) {

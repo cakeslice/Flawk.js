@@ -8,7 +8,7 @@
 import config from 'core/config'
 import styles from 'core/styles'
 import RSlider, { Range } from 'rc-slider'
-import React from 'react'
+import React, { memo } from 'react'
 import './Slider.scss'
 import TrackedComponent from './TrackedComponent'
 
@@ -32,7 +32,7 @@ type Props = {
 			onChange?: (value: number) => void
 	  }
 )
-export default class Slider extends TrackedComponent<Props> {
+class Slider extends TrackedComponent<Props> {
 	trackedName = 'Slider'
 	shouldComponentUpdate(nextProps: Props, nextState: typeof this.state) {
 		super.shouldComponentUpdate(nextProps, nextState, false)
@@ -126,6 +126,8 @@ export default class Slider extends TrackedComponent<Props> {
 		)
 	}
 }
+
+export default memo(Slider)
 
 const handleComponent = (props: {
 	value: number

@@ -24,7 +24,7 @@ import _find from 'lodash/find'
 import _isFunction from 'lodash/isFunction'
 import _sortBy from 'lodash/sortBy'
 import { useStoreSelector } from 'project/redux/_store'
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { memo, useCallback, useEffect, useState } from 'react'
 import GitInfo from 'react-git-info/macro'
 import MediaQuery from 'react-responsive'
 import { Router } from 'react-router-dom'
@@ -169,7 +169,7 @@ function addFlagFunction(
 	)
 }
 
-export default function RouterBase({ children }: { children: React.ReactNode }) {
+export const RouterBase = memo(function RouterBase({ children }: { children: React.ReactNode }) {
 	const [history] = useState(createBrowserHistory())
 
 	const { user, fetchingUser, authError } = useStoreSelector((state) => ({
@@ -544,7 +544,9 @@ export default function RouterBase({ children }: { children: React.ReactNode }) 
 			<ToastContainer />
 		</>
 	)
-}
+})
+
+export default RouterBase
 
 function close(color: string) {
 	return (

@@ -10,7 +10,7 @@ import TrackedComponent from 'core/components/TrackedComponent'
 import config from 'core/config'
 import styles from 'core/styles'
 import { css } from 'glamor'
-import React from 'react'
+import React, { memo } from 'react'
 import TooltipTrigger, { TooltipTriggerProps } from 'react-popper-tooltip'
 import MediaQuery from 'react-responsive'
 import OutsideAlerter from './OutsideAlerter'
@@ -28,7 +28,7 @@ type Props = {
 	contentStyle?: React.CSSProperties
 	containerStyle?: React.CSSProperties
 }
-export default class Tooltip extends TrackedComponent<Props> {
+class Tooltip extends TrackedComponent<Props> {
 	trackedName = 'Tooltip'
 	shouldComponentUpdate(nextProps: Props, nextState: typeof this.state) {
 		super.shouldComponentUpdate(nextProps, nextState, false)
@@ -206,3 +206,5 @@ export default class Tooltip extends TrackedComponent<Props> {
 		)
 	}
 }
+
+export default memo(Tooltip)

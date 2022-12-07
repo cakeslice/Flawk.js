@@ -11,7 +11,7 @@ import config from 'core/config'
 import styles from 'core/styles'
 import prettierParser from 'prettier/parser-babel'
 import prettier from 'prettier/standalone'
-import React from 'react'
+import React, { memo } from 'react'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import MediaQuery from 'react-responsive'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
@@ -44,7 +44,7 @@ const clipboard = (color: string) => (
 
 export type Lang = 'json' | 'tsx' | 'html' | 'jsx' | 'scss' | 'css' | 'bash'
 
-export default function CodeBlock(props: {
+const CodeBlock = memo(function CodeBlock(props: {
 	style?: React.CSSProperties
 	containerStyle?: React.CSSProperties
 	data: string
@@ -153,4 +153,6 @@ export default function CodeBlock(props: {
 			)}
 		</MediaQuery>
 	)
-}
+})
+
+export default CodeBlock

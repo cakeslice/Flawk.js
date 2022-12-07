@@ -7,7 +7,7 @@
 
 import { Obj } from 'flawk-types'
 import { motion, Transition, Variants } from 'framer-motion'
-import React from 'react'
+import React, { memo } from 'react'
 import { InView } from 'react-intersection-observer'
 import * as uuid from 'uuid'
 import TrackedComponent from './TrackedComponent'
@@ -61,7 +61,7 @@ type Props = {
 			staggerChildren?: (variants: Variants | Variants[]) => React.ReactNode
 	  }
 )
-export default class Animated extends TrackedComponent<Props> {
+class Animated extends TrackedComponent<Props> {
 	trackedName = 'Animated'
 	shouldComponentUpdate(nextProps: Props, nextState: typeof this.state) {
 		super.shouldComponentUpdate(nextProps, nextState, false)
@@ -416,3 +416,5 @@ export default class Animated extends TrackedComponent<Props> {
 		)
 	}
 }
+
+export default memo(Animated)

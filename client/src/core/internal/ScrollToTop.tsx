@@ -8,6 +8,7 @@
 import TrackedComponent from 'core/components/TrackedComponent'
 import navigation from 'core/functions/navigation'
 import { RouteComponentProps, withRouter } from 'react-router-dom'
+import { memo } from 'react'
 
 type Props = {
 	location: Location
@@ -39,4 +40,4 @@ class ScrollToTop extends TrackedComponent<Props> {
 		return this.props.children
 	}
 }
-export default withRouter(ScrollToTop)
+export default memo(withRouter(ScrollToTop))

@@ -35,7 +35,7 @@ import ChartDataLabels from 'chartjs-plugin-datalabels'
 import Loading from 'core/components/Loading'
 import config from 'core/config'
 import styles from 'core/styles'
-import React from 'react'
+import React, { memo } from 'react'
 import { Bar, Chart, Doughnut, Line, Pie } from 'react-chartjs-2'
 import TrackedComponent from './TrackedComponent'
 
@@ -205,7 +205,7 @@ type BarProps = {
 	data?: ChartData<'bar', number[]>
 	options?: Options<'bar'>
 } & CoreProps
-export class BarChart extends TrackedComponent<BarProps> {
+class FBar extends TrackedComponent<BarProps> {
 	trackedName = 'BarChart'
 	shouldComponentUpdate(nextProps: BarProps, nextState: typeof this.state) {
 		super.shouldComponentUpdate(nextProps, nextState, false)
@@ -359,6 +359,7 @@ export class BarChart extends TrackedComponent<BarProps> {
 		)
 	}
 }
+export const BarChart = memo(FBar)
 
 type LineProps = {
 	percent?: boolean
@@ -369,7 +370,7 @@ type LineProps = {
 	data?: ChartData<'line', number[]>
 	options?: Options<'line'>
 } & CoreProps
-export class LineChart extends TrackedComponent<LineProps> {
+class FLine extends TrackedComponent<LineProps> {
 	trackedName = 'LineChart'
 	shouldComponentUpdate(nextProps: LineProps, nextState: typeof this.state) {
 		super.shouldComponentUpdate(nextProps, nextState, false)
@@ -544,12 +545,13 @@ export class LineChart extends TrackedComponent<LineProps> {
 		)
 	}
 }
+export const LineChart = memo(FLine)
 
 type DoughnutProps = {
 	data?: ChartData<'doughnut', number[]>
 	options?: Options<'doughnut'>
 } & CoreProps
-export class DoughnutChart extends TrackedComponent<DoughnutProps> {
+class FDoughnut extends TrackedComponent<DoughnutProps> {
 	trackedName = 'DoughnutChart'
 	shouldComponentUpdate(nextProps: DoughnutProps, nextState: typeof this.state) {
 		super.shouldComponentUpdate(nextProps, nextState, false)
@@ -623,12 +625,13 @@ export class DoughnutChart extends TrackedComponent<DoughnutProps> {
 		)
 	}
 }
+export const DoughnutChart = memo(FDoughnut)
 
 type PieProps = {
 	data?: ChartData<'pie', number[]>
 	options?: Options<'pie'>
 } & CoreProps
-export class PieChart extends TrackedComponent<PieProps> {
+class FPie extends TrackedComponent<PieProps> {
 	trackedName = 'PieChart'
 	shouldComponentUpdate(nextProps: PieProps, nextState: typeof this.state) {
 		super.shouldComponentUpdate(nextProps, nextState, false)
@@ -702,12 +705,13 @@ export class PieChart extends TrackedComponent<PieProps> {
 		)
 	}
 }
+export const PieChart = memo(FPie)
 
 type TreemapProps = {
 	data?: TreemapData
 	options?: Options<'treemap'>
 } & CoreProps
-export class TreemapChart extends TrackedComponent<TreemapProps> {
+class FTreemap extends TrackedComponent<TreemapProps> {
 	trackedName = 'TreemapChart'
 	shouldComponentUpdate(nextProps: TreemapProps, nextState: typeof this.state) {
 		super.shouldComponentUpdate(nextProps, nextState, false)
@@ -825,3 +829,4 @@ export class TreemapChart extends TrackedComponent<TreemapProps> {
 		)
 	}
 }
+export const TreemapChart = memo(FTreemap)

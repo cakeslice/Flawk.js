@@ -7,7 +7,7 @@
 
 import config from 'core/config'
 import styles from 'core/styles'
-import React, { Suspense } from 'react'
+import React, { memo, Suspense } from 'react'
 import TrackedComponent from './TrackedComponent'
 
 const MetroSpinner = React.lazy(() =>
@@ -19,7 +19,7 @@ type Props = {
 	size?: number
 	color?: string
 }
-export default class Loading extends TrackedComponent<Props> {
+class Loading extends TrackedComponent<Props> {
 	trackedName = 'Loading'
 	shouldComponentUpdate(nextProps: Props, nextState: typeof this.state) {
 		super.shouldComponentUpdate(nextProps, nextState, false)
@@ -65,3 +65,5 @@ export default class Loading extends TrackedComponent<Props> {
 		)
 	}
 }
+
+export default memo(Loading)
