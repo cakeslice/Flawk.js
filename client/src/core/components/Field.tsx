@@ -18,7 +18,8 @@ const defaultError = '*'
 
 const Field = memo(function Field(
 	props: {
-		component: typeof React.Component
+		// eslint-disable-next-line
+		component: any
 		required?: boolean | string
 		invalidMessage?: string
 		checkbox?: React.ReactNode
