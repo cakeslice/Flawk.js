@@ -13,8 +13,9 @@ import styles from 'core/styles'
 import { Form, Formik } from 'formik'
 import { ReduxProps } from 'project-types'
 import { useMediaQuery } from 'react-responsive'
+import { memo } from 'react'
 
-export default function Account(props: ReduxProps) {
+const Account = memo(function Account(props: ReduxProps) {
 	const desktop = useMediaQuery({ minWidth: config.mobileWidthTrigger })
 
 	const { fetchingUser, fetchUser, user } = props
@@ -90,4 +91,6 @@ export default function Account(props: ReduxProps) {
 			</Formik>
 		</div>
 	)
-}
+})
+
+export default Account

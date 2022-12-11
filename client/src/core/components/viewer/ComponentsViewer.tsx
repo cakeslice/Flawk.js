@@ -74,248 +74,252 @@ export default function ComponentsViewer() {
 		run()
 	}, [])
 
-	let routes: Array<DashboardRoute> = [
-		{
-			id: 'logo',
-			desktopTab: true,
-			notRoute: true,
-			tab: (p) =>
-				horizontalDashboard ? (
-					<div
-						className='flex items-center h-full'
-						style={{
-							minWidth: 90,
-						}}
-					>
-						<Link style={{ display: 'flex', alignItems: 'center' }} to='/'>
-							<img
-								style={{
-									objectFit: 'contain',
-									maxHeight: 25,
-									minHeight: 25,
-								}}
-								src={logo}
-							></img>
-						</Link>
-					</div>
-				) : (
-					<>
-						<div className='flex justify-center items-center'>
-							<div
-								className='flex items-center'
-								style={{
-									height: 120,
-								}}
-							>
-								<Link to='/'>
-									<img
-										style={{
-											objectFit: 'contain',
-											maxHeight: p.isOpen ? 50 : 30,
-											minHeight: p.isOpen ? 50 : 30,
-											transition: `min-height 500ms, max-height 500ms`,
-										}}
-										src={logo}
-									></img>
-								</Link>
-							</div>
-						</div>
-						<div
-							style={{
-								height: 1,
-								background: styles.colors.lineColor,
-								width: '100%',
-							}}
-						></div>
-						<div style={{ minHeight: 20 }}></div>
-					</>
-				),
-		},
-		{
-			defaultRoute: true,
-			name: 'Get Started',
-			customIcon: (active) => iconWrapper(startLogo, active, 22),
-			id: 'start',
-			page: Start,
-		},
-		{
-			defaultRoute: true,
-			name: 'Style',
-			customIcon: (active) => iconWrapper(styleLogo, active, 22),
-			id: 'style',
-			page: Style,
-		},
-		{
-			name: 'Layout',
-			customIcon: (active) => iconWrapper(layoutLogo, active),
-			id: 'layout',
-			page: Layout,
-		},
-		{
-			name: 'Inputs',
-			customIcon: (active) => iconWrapper(inputsLogo, active, 27),
-			id: 'inputs',
-			page: Inputs,
-		},
-		{
-			name: 'Misc',
-			customIcon: (active) => iconWrapper(miscLogo, active, 20),
-			id: 'misc',
-			page: Misc,
-		},
-		{
-			customIcon: (active) => iconWrapper(backendLogo, active, 18),
-			name: 'Backend',
-			id: 'backend',
-			notExact: true, // Support for routes inside the component
-			subRoutes: [
-				{
-					name: 'Features',
-					id: 'features',
-					page: Backend,
-					defaultRoute: true,
-				},
-				{
-					name: 'API',
-					id: 'api',
-					page: API,
-				},
-			],
-		},
-		{
-			id: 'desktop_space',
-			notRoute: true,
-			tab: (props) => <div style={{ flexGrow: 1, minHeight: 20 }} />,
-			desktopTab: true,
-		},
-		{
-			id: 'line',
-			desktopTab: true,
-			notRoute: true,
-			tab: (props) => (
-				<div
-					style={{
-						height: 1,
-						background: styles.colors.lineColor,
-						width: '100%',
-						opacity: horizontalDashboard ? 0 : 1,
-					}}
-				></div>
-			),
-		},
-		{
-			id: 'middle',
-			notRoute: true,
-			desktopTab: true,
-			tab: (props) => <div style={{ height: 20 }} />,
-		},
-		{
-			id: 'middle_mobile',
-			notRoute: true,
-			mobileTab: true,
-			tab: (props) => <div className='grow' style={{ height: 40 }} />,
-		},
-		{
-			name: 'Flawk',
-			notRoute: true,
-			mobileTab: true,
-			style: { linkStyle: { opacity: 0.75 } },
-			onClick: () =>
-				Capacitor.isNativePlatform()
-					? window.open('https://flawk.cakeslice.dev', '_blank')
-					: global.routerHistory().push('/'),
-			customIcon: (active) => (
-				<div
-					{...css({
-						display: 'flex',
-						width: 20,
-						padding: 0,
-					})}
-				>
-					<img
-						style={{
-							width: 20,
-							position: 'relative',
-							top: -1,
-						}}
-						src={logo}
-					></img>
-				</div>
-			),
-			id: 'flawk_link',
-		},
-		{
-			name: 'Source code',
-			notRoute: true,
-			justIcon: true,
-			style: { linkStyle: { opacity: 0.75 } },
-			onClick: () => window.open('https://github.com/cakeslice/flawk.js', '_blank'),
-			customIcon: (active) => (
-				<div
-					{...css({
-						width: 20,
-						display: 'flex',
-						overflow: 'visible',
-						padding: 0,
-					})}
-				>
-					{github(styles.colors.black, 22)}
-				</div>
-			),
-			id: 'github_link',
-		},
-		{
-			name: (!global.nightMode ? 'Dark' : 'Light') + ' mode',
-			notRoute: true,
-			justIcon: true,
-			style: { linkStyle: { opacity: 0.75 } },
-			onClick: () => global.toggleNightMode(),
-			customIcon: (active) => (
-				<div
-					{...css({
-						width: 20,
-						overflow: 'visible',
-						padding: 0,
-					})}
-				>
-					<img
-						style={{
-							maxHeight: 30,
-							width: 25,
-							position: 'relative',
-							left: -2,
-						}}
-						src={global.nightMode ? lightOff : lightOn}
-					></img>
-				</div>
-			),
-			id: 'dark_mode',
-		},
-	]
-
-	if (horizontalDashboard)
-		routes = [
+	const routes = useMemo(() => {
+		let routes: Array<DashboardRoute> = [
 			{
-				id: 'top_space',
+				id: 'logo',
+				desktopTab: true,
 				notRoute: true,
-				tab: (props) => <div style={{ minWidth: '5%' }} />,
+				tab: (p) =>
+					horizontalDashboard ? (
+						<div
+							className='flex items-center h-full'
+							style={{
+								minWidth: 90,
+							}}
+						>
+							<Link style={{ display: 'flex', alignItems: 'center' }} to='/'>
+								<img
+									style={{
+										objectFit: 'contain',
+										maxHeight: 25,
+										minHeight: 25,
+									}}
+									src={logo}
+								></img>
+							</Link>
+						</div>
+					) : (
+						<>
+							<div className='flex justify-center items-center'>
+								<div
+									className='flex items-center'
+									style={{
+										height: 120,
+									}}
+								>
+									<Link to='/'>
+										<img
+											style={{
+												objectFit: 'contain',
+												maxHeight: p.isOpen ? 50 : 30,
+												minHeight: p.isOpen ? 50 : 30,
+												transition: `min-height 500ms, max-height 500ms`,
+											}}
+											src={logo}
+										></img>
+									</Link>
+								</div>
+							</div>
+							<div
+								style={{
+									height: 1,
+									background: styles.colors.lineColor,
+									width: '100%',
+								}}
+							></div>
+							<div style={{ minHeight: 20 }}></div>
+						</>
+					),
+			},
+			{
+				defaultRoute: true,
+				name: 'Get Started',
+				customIcon: (active) => iconWrapper(startLogo, active, 22),
+				id: 'start',
+				page: Start,
+			},
+			{
+				defaultRoute: true,
+				name: 'Style',
+				customIcon: (active) => iconWrapper(styleLogo, active, 22),
+				id: 'style',
+				page: Style,
+			},
+			{
+				name: 'Layout',
+				customIcon: (active) => iconWrapper(layoutLogo, active),
+				id: 'layout',
+				page: Layout,
+			},
+			{
+				name: 'Inputs',
+				customIcon: (active) => iconWrapper(inputsLogo, active, 27),
+				id: 'inputs',
+				page: Inputs,
+			},
+			{
+				name: 'Misc',
+				customIcon: (active) => iconWrapper(miscLogo, active, 20),
+				id: 'misc',
+				page: Misc,
+			},
+			{
+				customIcon: (active) => iconWrapper(backendLogo, active, 18),
+				name: 'Backend',
+				id: 'backend',
+				notExact: true, // Support for routes inside the component
+				subRoutes: [
+					{
+						name: 'Features',
+						id: 'features',
+						page: Backend,
+						defaultRoute: true,
+					},
+					{
+						name: 'API',
+						id: 'api',
+						page: API,
+					},
+				],
+			},
+			{
+				id: 'desktop_space',
+				notRoute: true,
+				tab: (props) => <div style={{ flexGrow: 1, minHeight: 20 }} />,
 				desktopTab: true,
 			},
-			...routes,
 			{
-				id: 'bottom_space',
-				notRoute: true,
-				tab: (props) => <div style={{ minWidth: '5%' }} />,
+				id: 'line',
 				desktopTab: true,
+				notRoute: true,
+				tab: (props) => (
+					<div
+						style={{
+							height: 1,
+							background: styles.colors.lineColor,
+							width: '100%',
+							opacity: horizontalDashboard ? 0 : 1,
+						}}
+					></div>
+				),
+			},
+			{
+				id: 'middle',
+				notRoute: true,
+				desktopTab: true,
+				tab: (props) => <div style={{ height: 20 }} />,
+			},
+			{
+				id: 'middle_mobile',
+				notRoute: true,
+				mobileTab: true,
+				tab: (props) => <div className='grow' style={{ height: 40 }} />,
+			},
+			{
+				name: 'Flawk',
+				notRoute: true,
+				mobileTab: true,
+				style: { linkStyle: { opacity: 0.75 } },
+				onClick: () =>
+					Capacitor.isNativePlatform()
+						? window.open('https://flawk.cakeslice.dev', '_blank')
+						: global.routerHistory().push('/'),
+				customIcon: (active) => (
+					<div
+						{...css({
+							display: 'flex',
+							width: 20,
+							padding: 0,
+						})}
+					>
+						<img
+							style={{
+								width: 20,
+								position: 'relative',
+								top: -1,
+							}}
+							src={logo}
+						></img>
+					</div>
+				),
+				id: 'flawk_link',
+			},
+			{
+				name: 'Source code',
+				notRoute: true,
+				justIcon: true,
+				style: { linkStyle: { opacity: 0.75 } },
+				onClick: () => window.open('https://github.com/cakeslice/flawk.js', '_blank'),
+				customIcon: (active) => (
+					<div
+						{...css({
+							width: 20,
+							display: 'flex',
+							overflow: 'visible',
+							padding: 0,
+						})}
+					>
+						{github(styles.colors.black, 22)}
+					</div>
+				),
+				id: 'github_link',
+			},
+			{
+				name: (!global.nightMode ? 'Dark' : 'Light') + ' mode',
+				notRoute: true,
+				justIcon: true,
+				style: { linkStyle: { opacity: 0.75 } },
+				onClick: () => global.toggleNightMode(),
+				customIcon: (active) => (
+					<div
+						{...css({
+							width: 20,
+							overflow: 'visible',
+							padding: 0,
+						})}
+					>
+						<img
+							style={{
+								maxHeight: 30,
+								width: 25,
+								position: 'relative',
+								left: -2,
+							}}
+							src={global.nightMode ? lightOff : lightOn}
+						></img>
+					</div>
+				),
+				id: 'dark_mode',
 			},
 		]
-	else
-		routes.push({
-			id: 'bottom',
-			notRoute: true,
-			desktopTab: true,
-			tab: (props) => <div style={{ height: 40 }} />,
-		})
+
+		if (horizontalDashboard)
+			routes = [
+				{
+					id: 'top_space',
+					notRoute: true,
+					tab: (props) => <div style={{ minWidth: '5%' }} />,
+					desktopTab: true,
+				},
+				...routes,
+				{
+					id: 'bottom_space',
+					notRoute: true,
+					tab: (props) => <div style={{ minWidth: '5%' }} />,
+					desktopTab: true,
+				},
+			]
+		else
+			routes.push({
+				id: 'bottom',
+				notRoute: true,
+				desktopTab: true,
+				tab: (props) => <div style={{ height: 40 }} />,
+			})
+
+		return routes
+	}, [horizontalDashboard])
 
 	const desktop = useMediaQuery({ minWidth: config.mobileWidthTrigger })
 	return (
@@ -349,7 +353,7 @@ export default function ComponentsViewer() {
 	)
 }
 
-function Wrapper({ children }: { children: React.ReactNode }) {
+const Wrapper = memo(function Wrapper({ children }: { children: React.ReactNode }) {
 	const desktop = useMediaQuery({ minWidth: config.mobileWidthTrigger })
 	return (
 		<div
@@ -363,7 +367,7 @@ function Wrapper({ children }: { children: React.ReactNode }) {
 			{children}
 		</div>
 	)
-}
+})
 
 export const Next = memo(function Next({
 	name,

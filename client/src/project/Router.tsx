@@ -16,7 +16,7 @@ import config from 'core/config'
 import styles, { projectStyles } from 'core/styles'
 import logo from 'project/assets/images/logo.svg'
 import notificationSound from 'project/assets/sounds/notification.mp3'
-import React, { useEffect } from 'react'
+import React, { useEffect, useMemo, memo } from 'react'
 import { Helmet } from 'react-helmet'
 import { useMediaQuery } from 'react-responsive'
 import { Link, Redirect, Route, Switch } from 'react-router-dom'
@@ -80,190 +80,197 @@ export default function Router() {
 			})
 	}, [dispatch])
 
-	let permission = 1000
-	if (user) {
-		permission = user.permission
-	}
+	const permission = useMemo(() => {
+		let permission = 1000
+		if (user) {
+			permission = user.permission
+		}
+		return permission
+	}, [user])
 
-	let routes: Array<DashboardRoute> = [
-		{
-			id: 'logo',
-			desktopTab: true,
-			notRoute: true,
-			tab: (props) => (
-				<div>
-					<div
-						style={{
-							display: 'flex',
-							justifyContent: 'center',
-							alignItems: 'center',
-						}}
-					>
+	const routes = useMemo(() => {
+		let routes: Array<DashboardRoute> = [
+			{
+				id: 'logo',
+				desktopTab: true,
+				notRoute: true,
+				tab: (props) => (
+					<div>
 						<div
 							style={{
 								display: 'flex',
+								justifyContent: 'center',
 								alignItems: 'center',
-								height: 120,
 							}}
 						>
-							<Link to='/'>
-								<img
-									style={{
-										objectFit: 'contain',
-										maxHeight: props.isOpen ? 50 : 30,
-										minHeight: props.isOpen ? 50 : 30,
-										transition: `min-height 500ms, max-height 500ms`,
-									}}
-									src={logo}
-								></img>
-							</Link>
+							<div
+								style={{
+									display: 'flex',
+									alignItems: 'center',
+									height: 120,
+								}}
+							>
+								<Link to='/'>
+									<img
+										style={{
+											objectFit: 'contain',
+											maxHeight: props.isOpen ? 50 : 30,
+											minHeight: props.isOpen ? 50 : 30,
+											transition: `min-height 500ms, max-height 500ms`,
+										}}
+										src={logo}
+									></img>
+								</Link>
+							</div>
 						</div>
+						<div
+							style={{
+								height: 1,
+								background: styles.colors.lineColor,
+								width: '100%',
+							}}
+						></div>
+						<div style={{ minHeight: 20 }}></div>
 					</div>
-					<div
-						style={{
-							height: 1,
-							background: styles.colors.lineColor,
-							width: '100%',
-						}}
-					></div>
-					<div style={{ minHeight: 20 }}></div>
-				</div>
-			),
-		},
-		{
-			defaultRoute: true,
-			name: 'Overview',
-			icon: flawk,
-			iconActive: flawk,
-			id: 'overview',
-			notExact: true, // Support for routes inside the component
-		},
-		{
-			name: 'Notifications',
-			icon: flawk,
-			iconActive: flawk,
-			id: 'notifications',
-		},
-	]
-	if (permission <= config.permissions.admin)
-		routes = routes.concat([
-			{
-				id: 'admin',
-				params: '/:id',
-				hidden: true,
+				),
 			},
 			{
-				name: 'Admin',
+				defaultRoute: true,
+				name: 'Overview',
 				icon: flawk,
 				iconActive: flawk,
-				id: 'admin',
+				id: 'overview',
+				notExact: true, // Support for routes inside the component
+			},
+			{
+				name: 'Notifications',
+				icon: flawk,
+				iconActive: flawk,
+				id: 'notifications',
+			},
+		]
+		if (permission <= config.permissions.admin)
+			routes = routes.concat([
+				{
+					id: 'admin',
+					params: '/:id',
+					hidden: true,
+				},
+				{
+					name: 'Admin',
+					icon: flawk,
+					iconActive: flawk,
+					id: 'admin',
+				},
+			])
+		routes = routes.concat([
+			{
+				id: 'space',
+				notRoute: true,
+				tab: (props) => <div style={{ flexGrow: 1 }} />,
+				desktopTab: true,
+			},
+			{
+				id: 'middle_mobile',
+				notRoute: true,
+				mobileTab: true,
+				tab: (props) => <div style={{ height: 40 }} />,
+			},
+			{
+				id: 'avatar',
+				notRoute: true,
+				tab: (props: TabProps & { user?: UserState }) => (
+					<div>
+						<div
+							style={{
+								display: 'flex',
+								justifyContent: 'center',
+								alignItems: 'center',
+								marginRight: 3,
+							}}
+						>
+							<button
+								type='button'
+								style={{
+									fontSize: styles.defaultFontSize,
+									padding: 0,
+									display: 'flex',
+									alignItems: 'center',
+									marginBottom: 30,
+									color: styles.colors.black,
+								}}
+								onClick={() => props.toggleOpen && props.toggleOpen()}
+							>
+								<Avatar
+									src={
+										(props.user &&
+											props.user.personal &&
+											props.user.personal.photoURL) ||
+										''
+									}
+									style={{
+										width: 30,
+										height: 30,
+									}}
+								></Avatar>
+								{props.user && (
+									<p
+										style={{
+											fontSize: styles.defaultFontSize,
+											transition: `opacity 500ms, margin-left 500ms, max-width 500ms`,
+											opacity: props.isOpen ? 1 : 0,
+											marginLeft: props.isOpen ? 10 : 0,
+											maxWidth: props.isOpen ? 100 : 0,
+											textOverflow: 'ellipsis',
+											overflow: 'hidden',
+											whiteSpace: 'nowrap',
+										}}
+									>
+										{props.user.personal && props.user.personal.firstName}
+									</p>
+								)}
+							</button>
+						</div>
+						<div
+							style={{
+								height: 1,
+								background: styles.colors.lineColor,
+								width: '100%',
+							}}
+						></div>
+						<div style={{ minHeight: 20 }}></div>
+					</div>
+				),
+				desktopTab: true,
+			},
+			{
+				name: 'Settings',
+				customIcon: (active) => iconWrapper(settings, active),
+				id: 'settings',
+				page: Settings,
+			},
+			{
+				id: 'logout',
+				name: 'Logout',
+				customIcon: (active) => iconWrapper(logout, active, 21),
+				notRoute: true,
+				onClick: async () => {
+					const res = await post('client/logout', {})
+					if (res.ok) {
+						await fetchUser(dispatch)
+					}
+				},
+			},
+			{
+				id: 'bottom_space',
+				notRoute: true,
+				tab: (props) => <div style={{ minHeight: 60 }} />,
+				desktopTab: true,
 			},
 		])
-	routes = routes.concat([
-		{
-			id: 'space',
-			notRoute: true,
-			tab: (props) => <div style={{ flexGrow: 1 }} />,
-			desktopTab: true,
-		},
-		{
-			id: 'middle_mobile',
-			notRoute: true,
-			mobileTab: true,
-			tab: (props) => <div style={{ height: 40 }} />,
-		},
-		{
-			id: 'avatar',
-			notRoute: true,
-			tab: (props: TabProps & { user?: UserState }) => (
-				<div>
-					<div
-						style={{
-							display: 'flex',
-							justifyContent: 'center',
-							alignItems: 'center',
-							marginRight: 3,
-						}}
-					>
-						<button
-							type='button'
-							style={{
-								fontSize: styles.defaultFontSize,
-								padding: 0,
-								display: 'flex',
-								alignItems: 'center',
-								marginBottom: 30,
-								color: styles.colors.black,
-							}}
-							onClick={() => props.toggleOpen && props.toggleOpen()}
-						>
-							<Avatar
-								src={
-									(props.user &&
-										props.user.personal &&
-										props.user.personal.photoURL) ||
-									''
-								}
-								style={{
-									width: 30,
-									height: 30,
-								}}
-							></Avatar>
-							{props.user && (
-								<p
-									style={{
-										fontSize: styles.defaultFontSize,
-										transition: `opacity 500ms, margin-left 500ms, max-width 500ms`,
-										opacity: props.isOpen ? 1 : 0,
-										marginLeft: props.isOpen ? 10 : 0,
-										maxWidth: props.isOpen ? 100 : 0,
-										textOverflow: 'ellipsis',
-										overflow: 'hidden',
-										whiteSpace: 'nowrap',
-									}}
-								>
-									{props.user.personal && props.user.personal.firstName}
-								</p>
-							)}
-						</button>
-					</div>
-					<div
-						style={{
-							height: 1,
-							background: styles.colors.lineColor,
-							width: '100%',
-						}}
-					></div>
-					<div style={{ minHeight: 20 }}></div>
-				</div>
-			),
-			desktopTab: true,
-		},
-		{
-			name: 'Settings',
-			customIcon: (active) => iconWrapper(settings, active),
-			id: 'settings',
-			page: Settings,
-		},
-		{
-			id: 'logout',
-			name: 'Logout',
-			customIcon: (active) => iconWrapper(logout, active, 21),
-			notRoute: true,
-			onClick: async () => {
-				const res = await post('client/logout', {})
-				if (res.ok) {
-					await fetchUser(dispatch)
-				}
-			},
-		},
-		{
-			id: 'bottom_space',
-			notRoute: true,
-			tab: (props) => <div style={{ minHeight: 60 }} />,
-			desktopTab: true,
-		},
-	])
+
+		return routes
+	}, [dispatch, permission])
 
 	const desktop = useMediaQuery({ minWidth: config.mobileWidthTrigger })
 	return (
@@ -346,7 +353,7 @@ export default function Router() {
 	)
 }
 
-function PublicWrapper(props: {
+const PublicWrapper = memo(function PublicWrapper(props: {
 	children?: React.ReactNode
 	auth?: boolean
 	desktop: boolean
@@ -381,8 +388,8 @@ function PublicWrapper(props: {
 			<Footer fillSpace={false} />
 		</div>
 	)
-}
-function DashboardWrapper(props: DashboardWrapperProps) {
+})
+const DashboardWrapper = memo(function DashboardWrapper(props: DashboardWrapperProps) {
 	const desktop = useMediaQuery({ minWidth: config.mobileWidthTrigger })
 	return (
 		<div
@@ -404,7 +411,7 @@ function DashboardWrapper(props: DashboardWrapperProps) {
 			{props.children}
 		</div>
 	)
-}
+})
 
 const logout = (color: string) => {
 	return (

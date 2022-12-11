@@ -16,10 +16,11 @@ import upload from 'core/functions/upload'
 import styles from 'core/styles'
 import { Form, Formik } from 'formik'
 import { css } from 'glamor'
+import { memo } from 'react'
 import { DashboardProps } from 'project-types'
 import { useMediaQuery } from 'react-responsive'
 
-export default function Settings(props: DashboardProps) {
+const Settings = memo(function Settings(props: DashboardProps) {
 	const desktop = useMediaQuery({ minWidth: config.mobileWidthTrigger })
 
 	return (
@@ -213,4 +214,6 @@ export default function Settings(props: DashboardProps) {
 			</div>
 		</div>
 	)
-}
+})
+
+export default Settings

@@ -10,6 +10,7 @@ import config from 'core/config'
 import styles from 'core/styles'
 import { useMediaQuery } from 'react-responsive'
 import { Next, Section } from './ComponentsViewer'
+import { memo } from 'react'
 
 // Can't use React.lazy() for anchor links to work
 
@@ -22,7 +23,7 @@ import Table from 'core/components/viewer/layout/Table'
 import Toast from 'core/components/viewer/layout/Toast'
 
 type Props = { horizontalDashboard: boolean; toggleDashboardLayout: () => void }
-export default function Layout(props: Props) {
+const Layout = memo(function Layout(props: Props) {
 	const fixedExample = {
 		width: 200,
 		height: 50,
@@ -511,4 +512,6 @@ const data = [33, 40, 12, 15]
 			<Next backName='Style' backLink='style' name='Inputs' link='inputs' />
 		</div>
 	)
-}
+})
+
+export default Layout

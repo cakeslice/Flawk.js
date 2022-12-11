@@ -13,7 +13,7 @@ import config from 'core/config'
 import styles from 'core/styles'
 import _find from 'lodash/find'
 import _uniqBy from 'lodash/uniqBy'
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { useMediaQuery } from 'react-responsive'
 
 const simpleOptions = [
@@ -57,13 +57,17 @@ export default function _Dropdown() {
 	const [inputAppearance, setInputAppearance] = useState('default')
 	const [usageBackground, setUsageBackground] = useState<string>()
 
-	const appearanceStyle = {
-		...styles.outlineCard,
-		background: usageBackground,
-		color: usageBackground && config.invertColor(usageBackground, styles.colors.whiteDay),
-		maxWidth: 950,
-	}
-	const appearanceDropdown = () => {
+	const appearanceStyle = useMemo(
+		() => ({
+			...styles.outlineCard,
+			background: usageBackground,
+			color: usageBackground && config.invertColor(usageBackground, styles.colors.whiteDay),
+			maxWidth: 950,
+		}),
+		[usageBackground]
+	)
+
+	const appearanceDropdown = useMemo(() => {
 		const appearances = styles.inputAppearances()
 
 		return (
@@ -88,7 +92,7 @@ export default function _Dropdown() {
 				)}
 			></Dropdown>
 		)
-	}
+	}, [])
 
 	//
 
@@ -244,7 +248,7 @@ export default function _Dropdown() {
 			</div>
 			<sp />
 			<sp />
-			{appearanceDropdown()}
+			{appearanceDropdown}
 			<sp />
 			<sp />
 			<div style={{ maxWidth: 1100 }} className='wrapMarginBig flex flex-wrap justify-start'>

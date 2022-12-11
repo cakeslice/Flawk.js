@@ -12,18 +12,21 @@ import config from 'core/config'
 import styles from 'core/styles'
 import _find from 'lodash/find'
 import _uniqBy from 'lodash/uniqBy'
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 
 export default function Card() {
 	const [buttonAppearance, setButtonAppearance] = useState('default')
 	const [usageBackground, setUsageBackground] = useState<string>()
 
-	const appearanceStyle = {
-		...styles.outlineCard,
-		background: usageBackground,
-		color: usageBackground && config.invertColor(usageBackground, styles.colors.whiteDay),
-		maxWidth: 950,
-	}
+	const appearanceStyle = useMemo(
+		() => ({
+			...styles.outlineCard,
+			background: usageBackground,
+			color: usageBackground && config.invertColor(usageBackground, styles.colors.whiteDay),
+			maxWidth: 950,
+		}),
+		[usageBackground]
+	)
 
 	return (
 		<>

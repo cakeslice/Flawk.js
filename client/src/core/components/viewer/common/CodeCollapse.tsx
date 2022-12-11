@@ -11,7 +11,7 @@ import { useTracking } from 'core/components/TrackedComponent'
 import { github } from 'core/components/viewer/ComponentsViewer'
 import config from 'core/config'
 import styles from 'core/styles'
-import React, { useState } from 'react'
+import React, { memo, useState } from 'react'
 import { useMediaQuery } from 'react-responsive'
 
 const code = (color: string) => (
@@ -38,7 +38,7 @@ type Props = {
 	data?: string
 	lang: Lang
 }
-export default function CodeCollapse(props: Props) {
+const CodeCollapse = memo(function CodeCollapse(props: Props) {
 	useTracking('CodeCollapse', props)
 
 	const [isOpen, setIsOpen] = useState(false)
@@ -154,4 +154,6 @@ export default function CodeCollapse(props: Props) {
 			)}
 		</div>
 	)
-}
+})
+
+export default CodeCollapse

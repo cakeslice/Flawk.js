@@ -15,19 +15,21 @@ import config from 'core/config'
 import styles from 'core/styles'
 import { Form, Formik } from 'formik'
 import { ReduxProps } from 'project-types'
-import { useState } from 'react'
+import { useState, memo, useMemo } from 'react'
 import ReCaptcha from 'react-google-recaptcha'
 import { useMediaQuery } from 'react-responsive'
 import { cardStyle } from './Login'
 
-export default function Register(props: ReduxProps) {
+const Register = memo(function Register(props: ReduxProps) {
 	const [emailToVerify, setEmailToVerify] = useState<string>()
 	const [wrongLogin, setWrongLogin] = useState<string>()
 
 	const desktop = useMediaQuery({ minWidth: config.mobileWidthTrigger })
 
+	const style = useMemo(() => cardStyle(desktop), [desktop])
+
 	return (
-		<div style={cardStyle(desktop)}>
+		<div style={style}>
 			{emailToVerify ? (
 				<Formik
 					enableReinitialize
@@ -287,4 +289,6 @@ export default function Register(props: ReduxProps) {
 			)}
 		</div>
 	)
-}
+})
+
+export default Register

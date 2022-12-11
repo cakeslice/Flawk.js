@@ -7,14 +7,14 @@
 
 import styles from 'core/styles'
 
-export default function Color() {
-	const colorStyle = {
-		margin: 10,
-		minWidth: 20,
-		minHeight: 20,
-		border: '1px solid rgba(127,127,127,.5)',
-	}
+const colorStyle = {
+	margin: 10,
+	minWidth: 20,
+	minHeight: 20,
+	border: '1px solid rgba(127,127,127,.5)',
+}
 
+export default function Color() {
 	return (
 		<div className='wrapMarginBig flex flex-wrap justify-start'>
 			<div>

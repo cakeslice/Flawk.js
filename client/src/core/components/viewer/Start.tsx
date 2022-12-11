@@ -7,7 +7,7 @@
 
 import CodeBlock from 'core/components/CodeBlock'
 import styles from 'core/styles'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, memo } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { Next, Section } from './ComponentsViewer'
@@ -17,7 +17,7 @@ import mdPath from './Start.md'*/
 
 // eslint-disable-next-line
 type Props = {}
-export default function Start(props: Props) {
+const Start = memo(function Start(props: Props) {
 	const [md, setMd] = useState('')
 
 	useEffect(() => {
@@ -90,4 +90,6 @@ export default function Start(props: Props) {
 			<Next name='Style' link='style' />
 		</div>
 	)
-}
+})
+
+export default Start

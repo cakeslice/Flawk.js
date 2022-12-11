@@ -8,14 +8,14 @@
 import Animated from 'core/components/Animated'
 import config from 'core/config'
 import styles from 'core/styles'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, memo } from 'react'
 import { useMediaQuery } from 'react-responsive'
 import mod from '../main/Main.module.scss'
 
 type Props = {
 	fillSpace?: boolean
 }
-export default function Footer(props: Props) {
+const Footer = memo(function Footer(props: Props) {
 	const [scroll, setScroll] = useState(0)
 	function handleScroll() {
 		const scrollTop = document.body.scrollTop || document.documentElement.scrollTop
@@ -124,4 +124,6 @@ export default function Footer(props: Props) {
 			</Animated>
 		</div>
 	)
-}
+})
+
+export default Footer

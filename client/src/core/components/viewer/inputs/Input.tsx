@@ -14,7 +14,7 @@ import styles from 'core/styles'
 import { css } from 'glamor'
 import _find from 'lodash/find'
 import _uniqBy from 'lodash/uniqBy'
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { useMediaQuery } from 'react-responsive'
 
 export default function Input() {
@@ -22,14 +22,30 @@ export default function Input() {
 	const [inputAppearance, setInputAppearance] = useState('default')
 	const [usageBackground, setUsageBackground] = useState<string>()
 
-	const appearanceStyle = {
-		...styles.outlineCard,
-		background: usageBackground,
-		color: usageBackground && config.invertColor(usageBackground, styles.colors.whiteDay),
-		maxWidth: 950,
-	}
-	const appearanceDropdown = () => {
+	const appearanceStyle = useMemo(
+		() => ({
+			...styles.outlineCard,
+			background: usageBackground,
+			color: usageBackground && config.invertColor(usageBackground, styles.colors.whiteDay),
+			maxWidth: 950,
+		}),
+		[usageBackground]
+	)
+
+	const appearanceDropdown = useMemo(() => {
 		const appearances = styles.inputAppearances()
+
+		const options = _uniqBy(
+			[{ label: 'Default', value: 'default' }].concat(
+				appearances.map((e) => {
+					return {
+						label: config.capitalizeAll(e.name.replaceAll('_', ' ')),
+						value: e.name,
+					}
+				})
+			),
+			(e) => e.value
+		)
 
 		return (
 			<Dropdown
@@ -38,22 +54,12 @@ export default function Input() {
 				onChange={(e) => {
 					const appearance = _find(appearances, { name: e })
 					setInputAppearance(e as string)
-					setUsageBackground(appearance && appearance.usageBackground)
+					if (appearance?.usageBackground) setUsageBackground(appearance.usageBackground)
 				}}
-				options={_uniqBy(
-					[{ label: 'Default', value: 'default' }].concat(
-						appearances.map((e) => {
-							return {
-								label: config.capitalizeAll(e.name.replaceAll('_', ' ')),
-								value: e.name,
-							}
-						})
-					),
-					(e) => e.value
-				)}
+				options={options}
 			></Dropdown>
 		)
-	}
+	}, [inputAppearance])
 
 	//
 
@@ -239,7 +245,7 @@ export default function Input() {
 			</div>
 			<sp />
 			<sp />
-			{appearanceDropdown()}
+			{appearanceDropdown}
 			<sp />
 			<sp />
 			<div style={{ maxWidth: 1100 }} className='wrapMarginBig flex flex-wrap justify-start'>
@@ -317,14 +323,6 @@ export default function Input() {
 	)
 }
 
-const searchIcon = () => (
-	<svg width='15' height='15' viewBox='0 0 15 15' fill='none' xmlns='http://www.w3.org/2000/svg'>
-		<path
-			d='M14.8167 13.9332L10.5511 9.66765C11.3774 8.64705 11.8749 7.35017 11.8749 5.9377C11.8749 2.66398 9.21114 0.000244141 5.93742 0.000244141C2.6637 0.000244141 0 2.66395 0 5.93767C0 9.21138 2.66373 11.8751 5.93745 11.8751C7.34993 11.8751 8.6468 11.3776 9.66741 10.5514L13.933 14.817C14.0549 14.9388 14.2149 15.0001 14.3749 15.0001C14.5349 15.0001 14.6949 14.9388 14.8168 14.817C15.0611 14.5726 15.0611 14.1776 14.8167 13.9332ZM5.93745 10.6251C3.35247 10.6251 1.25 8.52265 1.25 5.93767C1.25 3.35268 3.35247 1.25021 5.93745 1.25021C8.52244 1.25021 10.6249 3.35268 10.6249 5.93767C10.6249 8.52265 8.52241 10.6251 5.93745 10.6251Z'
-			fill={config.replaceAlpha(styles.colors.black, 0.75)}
-		/>
-	</svg>
-)
 const infoIcon = (color: string) => (
 	<svg
 		width='10'
@@ -336,6 +334,15 @@ const infoIcon = (color: string) => (
 		<path
 			d='M230 0C102.975 0 0 102.975 0 230C0 357.025 102.975 460 230 460C357.025 460 460 357.026 460 230C460 102.974 357.025 0 230 0ZM268.333 377.36C268.333 386.036 261.299 393.07 252.623 393.07H209.522C200.846 393.07 193.812 386.036 193.812 377.36V202.477C193.812 193.801 200.845 186.767 209.522 186.767H252.623C261.299 186.767 268.333 193.8 268.333 202.477V377.36ZM230 157C208.461 157 191 139.539 191 118C191 96.461 208.461 79 230 79C251.539 79 269 96.461 269 118C269 139.539 251.539 157 230 157Z'
 			fill={color}
+		/>
+	</svg>
+)
+
+const searchIcon = () => (
+	<svg width='15' height='15' viewBox='0 0 15 15' fill='none' xmlns='http://www.w3.org/2000/svg'>
+		<path
+			d='M14.8167 13.9332L10.5511 9.66765C11.3774 8.64705 11.8749 7.35017 11.8749 5.9377C11.8749 2.66398 9.21114 0.000244141 5.93742 0.000244141C2.6637 0.000244141 0 2.66395 0 5.93767C0 9.21138 2.66373 11.8751 5.93745 11.8751C7.34993 11.8751 8.6468 11.3776 9.66741 10.5514L13.933 14.817C14.0549 14.9388 14.2149 15.0001 14.3749 15.0001C14.5349 15.0001 14.6949 14.9388 14.8168 14.817C15.0611 14.5726 15.0611 14.1776 14.8167 13.9332ZM5.93745 10.6251C3.35247 10.6251 1.25 8.52265 1.25 5.93767C1.25 3.35268 3.35247 1.25021 5.93745 1.25021C8.52244 1.25021 10.6249 3.35268 10.6249 5.93767C10.6249 8.52265 8.52241 10.6251 5.93745 10.6251Z'
+			fill={config.replaceAlpha(styles.colors.black, 0.75)}
 		/>
 	</svg>
 )

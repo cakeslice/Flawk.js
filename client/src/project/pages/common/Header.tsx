@@ -15,7 +15,7 @@ import styles from 'core/styles'
 import { css } from 'glamor'
 import logo from 'project/assets/images/logo.svg'
 import { github } from 'project/components/Icons'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, memo } from 'react'
 import { useMediaQuery } from 'react-responsive'
 import { Link } from 'react-router-dom'
 import mod from '../main/Main.module.scss'
@@ -29,7 +29,7 @@ type Props = {
 	expand?: boolean
 	fillSpace?: boolean
 }
-export default function Header(props: Props) {
+const Header = memo(function Header(props: Props) {
 	const previousProps = usePrevious(props)
 
 	const [shrink, setShrink] = useState(false)
@@ -223,4 +223,6 @@ export default function Header(props: Props) {
 			</div>
 		</div>
 	)
-}
+})
+
+export default Header

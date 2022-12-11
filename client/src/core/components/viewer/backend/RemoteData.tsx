@@ -10,8 +10,9 @@ import FTable from 'core/components/FTable'
 import config from 'core/config'
 import { KeyArrayKeyObject } from 'flawk-types'
 import { ReduxProps } from 'project-types'
+import { memo } from 'react'
 
-export default function RemoteData(props: ReduxProps) {
+const RemoteData = memo(function RemoteData(props: ReduxProps) {
 	const { structures } = props
 
 	return (
@@ -54,4 +55,6 @@ export default function RemoteData(props: ReduxProps) {
 				))}
 		</div>
 	)
-}
+})
+
+export default RemoteData

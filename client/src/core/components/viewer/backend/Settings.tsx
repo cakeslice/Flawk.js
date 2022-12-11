@@ -8,6 +8,7 @@
 import { post } from 'core/api'
 import Avatar from 'core/components/Avatar'
 import FButton from 'core/components/FButton'
+import { memo } from 'react'
 import Field from 'core/components/Field'
 import FInput from 'core/components/FInput'
 import config from 'core/config'
@@ -19,7 +20,7 @@ import { ReduxProps } from 'project-types'
 import { useMediaQuery } from 'react-responsive'
 import { cardStyle } from './auth/Login'
 
-export default function Settings(props: ReduxProps) {
+const Settings = memo(function Settings(props: ReduxProps) {
 	const desktop = useMediaQuery({ minWidth: config.mobileWidthTrigger })
 
 	return (
@@ -166,4 +167,6 @@ export default function Settings(props: ReduxProps) {
 			</Formik>
 		</div>
 	)
-}
+})
+
+export default Settings

@@ -14,7 +14,7 @@ import config from 'core/config'
 import styles from 'core/styles'
 import { Form, Formik } from 'formik'
 import { ReduxProps } from 'project-types'
-import { useState } from 'react'
+import { useState, memo, useMemo } from 'react'
 import { useMediaQuery } from 'react-responsive'
 
 export const cardStyle = (desktop?: boolean) => {
@@ -25,13 +25,15 @@ export const cardStyle = (desktop?: boolean) => {
 	}
 }
 
-export default function Login(props: ReduxProps) {
+const Login = memo(function Login(props: ReduxProps) {
 	const [wrongLogin, setWrongLogin] = useState<string>()
 
 	const desktop = useMediaQuery({ minWidth: config.mobileWidthTrigger })
 
+	const style = useMemo(() => cardStyle(desktop), [desktop])
+
 	return (
-		<div style={cardStyle(desktop)}>
+		<div style={style}>
 			<Formik
 				enableReinitialize
 				initialValues={{}}
@@ -111,4 +113,6 @@ export default function Login(props: ReduxProps) {
 			</Formik>
 		</div>
 	)
-}
+})
+
+export default Login
