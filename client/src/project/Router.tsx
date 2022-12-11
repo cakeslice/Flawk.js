@@ -390,7 +390,7 @@ const PublicWrapper = memo(function PublicWrapper(props: {
 					{props.auth && <sp />}
 				</div>
 			</div>
-			<Footer fillSpace={false} />
+			<Footer nightMode={props.nightMode} fillSpace={false} />
 		</div>
 	)
 })

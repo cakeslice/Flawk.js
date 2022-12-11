@@ -14,6 +14,7 @@ import mod from '../main/Main.module.scss'
 
 type Props = {
 	fillSpace?: boolean
+	nightMode: boolean
 }
 const Footer = memo(function Footer(props: Props) {
 	const [scroll, setScroll] = useState(0)
@@ -31,6 +32,8 @@ const Footer = memo(function Footer(props: Props) {
 	})
 
 	const desktop = useMediaQuery({ minWidth: config.mobileWidthTrigger })
+
+	const nightMode = props.nightMode
 
 	return (
 		<div
