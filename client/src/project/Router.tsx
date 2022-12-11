@@ -313,17 +313,17 @@ export default function Router() {
 					<div style={{ background: styles.colors.white }}>
 						<Switch>
 							<Route exact path='/login'>
-								<PublicWrapper auth desktop={desktop}>
+								<PublicWrapper nightMode={global.nightMode} auth desktop={desktop}>
 									<Login />
 								</PublicWrapper>
 							</Route>
 							<Route exact path='/signup'>
-								<PublicWrapper auth desktop={desktop}>
+								<PublicWrapper nightMode={global.nightMode} auth desktop={desktop}>
 									<Register />
 								</PublicWrapper>
 							</Route>
 							<Route exact path='/forgot'>
-								<PublicWrapper auth desktop={desktop}>
+								<PublicWrapper nightMode={global.nightMode} auth desktop={desktop}>
 									<Forgot />
 								</PublicWrapper>
 							</Route>
@@ -332,7 +332,11 @@ export default function Router() {
 								{Capacitor.isNativePlatform() ? (
 									<Redirect to={'/components'} />
 								) : (
-									<PublicWrapper landingPage desktop={desktop}>
+									<PublicWrapper
+										nightMode={global.nightMode}
+										landingPage
+										desktop={desktop}
+									>
 										<Animated
 											animateOffscreen
 											effects={['fade']}
@@ -358,10 +362,11 @@ const PublicWrapper = memo(function PublicWrapper(props: {
 	auth?: boolean
 	desktop: boolean
 	landingPage?: boolean
+	nightMode: boolean
 }) {
 	return (
 		<div style={{ overflow: 'hidden' }}>
-			<Header expand={props.landingPage} fillSpace={props.auth} />
+			<Header expand={props.landingPage} nightMode={props.nightMode} fillSpace={props.auth} />
 			<div
 				style={{
 					paddingTop: props.auth ? 30 : undefined,

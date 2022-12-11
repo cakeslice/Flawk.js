@@ -28,6 +28,7 @@ const desktopHeightTop = 125
 type Props = {
 	expand?: boolean
 	fillSpace?: boolean
+	nightMode: boolean
 }
 const Header = memo(function Header(props: Props) {
 	const previousProps = usePrevious(props)
@@ -55,6 +56,8 @@ const Header = memo(function Header(props: Props) {
 	const maxWidth = config.publicMaxWidth
 
 	const desktop = useMediaQuery({ minWidth: config.mobileWidthTrigger })
+
+	const nightMode = props.nightMode
 
 	return (
 		<div
@@ -186,7 +189,7 @@ const Header = memo(function Header(props: Props) {
 						<Tooltip
 							foreground
 							hidden={!desktop}
-							content={!global.nightMode ? 'Dark mode' : 'Light mode'}
+							content={!nightMode ? 'Dark mode' : 'Light mode'}
 							offsetAlt={9}
 							tooltipProps={{
 								placement: 'bottom',
@@ -214,7 +217,7 @@ const Header = memo(function Header(props: Props) {
 										height: '100%',
 										maxHeight: 30,
 									}}
-									src={global.nightMode ? lightOff : lightOn}
+									src={nightMode ? lightOff : lightOn}
 								></img>
 							</button>
 						</Tooltip>
