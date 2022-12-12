@@ -108,6 +108,7 @@ type Props = {
 	label?: React.ReactNode
 	labelStyle?: React.CSSProperties
 	button?: boolean
+	noOptionsMessage?: string
 	emptyLabel?: boolean
 	autoFocus?: boolean
 	dropdownIndicator?: React.ReactNode
@@ -963,7 +964,10 @@ export class CustomDropdown extends TrackedComponent<Props> {
 											}
 										}}
 										hideSelectedOptions={false}
-										noOptionsMessage={() => config.text('common.noOptions')}
+										noOptionsMessage={() =>
+											this.props.noOptionsMessage ||
+											config.text('common.noOptions')
+										}
 										loadingMessage={() => config.text('common.searching')}
 										menuPortalTarget={
 											!this.props.noPortal
