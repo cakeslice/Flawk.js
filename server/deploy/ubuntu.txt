@@ -45,7 +45,9 @@ docker run -p 80:80 -p 443:443 -p 3000:3000 -v /var/run/docker.sock:/var/run/doc
 ################ Change SSH Port
 sudo ufw allow 1000
 echo "Port 1000" >> /etc/ssh/sshd_config
-systemctl restart sshd
+service ssh restart
+service ssh reload
+sudo service ssh status
 
 ----
 
