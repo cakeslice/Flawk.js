@@ -260,7 +260,8 @@ const _setResponse = function (
 	req: Request,
 	res: Response,
 	message?: string,
-	data?: Obj
+	data?: Obj,
+	noLogs?: boolean
 ) {
 	/* const { ip } = _getUserIP(req)
 
@@ -320,16 +321,17 @@ const _setResponse = function (
 	res.status(code)
 	res.setHeader('Content-Type', 'application/json')
 	res.end(JSON.stringify(data))
-	console.log(
-		colorizeLog('\n[' + req.method + '] ', 'green') +
-			str +
-			' ' +
-			code.toString() +
-			' - ' +
-			(code < 300 ? 'SUCCESS' : 'FAILED') +
-			(message ? ': ' + message : '') +
-			extra
-	)
+	if (!noLogs)
+		console.log(
+			colorizeLog('\n[' + req.method + '] ', 'green') +
+				str +
+				' ' +
+				code.toString() +
+				' - ' +
+				(code < 300 ? 'SUCCESS' : 'FAILED') +
+				(message ? ': ' + message : '') +
+				extra
+		)
 }
 
 const _logCatch = function (err: Error, useSentry = true, identifier = '') {

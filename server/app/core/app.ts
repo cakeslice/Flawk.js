@@ -943,8 +943,8 @@ function setup() {
 	app.all(config.path + '/*', function (req, res, next) {
 		req.token = 'no-token' // To prevent comparing to undefined
 
-		res.do = (status: number, message?: string, data?: Obj) => {
-			common.setResponse(status, req, res, message, data)
+		res.do = (status: number, message?: string, data?: Obj, noLogs?: boolean) => {
+			common.setResponse(status, req, res, message, data, noLogs)
 		}
 		res.response = (key: string) => config.response(key, req)
 		res.text = (key: string) => config.text(key, req)
