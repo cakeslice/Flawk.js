@@ -839,11 +839,14 @@ function setup() {
 	if (!config.jest) {
 		const tooManyMessage = 'Too many requests, try again later'
 
-		const rateLimiter = {
+		const dailyLimiter = {
 			defaultDay: new RateLimiterMemory({
 				points: 10000, // X requests
 				duration: 60 * 60 * 24, // per X second by IP
 			}),
+		}
+		const rateLimiter = {
+			...(!config.noDailyRateLimit && dailyLimiter),
 			default: new RateLimiterMemory({
 				points: 12, // X requests
 				duration: 1, // per X second by IP
@@ -900,17 +903,18 @@ function setup() {
 					common.setResponse(429, req, res, tooManyMessage)
 				})
 		})
-		app.use(config.path + '/*', (req, res, next) => {
-			rateLimiter.defaultDay
-				.consume(req.ip)
-				.then(() => {
-					next()
-				})
-				.catch(() => {
-					console.log(req.baseUrl + ': Too many requests from ' + req.ip)
-					common.setResponse(429, req, res, tooManyMessage)
-				})
-		})
+		if (rateLimiter.defaultDay)
+			app.use(config.path + '/*', (req, res, next) => {
+				rateLimiter.defaultDay
+					?.consume(req.ip)
+					.then(() => {
+						next()
+					})
+					.catch(() => {
+						console.log(req.baseUrl + ': Too many requests from ' + req.ip)
+						common.setResponse(429, req, res, tooManyMessage)
+					})
+			})
 	}
 
 	// Sanitize

@@ -267,6 +267,7 @@ export type Config = {
 
 	routes: string[]
 	publicRoutes: string[]
+	noDailyRateLimit: boolean
 	rateLimitedCalls: string[]
 	extremeRateLimitedCalls: string[]
 	allowedOrigins: string[]
