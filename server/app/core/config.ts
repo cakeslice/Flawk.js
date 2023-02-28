@@ -61,6 +61,7 @@ const publicConfig: Config = {
 
 	routes: [],
 	publicRoutes: [],
+	noDailyRateLimit: false,
 	rateLimitedCalls: [],
 	extremeRateLimitedCalls: [],
 	allowedOrigins: [],
