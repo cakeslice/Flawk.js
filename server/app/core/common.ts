@@ -669,7 +669,7 @@ export default {
 				}
 
 				if (err || !decoded) {
-					console.log('Token error: ' + (err ? err.message : "couldn't decode!"))
+					console.log('Token error: ' + (err ? err.message : "couldn't decode! " + token))
 					_setResponse(401, req, res, config.response('invalidToken', req), {
 						invalidToken: true,
 					})
@@ -768,7 +768,7 @@ export default {
 				}
 
 				if (err || !decoded) {
-					console.log('Token error: ' + (err ? err.message : "couldn't decode!"))
+					console.log('Token error: ' + (err ? err.message : "couldn't decode! " + token))
 					next()
 				} else {
 					if (
