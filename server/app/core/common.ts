@@ -7,7 +7,6 @@
 
 import { Logtail } from '@logtail/node'
 import { LogtailTransport } from '@logtail/winston'
-import { CaptureConsole } from '@sentry/integrations'
 import * as Sentry from '@sentry/node'
 import Nexmo, { MessageError, MessageRequestResponse } from '@vonage/server-sdk'
 import AWS from 'aws-sdk'
@@ -105,24 +104,6 @@ function initLogging() {
 		console.log(colorizeLog('\n######### Flawk #########\n', 'magenta')) // Very first app
 		console.log(colorizeLog('Logtail is disabled', 'grey'))
 	}
-
-	if (config.sentryID) {
-		Sentry.init({
-			release: '@' + global.buildNumber,
-			environment: config.prod ? 'production' : config.staging ? 'staging' : 'development',
-			dsn: config.sentryID,
-			integrations: [
-				new CaptureConsole({
-					levels: ['error'],
-				}),
-				// Enable HTTP calls tracing
-				new Sentry.Integrations.Http({ tracing: true }),
-			],
-			// Leaving the sample rate at 1.0 means that automatic instrumentation will send a transaction each time a user loads any page or navigates anywhere in your app, which is a lot of transactions. Sampling enables you to collect representative data without overwhelming either your system or your Sentry transaction quota.
-			tracesSampleRate: 0.2,
-		})
-		console.log(colorizeLog('Sentry is enabled', 'green'))
-	} else console.log(colorizeLog('Sentry is disabled', 'grey'))
 
 	if (config.postmarkKey) console.log(colorizeLog('Postmark is enabled', 'green'))
 	if (!config.postmarkKey && config.nodemailerHost) {

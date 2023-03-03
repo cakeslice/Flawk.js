@@ -7,6 +7,8 @@
 
 import { addAsync } from '@awaitjs/express'
 import * as Sentry from '@sentry/node'
+import { CaptureConsole } from '@sentry/integrations'
+import Tracing from '@sentry/tracing'
 import bcrypt from 'bcryptjs'
 // @ts-ignore
 import cachegoose from 'cachegoose'
@@ -1217,6 +1219,23 @@ function setup() {
 	console.log('')
 
 	if (config.sentryID) {
+		Sentry.init({
+			release: '@' + global.buildNumber,
+			environment: config.prod ? 'production' : config.staging ? 'staging' : 'development',
+			dsn: config.sentryID,
+			integrations: [
+				new CaptureConsole({
+					levels: ['error'],
+				}),
+				// Enable HTTP calls tracing
+				new Sentry.Integrations.Http({ tracing: true }),
+				new Tracing.Integrations.Express({
+					app,
+				}),
+			],
+			// Leaving the sample rate at 1.0 means that automatic instrumentation will send a transaction each time a user loads any page or navigates anywhere in your app, which is a lot of transactions. Sampling enables you to collect representative data without overwhelming either your system or your Sentry transaction quota.
+			tracesSampleRate: 0.2,
+		})
 		app.use(Sentry.Handlers.requestHandler())
 		app.use(Sentry.Handlers.tracingHandler())
 	}

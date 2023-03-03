@@ -226,6 +226,9 @@ export const RouterBase = memo(function RouterBase({ children }: { children: Rea
 							levels: ['error'],
 						}),
 						new BrowserTracing({
+							tracePropagationTargets: config.backendURL
+								? ['localhost', config.backendURL, /^\//]
+								: ['localhost', /^\//],
 							routingInstrumentation: reactRouterV5Instrumentation(history),
 						}),
 					],
