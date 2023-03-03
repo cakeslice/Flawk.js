@@ -8,7 +8,7 @@
 import { addAsync } from '@awaitjs/express'
 import * as Sentry from '@sentry/node'
 import { CaptureConsole } from '@sentry/integrations'
-import Tracing from '@sentry/tracing'
+import { Integrations } from '@sentry/tracing'
 import bcrypt from 'bcryptjs'
 // @ts-ignore
 import cachegoose from 'cachegoose'
@@ -1229,7 +1229,7 @@ function setup() {
 				}),
 				// Enable HTTP calls tracing
 				new Sentry.Integrations.Http({ tracing: true }),
-				new Tracing.Integrations.Express({
+				new Integrations.Express({
 					app,
 				}),
 			],
