@@ -20,7 +20,7 @@
 		"generateVAPIDKeys": "web-push generate-vapid-keys",
 		"- HELPER SCRIPTS -": "-----------------------------",
 		"startLocalJavascript": "cross-env NODE_PATH=dist/ node --inspect ./dist/server.js",
-		"startLocal": "npm run lintCI && tsc-watch --onSuccess \"npm run startLocalJavascript\" & npm run generateDatabase & npm run copyExtra",
+		"startLocal": "npm run lintCI && npm run lintTypescriptCI && npm run copyExtra && nodemon --exec \"etsc && npm run startLocalJavascript\"",
 		"deleteDist": "del-cli ./dist/*",
 		"buildCI": "npm run lintCI && npm run deleteDist && tsc && npm run copyExtra",
 		"buildLocal": "npm run auditCI && npm run testCI && npm run buildCI",
@@ -127,6 +127,8 @@
 		"cpy-cli": "^3.1.1",
 		"cross-env": "^7.0.3",
 		"env-cmd": "^10.1.0",
+		"esbuild": "^0.17.11",
+		"esbuild-node-tsc": "^2.0.5",
 		"eslint": "^8.3.0",
 		"eslint-config-prettier": "^8.5.0",
 		"eslint-plugin-import": "^2.26.0",
@@ -147,8 +149,16 @@
 		"prettier": "^2.4.1",
 		"replace-in-file": "^6.3.2",
 		"ts-jest": "^27.0.7",
-		"tsc-watch": "^4.5.0",
 		"typescript": "^4.5.2"
+	},
+	"nodemonConfig": {
+		"ignore": [
+			"dist/*",
+			"node_modules/*",
+			"coverage/*",
+			"package.json"
+		],
+		"ext": "js,jsx,ts,tsx,json,hbs"
 	},
 	"lint-staged": {
 		"*.{js,jsx,css,less,scss,md,ts,tsx}": [

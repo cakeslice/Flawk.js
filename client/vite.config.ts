@@ -47,11 +47,12 @@ export default ({ mode }) => {
 					return id.searchParams
 				},
 			}),
-			checker({
+			// Disable type checking since we already do it in the IDE and consumes lots of RAM
+			/* checker({
 				typescript: {
 					buildMode: false,
 				},
-			}),
+			}), */
 		],
 		define: {
 			'process.env.NODE_ENV': `"${m}"`,
