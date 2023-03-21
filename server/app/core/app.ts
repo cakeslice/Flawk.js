@@ -1090,6 +1090,35 @@ function setup() {
 			common.setResponse(200, req, res, undefined, openAPIDocument)
 		})
 
+	if (config.sentryID) {
+		Sentry.init({
+			release: '@' + global.buildNumber,
+			environment: config.prod ? 'production' : config.staging ? 'staging' : 'development',
+			dsn: config.sentryID,
+			integrations: [
+				new CaptureConsole({
+					levels: ['error'],
+				}),
+				// Enable HTTP calls tracing
+				new Sentry.Integrations.Http({ tracing: true }),
+				new Integrations.Express({
+					app,
+				}),
+			],
+			beforeSendTransaction(event) {
+				if (config.sentryExcludedRoutes.find((r) => r.includes(event.transaction || ''))) {
+					// Don't send the event to Sentry
+					return null
+				}
+				return event
+			},
+			// Leaving the sample rate at 1.0 means that automatic instrumentation will send a transaction each time a user loads any page or navigates anywhere in your app, which is a lot of transactions. Sampling enables you to collect representative data without overwhelming either your system or your Sentry transaction quota.
+			tracesSampleRate: 0.2,
+		})
+		app.use(config.path + '/*', Sentry.Handlers.requestHandler())
+		app.use(config.path + '/*', Sentry.Handlers.tracingHandler())
+	}
+
 	app.getAsync(config.path + '/build_number', async function (req, res) {
 		common.setResponse(200, req, res, undefined, {
 			buildNumber: global.buildNumber,
@@ -1219,28 +1248,6 @@ function setup() {
 	console.log('')
 
 	if (config.sentryID) {
-		Sentry.init({
-			release: '@' + global.buildNumber,
-			environment: config.prod ? 'production' : config.staging ? 'staging' : 'development',
-			dsn: config.sentryID,
-			integrations: [
-				new CaptureConsole({
-					levels: ['error'],
-				}),
-				// Enable HTTP calls tracing
-				new Sentry.Integrations.Http({ tracing: true }),
-				new Integrations.Express({
-					app,
-				}),
-			],
-			// Leaving the sample rate at 1.0 means that automatic instrumentation will send a transaction each time a user loads any page or navigates anywhere in your app, which is a lot of transactions. Sampling enables you to collect representative data without overwhelming either your system or your Sentry transaction quota.
-			tracesSampleRate: 0.2,
-		})
-		app.use(Sentry.Handlers.requestHandler())
-		app.use(Sentry.Handlers.tracingHandler())
-	}
-
-	if (config.sentryID) {
 		app.use(
 			Sentry.Handlers.errorHandler({
 				shouldHandleError(error: HttpException) {
@@ -1367,8 +1374,6 @@ async function listen() {
 		// If we can't estabilish initial connection to MongoDB, finish with code 0
 		// This is because mongoose will not try to reconnect if it cannot connect on first try
 		process.exit(0)
-		// @ts-ignore
-		return
 	}
 	await onDatabaseConnected()
 

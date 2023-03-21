@@ -65,6 +65,7 @@ const publicConfig: Config = {
 	rateLimitedCalls: [],
 	extremeRateLimitedCalls: [],
 	allowedOrigins: [],
+	sentryExcludedRoutes: [],
 	path: '/backend',
 
 	//
@@ -272,6 +273,7 @@ export type Config = {
 	rateLimitedCalls: string[]
 	extremeRateLimitedCalls: string[]
 	allowedOrigins: string[]
+	sentryExcludedRoutes: string[]
 	path: string
 
 	//
