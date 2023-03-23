@@ -24,6 +24,5 @@
 		"sourceMap": true
 	},
 	"exclude": ["node_modules", "dist", "coverage", "local-storage"],
-	"include": ["app"],
-	"ts-node": { "files": true }
+	"include": ["app"]
 }

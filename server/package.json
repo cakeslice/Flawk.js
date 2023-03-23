@@ -20,7 +20,7 @@
 		"generateVAPIDKeys": "web-push generate-vapid-keys",
 		"- HELPER SCRIPTS -": "-----------------------------",
 		"startLocalJavascript": "cross-env NODE_PATH=dist/ node --inspect ./dist/server.js",
-		"startLocal": "npm run lintCI && npm run lintTypescriptCI && npm run copyExtra && nodemon --exec \"etsc && npm run startLocalJavascript\"",
+		"startLocal": "npm run lintCI && npm run lintTypescriptCI && npm run copyExtra && nodemon --exec \"ts-node --swc --files --transpileOnly -r tsconfig-paths/register ./app/server.ts\"",
 		"deleteDist": "del-cli ./dist/*",
 		"buildCI": "npm run lintCI && npm run deleteDist && tsc && npm run copyExtra",
 		"buildLocal": "npm run auditCI && npm run testCI && npm run buildCI",
@@ -98,6 +98,7 @@
 		"xlsx": "^0.18.5"
 	},
 	"devDependencies": {
+		"@swc/core": "^1.3.42",
 		"@types/bcryptjs": "^2.4.2",
 		"@types/compression": "^1.7.2",
 		"@types/cookie-parser": "^1.4.2",
@@ -127,8 +128,6 @@
 		"cpy-cli": "^3.1.1",
 		"cross-env": "^7.0.3",
 		"env-cmd": "^10.1.0",
-		"esbuild": "^0.17.11",
-		"esbuild-node-tsc": "^2.0.5",
 		"eslint": "^8.3.0",
 		"eslint-config-prettier": "^8.5.0",
 		"eslint-plugin-import": "^2.26.0",
@@ -149,6 +148,8 @@
 		"prettier": "^2.4.1",
 		"replace-in-file": "^6.3.2",
 		"ts-jest": "^27.0.7",
+		"ts-node": "^10.9.1",
+		"tsconfig-paths": "^4.1.2",
 		"typescript": "^4.5.2"
 	},
 	"nodemonConfig": {
