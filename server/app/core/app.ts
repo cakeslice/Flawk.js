@@ -1106,7 +1106,9 @@ function setup() {
 				}),
 			],
 			beforeSendTransaction(event) {
-				if (config.sentryExcludedRoutes.find((r) => r.includes(event.transaction || ''))) {
+				if (
+					config.sentryExcludedRoutes.find((r) => (event.transaction || '').includes(r))
+				) {
 					// Don't send the event to Sentry
 					return null
 				}
