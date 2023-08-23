@@ -28,6 +28,7 @@
 		"- EXTRA SCRIPTS -": "-----------------------------",
 		"precommit": "npm-run-all --aggregate-output --parallel checkStaged",
 		"postinstall": "patch-package && cd .. && git config core.hooksPath ./git-hooks && cd server",
+		"applyPatches": "npx patch-package",
 		"test": "del-cli ./coverage/* && cross-env JEST=true jest --coverage --runInBand",
 		"testCI": "cross-env JEST=true jest --bail --runInBand",
 		"prettierFix": "prettier --write ./app",

@@ -44,6 +44,7 @@
 		"- EXTRA SCRIPTS -": "-----------------------------",
 		"precommit": "npm-run-all --aggregate-output --parallel checkStaged",
 		"postinstall": "patch-package && cd .. && git config core.hooksPath ./git-hooks && cd client",
+		"applyPatches": "npx patch-package",
 		"test": "del-cli ./coverage/* && cross-env jest --coverage --runInBand",
 		"testCI": "cross-env jest --bail --runInBand",
 		"cypress": "npx cypress open",
