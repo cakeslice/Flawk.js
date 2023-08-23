@@ -22,6 +22,7 @@ export default ({ mode }) => {
 		assetsInclude: ['**/*.md'],
 		build: {
 			outDir: 'build',
+			sourcemap: true
 		},
 		plugins: [
 			react({
