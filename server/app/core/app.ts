@@ -1006,7 +1006,7 @@ function setup() {
 				},
 			],
 
-			validateApiSec: true,
+			validateApiSpec: true,
 			validateSecurity: true,
 			validateRequests: {
 				coerceTypes: false, // Only for body, query and headers are coerced
@@ -1146,10 +1146,10 @@ function setup() {
 							.cache(6 * 10 * 60)
 					// 60 minute cache
 					else
-						structure = (await s.schema
+						structure = await s.schema
 							.find({})
-							.lean()
-							.sort(s.sortKey || '_id')) as ArrayKeyObject
+							.lean<ArrayKeyObject>()
+							.sort(s.sortKey || '_id')
 
 					if (structure && s.postProcess) {
 						structure = await s.postProcess(structure)

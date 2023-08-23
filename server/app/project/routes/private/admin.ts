@@ -63,12 +63,12 @@ router.postAsync(SearchUsers.call, async (req, res) => {
 	const sort: Obj = {}
 	sort[query.sort || 'timestamps.lastCall'] = query.order || 'desc'
 
-	const items = (await Client.find(search)
-		.lean({ virtuals: true })
+	const items = await Client.find(search)
 		.sort(sort)
+		.lean<(IClient & { isOnline: boolean })[]>({ virtuals: true })
 		.select('email phone _id personal')
 		.limit(req.limit)
-		.skip(req.skip)) as (IClient & { isOnline: boolean })[]
+		.skip(req.skip)
 	const itemCount = await Client.find(search).countDocuments({})
 	const pagination = res.countPages(itemCount)
 

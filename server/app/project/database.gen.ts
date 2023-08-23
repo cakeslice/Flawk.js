@@ -114,12 +114,16 @@ export type Client = {
 export type ClientObject = Client
 
 /**
- * Mongoose Query types
+ * Mongoose Query type
  *
- * Pass this type to the Mongoose Model constructor:
- * ```
- * const Client = mongoose.model<ClientDocument, ClientModel>("Client", ClientSchema);
- * ```
+ * This type is returned from query functions. For most use cases, you should not need to use this type explicitly.
+ */
+export type ClientQuery = mongoose.Query<any, ClientDocument, ClientQueries> & ClientQueries
+
+/**
+ * Mongoose Query helper types
+ *
+ * This type represents `ClientSchema.query`. For most use cases, you should not need to use this type explicitly.
  */
 export type ClientQueries = {}
 
@@ -145,7 +149,12 @@ export type ClientModel = mongoose.Model<ClientDocument, ClientQueries> & Client
  * const ClientSchema: ClientSchema = new mongoose.Schema({ ... })
  * ```
  */
-export type ClientSchema = mongoose.Schema<ClientDocument, ClientModel>
+export type ClientSchema = mongoose.Schema<
+	ClientDocument,
+	ClientModel,
+	ClientMethods,
+	ClientQueries
+>
 
 /**
  * Mongoose Subdocument type
@@ -268,12 +277,16 @@ export type Country = {
 export type CountryObject = Country
 
 /**
- * Mongoose Query types
+ * Mongoose Query type
  *
- * Pass this type to the Mongoose Model constructor:
- * ```
- * const Country = mongoose.model<CountryDocument, CountryModel>("Country", CountrySchema);
- * ```
+ * This type is returned from query functions. For most use cases, you should not need to use this type explicitly.
+ */
+export type CountryQuery = mongoose.Query<any, CountryDocument, CountryQueries> & CountryQueries
+
+/**
+ * Mongoose Query helper types
+ *
+ * This type represents `CountrySchema.query`. For most use cases, you should not need to use this type explicitly.
  */
 export type CountryQueries = {}
 
@@ -299,7 +312,12 @@ export type CountryModel = mongoose.Model<CountryDocument, CountryQueries> & Cou
  * const CountrySchema: CountrySchema = new mongoose.Schema({ ... })
  * ```
  */
-export type CountrySchema = mongoose.Schema<CountryDocument, CountryModel>
+export type CountrySchema = mongoose.Schema<
+	CountryDocument,
+	CountryModel,
+	CountryMethods,
+	CountryQueries
+>
 
 /**
  * Mongoose Document type
@@ -353,12 +371,17 @@ export type RemoteConfig = {
 export type RemoteConfigObject = RemoteConfig
 
 /**
- * Mongoose Query types
+ * Mongoose Query type
  *
- * Pass this type to the Mongoose Model constructor:
- * ```
- * const RemoteConfig = mongoose.model<RemoteConfigDocument, RemoteConfigModel>("RemoteConfig", RemoteConfigSchema);
- * ```
+ * This type is returned from query functions. For most use cases, you should not need to use this type explicitly.
+ */
+export type RemoteConfigQuery = mongoose.Query<any, RemoteConfigDocument, RemoteConfigQueries> &
+	RemoteConfigQueries
+
+/**
+ * Mongoose Query helper types
+ *
+ * This type represents `RemoteConfigSchema.query`. For most use cases, you should not need to use this type explicitly.
  */
 export type RemoteConfigQueries = {}
 
@@ -385,7 +408,12 @@ export type RemoteConfigModel = mongoose.Model<RemoteConfigDocument, RemoteConfi
  * const RemoteConfigSchema: RemoteConfigSchema = new mongoose.Schema({ ... })
  * ```
  */
-export type RemoteConfigSchema = mongoose.Schema<RemoteConfigDocument, RemoteConfigModel>
+export type RemoteConfigSchema = mongoose.Schema<
+	RemoteConfigDocument,
+	RemoteConfigModel,
+	RemoteConfigMethods,
+	RemoteConfigQueries
+>
 
 /**
  * Mongoose Document type

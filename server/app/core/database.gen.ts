@@ -41,12 +41,17 @@ export type EmailTrack = {
 export type EmailTrackObject = EmailTrack
 
 /**
- * Mongoose Query types
+ * Mongoose Query type
  *
- * Pass this type to the Mongoose Model constructor:
- * ```
- * const EmailTrack = mongoose.model<EmailTrackDocument, EmailTrackModel>("EmailTrack", EmailTrackSchema);
- * ```
+ * This type is returned from query functions. For most use cases, you should not need to use this type explicitly.
+ */
+export type EmailTrackQuery = mongoose.Query<any, EmailTrackDocument, EmailTrackQueries> &
+	EmailTrackQueries
+
+/**
+ * Mongoose Query helper types
+ *
+ * This type represents `EmailTrackSchema.query`. For most use cases, you should not need to use this type explicitly.
  */
 export type EmailTrackQueries = {}
 
@@ -73,7 +78,12 @@ export type EmailTrackModel = mongoose.Model<EmailTrackDocument, EmailTrackQueri
  * const EmailTrackSchema: EmailTrackSchema = new mongoose.Schema({ ... })
  * ```
  */
-export type EmailTrackSchema = mongoose.Schema<EmailTrackDocument, EmailTrackModel>
+export type EmailTrackSchema = mongoose.Schema<
+	EmailTrackDocument,
+	EmailTrackModel,
+	EmailTrackMethods,
+	EmailTrackQueries
+>
 
 /**
  * Mongoose Document type
@@ -122,12 +132,16 @@ export type AppState = {
 export type AppStateObject = AppState
 
 /**
- * Mongoose Query types
+ * Mongoose Query type
  *
- * Pass this type to the Mongoose Model constructor:
- * ```
- * const AppState = mongoose.model<AppStateDocument, AppStateModel>("AppState", AppStateSchema);
- * ```
+ * This type is returned from query functions. For most use cases, you should not need to use this type explicitly.
+ */
+export type AppStateQuery = mongoose.Query<any, AppStateDocument, AppStateQueries> & AppStateQueries
+
+/**
+ * Mongoose Query helper types
+ *
+ * This type represents `AppStateSchema.query`. For most use cases, you should not need to use this type explicitly.
  */
 export type AppStateQueries = {}
 
@@ -153,7 +167,12 @@ export type AppStateModel = mongoose.Model<AppStateDocument, AppStateQueries> & 
  * const AppStateSchema: AppStateSchema = new mongoose.Schema({ ... })
  * ```
  */
-export type AppStateSchema = mongoose.Schema<AppStateDocument, AppStateModel>
+export type AppStateSchema = mongoose.Schema<
+	AppStateDocument,
+	AppStateModel,
+	AppStateMethods,
+	AppStateQueries
+>
 
 /**
  * Mongoose Document type
@@ -201,12 +220,21 @@ export type WebPushSubscription = {
 export type WebPushSubscriptionObject = WebPushSubscription
 
 /**
- * Mongoose Query types
+ * Mongoose Query type
  *
- * Pass this type to the Mongoose Model constructor:
- * ```
- * const WebPushSubscription = mongoose.model<WebPushSubscriptionDocument, WebPushSubscriptionModel>("WebPushSubscription", WebPushSubscriptionSchema);
- * ```
+ * This type is returned from query functions. For most use cases, you should not need to use this type explicitly.
+ */
+export type WebPushSubscriptionQuery = mongoose.Query<
+	any,
+	WebPushSubscriptionDocument,
+	WebPushSubscriptionQueries
+> &
+	WebPushSubscriptionQueries
+
+/**
+ * Mongoose Query helper types
+ *
+ * This type represents `WebPushSubscriptionSchema.query`. For most use cases, you should not need to use this type explicitly.
  */
 export type WebPushSubscriptionQueries = {}
 
@@ -238,7 +266,9 @@ export type WebPushSubscriptionModel = mongoose.Model<
  */
 export type WebPushSubscriptionSchema = mongoose.Schema<
 	WebPushSubscriptionDocument,
-	WebPushSubscriptionModel
+	WebPushSubscriptionModel,
+	WebPushSubscriptionMethods,
+	WebPushSubscriptionQueries
 >
 
 /**

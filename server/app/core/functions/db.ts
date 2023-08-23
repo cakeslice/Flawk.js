@@ -34,7 +34,8 @@ export type StructureConfig = {
 	sendToFrontend: boolean
 	cache: boolean
 	sortKey?: string
-	schema: Model<unknown>
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	schema: Model<any>
 	postProcess?: (array: ArrayKeyObject) => Promise<ArrayKeyObject>
 } & (
 	| {

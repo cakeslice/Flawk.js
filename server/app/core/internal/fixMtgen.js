@@ -10,7 +10,7 @@ const replace = require('replace-in-file')
 // Remove select properties
 let options = {
 	files: ['./app/project/database.gen.ts', './app/core/database.gen.ts'],
-	from: /select: {}/g,
+	from: /select\?: any/g,
 	to: '',
 }
 try {
