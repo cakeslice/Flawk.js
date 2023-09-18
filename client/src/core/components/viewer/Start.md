@@ -2,17 +2,6 @@
 
 &nbsp;
 
-&nbsp;
-
-### Keep in mind that Flawk is not suitable for beginners
-- You need to be comfortable with **TypeScript**, **React** and **Express/Mongoose** to use this boilerplate
-
-&nbsp;
-
----
-
-&nbsp;
-
 ## 🚀 Features
 
 - Free and open-source with **MIT license**
