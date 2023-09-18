@@ -12,7 +12,7 @@
 
 &nbsp;
 
-## ⚠️ This project is a **work in progress** and is missing important documentation
+## ⚠️ This boilerplate is quite outdated and is missing important documentation. Something like Next.js combined with Next-UI is a much better alternative that includes a lot of the features this boilerplate includes.
 
 &nbsp;
 &nbsp;
@@ -122,15 +122,3 @@
 - **VSCode** is highly recommended and the following extensions should be installed:
   - [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
   - [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
-
-&nbsp;
-
-## 📔 Getting started
-
-- Work in progress
-
-&nbsp;
-
-## 📦 Deployment
-
-- Work in progress
