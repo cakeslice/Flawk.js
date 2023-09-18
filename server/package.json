@@ -26,8 +26,7 @@
 		"buildLocal": "npm run auditCI && npm run testCI && npm run buildCI",
 		"buildPushDocker": "npm run buildLocal && cross-env-shell docker image build -t $DOCKER_IMAGE . -f Dockerfile.local --platform linux/amd64 && cross-env-shell docker push $DOCKER_IMAGE && cross-env-shell docker run --rm caprover/cli-caprover:v2.1.1 caprover deploy --caproverUrl $CAPROVER_URL --caproverPassword $CAPROVER_PASSWORD --caproverApp $CAPROVER_APP --imageName $DOCKER_IMAGE && cross-env-shell docker image rm $DOCKER_IMAGE",
 		"- EXTRA SCRIPTS -": "-----------------------------",
-		"precommit": "npm-run-all --aggregate-output --parallel checkStaged",
-		"postinstall": "patch-package && cd .. && git config core.hooksPath ./git-hooks && cd server",
+		"postinstall": "patch-package",
 		"applyPatches": "npx patch-package",
 		"test": "del-cli ./coverage/* && cross-env JEST=true jest --coverage --runInBand",
 		"testCI": "cross-env JEST=true jest --bail --runInBand",
@@ -37,7 +36,6 @@
 		"lintTypescriptCI": "tsc --noEmit --incremental",
 		"auditFix": "npm audit fix && npm run auditCI",
 		"auditCI": "npm audit --audit-level=critical",
-		"checkStaged": "lint-staged --no-stash",
 		"copyExtra": "cross-env cpy './app/**/*.json' './dist/' && cross-env cpy --cwd=app './app/**/*.mjml' './dist/'"
 	},
 	"dependencies": {
@@ -140,11 +138,9 @@
 		"eslint-plugin-security-node": "^1.0.14",
 		"eslint-plugin-unused-imports": "^2.0.0",
 		"jest": "^27.3.1",
-		"lint-staged": "^12.1.2",
 		"mongodb-memory-server": "^8.0.2",
 		"mongoose-tsgen": "^9.2.6",
 		"nodemon": "^2.0.15",
-		"npm-run-all": "^4.1.5",
 		"patch-package": "^6.5.0",
 		"prettier": "^2.4.1",
 		"replace-in-file": "^6.3.2",
@@ -161,16 +157,6 @@
 			"package.json"
 		],
 		"ext": "js,jsx,ts,tsx,json,hbs"
-	},
-	"lint-staged": {
-		"*.{js,jsx,css,less,scss,md,ts,tsx}": [
-			"eslint --cache --quiet"
-		]
-	},
-	"lint-staged_EXTRA": {
-		"*.{js,jsx,css,less,scss,md,ts,tsx}": [
-			"cross-env JEST=true jest --passWithNoTests --bail --runInBand --findRelatedTests"
-		]
 	},
 	"jest": {
 		"preset": "ts-jest",

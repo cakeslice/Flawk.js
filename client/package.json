@@ -42,8 +42,7 @@
 		"buildAndroid": "npm run buildLocal && npm run packageAndroid",
 		"packageAndroid": "npx cap sync && cd android && gradlew bundleRelease && cd .. && cross-env-shell jarsigner -keystore ./_env/android_keystore.env -storepass $ANDROID_KEYSTORE_PASS ./android/app/build/outputs/bundle/release/app-release.aab $ANDROID_KEYSTORE_ALIAS",
 		"- EXTRA SCRIPTS -": "-----------------------------",
-		"precommit": "npm-run-all --aggregate-output --parallel checkStaged",
-		"postinstall": "patch-package && cd .. && git config core.hooksPath ./git-hooks && cd client",
+		"postinstall": "patch-package",
 		"applyPatches": "npx patch-package",
 		"test": "del-cli ./coverage/* && cross-env jest --coverage --runInBand",
 		"testCI": "cross-env jest --bail --runInBand",
@@ -55,7 +54,6 @@
 		"lintTypescriptCI": "tsc --noEmit --incremental",
 		"auditFix": "npm audit fix && npm run auditCI",
 		"auditCI": "npm audit --production --audit-level=critical",
-		"checkStaged": "lint-staged --no-stash",
 		"analyzeBundle": "source-map-explorer --no-border-checks ./build/assets/*.js",
 		"generateFavicon": "icon-gen -i ./public/favicon.svg -o ./public --favicon --favicon-ico-sizes 16,32 --favicon-png-sizes 16,32,1024"
 	},
@@ -195,8 +193,6 @@
 		"identity-obj-proxy": "^3.0.0",
 		"jest": "^28.1.1",
 		"jest-environment-jsdom": "^28.1.1",
-		"lint-staged": "^12.1.2",
-		"npm-run-all": "^4.1.5",
 		"patch-package": "^6.4.7",
 		"prettier": "^2.4.1",
 		"sass": "^1.43.4",
@@ -207,16 +203,6 @@
 		"vite-plugin-babel-macros": "^1.0.6",
 		"vite-plugin-checker": "^0.6.2",
 		"vite-tsconfig-paths": "^4.2.0"
-	},
-	"lint-staged": {
-		"*.{js,jsx,css,less,scss,md,ts,tsx}": [
-			"eslint --cache --quiet"
-		]
-	},
-	"lint-staged_EXTRA": {
-		"*.{js,jsx,css,less,scss,md,ts,tsx}": [
-			"cross-env jest --passWithNoTests --bail --runInBand --findRelatedTests"
-		]
 	},
 	"jest": {
 		"testEnvironment": "jsdom",
