@@ -1,4 +1,4 @@
-## ⚠️ This project is a **work in progress** and is missing important documentation
+## ⚠️ This boilerplate is quite outdated and is missing important documentation. Something like Next.js combined with Next-UI is a much better alternative that includes a lot of the features this boilerplate includes
 
 &nbsp;
 
