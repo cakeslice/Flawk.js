@@ -96,6 +96,7 @@ module.exports = {
 		'no-secrets/no-secrets': 'off',
 		'security/detect-object-injection': 0,
 		//
+		'no-restricted-globals': ['error', 'location', 'history', 'event', 'close'],
 		eqeqeq: 'error',
 		'unused-imports/no-unused-imports': 'error',
 		'no-return-assign': 'error',

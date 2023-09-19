@@ -33,6 +33,7 @@ module.exports = {
 		'security-node/detect-crlf': 0,
 		'security-node/detect-possible-timing-attacks': 'error',
 		//
+		'no-restricted-globals': ['error', 'location', 'history', 'event', 'close'],
 		eqeqeq: 'error',
 		'unused-imports/no-unused-imports': 'error',
 		'no-return-assign': 'error',
