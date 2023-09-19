@@ -323,9 +323,9 @@ const publicConfig: Config = {
 	darkModeAvailable: false,
 	darkModeOptIn: false,
 	darkModeForce: false,
-	showCookieNotice: true,
+	showCookieNotice: false,
 	hasEssentialCookies: true,
-	cookiePolicyURL: 'https://services.cakeslice.dev/cookies',
+	cookiePolicyURL: 'https://your-site/cookies',
 
 	toastCloseTime: 4000,
 
