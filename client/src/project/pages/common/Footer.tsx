@@ -64,31 +64,8 @@ const Footer = memo(function Footer(props: Props) {
 				delay={0.25}
 				style={{ zIndex: 1, paddingBottom: 250 }}
 			>
-				<div style={{ height: 30 }} className='flex items-center'>
-					<a
-						target='_blank'
-						style={{
-							minWidth: 55,
-							fontSize: 14.5,
-							color: styles.colors.black,
-						}}
-						href='https://services.cakeslice.dev/privacy'
-						rel='noreferrer'
-					>
-						Privacy
-					</a>
-					<vr style={{ border: '.25px solid ' + styles.colors.black }} />
-					<a
-						style={{
-							minWidth: 55,
-							fontSize: 14.5,
-							color: styles.colors.black,
-						}}
-						href={'mailto:hello@cakeslice.dev'}
-					>
-						Contact
-					</a>
-				</div>
+				<sp />
+				<sp />
 
 				<sp />
 				<sp />
