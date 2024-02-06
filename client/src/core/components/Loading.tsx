@@ -10,9 +10,7 @@ import styles from 'core/styles'
 import React, { memo, Suspense } from 'react'
 import TrackedComponent from './TrackedComponent'
 
-const MetroSpinner = React.lazy(() =>
-	import('react-spinners-kit').then((module) => ({ default: module.MetroSpinner }))
-)
+const PuffLoader = React.lazy(() => import('react-spinners/PuffLoader'))
 
 type Props = {
 	noDelay?: boolean
@@ -38,25 +36,27 @@ class Loading extends TrackedComponent<Props> {
 	}
 
 	render() {
+		const size = this.props.size ? this.props.size * 1.25 : 42 * 1.25
+
 		return (
 			<Suspense
 				fallback={
 					<div
 						style={{
-							minWidth: this.props.size || 42,
-							minHeight: this.props.size || 42,
+							minWidth: size,
+							minHeight: size,
 						}}
 					></div>
 				}
 			>
 				<div
 					style={{
-						minWidth: this.props.size || 42,
-						minHeight: this.props.size || 42,
+						minWidth: size,
+						minHeight: size,
 					}}
 				>
-					<MetroSpinner
-						size={this.props.size || 42}
+					<PuffLoader
+						size={size}
 						color={this.props.color || config.replaceAlpha(styles.colors.black, 0.2)}
 						loading={this.props.noDelay || this.state.actuallyLoading}
 					/>
