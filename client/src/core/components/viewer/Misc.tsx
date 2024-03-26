@@ -514,7 +514,7 @@ config.scrollToTop()
 				</CopyToClipboard>
 			</Section>
 
-			{!Capacitor.isNativePlatform() && (
+			{/* {!Capacitor.isNativePlatform() && (
 				<Section
 					description={
 						<>
@@ -551,7 +551,7 @@ config.scrollToTop()
 						/>
 					</a>
 				</Section>
-			)}
+			)} */}
 
 			{!Capacitor.isNativePlatform() && desktop && (
 				<Section
