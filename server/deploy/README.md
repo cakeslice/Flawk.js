@@ -73,7 +73,7 @@ Change CapRover password in control panel (very strong!)
 - Create the MongoDB app in CapRover
 - Add the port forwarding: Host: 1337 -> Container: 27017
 - ```sudo ufw allow 1337```
-- Follow deploy/mongo_backup.txt
+- Enable droplet/instance backups
 
 	**WARNING**: *This method only works for a single Mongo instance! If you use sharding you need another method! Additionally, if you use sharding/clusters, you need to enable SSL/TLS for security*
 
@@ -103,7 +103,7 @@ Set CORS in space settings:
 - Add DNS CNAME record: cloud -> Space_URL (with Proxy)
 - *NOTE: Can't use this for a lot of video or audio files since CloudFlare doesn't allow!*
 
-**Recommended**: Use a service to do daily backups of your bucket (which includes the MongoDB backups if not using Atlas)
+**Recommended**: Use a service to do daily backups of your bucket
 - This is in case something happens to your bucket or a hacker obtains your bucket keys and everything is deleted
 - A good example is SimpleBackups.com
 - Your destination bucket should be on a different provider and have versioning enabled!
